@@ -55,16 +55,37 @@ const upcomingFasts: FastingPeriod[] = [
 ];
 
 export const FastingCalendar = () => {
+  const getCurrentMonthFasts = () => {
+    const currentMonth = new Date().getMonth();
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    
+    return upcomingFasts.filter(fast => {
+      const fastMonths = [fast.startDate, fast.endDate].map(date => {
+        const month = date.split(' ')[0];
+        return monthNames.indexOf(month);
+      });
+      
+      return fastMonths.some(month => month === currentMonth);
+    });
+  };
+
+  const currentMonthFasts = getCurrentMonthFasts();
+  const currentMonthName = new Date().toLocaleString('default', { month: 'long' });
+
   return (
     <Card className="shadow-elevated border-border/50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Calendar className="w-5 h-5 text-primary" />
-          Upcoming Fasts
+          {currentMonthName} Fasts
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {upcomingFasts.map((fast, index) => (
+        {currentMonthFasts.length > 0 ? (
+          currentMonthFasts.map((fast, index) => (
           <div 
             key={index}
             className="p-3 rounded-lg bg-secondary/50 border border-border/50 space-y-2"
@@ -79,7 +100,12 @@ export const FastingCalendar = () => {
               {fast.startDate} - {fast.endDate}
             </p>
           </div>
-        ))}
+        ))
+        ) : (
+          <p className="text-sm text-muted-foreground text-center py-4">
+            No fasts this month
+          </p>
+        )}
       </CardContent>
     </Card>
   );

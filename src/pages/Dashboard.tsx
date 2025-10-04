@@ -24,7 +24,7 @@ const Dashboard = () => {
               <h1 className="text-2xl font-bold">OrthoCross App</h1>
             </div>
             <nav className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
+              <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
                 <Home className="w-5 h-5" />
               </Button>
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
@@ -66,11 +66,13 @@ const Dashboard = () => {
                 title="Monday - Psalms"
                 passage="Psalm 23"
                 completed={true}
+                onStartReading={() => navigate('/reading')}
               />
               <DailyReadingCard
                 title="Tuesday - Proverbs"
                 passage="Proverbs 3:1-12"
                 completed={true}
+                onStartReading={() => navigate('/reading')}
               />
             </div>
           </div>
@@ -85,9 +87,9 @@ const Dashboard = () => {
             <BookOpen className="w-5 h-5" />
             Browse Scripture
           </Button>
-          <Button variant="outline" size="lg">
+          <Button variant="outline" size="lg" onClick={() => navigate('/church-resources')}>
             <Book className="w-5 h-5" />
-            Study Resources
+            Church Resources
           </Button>
         </section>
       </main>
