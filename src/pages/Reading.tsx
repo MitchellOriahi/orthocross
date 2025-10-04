@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Bookmark, Type, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,16 +8,76 @@ import { Slider } from "@/components/ui/slider";
 
 const Reading = () => {
   const navigate = useNavigate();
-  const [progress, setProgress] = useState(15);
+  const location = useLocation();
+  const [progress, setProgress] = useState(0);
   const [fontSize, setFontSize] = useState([16]);
+  const [currentReading, setCurrentReading] = useState({
+    title: "Gospel of John",
+    passage: "John 1:1-14"
+  });
 
-  const sampleText = `In the beginning was the Word, and the Word was with God, and the Word was God. He was in the beginning with God. All things were made through Him, and without Him nothing was made that was made. In Him was life, and the life was the light of men. And the light shines in the darkness, and the darkness did not comprehend it.
+  // Reading content mapping
+  const readingContent: Record<string, string> = {
+    "John 3:1-21": `Now there was a Pharisee, a man named Nicodemus who was a member of the Jewish ruling council. He came to Jesus at night and said, "Rabbi, we know that you are a teacher who has come from God. For no one could perform the signs you are doing if God were not with him."
+
+Jesus replied, "Very truly I tell you, no one can see the kingdom of God unless they are born again."
+
+"How can someone be born when they are old?" Nicodemus asked. "Surely they cannot enter a second time into their mother's womb to be born!"
+
+Jesus answered, "Very truly I tell you, no one can enter the kingdom of God unless they are born of water and the Spirit. Flesh gives birth to flesh, but the Spirit gives birth to spirit. You should not be surprised at my saying, 'You must be born again.' The wind blows wherever it pleases. You hear its sound, but you cannot tell where it comes from or where it is going. So it is with everyone born of the Spirit."
+
+For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.`,
+    
+    "Psalm 23": `The Lord is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul. He guides me along the right paths for his name's sake.
+
+Even though I walk through the darkest valley, I will fear no evil, for you are with me; your rod and your staff, they comfort me.
+
+You prepare a table before me in the presence of my enemies. You anoint my head with oil; my cup overflows. Surely your goodness and love will follow me all the days of my life, and I will dwell in the house of the Lord forever.`,
+    
+    "Proverbs 3:1-12": `My son, do not forget my teaching, but keep my commands in your heart, for they will prolong your life many years and bring you peace and prosperity.
+
+Let love and faithfulness never leave you; bind them around your neck, write them on the tablet of your heart. Then you will win favor and a good name in the sight of God and man.
+
+Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.
+
+Do not be wise in your own eyes; fear the Lord and shun evil. This will bring health to your body and nourishment to your bones.`,
+    
+    "John 1:1-14": `In the beginning was the Word, and the Word was with God, and the Word was God. He was in the beginning with God. All things were made through Him, and without Him nothing was made that was made. In Him was life, and the life was the light of men. And the light shines in the darkness, and the darkness did not comprehend it.
 
 There was a man sent from God, whose name was John. This man came for a witness, to bear witness of the Light, that all through him might believe. He was not that Light, but was sent to bear witness of that Light. That was the true Light which gives light to every man coming into the world.
 
 He was in the world, and the world was made through Him, and the world did not know Him. He came to His own, and His own did not receive Him. But as many as received Him, to them He gave the right to become children of God, to those who believe in His name: who were born, not of blood, nor of the will of the flesh, nor of the will of man, but of God.
 
-And the Word became flesh and dwelt among us, and we beheld His glory, the glory as of the only begotten of the Father, full of grace and truth.`;
+And the Word became flesh and dwelt among us, and we beheld His glory, the glory as of the only begotten of the Father, full of grace and truth.`
+  };
+
+  // Load saved reading on mount
+  useEffect(() => {
+    const savedReading = localStorage.getItem('currentReading');
+    if (savedReading) {
+      const parsed = JSON.parse(savedReading);
+      setCurrentReading(parsed);
+      setProgress(parsed.progress || 0);
+    } else if (location.state?.title && location.state?.passage) {
+      // If coming from a card click, use that reading
+      setCurrentReading({
+        title: location.state.title,
+        passage: location.state.passage
+      });
+      setProgress(location.state.progress || 0);
+    }
+  }, [location.state]);
+
+  // Save reading progress whenever it changes
+  useEffect(() => {
+    const readingData = {
+      ...currentReading,
+      progress
+    };
+    localStorage.setItem('currentReading', JSON.stringify(readingData));
+  }, [progress, currentReading]);
+
+  const displayText = readingContent[currentReading.passage] || readingContent["John 1:1-14"];
 
   return (
     <div className="min-h-screen gradient-peaceful">
@@ -30,8 +90,8 @@ And the Word became flesh and dwelt among us, and we beheld His glory, the glory
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div>
-                <h1 className="text-xl font-bold">Gospel of John</h1>
-                <p className="text-sm text-muted-foreground">Chapter 1:1-14</p>
+                <h1 className="text-xl font-bold">{currentReading.title}</h1>
+                <p className="text-sm text-muted-foreground">{currentReading.passage}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -53,7 +113,7 @@ And the Word became flesh and dwelt among us, and we beheld His glory, the glory
             className="prose prose-lg max-w-none leading-relaxed text-foreground"
             style={{ fontSize: `${fontSize}px` }}
           >
-            {sampleText.split('\n\n').map((paragraph, index) => (
+            {displayText.split('\n\n').map((paragraph, index) => (
               <p key={index} className="mb-6 first:mt-0">
                 {paragraph}
               </p>

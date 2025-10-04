@@ -37,6 +37,7 @@ const Index = () => {
               variant="outline" 
               size="lg"
               className="text-lg px-8"
+              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Learn More
             </Button>
@@ -45,10 +46,13 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-20">
+      <section id="features" className="container mx-auto px-4 py-20">
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {/* Feature 1 */}
-          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth">
+          <button 
+            onClick={() => navigate('/dashboard')}
+            className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth text-left w-full"
+          >
             <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
               <Flame className="w-full h-full text-foreground" />
             </div>
@@ -57,10 +61,13 @@ const Index = () => {
               Build consistency with daily Bible reading. Track your progress and maintain 
               your flame with engaging streak mechanics.
             </p>
-          </div>
+          </button>
 
           {/* Feature 2 */}
-          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth">
+          <button 
+            onClick={() => navigate('/dashboard')}
+            className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth text-left w-full"
+          >
             <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
               <Calendar className="w-full h-full text-foreground" />
             </div>
@@ -69,19 +76,22 @@ const Index = () => {
               Stay connected to Orthodox fasting periods with reminders for both Eastern 
               and Oriental traditions.
             </p>
-          </div>
+          </button>
 
           {/* Feature 3 */}
-          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth">
+          <button 
+            onClick={() => navigate('/church-resources')}
+            className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth text-left w-full"
+          >
             <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
-              <BookOpen className="w-full h-full text-foreground" />
+              <Book className="w-full h-full text-foreground" />
             </div>
-            <h3 className="text-2xl font-bold">Study Resources</h3>
+            <h3 className="text-2xl font-bold">Church Resources</h3>
             <p className="text-muted-foreground">
-              Access the Orthodox Study Bible, church etiquette lessons, and additional 
-              canonical readings.
+              Access church etiquette guides for both Eastern and Oriental Orthodox 
+              traditions, and learn proper conduct.
             </p>
-          </div>
+          </button>
         </div>
       </section>
 

@@ -52,7 +52,7 @@ const Dashboard = () => {
             title="Gospel of John"
             passage="John 3:1-21"
             progress={0}
-            onStartReading={() => navigate('/reading')}
+            onStartReading={() => navigate('/reading', { state: { title: "Gospel of John", passage: "John 3:1-21", progress: 0 } })}
           />
         </section>
 
@@ -66,13 +66,13 @@ const Dashboard = () => {
                 title="Monday - Psalms"
                 passage="Psalm 23"
                 completed={true}
-                onStartReading={() => navigate('/reading')}
+                onStartReading={() => navigate('/reading', { state: { title: "Psalms", passage: "Psalm 23", progress: 100 } })}
               />
               <DailyReadingCard
                 title="Tuesday - Proverbs"
                 passage="Proverbs 3:1-12"
                 completed={true}
-                onStartReading={() => navigate('/reading')}
+                onStartReading={() => navigate('/reading', { state: { title: "Proverbs", passage: "Proverbs 3:1-12", progress: 100 } })}
               />
             </div>
           </div>

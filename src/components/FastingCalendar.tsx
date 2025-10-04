@@ -1,6 +1,8 @@
-import { Calendar } from "lucide-react";
+import { useState } from "react";
+import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface FastingPeriod {
   name: string;
@@ -55,37 +57,67 @@ const upcomingFasts: FastingPeriod[] = [
 ];
 
 export const FastingCalendar = () => {
-  const getCurrentMonthFasts = () => {
-    const currentMonth = new Date().getMonth();
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-    
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const getMonthFasts = (month: number) => {
     return upcomingFasts.filter(fast => {
       const fastMonths = [fast.startDate, fast.endDate].map(date => {
-        const month = date.split(' ')[0];
-        return monthNames.indexOf(month);
+        const monthStr = date.split(' ')[0];
+        return monthNames.indexOf(monthStr);
       });
       
-      return fastMonths.some(month => month === currentMonth);
+      return fastMonths.some(m => m === month);
     });
   };
 
-  const currentMonthFasts = getCurrentMonthFasts();
-  const currentMonthName = new Date().toLocaleString('default', { month: 'long' });
+  const handlePreviousMonth = () => {
+    if (selectedMonth === 0) {
+      setSelectedMonth(11);
+      setSelectedYear(selectedYear - 1);
+    } else {
+      setSelectedMonth(selectedMonth - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (selectedMonth === 11) {
+      setSelectedMonth(0);
+      setSelectedYear(selectedYear + 1);
+    } else {
+      setSelectedMonth(selectedMonth + 1);
+    }
+  };
+
+  const monthFasts = getMonthFasts(selectedMonth);
+  const displayMonthName = monthNames[selectedMonth];
 
   return (
     <Card className="shadow-elevated border-border/50">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-primary" />
-          {currentMonthName} Fasts
+        <CardTitle className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-primary" />
+            {displayMonthName} {selectedYear} Fasts
+          </div>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" onClick={handlePreviousMonth}>
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleNextMonth}>
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {currentMonthFasts.length > 0 ? (
-          currentMonthFasts.map((fast, index) => (
+        {monthFasts.length > 0 ? (
+          monthFasts.map((fast, index) => (
           <div 
             key={index}
             className="p-3 rounded-lg bg-secondary/50 border border-border/50 space-y-2"
