@@ -15,7 +15,7 @@ const Index = () => {
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
-            Welcome to <span className="gradient-sacred bg-clip-text text-transparent">OrthoLingo</span>
+            Welcome to <span className="gradient-sacred bg-clip-text text-transparent">OrthoCross App</span>
           </h1>
           
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -108,7 +108,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm py-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2025 OrthoLingo. Building faith through daily practice.</p>
+          <p>© 2025 OrthoCross App. Building faith through daily practice.</p>
         </div>
       </footer>
     </div>
