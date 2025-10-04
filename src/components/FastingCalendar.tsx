@@ -17,10 +17,40 @@ const upcomingFasts: FastingPeriod[] = [
     tradition: "Eastern Orthodox"
   },
   {
+    name: "Nativity Fast",
+    startDate: "November 25",
+    endDate: "January 6",
+    tradition: "Oriental Orthodox"
+  },
+  {
+    name: "Great Lent",
+    startDate: "February 10",
+    endDate: "April 5",
+    tradition: "Oriental Orthodox"
+  },
+  {
+    name: "Nineveh Fast",
+    startDate: "February 3",
+    endDate: "February 5",
+    tradition: "Oriental Orthodox"
+  },
+  {
     name: "Apostles' Fast",
     startDate: "June 15",
     endDate: "June 28",
     tradition: "Eastern Orthodox"
+  },
+  {
+    name: "Apostles' Fast",
+    startDate: "June 16",
+    endDate: "July 11",
+    tradition: "Oriental Orthodox"
+  },
+  {
+    name: "Dormition Fast",
+    startDate: "August 7",
+    endDate: "August 21",
+    tradition: "Oriental Orthodox"
   }
 ];
 
