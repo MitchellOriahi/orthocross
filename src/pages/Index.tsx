@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Book, Flame, Calendar, BookOpen } from "lucide-react";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -10,8 +11,8 @@ const Index = () => {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center space-y-8">
         <div className="max-w-3xl mx-auto space-y-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 gradient-sacred rounded-2xl shadow-sacred mb-4">
-            <Book className="w-12 h-12 text-primary-foreground" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-background rounded-2xl shadow-sacred mb-4 p-2">
+            <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
@@ -48,8 +49,8 @@ const Index = () => {
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {/* Feature 1 */}
           <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth">
-            <div className="w-12 h-12 gradient-sacred rounded-lg flex items-center justify-center">
-              <Flame className="w-7 h-7 text-primary-foreground" />
+            <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
+              <Flame className="w-full h-full text-foreground" />
             </div>
             <h3 className="text-2xl font-bold">Reading Streaks</h3>
             <p className="text-muted-foreground">
@@ -60,8 +61,8 @@ const Index = () => {
 
           {/* Feature 2 */}
           <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth">
-            <div className="w-12 h-12 gradient-sacred rounded-lg flex items-center justify-center">
-              <Calendar className="w-7 h-7 text-primary-foreground" />
+            <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
+              <Calendar className="w-full h-full text-foreground" />
             </div>
             <h3 className="text-2xl font-bold">Fasting Calendar</h3>
             <p className="text-muted-foreground">
@@ -72,8 +73,8 @@ const Index = () => {
 
           {/* Feature 3 */}
           <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth">
-            <div className="w-12 h-12 gradient-sacred rounded-lg flex items-center justify-center">
-              <BookOpen className="w-7 h-7 text-primary-foreground" />
+            <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
+              <BookOpen className="w-full h-full text-foreground" />
             </div>
             <h3 className="text-2xl font-bold">Study Resources</h3>
             <p className="text-muted-foreground">

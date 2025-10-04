@@ -5,6 +5,7 @@ import { DailyReadingCard } from "@/components/DailyReadingCard";
 import { FastingCalendar } from "@/components/FastingCalendar";
 import { Book, Home, User, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 gradient-sacred rounded-lg flex items-center justify-center">
-                <Book className="w-6 h-6 text-primary-foreground" />
+              <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center p-1">
+                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-2xl font-bold">OrthoCross App</h1>
             </div>
