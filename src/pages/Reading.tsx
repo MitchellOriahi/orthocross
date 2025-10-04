@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Bookmark, Type, Sun, Moon } from "lucide-react";
+import { ArrowLeft, Bookmark, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Reading = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [progress, setProgress] = useState(0);
   const [fontSize, setFontSize] = useState([16]);
   const [currentReading, setCurrentReading] = useState({
@@ -51,15 +56,9 @@ He was in the world, and the world was made through Him, and the world did not k
 And the Word became flesh and dwelt among us, and we beheld His glory, the glory as of the only begotten of the Father, full of grace and truth.`
   };
 
-  // Load saved reading on mount
+  // Load reading from location state or database
   useEffect(() => {
-    const savedReading = localStorage.getItem('currentReading');
-    if (savedReading) {
-      const parsed = JSON.parse(savedReading);
-      setCurrentReading(parsed);
-      setProgress(parsed.progress || 0);
-    } else if (location.state?.title && location.state?.passage) {
-      // If coming from a card click, use that reading
+    if (location.state?.title && location.state?.passage) {
       setCurrentReading({
         title: location.state.title,
         passage: location.state.passage
@@ -68,14 +67,43 @@ And the Word became flesh and dwelt among us, and we beheld His glory, the glory
     }
   }, [location.state]);
 
-  // Save reading progress whenever it changes
-  useEffect(() => {
-    const readingData = {
-      ...currentReading,
-      progress
-    };
-    localStorage.setItem('currentReading', JSON.stringify(readingData));
-  }, [progress, currentReading]);
+  // Save progress to database
+  const saveProgress = async (newProgress: number) => {
+    if (!user) return;
+
+    try {
+      const { data: existing } = await supabase
+        .from('reading_progress')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('scripture_title', currentReading.title)
+        .eq('scripture_passage', currentReading.passage)
+        .maybeSingle();
+
+      if (existing) {
+        await supabase
+          .from('reading_progress')
+          .update({
+            progress: newProgress,
+            completed: newProgress >= 100,
+            last_read_at: new Date().toISOString()
+          })
+          .eq('id', existing.id);
+      } else {
+        await supabase
+          .from('reading_progress')
+          .insert({
+            user_id: user.id,
+            scripture_title: currentReading.title,
+            scripture_passage: currentReading.passage,
+            progress: newProgress,
+            completed: newProgress >= 100
+          });
+      }
+    } catch (error) {
+      console.error('Error saving progress:', error);
+    }
+  };
 
   const displayText = readingContent[currentReading.passage] || readingContent["John 1:1-14"];
 
@@ -147,9 +175,18 @@ And the Word became flesh and dwelt among us, and we beheld His glory, the glory
             variant="sacred" 
             size="lg" 
             className="w-full"
-            onClick={() => {
-              setProgress(Math.min(100, progress + 15));
-              if (progress >= 85) navigate('/dashboard');
+            onClick={async () => {
+              const newProgress = Math.min(100, progress + 15);
+              setProgress(newProgress);
+              await saveProgress(newProgress);
+              
+              if (newProgress >= 100) {
+                toast({
+                  title: "Reading Complete!",
+                  description: "Great job finishing this scripture reading.",
+                });
+                navigate('/index');
+              }
             }}
           >
             {progress >= 85 ? 'Complete Reading' : 'Continue'}

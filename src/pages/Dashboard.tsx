@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { StreakFlame } from "@/components/StreakFlame";
 import { DailyReadingCard } from "@/components/DailyReadingCard";
 import { FastingCalendar } from "@/components/FastingCalendar";
-import { Book, Home, User, BookOpen, Settings as SettingsIcon } from "lucide-react";
+import { Book, Home, BookOpen, Settings as SettingsIcon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [streakDays] = useState(7);
   
   return (
@@ -24,14 +26,14 @@ const Dashboard = () => {
               <h1 className="text-2xl font-bold">OrthoCross App</h1>
             </div>
             <nav className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+              <Button variant="ghost" size="icon" onClick={() => navigate('/home')}>
                 <Home className="w-5 h-5" />
               </Button>
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon">
-                <User className="w-5 h-5" />
+              <Button variant="ghost" size="icon" onClick={() => signOut()}>
+                <LogOut className="w-5 h-5" />
               </Button>
             </nav>
           </div>
@@ -83,7 +85,7 @@ const Dashboard = () => {
 
         {/* Quick Actions */}
         <section className="flex flex-wrap gap-4 justify-center py-8">
-          <Button variant="outline" size="lg" onClick={() => navigate('/reading')}>
+          <Button variant="outline" size="lg" onClick={() => navigate('/index')}>
             <BookOpen className="w-5 h-5" />
             Browse Scripture
           </Button>

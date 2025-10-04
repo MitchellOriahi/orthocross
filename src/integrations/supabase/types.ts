@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      reading_progress: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          id: string
+          last_read_at: string | null
+          progress: number | null
+          scripture_passage: string
+          scripture_title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          last_read_at?: string | null
+          progress?: number | null
+          scripture_passage: string
+          scripture_title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          last_read_at?: string | null
+          progress?: number | null
+          scripture_passage?: string
+          scripture_title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
