@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { StreakFlame } from "@/components/StreakFlame";
 import { DailyReadingCard } from "@/components/DailyReadingCard";
 import { FastingCalendar } from "@/components/FastingCalendar";
-import { Book, Home, User, BookOpen } from "lucide-react";
+import { Book, Home, User, BookOpen, Settings as SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
@@ -26,6 +26,9 @@ const Dashboard = () => {
             <nav className="flex items-center gap-2">
               <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
                 <Home className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+                <SettingsIcon className="w-5 h-5" />
               </Button>
               <Button variant="ghost" size="icon">
                 <User className="w-5 h-5" />
