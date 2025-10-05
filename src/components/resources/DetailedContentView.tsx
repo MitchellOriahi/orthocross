@@ -91,19 +91,23 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
 
       <main className="container mx-auto px-4 py-8 max-w-4xl pb-20">
         <div className="mb-8">
-          <div className="flex flex-col md:flex-row gap-6 items-start">
+          <div className="flex flex-col md:flex-row gap-6 items-center justify-center md:justify-start">
             {iconUrl && (
               <div className="flex-shrink-0">
                 <div className="w-32 h-32 md:w-40 md:h-40 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
-                  <img src={iconUrl} alt={title} className="w-full h-full object-cover" />
+                  <img 
+                    src={`${iconUrl}?v=${Date.now()}`} 
+                    alt={title} 
+                    className="w-full h-full object-cover" 
+                  />
                 </div>
               </div>
             )}
             <div className="flex-1 text-center md:text-left">
-              <h1 className="text-4xl font-bold mb-2 text-foreground">
+              <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground break-words">
                 {title}
               </h1>
-              <p className="text-xl text-muted-foreground">{subtitle}</p>
+              <p className="text-lg sm:text-xl text-muted-foreground break-words">{subtitle}</p>
             </div>
           </div>
         </div>
