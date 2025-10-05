@@ -17,12 +17,12 @@ interface ReadingProgress {
 }
 
 const AVAILABLE_SCRIPTURES = [
-  { title: "Gospel of John", passage: "John 1-21", totalChapters: 21 },
-  { title: "Psalms", passage: "Psalm 1-150", totalChapters: 150 },
-  { title: "Proverbs", passage: "Proverbs 1-31", totalChapters: 31 },
-  { title: "Matthew", passage: "Matthew 1-28", totalChapters: 28 },
-  { title: "Romans", passage: "Romans 1-16", totalChapters: 16 },
-  { title: "James", passage: "James 1-5", totalChapters: 5 },
+  { title: "John", bookName: "Gospel of John", totalChapters: 21 },
+  { title: "Psalms", bookName: "Psalms", totalChapters: 150 },
+  { title: "Proverbs", bookName: "Proverbs", totalChapters: 31 },
+  { title: "Matthew", bookName: "Gospel of Matthew", totalChapters: 28 },
+  { title: "Romans", bookName: "Romans", totalChapters: 16 },
+  { title: "James", bookName: "James", totalChapters: 5 },
 ];
 
 const Index = () => {
@@ -57,12 +57,13 @@ const Index = () => {
     return progressData.find(p => p.scripture_title === title);
   };
 
-  const startReading = (scripture: typeof AVAILABLE_SCRIPTURES[0]) => {
+  const startReading = (scripture: typeof AVAILABLE_SCRIPTURES[0], chapter: number = 1) => {
     navigate('/reading', {
       state: {
-        title: scripture.title,
-        passage: scripture.passage,
-        progress: getScriptureProgress(scripture.title)?.progress || 0,
+        book: scripture.title,
+        bookName: scripture.bookName,
+        chapter: chapter,
+        totalChapters: scripture.totalChapters,
       }
     });
   };
@@ -101,51 +102,26 @@ const Index = () => {
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
               {AVAILABLE_SCRIPTURES.map((scripture) => {
-                const progress = getScriptureProgress(scripture.title);
-                const progressPercentage = progress 
-                  ? (progress.progress / scripture.totalChapters) * 100 
-                  : 0;
-
                 return (
                   <Card key={scripture.title} className="hover:shadow-sacred transition-smooth">
                     <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mt-1">
-                            <BookOpen className="w-5 h-5 text-primary" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-xl">{scripture.title}</CardTitle>
-                            <CardDescription>{scripture.passage}</CardDescription>
-                          </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mt-1">
+                          <BookOpen className="w-5 h-5 text-primary" />
                         </div>
-                        {progress?.completed && (
-                          <CheckCircle2 className="w-6 h-6 text-green-500" />
-                        )}
+                        <div>
+                          <CardTitle className="text-xl">{scripture.bookName}</CardTitle>
+                          <CardDescription>{scripture.totalChapters} Chapters</CardDescription>
+                        </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      {progress && (
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Progress</span>
-                            <span className="font-medium">
-                              {progress.progress} / {scripture.totalChapters} chapters
-                            </span>
-                          </div>
-                          <Progress value={progressPercentage} />
-                        </div>
-                      )}
+                    <CardContent>
                       <Button 
-                        onClick={() => startReading(scripture)}
+                        onClick={() => startReading(scripture, 1)}
                         className="w-full"
-                        variant={progress ? "outline" : "sacred"}
+                        variant="sacred"
                       >
-                        {progress?.completed 
-                          ? "Read Again" 
-                          : progress 
-                            ? "Continue Reading" 
-                            : "Start Reading"}
+                        Start Reading
                       </Button>
                     </CardContent>
                   </Card>

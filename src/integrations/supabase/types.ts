@@ -80,6 +80,36 @@ export type Database = {
         }
         Relationships: []
       }
+      verse_highlights: {
+        Row: {
+          chapter: number
+          created_at: string
+          highlight_color: string | null
+          id: string
+          scripture_title: string
+          user_id: string
+          verse_number: number
+        }
+        Insert: {
+          chapter: number
+          created_at?: string
+          highlight_color?: string | null
+          id?: string
+          scripture_title: string
+          user_id: string
+          verse_number: number
+        }
+        Update: {
+          chapter?: number
+          created_at?: string
+          highlight_color?: string | null
+          id?: string
+          scripture_title?: string
+          user_id?: string
+          verse_number?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
