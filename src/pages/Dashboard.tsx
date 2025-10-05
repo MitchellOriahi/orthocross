@@ -213,11 +213,6 @@ const Dashboard = () => {
           {/* Journal */}
           <Journal />
         </div>
-
-        {/* Fasting Calendar */}
-        <div className="max-h-[400px] overflow-auto">
-          <FastingCalendar />
-        </div>
       </main>
 
       <BottomNavigation />
