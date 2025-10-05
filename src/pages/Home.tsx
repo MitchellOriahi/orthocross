@@ -76,8 +76,8 @@ const Home = () => {
                   onClick={() => navigate('/dashboard')}
                   className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth text-left w-full h-full"
                 >
-                  <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
-                    <Flame className="w-full h-full text-foreground" />
+                  <div className="w-12 h-12 bg-foreground dark:bg-background rounded-lg flex items-center justify-center p-1.5">
+                    <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                   </div>
                   <h3 className="text-2xl font-bold">Reading Streaks</h3>
                   <p className="text-muted-foreground">
@@ -93,8 +93,8 @@ const Home = () => {
                   onClick={() => navigate('/dashboard')}
                   className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth text-left w-full h-full"
                 >
-                  <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
-                    <Calendar className="w-full h-full text-foreground" />
+                  <div className="w-12 h-12 bg-foreground dark:bg-background rounded-lg flex items-center justify-center p-1.5">
+                    <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                   </div>
                   <h3 className="text-2xl font-bold">Fasting Calendar</h3>
                   <p className="text-muted-foreground">
@@ -127,8 +127,8 @@ const Home = () => {
                   onClick={() => navigate('/orthodox-history')}
                   className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth text-left w-full h-full"
                 >
-                  <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
-                    <Scroll className="w-full h-full text-foreground" />
+                  <div className="w-12 h-12 bg-foreground dark:bg-background rounded-lg flex items-center justify-center p-1.5">
+                    <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                   </div>
                   <h3 className="text-2xl font-bold">Orthodox History</h3>
                   <p className="text-muted-foreground">
