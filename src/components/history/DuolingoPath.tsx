@@ -186,8 +186,22 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                   : 'bg-card border-4 border-primary/30'
               }`}>
                 {status.isCompleted ? (
-                  <Flame className="w-8 h-8 text-black dark:text-white fill-black dark:fill-white" strokeWidth={2} />
-                ) : (
+                  <Flame 
+                    className="w-8 h-8 dark:hidden" 
+                    style={{ color: '#ff6b35' }}
+                    fill="#ff6b35"
+                    strokeWidth={2} 
+                  />
+                ) : null}
+                {status.isCompleted ? (
+                  <Flame 
+                    className="w-8 h-8 hidden dark:block" 
+                    style={{ color: '#3b82f6' }}
+                    fill="#3b82f6"
+                    strokeWidth={2} 
+                  />
+                ) : null}
+                {!status.isCompleted && (
                   <Circle className="w-8 h-8 text-muted-foreground" strokeWidth={3} />
                 )}
                 </div>
