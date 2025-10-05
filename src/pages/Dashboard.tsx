@@ -147,7 +147,7 @@ const Dashboard = () => {
   }, [user]);
   
   return (
-    <div className="min-h-screen gradient-peaceful pb-20">
+    <div className="min-h-screen gradient-peaceful pb-20 overflow-x-hidden">
       {/* Header */}
       <header className="bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
