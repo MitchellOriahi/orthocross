@@ -367,7 +367,7 @@ export const FastingCalendar = () => {
             })
           ) : (
             <p className="text-sm text-muted-foreground text-center py-4">
-              No fasts or feasts this month
+              No major fasts or feasts this month
             </p>
           )}
           

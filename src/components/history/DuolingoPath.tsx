@@ -1,4 +1,4 @@
-import { Shield, CheckCircle2, Circle } from "lucide-react";
+import { Shield, Flame, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -186,7 +186,7 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                     : 'bg-card border-4 border-primary/30'
                 }`}>
                   {status.isCompleted ? (
-                    <CheckCircle2 className="w-8 h-8 text-primary-foreground" strokeWidth={3} />
+                    <Flame className="w-8 h-8 text-black dark:text-white fill-black dark:fill-white" strokeWidth={2} />
                   ) : (
                     <Circle className="w-8 h-8 text-muted-foreground" strokeWidth={3} />
                   )}

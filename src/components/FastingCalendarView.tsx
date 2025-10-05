@@ -105,7 +105,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
               : hasFast 
                 ? "bg-red-200 dark:bg-red-900/50"
                 : isWeeklyFast 
-                  ? "bg-red-50 dark:bg-red-950/20" 
+                  ? "bg-purple-100 dark:bg-purple-950/30" 
                   : "bg-background"
           }`}
         >
@@ -148,7 +148,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
             <span>{traditionIcon} Major Fast</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30" />
+            <div className="w-4 h-4 bg-purple-100 dark:bg-purple-950/30 border border-purple-300 dark:border-purple-800/40" />
             <span>Wed/Fri Fast</span>
           </div>
           <div className="flex items-center gap-1">

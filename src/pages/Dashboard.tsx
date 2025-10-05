@@ -18,6 +18,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
   const [streakDays, setStreakDays] = useState(0);
+  const [hasAnyProgress, setHasAnyProgress] = useState(false);
   const [lastReading, setLastReading] = useState<{
     title: string;
     passage: string;
@@ -48,6 +49,15 @@ const Dashboard = () => {
 
     const fetchLastReading = async () => {
       if (!user) return;
+
+      // Check if user has any completed chapters
+      const { data: anyCompleted, count } = await supabase
+        .from('completed_chapters')
+        .select('*', { count: 'exact', head: false })
+        .eq('user_id', user.id)
+        .limit(1);
+      
+      setHasAnyProgress((count ?? 0) > 0);
 
       // Get the most recent completed chapter
       const { data: lastCompleted } = await supabase
@@ -100,6 +110,15 @@ const Dashboard = () => {
     const handleVisibilityChange = () => {
       if (!document.hidden && user) {
         const fetchLastReading = async () => {
+          // Check if user has any completed chapters
+          const { data: anyCompleted, count } = await supabase
+            .from('completed_chapters')
+            .select('*', { count: 'exact', head: false })
+            .eq('user_id', user.id)
+            .limit(1);
+          
+          setHasAnyProgress((count ?? 0) > 0);
+
           const { data: lastCompleted } = await supabase
             .from('completed_chapters')
             .select('*')
@@ -188,7 +207,7 @@ const Dashboard = () => {
           <DailyReadingCard
             title={lastReading.title}
             passage={lastReading.passage}
-            progress={lastReading.progress}
+            progress={hasAnyProgress ? lastReading.progress || 1 : 0}
             onStartReading={() => {
               if (lastReading.bookKey && lastReading.chapter) {
                 navigate('/reading', {
