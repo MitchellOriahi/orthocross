@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Church, Building2, BookOpen, UserRound } from "lucide-react";
+import { ArrowLeft, Church, Landmark, BookOpen, UserRound } from "lucide-react";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import {
   Accordion,
@@ -179,7 +179,7 @@ const ChurchResources = () => {
               <Card className="shadow-elevated border-border/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-primary" />
+                    <Landmark className="w-5 h-5 text-primary" />
                     Oriental Orthodox Church Etiquette
                   </CardTitle>
                 </CardHeader>
@@ -377,7 +377,7 @@ const ChurchResources = () => {
             >
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <Building2 className="w-16 h-16 text-primary" />
+                  <Landmark className="w-16 h-16 text-primary" />
                   <div>
                     <div className="text-3xl">Oriental Orthodox</div>
                     <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
