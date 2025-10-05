@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { StreakFlame } from "@/components/StreakFlame";
 import { DailyReadingCard } from "@/components/DailyReadingCard";
 import { FastingCalendar } from "@/components/FastingCalendar";
-import { DoveMascot } from "@/components/DoveMascot";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDay } from "@/components/VerseOfTheDay";
@@ -11,6 +10,7 @@ import { Book, Home, BookOpen, Settings as SettingsIcon, LogOut, Scroll } from "
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import orthodoxCrossLogo from "@/assets/orthodox-cross-logo.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <DoveMascot size="sm" />
+              <img src={orthodoxCrossLogo} alt="Orthodox Cross" className="w-10 h-10 object-contain" />
               <h1 className="text-2xl font-bold gradient-sacred bg-clip-text text-transparent">
                 Orthodox Companion
               </h1>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,9 +10,36 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { DetailedContentView } from "@/components/resources/DetailedContentView";
+import { saintsContent, SaintDetail } from "@/data/saintsContent";
+import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 
 const ChurchResources = () => {
   const navigate = useNavigate();
+  const [selectedSaint, setSelectedSaint] = useState<SaintDetail | null>(null);
+  const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
+
+  if (selectedSaint) {
+    return (
+      <DetailedContentView
+        title={selectedSaint.name}
+        subtitle={selectedSaint.title}
+        content={selectedSaint.content}
+        onClose={() => setSelectedSaint(null)}
+      />
+    );
+  }
+
+  if (selectedPrayer) {
+    return (
+      <DetailedContentView
+        title={selectedPrayer.name}
+        subtitle={selectedPrayer.title}
+        content={selectedPrayer.content}
+        onClose={() => setSelectedPrayer(null)}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen gradient-peaceful">
@@ -240,91 +268,18 @@ const ChurchResources = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="lords-prayer">
-                    <AccordionTrigger>The Lord's Prayer</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground whitespace-pre-line">
-                        Our Father, who art in heaven,
-                        hallowed be thy Name.
-                        Thy Kingdom come,
-                        thy will be done,
-                        on earth as it is in heaven.
-                        Give us this day our daily bread.
-                        And forgive us our trespasses,
-                        as we forgive those who trespass against us.
-                        And lead us not into temptation,
-                        but deliver us from evil.
-                        For thine is the kingdom, and the power, and the glory,
-                        forever and ever. Amen.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="nicene-creed">
-                    <AccordionTrigger>The Nicene Creed</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground whitespace-pre-line">
-                        I believe in one God, the Father Almighty, Maker of heaven and earth, and of all things visible and invisible.
-
-                        And in one Lord Jesus Christ, the only-begotten Son of God, begotten of the Father before all ages; Light of Light, true God of true God, begotten, not made, of one essence with the Father, by whom all things were made.
-
-                        Who for us men and for our salvation came down from heaven and was incarnate of the Holy Spirit and the Virgin Mary and became man.
-
-                        He was crucified for us under Pontius Pilate, and suffered and was buried; And He rose on the third day, according to the Scriptures.
-
-                        He ascended into heaven and is seated at the right hand of the Father; And He will come again with glory to judge the living and dead. His kingdom shall have no end.
-
-                        And in the Holy Spirit, the Lord, the Creator of life, who proceeds from the Father, who together with the Father and the Son is worshipped and glorified, who spoke through the prophets.
-
-                        In one, holy, catholic, and apostolic Church.
-
-                        I confess one baptism for the forgiveness of sins.
-
-                        I look for the resurrection of the dead, and the life of the age to come. Amen.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="jesus-prayer">
-                    <AccordionTrigger>The Jesus Prayer</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground">
-                        Lord Jesus Christ, Son of God, have mercy on me, a sinner.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="trisagion">
-                    <AccordionTrigger>Trisagion Prayer</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground whitespace-pre-line">
-                        Holy God, Holy Mighty, Holy Immortal, have mercy on us. (3x)
-
-                        Glory to the Father, and to the Son, and to the Holy Spirit,
-                        now and ever and unto ages of ages. Amen.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="morning-prayer">
-                    <AccordionTrigger>Morning Prayer</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground whitespace-pre-line">
-                        Having risen from sleep, I thank You, O Holy Trinity, for through Your great goodness and patience You were not angered with me, an idler and sinner, nor have You destroyed me in my sins, but have shown Your usual love for mankind. And when I was prostrate in despair, You raised me to keep the morning watch and glorify Your power. And now enlighten my mind's eyes and open my mouth to study Your words and understand Your commandments, and to do Your will, and sing to You in heartfelt adoration, and praise Your most holy Name, of the Father and of the Son and of the Holy Spirit, now and ever and unto ages of ages. Amen.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="evening-prayer">
-                    <AccordionTrigger>Evening Prayer</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground whitespace-pre-line">
-                        O Lord our God, as You are good and love mankind, forgive me wherein I have sinned today in word, deed, and thought. Grant me peaceful and undisturbed sleep. Send Your Guardian Angel to protect and guard me from every evil. For You are the guardian of our souls and bodies, and to You we give glory: to the Father and to the Son and to the Holy Spirit, now and ever and unto ages of ages. Amen.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                <div className="space-y-2">
+                  {prayersContent.map((prayer) => (
+                    <button
+                      key={prayer.id}
+                      onClick={() => setSelectedPrayer(prayer)}
+                      className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all"
+                    >
+                      <div className="font-semibold text-base">{prayer.name}</div>
+                      <div className="text-sm text-muted-foreground mt-1">{prayer.title}</div>
+                    </button>
+                  ))}
+                </div>
               </CardContent>
             </Card>
 

@@ -121,29 +121,53 @@ const Index = () => {
               {lastRead && lastReadScripture && (
                 <Card className="border-2 border-primary/20 shadow-lg">
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">Continue Reading</p>
-                        <h3 className="text-2xl font-bold">
-                          {lastReadScripture.bookName} {lastRead.current_chapter}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Last read: {new Date(lastRead.last_read_at || '').toLocaleDateString()}
-                        </p>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Continue Reading</p>
+                          <h3 className="text-2xl font-bold">
+                            {lastReadScripture.bookName}
+                          </h3>
+                          <p className="text-lg text-muted-foreground mt-1">
+                            Chapter {lastRead.current_chapter} of {lastReadScripture.totalChapters}
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Last read: {new Date(lastRead.last_read_at || '').toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                          <BookOpen className="w-8 h-8 text-primary" />
+                        </div>
                       </div>
-                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                        <BookOpen className="w-8 h-8 text-primary" />
+                      
+                      {/* Book Progress Bar */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">Book Progress</span>
+                          <span className="font-medium">
+                            {Math.round((lastRead.current_chapter / lastReadScripture.totalChapters) * 100)}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary rounded-full h-2 transition-all"
+                            style={{
+                              width: `${(lastRead.current_chapter / lastReadScripture.totalChapters) * 100}%`
+                            }}
+                          />
+                        </div>
                       </div>
+
+                      <Button 
+                        onClick={continueReading}
+                        className="w-full gap-2"
+                        size="lg"
+                        variant="sacred"
+                      >
+                        <Play className="w-4 h-4" />
+                        Continue Reading
+                      </Button>
                     </div>
-                    <Button 
-                      onClick={continueReading}
-                      className="w-full gap-2"
-                      size="lg"
-                      variant="sacred"
-                    >
-                      <Play className="w-4 h-4" />
-                      Continue Reading
-                    </Button>
                   </CardContent>
                 </Card>
               )}

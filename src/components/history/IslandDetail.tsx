@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { historyContent } from "@/data/historyContent";
 import { useToast } from "@/hooks/use-toast";
+import { PaginatedReading } from "./PaginatedReading";
 
 interface Quiz {
   question: string;
@@ -137,14 +138,10 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
         <h1 className="text-3xl font-bold mb-6">{island.title}</h1>
 
         {stage === 'reading' && (
-          <Card className="p-8">
-            <div className="prose dark:prose-invert max-w-none mb-8">
-              <p className="text-lg leading-relaxed">{island.reading}</p>
-            </div>
-            <Button onClick={handleStartQuiz} size="lg" className="w-full">
-              Start Quiz
-            </Button>
-          </Card>
+          <PaginatedReading
+            content={island.reading}
+            onComplete={handleStartQuiz}
+          />
         )}
 
         {stage === 'quiz' && (
