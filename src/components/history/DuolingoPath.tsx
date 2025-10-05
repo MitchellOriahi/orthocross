@@ -1,6 +1,8 @@
 import { Shield, CheckCircle2, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MiniIslandNode } from "./MiniIslandNode";
+import { Segment, MiniIsland } from "@/data/historyContent";
 
 interface Island {
   id: string;
@@ -12,6 +14,7 @@ interface Campaign {
   id: string;
   displayName: string;
   islands: Island[];
+  segments?: Segment[];
   theme: string;
   fullSetTitle: string;
 }
@@ -25,9 +28,10 @@ interface DuolingoPathProps {
   campaign: Campaign;
   progress: UserProgress[];
   onIslandSelect: (islandId: string) => void;
+  onMiniIslandSelect?: (segmentId: string, miniIslandId: string) => void;
 }
 
-export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPathProps) => {
+export const DuolingoPath = ({ campaign, progress, onIslandSelect, onMiniIslandSelect }: DuolingoPathProps) => {
   const getIslandStatus = (index: number, island: Island) => {
     const isCompleted = progress.find(p => p.islandId === island.id)?.completed || false;
     const previousCompleted = index === 0 || progress.find(p => p.islandId === campaign.islands[index - 1].id)?.completed || false;
@@ -52,56 +56,94 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
     ? 'from-amber-500/20 to-yellow-600/20' 
     : 'from-red-500/20 to-orange-600/20';
 
+  // Calculate positions for S-curve
+  const calculateNodePosition = (index: number, totalNodes: number, segment: Segment) => {
+    const { nodeSpacingPx, zigzagOffsetPx } = segment.visual;
+    const y = index * nodeSpacingPx;
+    const offsetX = index % 2 === 0 ? -zigzagOffsetPx : zigzagOffsetPx;
+    return { y, offsetX };
+  };
+
+  // Build the complete path including mini-islands and big islands
+  const pathItems: Array<{ type: "segment" | "island"; data: any; index: number }> = [];
+  
+  if (campaign.segments && campaign.segments.length > 0) {
+    campaign.segments.forEach((segment, segIdx) => {
+      pathItems.push({ type: "segment", data: segment, index: segIdx });
+    });
+  }
+  
+  campaign.islands.forEach((island, islandIdx) => {
+    pathItems.push({ type: "island", data: island, index: islandIdx });
+  });
+
   return (
     <div className="relative py-8">
-      {/* SVG Trail connecting all islands */}
-      <svg 
-        className="absolute top-0 left-0 w-full pointer-events-none"
-        style={{ zIndex: 0, height: `${campaign.islands.length * 300}px` }}
-        preserveAspectRatio="none"
-      >
-        {campaign.islands.map((island, index) => {
-          if (index === campaign.islands.length - 1) return null;
-          
-          // Check if next island is completed to make path solid
-          const nextIsland = campaign.islands[index + 1];
-          const isNextCompleted = progress.find(p => p.islandId === nextIsland.id)?.completed || false;
-          
-          // Calculate vertical positions (center of each island)
-          const startY = index * 300 + 140;
-          const endY = (index + 1) * 300 + 140;
-          const midY = (startY + endY) / 2;
-          
-          // Center position (50%)
-          const centerX = '50%';
-          
-          // Create smooth curved path connecting through center
-          const path = `M ${centerX} ${startY} 
-                       C ${centerX} ${startY + 80},
-                         ${centerX} ${endY - 80},
-                         ${centerX} ${endY}`;
-          
-          return (
-            <path
-              key={index}
-              d={path}
-              stroke="hsl(var(--primary))"
-              strokeWidth="6"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeDasharray={isNextCompleted ? "0" : "15 10"}
-              opacity={isNextCompleted ? "0.9" : "0.5"}
-              className="transition-all duration-700"
-            />
-          );
-        })}
-      </svg>
-
       <div className="relative space-y-8" style={{ zIndex: 1 }}>
-        {campaign.islands.map((island, index) => {
-          const status = getIslandStatus(index, island);
-          const isLeftSide = index % 2 === 0;
+        {pathItems.map((item, itemIdx) => {
+          if (item.type === "segment") {
+            const segment = item.data as Segment;
+            const totalHeight = segment.miniIslands.length * segment.visual.nodeSpacingPx;
+
+            return (
+              <div key={segment.segmentId} className="relative" style={{ minHeight: `${totalHeight}px` }}>
+                {/* S-curve path SVG */}
+                <svg
+                  className="absolute top-0 left-0 w-full pointer-events-none"
+                  style={{ height: `${totalHeight}px`, zIndex: 0 }}
+                >
+                  {segment.miniIslands.map((_, idx) => {
+                    if (idx === segment.miniIslands.length - 1) return null;
+                    
+                    const current = calculateNodePosition(idx, segment.miniIslands.length, segment);
+                    const next = calculateNodePosition(idx + 1, segment.miniIslands.length, segment);
+                    
+                    const path = `M ${50 + (current.offsetX / 10)}% ${current.y + 28}
+                                 C ${50 + (current.offsetX / 10)}% ${current.y + 80},
+                                   ${50 + (next.offsetX / 10)}% ${next.y - 52},
+                                   ${50 + (next.offsetX / 10)}% ${next.y + 28}`;
+                    
+                    return (
+                      <path
+                        key={idx}
+                        d={path}
+                        stroke="hsl(var(--primary))"
+                        strokeWidth="4"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeDasharray="12 8"
+                        opacity="0.6"
+                      />
+                    );
+                  })}
+                </svg>
+
+                {/* Mini-island nodes */}
+                {segment.miniIslands.map((miniIsland, idx) => {
+                  const { y, offsetX } = calculateNodePosition(idx, segment.miniIslands.length, segment);
+                  const isFirstUnlocked = idx === 0;
+                  const prevCompleted = idx === 0 || progress.find(p => p.islandId === segment.miniIslands[idx - 1].id)?.completed;
+                  const isUnlocked = isFirstUnlocked || prevCompleted;
+
+                  return (
+                    <div key={miniIsland.id} className="absolute w-full" style={{ top: `${y}px` }}>
+                      <MiniIslandNode
+                        miniIsland={miniIsland}
+                        offsetX={offsetX}
+                        onClick={() => onMiniIslandSelect?.(segment.segmentId, miniIsland.id)}
+                        isUnlocked={isUnlocked || false}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }
+
+          // Big Island
+          const island = item.data as Island;
+          const status = getIslandStatus(item.index, island);
+          const isLeftSide = item.index % 2 === 0;
           
           return (
             <div 
@@ -120,10 +162,10 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                   <div className={`absolute inset-0 bg-gradient-to-br ${themeColors} opacity-30`} />
                   
                   <div className="relative z-10 p-6">
-                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="text-sm font-semibold text-muted-foreground mb-2">
-                          {extractTimeframe(island.title) || `Island ${index + 1}`}
+                          {extractTimeframe(island.title) || `Island ${item.index + 1}`}
                         </div>
                         <h3 className="text-lg font-bold mb-3 line-clamp-2">{removeTimeframe(island.title)}</h3>
                       </div>

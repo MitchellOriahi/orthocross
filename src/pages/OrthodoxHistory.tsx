@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { historyContent } from "@/data/historyContent";
 import { IslandDetail } from "@/components/history/IslandDetail";
+import { MiniIslandDetail } from "@/components/history/MiniIslandDetail";
 import { AvatarCustomizer } from "@/components/history/AvatarCustomizer";
 import { DuolingoPath } from "@/components/history/DuolingoPath";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,6 +28,7 @@ const OrthodoxHistory = () => {
   const { signOut, user } = useAuth();
   const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
+  const [selectedMiniIsland, setSelectedMiniIsland] = useState<{ segmentId: string; miniIslandId: string } | null>(null);
   const [progress, setProgress] = useState<UserProgress[]>([]);
 
   // Scroll to top when component mounts
@@ -73,9 +75,30 @@ const OrthodoxHistory = () => {
     setSelectedIsland(null);
   };
 
+  const handleMiniIslandComplete = async (xpEarned: number) => {
+    // TODO: Update mini-island progress in database
+    setSelectedMiniIsland(null);
+    await loadProgress();
+  };
+
   const campaign = historyContent.campaigns.find(c => c.id === selectedCampaign);
   const completedIslands = progress.filter(p => p.campaignId === selectedCampaign && p.completed).length;
   const progressPercent = campaign ? (completedIslands / campaign.islands.length) * 100 : 0;
+
+  // Show mini-island detail if selected
+  if (selectedMiniIsland && campaign?.segments) {
+    const segment = campaign.segments.find(s => s.segmentId === selectedMiniIsland.segmentId);
+    const miniIsland = segment?.miniIslands.find(m => m.id === selectedMiniIsland.miniIslandId);
+    if (miniIsland) {
+      return (
+        <MiniIslandDetail
+          miniIsland={miniIsland}
+          onComplete={handleMiniIslandComplete}
+          onBack={() => setSelectedMiniIsland(null)}
+        />
+      );
+    }
+  }
 
   if (selectedIsland && campaign) {
     const island = campaign.islands.find(i => i.id === selectedIsland.islandId);
@@ -147,6 +170,7 @@ const OrthodoxHistory = () => {
                 campaign={campaignItem}
                 progress={progress.filter(p => p.campaignId === campaignItem.id)}
                 onIslandSelect={(islandId) => setSelectedIsland({ campaignId: campaignItem.id, islandId })}
+                onMiniIslandSelect={(segmentId, miniIslandId) => setSelectedMiniIsland({ segmentId, miniIslandId })}
               />
             </TabsContent>
           ))}
