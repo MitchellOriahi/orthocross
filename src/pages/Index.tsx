@@ -103,7 +103,8 @@ const Index = () => {
 
       // Overall Bible completion = (total completed chapters / total Bible chapters)
       // This directly corresponds to the sum of all individual book progress
-      const completion = Math.round((totalCompletedChapters / totalBibleChapters) * 100);
+      // Show one decimal place to make progress more visible
+      const completion = Math.round((totalCompletedChapters / totalBibleChapters) * 1000) / 10;
       
       setBookProgress(progressByBook);
       setBibleCompletion(completion);
@@ -274,7 +275,7 @@ const Index = () => {
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
                           <span className="font-semibold">Overall Bible Completion</span>
-                          <span className="font-bold text-primary">{bibleCompletion}%</span>
+                          <span className="font-bold text-primary">{bibleCompletion.toFixed(1)}%</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-3">
                           <div
