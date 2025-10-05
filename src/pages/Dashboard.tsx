@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { StreakFlame } from "@/components/StreakFlame";
-import { LessonPath } from "@/components/LessonPath";
+import { DailyReadingCard } from "@/components/DailyReadingCard";
+import { FastingCalendar } from "@/components/FastingCalendar";
 import { DoveMascot } from "@/components/DoveMascot";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Home, Settings as SettingsIcon, LogOut } from "lucide-react";
+import { Book, Home, BookOpen, Settings as SettingsIcon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,16 +62,58 @@ const Dashboard = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 space-y-8">
         {/* Streak Section */}
-        <section className="flex justify-center py-4">
+        <section className="flex justify-center py-8">
           <StreakFlame days={streakDays} size="lg" />
         </section>
 
-        {/* Lesson Path - Duolingo Style */}
-        <section className="py-4">
-          <h2 className="text-2xl font-bold text-center mb-8">Your Learning Path</h2>
-          <LessonPath />
+        {/* Today's Reading */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold">Today's Reading</h2>
+          <DailyReadingCard
+            title="Gospel of John"
+            passage="John 3:1-21"
+            progress={0}
+            onStartReading={() => navigate('/reading', { state: { title: "Gospel of John", passage: "John 3:1-21", progress: 0 } })}
+          />
+        </section>
+
+        {/* Additional Sections */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Reading Plan Overview */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold">This Week's Progress</h2>
+            <div className="grid gap-3">
+              <DailyReadingCard
+                title="Monday - Psalms"
+                passage="Psalm 23"
+                completed={true}
+                onStartReading={() => navigate('/reading', { state: { title: "Psalms", passage: "Psalm 23", progress: 100 } })}
+              />
+              <DailyReadingCard
+                title="Tuesday - Proverbs"
+                passage="Proverbs 3:1-12"
+                completed={true}
+                onStartReading={() => navigate('/reading', { state: { title: "Proverbs", passage: "Proverbs 3:1-12", progress: 100 } })}
+              />
+            </div>
+          </div>
+
+          {/* Fasting Calendar */}
+          <FastingCalendar />
+        </div>
+
+        {/* Quick Actions */}
+        <section className="flex flex-wrap gap-4 justify-center py-8">
+          <Button variant="outline" size="lg" onClick={() => navigate('/index')}>
+            <BookOpen className="w-5 h-5" />
+            Browse Scripture
+          </Button>
+          <Button variant="outline" size="lg" onClick={() => navigate('/church-resources')}>
+            <Book className="w-5 h-5" />
+            Church Resources
+          </Button>
         </section>
       </main>
     </div>
