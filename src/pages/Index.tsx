@@ -182,7 +182,7 @@ const Index = () => {
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-foreground dark:bg-background rounded-lg p-1.5">
+            <div className="w-12 h-12 bg-foreground dark:bg-background rounded-lg flex items-center justify-center p-1.5">
               <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-xl font-bold">Available Scriptures</h1>
@@ -262,9 +262,6 @@ const Index = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-2xl font-bold">Scripture Library</h2>
-                    <p className="text-sm text-muted-foreground">
-                      Complete Bible organized by categories
-                    </p>
                   </div>
                   <BookSelector 
                     books={BIBLE_BOOKS}
@@ -288,9 +285,6 @@ const Index = () => {
                             style={{ width: `${bibleCompletion}%` }}
                           />
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          Track your progress through the entire Bible
-                        </p>
                       </div>
                     </CardContent>
                   </Card>
