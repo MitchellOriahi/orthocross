@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { getVerseOfTheDay } from '@/lib/verseOfTheDay';
 
 export interface ReminderTime {
   id: number;
@@ -86,8 +87,9 @@ export const useNotifications = () => {
           
           if (reminder.hour === 12) {
             // Verse of the day at noon
-            title = "📖 Verse of the Day";
-            body = "Check out today's inspiring verse!";
+            const verse = getVerseOfTheDay(scheduledDate);
+            title = "Verse of the Day";
+            body = `${verse.reference} - ${verse.text}`;
           } else if (reminder.hour === 18) {
             // Streak reminder at 6pm
             title = "Keep Your Streak! 🔥";
