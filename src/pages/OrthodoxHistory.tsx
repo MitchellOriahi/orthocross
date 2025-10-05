@@ -101,9 +101,7 @@ const OrthodoxHistory = () => {
               <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center p-1">
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground">
-                Orthodox History Quest
-              </h1>
+              <h1 className="text-2xl font-bold">History Quest</h1>
             </div>
             <nav className="flex items-center gap-2">
               <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
