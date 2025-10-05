@@ -1,8 +1,22 @@
+import theotokosIcon from "@/assets/saints/theotokos-icon.jpg";
+import nicholasIcon from "@/assets/saints/nicholas-icon.jpg";
+import georgeIcon from "@/assets/saints/george-icon.jpg";
+import johnChrysostomIcon from "@/assets/saints/john-chrysostom-icon.jpg";
+import anthonyIcon from "@/assets/saints/anthony-icon.jpg";
+import athanasiusIcon from "@/assets/saints/athanasius-icon.jpg";
+import basilIcon from "@/assets/saints/basil-icon.jpg";
+import markIcon from "@/assets/saints/mark-icon.jpg";
+import ephremIcon from "@/assets/saints/ephrem-icon.jpg";
+import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
+import gregoryNazianzusIcon from "@/assets/saints/gregory-nazianzus-icon.jpg";
+import severusIcon from "@/assets/saints/severus-icon.jpg";
+
 export interface SaintDetail {
   id: string;
   name: string;
   title: string;
   tradition: "Oriental" | "Eastern" | "Eastern/Oriental";
+  iconUrl?: string;
   content: string[];
 }
 
@@ -12,6 +26,7 @@ export const saintsContent: SaintDetail[] = [
     name: "Theotokos (Virgin Mary)",
     title: "The Mother of God",
     tradition: "Eastern/Oriental",
+    iconUrl: theotokosIcon,
     content: [
       "The Theotokos, meaning 'God-bearer' in Greek, holds the highest honor among all saints in Orthodox Christianity. Born to Joachim and Anna in their old age after years of prayer, Mary's birth was itself considered miraculous. From her earliest years, she was dedicated to God and raised in the Temple in Jerusalem.",
       
@@ -35,6 +50,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Nicholas of Myra",
     title: "The Wonderworker",
     tradition: "Eastern",
+    iconUrl: nicholasIcon,
     content: [
       "Saint Nicholas was born in the third century in Patara, Asia Minor (modern-day Turkey), to wealthy and devout Christian parents. From his youth, he was known for his piety and compassion. When his parents died during an epidemic, Nicholas inherited their considerable wealth, which he determined to use in service to God and the poor.",
       
@@ -58,6 +74,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. George the Trophy-Bearer",
     title: "The Great Martyr",
     tradition: "Eastern/Oriental",
+    iconUrl: georgeIcon,
     content: [
       "Saint George was born around 280 AD in Cappadocia (modern-day Turkey) to Christian parents of noble lineage. His father was a Roman military officer who was martyred for his faith when George was young. His mother took him to her homeland in Palestine, where he was raised in the Christian faith and received an excellent education.",
       
@@ -81,6 +98,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. John Chrysostom",
     title: "The Golden-Mouthed",
     tradition: "Eastern",
+    iconUrl: johnChrysostomIcon,
     content: [
       "John was born around 347 AD in Antioch, Syria, to Christian parents. His father, a high-ranking military officer, died when John was young, and his mother Anthusa devoted herself entirely to his upbringing and education. She refused to remarry, dedicating her life to raising her son in Christian virtue and learning.",
       
@@ -104,6 +122,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Anthony the Great",
     title: "Father of Monasticism",
     tradition: "Eastern/Oriental",
+    iconUrl: anthonyIcon,
     content: [
       "Anthony was born around 251 AD in Herakleopolis Magna in Egypt to wealthy Christian parents. Orphaned at age 18, he heard the Gospel reading: 'If you would be perfect, go, sell what you possess and give to the poor, and you will have treasure in heaven.' Taking these words literally, Anthony sold all his possessions, provided for his younger sister, and gave the rest to the poor.",
       
@@ -127,6 +146,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Athanasius the Great",
     title: "Pillar of Orthodoxy",
     tradition: "Eastern/Oriental",
+    iconUrl: athanasiusIcon,
     content: [
       "Athanasius was born around 296 AD in Alexandria, Egypt. Raised in a Christian family, he received an excellent theological education. As a young deacon, he served under Bishop Alexander of Alexandria and accompanied him to the Council of Nicaea in 325 AD, where the Arian heresy was condemned.",
       
@@ -150,6 +170,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Basil the Great",
     title: "Father of Eastern Monasticism",
     tradition: "Eastern",
+    iconUrl: basilIcon,
     content: [
       "Basil was born around 330 AD in Caesarea, Cappadocia (modern Turkey), into a family of saints. His grandmother Macrina the Elder was a disciple of St. Gregory the Wonderworker. His parents, Basil the Elder and Emmelia, his sister Macrina the Younger, and his brothers Gregory of Nyssa and Peter of Sebaste, are all venerated as saints.",
       
@@ -173,6 +194,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Mark the Apostle",
     title: "Founder of the Coptic Church",
     tradition: "Oriental",
+    iconUrl: markIcon,
     content: [
       "St. Mark, also known as John Mark, was born in Cyrene (modern Libya) to Jewish parents in the early first century. His family later moved to Jerusalem, where his mother Mary's house became a gathering place for early Christians. According to tradition, this was the house where the Last Supper took place and where the disciples gathered after the Resurrection.",
       
@@ -196,6 +218,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Ephrem the Syrian",
     title: "Harp of the Holy Spirit",
     tradition: "Oriental",
+    iconUrl: ephremIcon,
     content: [
       "Ephrem was born around 306 AD in Nisibis, Mesopotamia (modern-day Turkey), to Christian parents. His father may have been a pagan priest who converted to Christianity. From his youth, Ephrem showed deep devotion to God and a remarkable poetic gift that would make him one of the most beloved hymnographers in Christian history.",
       
@@ -219,6 +242,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Moses the Black",
     title: "The Ethiopian",
     tradition: "Oriental",
+    iconUrl: mosesBlackIcon,
     content: [
       "Moses was born in Ethiopia in the fourth century AD, around 330 AD. Little is known about his early life, but he was sold into slavery in Egypt as a young man. He served in the household of an Egyptian government official, but his immense physical strength and violent temperament made him a difficult slave.",
       
@@ -242,6 +266,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Gregory the Theologian",
     title: "The Theologian",
     tradition: "Eastern",
+    iconUrl: gregoryNazianzusIcon,
     content: [
       "Gregory was born around 329 AD in Arianzus, near Nazianzus in Cappadocia (modern Turkey). His father, Gregory the Elder, was bishop of Nazianzus, and his mother Nonna was renowned for her piety. From birth, his mother dedicated him to God's service, and she prayed fervently that he would serve the Church.",
       
@@ -265,6 +290,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Severus of Antioch",
     title: "The Crown of the Syrians",
     tradition: "Oriental",
+    iconUrl: severusIcon,
     content: [
       "Severus was born around 465 AD in Sozopolis, Pisidia (modern Turkey), to a wealthy pagan family. His grandfather had been a bishop, but his immediate family practiced paganism. He received an excellent classical education in Alexandria and later studied law in Berytus (Beirut), preparing for a distinguished career in Roman administration.",
       

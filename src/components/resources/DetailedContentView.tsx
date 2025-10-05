@@ -11,9 +11,10 @@ interface DetailedContentViewProps {
   onClose: () => void;
   showProgress?: boolean;
   onComplete?: () => void;
+  iconUrl?: string;
 }
 
-export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete }: DetailedContentViewProps) => {
+export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete, iconUrl }: DetailedContentViewProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [viewMode, setViewMode] = useState<'paginated' | 'scroll'>('paginated');
   const contentRef = useRef<HTMLDivElement>(null);
@@ -90,6 +91,13 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
 
       <main className="container mx-auto px-4 py-8 max-w-4xl pb-20">
         <div className="mb-8 text-center">
+          {iconUrl && (
+            <div className="flex justify-center mb-6">
+              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20 shadow-lg">
+                <img src={iconUrl} alt={title} className="w-full h-full object-cover" />
+              </div>
+            </div>
+          )}
           <h1 className="text-4xl font-bold mb-2 text-foreground">
             {title}
           </h1>
