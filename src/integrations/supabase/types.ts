@@ -16,8 +16,11 @@ export type Database = {
     Tables: {
       reading_progress: {
         Row: {
+          book_key: string | null
           completed: boolean | null
           created_at: string | null
+          current_chapter: number | null
+          current_verse: number | null
           id: string
           last_read_at: string | null
           progress: number | null
@@ -27,8 +30,11 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          book_key?: string | null
           completed?: boolean | null
           created_at?: string | null
+          current_chapter?: number | null
+          current_verse?: number | null
           id?: string
           last_read_at?: string | null
           progress?: number | null
@@ -38,8 +44,11 @@ export type Database = {
           user_id: string
         }
         Update: {
+          book_key?: string | null
           completed?: boolean | null
           created_at?: string | null
+          current_chapter?: number | null
+          current_verse?: number | null
           id?: string
           last_read_at?: string | null
           progress?: number | null

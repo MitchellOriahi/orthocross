@@ -89,10 +89,16 @@ const Reading = () => {
         .from('reading_progress')
         .upsert({
           user_id: user.id,
-          scripture_title: book,
-          scripture_passage: `${book} ${chapter}`,
+          scripture_title: bookName,
+          scripture_passage: `${bookName} ${chapter}`,
           progress: newProgress,
           completed: newProgress === 100,
+          current_chapter: chapter,
+          current_verse: 1,
+          book_key: book,
+          last_read_at: new Date().toISOString(),
+        }, {
+          onConflict: 'user_id,scripture_title,scripture_passage'
         });
 
       if (error) throw error;
@@ -101,6 +107,17 @@ const Reading = () => {
       console.error('Error saving progress:', error);
     }
   };
+
+  // Auto-save reading position when chapter changes
+  useEffect(() => {
+    if (user && verses.length > 0) {
+      const timer = setTimeout(() => {
+        saveProgress(progress);
+      }, 2000); // Save 2 seconds after chapter loads
+      
+      return () => clearTimeout(timer);
+    }
+  }, [chapter, user]);
 
   const toggleHighlight = async (verseNumber: number) => {
     if (!user) return;

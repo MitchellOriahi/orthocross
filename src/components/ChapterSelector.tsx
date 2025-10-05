@@ -1,4 +1,6 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import { Book } from "lucide-react";
 
 interface ChapterSelectorProps {
@@ -15,27 +17,43 @@ export const ChapterSelector = ({
   onChapterChange 
 }: ChapterSelectorProps) => {
   return (
-    <div className="flex items-center gap-3 p-4 bg-card rounded-lg border">
-      <Book className="w-5 h-5 text-primary" />
-      <div className="flex items-center gap-2 flex-1">
-        <span className="font-medium">{book}</span>
-        <span className="text-muted-foreground">Chapter</span>
-        <Select 
-          value={currentChapter.toString()} 
-          onValueChange={(value) => onChapterChange(parseInt(value))}
-        >
-          <SelectTrigger className="w-20">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="max-h-[300px]">
+    <Sheet>
+      <SheetTrigger asChild>
+        <div className="flex items-center gap-3 p-4 bg-card rounded-lg border cursor-pointer hover:bg-accent transition-colors">
+          <Book className="w-5 h-5 text-primary" />
+          <div className="flex items-center gap-2 flex-1">
+            <span className="font-medium">{book}</span>
+            <span className="text-muted-foreground">Chapter</span>
+            <span className="font-bold text-primary">{currentChapter}</span>
+          </div>
+        </div>
+      </SheetTrigger>
+      <SheetContent side="bottom" className="h-[70vh]">
+        <SheetHeader>
+          <SheetTitle className="text-center">
+            {book} - Select Chapter
+          </SheetTitle>
+        </SheetHeader>
+        
+        <ScrollArea className="h-[calc(70vh-120px)] mt-6 px-4">
+          <div className="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-10 gap-2 pb-4">
             {Array.from({ length: totalChapters }, (_, i) => i + 1).map((chapter) => (
-              <SelectItem key={chapter} value={chapter.toString()}>
+              <Button
+                key={chapter}
+                variant={chapter === currentChapter ? "default" : "outline"}
+                onClick={() => onChapterChange(chapter)}
+                className={`aspect-square p-0 text-base font-semibold ${
+                  chapter === currentChapter 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'hover:bg-primary hover:text-primary-foreground'
+                }`}
+              >
                 {chapter}
-              </SelectItem>
+              </Button>
             ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
+          </div>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   );
 };
