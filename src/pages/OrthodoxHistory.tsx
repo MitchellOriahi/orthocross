@@ -11,8 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { historyContent } from "@/data/historyContent";
 import { IslandDetail } from "@/components/history/IslandDetail";
 import { AvatarCustomizer } from "@/components/history/AvatarCustomizer";
-import { Badge } from "@/components/ui/badge";
-import { Shield, Lock, CheckCircle2 } from "lucide-react";
+import { DuolingoPath } from "@/components/history/DuolingoPath";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface UserProgress {
   campaignId: string;
@@ -24,6 +24,7 @@ interface UserProgress {
 const OrthodoxHistory = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
+  const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
   const [progress, setProgress] = useState<UserProgress[]>([]);
   const [totalXp, setTotalXp] = useState(0);
@@ -106,41 +107,17 @@ const OrthodoxHistory = () => {
     setSelectedIsland(null);
   };
 
-  // Combine all islands from both campaigns into a single path
-  const allIslands = historyContent.campaigns.flatMap(campaign => 
-    campaign.islands.map(island => ({
-      ...island,
-      campaignId: campaign.id,
-      campaignName: campaign.displayName,
-      campaignTheme: campaign.theme
-    }))
-  );
+  const campaign = historyContent.campaigns.find(c => c.id === selectedCampaign);
+  const completedIslands = progress.filter(p => p.campaignId === selectedCampaign && p.completed).length;
+  const progressPercent = campaign ? (completedIslands / campaign.islands.length) * 100 : 0;
 
-  const totalCompleted = progress.filter(p => p.completed).length;
-  const totalIslands = allIslands.length;
-  const progressPercent = (totalCompleted / totalIslands) * 100;
-
-  const getIslandStatus = (index: number, island: any) => {
-    const isCompleted = progress.find(p => p.campaignId === island.campaignId && p.islandId === island.id)?.completed || false;
-    const previousCompleted = index === 0 || progress.find(p => {
-      const prevIsland = allIslands[index - 1];
-      return p.campaignId === prevIsland.campaignId && p.islandId === prevIsland.id;
-    })?.completed || false;
-    
-    return {
-      isCompleted,
-      isUnlocked: index === 0 || previousCompleted,
-      canStart: !isCompleted && (index === 0 || previousCompleted)
-    };
-  };
-
-  if (selectedIsland) {
-    const island = allIslands.find(i => i.campaignId === selectedIsland.campaignId && i.id === selectedIsland.islandId);
+  if (selectedIsland && campaign) {
+    const island = campaign.islands.find(i => i.id === selectedIsland.islandId);
     if (island) {
       return (
         <IslandDetail
           island={island}
-          campaignId={island.campaignId}
+          campaignId={selectedIsland.campaignId}
           onComplete={handleIslandComplete}
           onBack={() => setSelectedIsland(null)}
           hearts={hearts}
@@ -193,7 +170,7 @@ const OrthodoxHistory = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-8 max-w-5xl">
         <Card className="p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -203,97 +180,29 @@ const OrthodoxHistory = () => {
           </div>
           <Progress value={progressPercent} className="h-3" />
           <p className="text-sm text-muted-foreground mt-2">
-            {totalCompleted} of {totalIslands} islands completed
+            {completedIslands} of {campaign?.islands.length} islands completed in {campaign?.displayName}
           </p>
         </Card>
 
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold gradient-sacred bg-clip-text text-transparent">
-            Orthodox History Path
-          </h2>
-          
-          <div className="relative">
-            {/* Path connector line */}
-            <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-primary/50 to-primary opacity-20" />
-            
-            <div className="space-y-6">
-              {allIslands.map((island, index) => {
-                const status = getIslandStatus(index, island);
-                const themeColors = island.campaignTheme === 'byzantine' 
-                  ? 'from-amber-500/20 to-yellow-600/20' 
-                  : 'from-red-500/20 to-orange-600/20';
+        <Tabs value={selectedCampaign} onValueChange={setSelectedCampaign} className="space-y-8">
+          <TabsList className="grid w-full grid-cols-2">
+            {historyContent.campaigns.map(c => (
+              <TabsTrigger key={c.id} value={c.id}>
+                {c.displayName}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-                return (
-                  <div key={`${island.campaignId}-${island.id}`} className="relative pl-20">
-                    {/* Island number indicator */}
-                    <div className={`absolute left-0 w-16 h-16 rounded-full flex items-center justify-center font-bold text-lg ${
-                      status.isCompleted ? 'bg-primary text-primary-foreground' : 
-                      status.isUnlocked ? 'bg-card border-2 border-primary' : 
-                      'bg-muted text-muted-foreground'
-                    }`}>
-                      {index + 1}
-                    </div>
-
-                    <Card className={`transition-all duration-300 hover:scale-[1.02] ${
-                      status.isCompleted ? 'border-primary shadow-lg' : ''
-                    } ${!status.isUnlocked ? 'opacity-50' : ''}`}>
-                      <div className={`absolute inset-0 rounded-lg bg-gradient-to-br ${themeColors} opacity-20`} />
-                      
-                      <div className="relative z-10 p-6">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1">
-                            <Badge variant="outline" className="mb-2">
-                              {island.campaignName}
-                            </Badge>
-                            <h3 className="text-xl font-bold mb-2">{island.title}</h3>
-                          </div>
-                          {status.isCompleted ? (
-                            <CheckCircle2 className="w-8 h-8 text-primary flex-shrink-0" />
-                          ) : !status.isUnlocked ? (
-                            <Lock className="w-8 h-8 text-muted-foreground flex-shrink-0" />
-                          ) : (
-                            <Shield className="w-8 h-8 text-primary/50 flex-shrink-0" />
-                          )}
-                        </div>
-                        
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                          <Shield className="w-4 h-4" />
-                          <span className="capitalize">{island.awardPiece.replace(/_/g, ' ')}</span>
-                        </div>
-
-                        <Button
-                          onClick={() => setSelectedIsland({ campaignId: island.campaignId, islandId: island.id })}
-                          disabled={!status.isUnlocked}
-                          className="w-full"
-                          variant={status.canStart ? "default" : "outline"}
-                        >
-                          {status.isCompleted ? 'Review Island' : status.canStart ? 'Start Quest' : 'Locked'}
-                        </Button>
-                      </div>
-                    </Card>
-                  </div>
-                );
-              })}
-            </div>
-
-              <Card className="mt-12 p-8 text-center bg-gradient-to-br from-primary/20 to-primary/10 border-2 border-primary">
-                <div className="w-24 h-24 mx-auto mb-6 relative">
-                  <svg className="w-full h-full text-primary animate-bounce" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v3c0 2.21 1.79 4 4 4h.19l1.55 6.21c.16.65.76 1.09 1.43 1.09h5.66c.67 0 1.27-.44 1.43-1.09L18.81 16H19c2.21 0 4-1.79 4-4v-3c0-1.1-.9-2-2-2zM6 14c-1.1 0-2-.9-2-2v-2h2v4zm4 4l-1.5-6H10V6h4v6h1.5l-1.5 6h-4zm8-6c0 1.1-.9 2-2 2v-4h2v2z"/>
-                  </svg>
-                </div>
-                <h2 className="text-3xl font-bold mb-4 gradient-sacred bg-clip-text text-transparent">
-                  Complete Mastery Achieved!
-                </h2>
-                <p className="text-lg text-muted-foreground mb-2">
-                  You've completed all islands in Orthodox History!
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  You now possess the Full Eastern and Oriental Armor of God
-                </p>
-              </Card>
-          </div>
-        </div>
+          {historyContent.campaigns.map(campaignItem => (
+            <TabsContent key={campaignItem.id} value={campaignItem.id}>
+              <DuolingoPath
+                campaign={campaignItem}
+                progress={progress.filter(p => p.campaignId === campaignItem.id)}
+                onIslandSelect={(islandId) => setSelectedIsland({ campaignId: campaignItem.id, islandId })}
+              />
+            </TabsContent>
+          ))}
+        </Tabs>
       </main>
     </div>
   );
