@@ -97,11 +97,11 @@ const OrthodoxHistory = () => {
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-2xl font-bold">History Quest</h1>
+              <h1 className="text-lg sm:text-2xl font-bold">History Quest</h1>
             </div>
             <nav className="flex items-center gap-2">
               <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
