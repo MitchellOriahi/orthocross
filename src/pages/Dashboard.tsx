@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { StreakFlame } from "@/components/StreakFlame";
 import { DailyReadingCard } from "@/components/DailyReadingCard";
 import { FastingCalendar } from "@/components/FastingCalendar";
+import { FastingCalendarView } from "@/components/FastingCalendarView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDay } from "@/components/VerseOfTheDay";
@@ -215,8 +216,13 @@ const Dashboard = () => {
         </div>
 
         {/* Fasting Calendar */}
-        <div className="max-h-[400px] overflow-auto">
-          <FastingCalendar />
+        <div className="space-y-6">
+          <div className="max-h-[400px] overflow-auto">
+            <FastingCalendar />
+          </div>
+          
+          {/* Calendar View */}
+          <FastingCalendarView />
         </div>
       </main>
 

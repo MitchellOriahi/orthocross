@@ -16,6 +16,7 @@ const passwordSchema = z.string().min(6, 'Password must be at least 6 characters
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn, signUp, user } = useAuth();
   const { toast } = useToast();
@@ -65,8 +66,17 @@ const Auth = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    if (!phoneNumber || phoneNumber.length < 10) {
+      toast({
+        variant: 'destructive',
+        title: 'Invalid Phone Number',
+        description: 'Please enter a valid phone number',
+      });
+      return;
+    }
+
     setLoading(true);
-    const { error } = await signUp(email, password);
+    const { error } = await signUp(email, password, phoneNumber);
     
     if (error) {
       toast({
@@ -142,6 +152,18 @@ const Auth = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-phone">Phone Number</Label>
+                  <Input
+                    id="signup-phone"
+                    type="tel"
+                    placeholder="+1234567890"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">For fast and feast notifications</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Password</Label>
