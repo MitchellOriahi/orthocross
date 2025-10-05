@@ -59,7 +59,7 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container mx-auto px-4 py-12">
+      <section id="features" className="container mx-auto px-4 pt-12">
         <div className="relative max-w-6xl mx-auto">
           <Carousel
             opts={{
