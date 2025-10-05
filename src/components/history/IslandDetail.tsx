@@ -36,9 +36,15 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
+  const [shuffledOptions, setShuffledOptions] = useState<{text: string, originalIndex: number}[][]>([]);
   const { toast } = useToast();
 
   const handleStartQuiz = () => {
+    const shuffled = island.quiz.map(q => {
+      const optionsWithIndex = q.options.map((text, originalIndex) => ({ text, originalIndex }));
+      return optionsWithIndex.sort(() => Math.random() - 0.5);
+    });
+    setShuffledOptions(shuffled);
     setStage('quiz');
   };
 
@@ -49,8 +55,9 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
   const handleSubmitAnswer = () => {
     if (!selectedAnswer) return;
 
-    const selectedIndex = parseInt(selectedAnswer);
-    const isCorrect = selectedIndex === island.quiz[currentQuestion].correctAnswer;
+    const selectedShuffledIndex = parseInt(selectedAnswer);
+    const originalIndex = shuffledOptions[currentQuestion][selectedShuffledIndex].originalIndex;
+    const isCorrect = originalIndex === island.quiz[currentQuestion].correctAnswer;
     
     if (isCorrect) {
       // Gain a heart on correct answer (up to max)
@@ -86,7 +93,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
       }
     }
 
-    const newAnswers = [...answers, selectedIndex];
+    const newAnswers = [...answers, originalIndex];
     setAnswers(newAnswers);
 
     if (currentQuestion < island.quiz.length - 1) {
@@ -155,11 +162,12 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
               
               <RadioGroup value={selectedAnswer} onValueChange={handleAnswerSelect}>
                 <div className="space-y-4">
-                  {island.quiz[currentQuestion].options.map((option, index) => (
-                    <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-accent cursor-pointer">
+                  {shuffledOptions[currentQuestion]?.map((option, index) => (
+                    <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-accent cursor-pointer"
+                         onClick={() => handleAnswerSelect(index.toString())}>
                       <RadioGroupItem value={index.toString()} id={`option-${index}`} />
                       <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                        {option}
+                        {option.text}
                       </Label>
                     </div>
                   ))}

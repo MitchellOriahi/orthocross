@@ -53,8 +53,8 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
       >
         <defs>
           <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.7" />
           </linearGradient>
         </defs>
         {campaign.islands.map((_, index) => {
