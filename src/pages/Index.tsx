@@ -183,9 +183,9 @@ const Index = () => {
       {/* Header */}
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center p-1">
-              <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
+                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-xl font-bold">Available Scriptures</h1>
           </div>

@@ -68,7 +68,7 @@ const Settings = () => {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center p-1">
+                <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
                   <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                 </div>
                 <h1 className="text-2xl font-bold">Settings</h1>
