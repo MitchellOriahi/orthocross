@@ -173,6 +173,26 @@ const Dashboard = () => {
         </div>
       </header>
 
+      {/* Navigation Links */}
+      <section className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex flex-wrap gap-3 justify-end">
+            <Button variant="outline" size="sm" onClick={() => navigate('/orthodox-history')}>
+              <Scroll className="w-4 h-4" />
+              Orthodox History
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/index')}>
+              <BookOpen className="w-4 h-4" />
+              Browse Scripture
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/church-resources')}>
+              <Book className="w-4 h-4" />
+              Church Resources
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 space-y-8">
         {/* Streak Section */}
@@ -217,22 +237,6 @@ const Dashboard = () => {
         <div className="max-h-[400px] overflow-auto">
           <FastingCalendar />
         </div>
-
-        {/* Quick Actions */}
-        <section className="flex flex-wrap gap-4 justify-center py-8">
-          <Button variant="outline" size="lg" onClick={() => navigate('/orthodox-history')}>
-            <Scroll className="w-5 h-5" />
-            Orthodox History
-          </Button>
-          <Button variant="outline" size="lg" onClick={() => navigate('/index')}>
-            <BookOpen className="w-5 h-5" />
-            Browse Scripture
-          </Button>
-          <Button variant="outline" size="lg" onClick={() => navigate('/church-resources')}>
-            <Book className="w-5 h-5" />
-            Church Resources
-          </Button>
-        </section>
       </main>
     </div>
   );
