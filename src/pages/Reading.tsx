@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Bookmark, Type } from "lucide-react";
+import { ArrowLeft, BookOpen, Type, ChevronLeft, ChevronRight, Scroll } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -8,6 +8,8 @@ import { Slider } from "@/components/ui/slider";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { CongratulationsModal } from "@/components/CongratulationsModal";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Reading = () => {
   const navigate = useNavigate();
@@ -20,6 +22,11 @@ const Reading = () => {
     title: "Gospel of John",
     passage: "John 1:1-14"
   });
+  const [currentPage, setCurrentPage] = useState(0);
+  const [readingMode, setReadingMode] = useState<"scroll" | "pages">("pages");
+  const [showCongratulations, setShowCongratulations] = useState(false);
+  const [streakDays, setStreakDays] = useState(0);
+  const [isNewStreak, setIsNewStreak] = useState(false);
 
   // Reading content mapping
   const readingContent: Record<string, string> = {
@@ -67,7 +74,7 @@ And the Word became flesh and dwelt among us, and we beheld His glory, the glory
     }
   }, [location.state]);
 
-  // Save progress to database
+  // Save progress and update streak
   const saveProgress = async (newProgress: number) => {
     if (!user) return;
 
@@ -100,15 +107,143 @@ And the Word became flesh and dwelt among us, and we beheld His glory, the glory
             completed: newProgress >= 100
           });
       }
+
+      // Update streak if completed
+      if (newProgress >= 100) {
+        await updateStreak();
+      }
     } catch (error) {
       console.error('Error saving progress:', error);
     }
   };
 
+  // Update user streak
+  const updateStreak = async () => {
+    if (!user) return;
+
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      
+      const { data: existingStreak } = await supabase
+        .from('user_streaks')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (!existingStreak) {
+        // First time completing
+        await supabase
+          .from('user_streaks')
+          .insert({
+            user_id: user.id,
+            current_streak: 1,
+            longest_streak: 1,
+            last_completion_date: today
+          });
+        setStreakDays(1);
+        setIsNewStreak(true);
+        setShowCongratulations(true);
+      } else {
+        const lastDate = existingStreak.last_completion_date;
+        
+        // Check if already completed today
+        if (lastDate === today) {
+          setStreakDays(existingStreak.current_streak);
+          setIsNewStreak(false);
+          setShowCongratulations(true);
+          return;
+        }
+
+        // Check if yesterday or streak broken
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        
+        const newStreak = lastDate === yesterdayStr 
+          ? existingStreak.current_streak + 1 
+          : 1;
+        
+        const newLongest = Math.max(newStreak, existingStreak.longest_streak);
+
+        await supabase
+          .from('user_streaks')
+          .update({
+            current_streak: newStreak,
+            longest_streak: newLongest,
+            last_completion_date: today
+          })
+          .eq('user_id', user.id);
+
+        setStreakDays(newStreak);
+        setIsNewStreak(true);
+        setShowCongratulations(true);
+      }
+    } catch (error) {
+      console.error('Error updating streak:', error);
+    }
+  };
+
   const displayText = readingContent[currentReading.passage] || readingContent["John 1:1-14"];
+  
+  // Split text into pages (roughly 500 characters per page)
+  const pages = useMemo(() => {
+    const paragraphs = displayText.split('\n\n');
+    const pagesArray: string[][] = [[]];
+    let currentPageChars = 0;
+    let currentPageIndex = 0;
+
+    paragraphs.forEach(paragraph => {
+      const paragraphLength = paragraph.length;
+      
+      if (currentPageChars + paragraphLength > 500 && pagesArray[currentPageIndex].length > 0) {
+        currentPageIndex++;
+        pagesArray[currentPageIndex] = [];
+        currentPageChars = 0;
+      }
+      
+      pagesArray[currentPageIndex].push(paragraph);
+      currentPageChars += paragraphLength;
+    });
+
+    return pagesArray;
+  }, [displayText]);
+
+  const totalPages = pages.length;
+
+  const handleNextPage = async () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+      const newProgress = Math.round(((currentPage + 2) / totalPages) * 100);
+      setProgress(newProgress);
+      await saveProgress(newProgress);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+      const newProgress = Math.round((currentPage / totalPages) * 100);
+      setProgress(newProgress);
+    }
+  };
+
+  const handleFinish = async () => {
+    setProgress(100);
+    await saveProgress(100);
+  };
 
   return (
     <div className="min-h-screen gradient-peaceful">
+      <CongratulationsModal
+        isOpen={showCongratulations}
+        onClose={() => {
+          setShowCongratulations(false);
+          navigate('/index');
+        }}
+        streakDays={streakDays}
+        isNewStreak={isNewStreak}
+      />
+
       {/* Reading Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
@@ -123,13 +258,28 @@ And the Word became flesh and dwelt among us, and we beheld His glory, the glory
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon">
-                <Bookmark className="w-5 h-5" />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setReadingMode(readingMode === "scroll" ? "pages" : "scroll")}
+                title={readingMode === "scroll" ? "Switch to pages" : "Switch to scroll"}
+              >
+                {readingMode === "scroll" ? (
+                  <BookOpen className="w-5 h-5" />
+                ) : (
+                  <Scroll className="w-5 h-5" />
+                )}
               </Button>
+              <ThemeToggle />
             </div>
           </div>
           <div className="mt-4">
             <Progress value={progress} className="h-1" />
+            {readingMode === "pages" && (
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                Page {currentPage + 1} of {totalPages}
+              </p>
+            )}
           </div>
         </div>
       </header>
@@ -137,16 +287,56 @@ And the Word became flesh and dwelt among us, and we beheld His glory, the glory
       {/* Reading Content */}
       <main className="container mx-auto px-4 py-8 max-w-3xl">
         <Card className="p-8 shadow-elevated">
-          <article 
-            className="prose prose-lg max-w-none leading-relaxed text-foreground"
-            style={{ fontSize: `${fontSize}px` }}
-          >
-            {displayText.split('\n\n').map((paragraph, index) => (
-              <p key={index} className="mb-6 first:mt-0">
-                {paragraph}
-              </p>
-            ))}
-          </article>
+          {readingMode === "scroll" ? (
+            <article 
+              className="prose prose-lg max-w-none leading-relaxed text-foreground"
+              style={{ fontSize: `${fontSize}px` }}
+            >
+              {displayText.split('\n\n').map((paragraph, index) => (
+                <p key={index} className="mb-6 first:mt-0">
+                  {paragraph}
+                </p>
+              ))}
+            </article>
+          ) : (
+            <>
+              <article 
+                className="prose prose-lg max-w-none leading-relaxed text-foreground min-h-[400px]"
+                style={{ fontSize: `${fontSize}px` }}
+              >
+                {pages[currentPage]?.map((paragraph, index) => (
+                  <p key={index} className="mb-6 first:mt-0">
+                    {paragraph}
+                  </p>
+                ))}
+              </article>
+              
+              {/* Page Navigation */}
+              <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
+                <Button
+                  variant="outline"
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 0}
+                >
+                  <ChevronLeft className="w-4 h-4 mr-2" />
+                  Previous
+                </Button>
+                
+                <span className="text-sm text-muted-foreground">
+                  {currentPage + 1} / {totalPages}
+                </span>
+                
+                <Button
+                  variant="outline"
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages - 1}
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+            </>
+          )}
         </Card>
 
         {/* Reading Controls */}
@@ -171,26 +361,25 @@ And the Word became flesh and dwelt among us, and we beheld His glory, the glory
             </div>
           </Card>
 
-          <Button 
-            variant="sacred" 
-            size="lg" 
-            className="w-full"
-            onClick={async () => {
-              const newProgress = Math.min(100, progress + 15);
-              setProgress(newProgress);
-              await saveProgress(newProgress);
-              
-              if (newProgress >= 100) {
-                toast({
-                  title: "Reading Complete!",
-                  description: "Great job finishing this scripture reading.",
-                });
-                navigate('/index');
-              }
-            }}
-          >
-            {progress >= 85 ? 'Complete Reading' : 'Continue'}
-          </Button>
+          {readingMode === "scroll" ? (
+            <Button 
+              variant="sacred" 
+              size="lg" 
+              className="w-full"
+              onClick={handleFinish}
+            >
+              Finish Reading
+            </Button>
+          ) : (
+            <Button 
+              variant="sacred" 
+              size="lg" 
+              className="w-full"
+              onClick={currentPage === totalPages - 1 ? handleFinish : handleNextPage}
+            >
+              {currentPage === totalPages - 1 ? 'Finish' : 'Continue'}
+            </Button>
+          )}
         </div>
       </main>
     </div>

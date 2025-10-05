@@ -1,17 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { StreakFlame } from "@/components/StreakFlame";
 import { DailyReadingCard } from "@/components/DailyReadingCard";
 import { FastingCalendar } from "@/components/FastingCalendar";
+import { DoveMascot } from "@/components/DoveMascot";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Book, Home, BookOpen, Settings as SettingsIcon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
-  const [streakDays] = useState(7);
+  const { signOut, user } = useAuth();
+  const [streakDays, setStreakDays] = useState(0);
+
+  useEffect(() => {
+    const fetchStreak = async () => {
+      if (!user) return;
+      
+      const { data } = await supabase
+        .from('user_streaks')
+        .select('current_streak')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (data) {
+        setStreakDays(data.current_streak);
+      }
+    };
+
+    fetchStreak();
+  }, [user]);
   
   return (
     <div className="min-h-screen gradient-peaceful">
@@ -19,11 +39,11 @@ const Dashboard = () => {
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center p-1">
-                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
-              </div>
-              <h1 className="text-2xl font-bold">OrthoCross App</h1>
+            <div className="flex items-center gap-3">
+              <DoveMascot size="sm" />
+              <h1 className="text-2xl font-bold gradient-sacred bg-clip-text text-transparent">
+                Orthodox Companion
+              </h1>
             </div>
             <nav className="flex items-center gap-2">
               <Button variant="ghost" size="icon" onClick={() => navigate('/home')}>
@@ -32,6 +52,7 @@ const Dashboard = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
               </Button>
+              <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => signOut()}>
                 <LogOut className="w-5 h-5" />
               </Button>
