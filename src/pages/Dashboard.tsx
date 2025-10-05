@@ -47,35 +47,39 @@ const Dashboard = () => {
     const fetchLastReading = async () => {
       if (!user) return;
 
-      const { data } = await supabase
-        .from('reading_progress')
+      // Get the most recent completed chapter
+      const { data: lastCompleted } = await supabase
+        .from('completed_chapters')
         .select('*')
         .eq('user_id', user.id)
-        .order('last_read_at', { ascending: false })
+        .order('completed_at', { ascending: false })
         .limit(1)
         .maybeSingle();
 
-      if (data) {
-        // Get completed chapters for this book to calculate progress
+      if (lastCompleted) {
+        const bookKey = lastCompleted.book_key;
+        const lastChapter = lastCompleted.chapter;
+
+        // Get all completed chapters for this book
         const { data: completedChapters } = await supabase
           .from('completed_chapters')
           .select('chapter')
           .eq('user_id', user.id)
-          .eq('book_key', data.book_key);
+          .eq('book_key', bookKey);
 
-        // Import book info to get total chapters
+        // Import book info to get total chapters and book name
         const { BIBLE_BOOKS } = await import('@/data/bibleContent');
-        const bookInfo = BIBLE_BOOKS.find(b => b.title === data.book_key);
+        const bookInfo = BIBLE_BOOKS.find(b => b.title === bookKey);
         const totalChapters = bookInfo?.totalChapters || 1;
         const completedCount = completedChapters?.length || 0;
         const bookProgress = Math.round((completedCount / totalChapters) * 100);
 
         setLastReading({
-          title: bookInfo?.bookName || data.scripture_title,
-          passage: `${bookInfo?.bookName || data.scripture_title} ${data.current_chapter}`,
+          title: bookInfo?.bookName || bookKey,
+          passage: `${bookInfo?.bookName || bookKey} ${lastChapter}`,
           progress: bookProgress,
-          bookKey: data.book_key,
-          chapter: data.current_chapter,
+          bookKey: bookKey,
+          chapter: lastChapter + 1, // Continue from next chapter
           totalChapters: totalChapters
         });
       }
@@ -90,33 +94,36 @@ const Dashboard = () => {
     const handleVisibilityChange = () => {
       if (!document.hidden && user) {
         const fetchLastReading = async () => {
-          const { data } = await supabase
-            .from('reading_progress')
+          const { data: lastCompleted } = await supabase
+            .from('completed_chapters')
             .select('*')
             .eq('user_id', user.id)
-            .order('last_read_at', { ascending: false })
+            .order('completed_at', { ascending: false })
             .limit(1)
             .maybeSingle();
 
-          if (data) {
+          if (lastCompleted) {
+            const bookKey = lastCompleted.book_key;
+            const lastChapter = lastCompleted.chapter;
+
             const { data: completedChapters } = await supabase
               .from('completed_chapters')
               .select('chapter')
               .eq('user_id', user.id)
-              .eq('book_key', data.book_key);
+              .eq('book_key', bookKey);
 
             const { BIBLE_BOOKS } = await import('@/data/bibleContent');
-            const bookInfo = BIBLE_BOOKS.find(b => b.title === data.book_key);
+            const bookInfo = BIBLE_BOOKS.find(b => b.title === bookKey);
             const totalChapters = bookInfo?.totalChapters || 1;
             const completedCount = completedChapters?.length || 0;
             const bookProgress = Math.round((completedCount / totalChapters) * 100);
 
             setLastReading({
-              title: bookInfo?.bookName || data.scripture_title,
-              passage: `${bookInfo?.bookName || data.scripture_title} ${data.current_chapter}`,
+              title: bookInfo?.bookName || bookKey,
+              passage: `${bookInfo?.bookName || bookKey} ${lastChapter}`,
               progress: bookProgress,
-              bookKey: data.book_key,
-              chapter: data.current_chapter,
+              bookKey: bookKey,
+              chapter: lastChapter + 1,
               totalChapters: totalChapters
             });
           }
