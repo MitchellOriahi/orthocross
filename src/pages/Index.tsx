@@ -33,6 +33,11 @@ const Index = () => {
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     if (user) {
       loadLastRead();
@@ -409,14 +414,6 @@ const Index = () => {
                         </button>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* API Note */}
-                <Card className="border-muted bg-muted/20">
-                  <CardContent className="p-4 text-center text-sm text-muted-foreground">
-                    <p>📖 Complete Bible text content will be loaded from Bible API</p>
-                    <p className="text-xs mt-1">Currently showing book structure and navigation</p>
                   </CardContent>
                 </Card>
               </div>
