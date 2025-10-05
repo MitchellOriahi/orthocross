@@ -117,29 +117,75 @@ export const useNotifications = () => {
     }
   };
 
-  const scheduleFastingReminder = async (eventName: string, eventType: string, tradition: string, date: Date) => {
+  const scheduleFastingReminder = async (
+    eventName: string, 
+    eventType: string, 
+    tradition: string, 
+    date: Date,
+    reminderDaysBefore: number = 0
+  ) => {
     try {
-      // Schedule for midnight
-      const midnightDate = new Date(date);
-      midnightDate.setHours(0, 0, 0, 0);
+      const notifications = [];
+      const eventDate = new Date(date);
+      eventDate.setHours(0, 0, 0, 0);
+      
+      // Calculate how many days until the event
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const daysUntilEvent = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-      const title = eventType === "fast" ? "🕊️ Fast Beginning" : "✨ Feast Day";
-      const body = eventType === "fast"
-        ? `${eventName} begins today (${tradition}). Remember to observe the fast.`
-        : `Today is ${eventName} (${tradition}). May you have a blessed feast day!`;
-
-      await LocalNotifications.schedule({
-        notifications: [
-          {
+      // Schedule notifications based on preference
+      if (reminderDaysBefore === 0) {
+        // Only on the day of
+        const title = eventType === "fast" ? "🕊️ Fast Beginning Today" : "✨ Feast Day Today";
+        const body = eventType === "fast"
+          ? `${eventName} begins today (${tradition}). Remember to observe the fast.`
+          : `Today is ${eventName} (${tradition}). May you have a blessed feast day!`;
+        
+        notifications.push({
+          title,
+          body,
+          id: Math.floor(Math.random() * 100000),
+          schedule: { at: eventDate },
+        });
+      } else {
+        // Schedule daily reminders for the specified number of days before
+        for (let i = reminderDaysBefore; i >= 0; i--) {
+          const notificationDate = new Date(eventDate);
+          notificationDate.setDate(notificationDate.getDate() - i);
+          
+          // Skip if the date is in the past
+          if (notificationDate < today) continue;
+          
+          let title: string;
+          let body: string;
+          
+          if (i === 0) {
+            // Day of the event
+            title = eventType === "fast" ? "🕊️ Fast Beginning Today" : "✨ Feast Day Today";
+            body = eventType === "fast"
+              ? `${eventName} begins today (${tradition}). Remember to observe the fast.`
+              : `Today is ${eventName} (${tradition}). May you have a blessed feast day!`;
+          } else {
+            // Days before
+            const daysText = i === 1 ? "1 day" : `${i} days`;
+            title = eventType === "fast" ? "🕊️ Upcoming Fast" : "✨ Upcoming Feast";
+            body = `${daysText} until ${eventName} (${tradition})`;
+          }
+          
+          notifications.push({
             title,
             body,
             id: Math.floor(Math.random() * 100000),
-            schedule: { at: midnightDate },
-          },
-        ],
-      });
+            schedule: { at: notificationDate },
+          });
+        }
+      }
 
-      console.log(`Scheduled fasting reminder for ${eventName} at midnight`);
+      if (notifications.length > 0) {
+        await LocalNotifications.schedule({ notifications });
+        console.log(`Scheduled ${notifications.length} notification(s) for ${eventName}`);
+      }
     } catch (error) {
       console.log('Error scheduling fasting reminder:', error);
     }

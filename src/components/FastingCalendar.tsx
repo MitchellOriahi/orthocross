@@ -9,6 +9,20 @@ import { FastingCalendarView } from "./FastingCalendarView";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface FastingEvent {
   name: string;
@@ -52,9 +66,12 @@ const fastingEvents: FastingEvent[] = [
 export const FastingCalendar = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [reminders, setReminders] = useState<Set<string>>(new Set());
+  const [reminders, setReminders] = useState<Map<string, number>>(new Map());
   const [showCalendarView, setShowCalendarView] = useState(false);
   const [selectedTradition, setSelectedTradition] = useState<"Eastern Orthodox" | "Oriental Orthodox">("Eastern Orthodox");
+  const [showReminderDialog, setShowReminderDialog] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<FastingEvent | null>(null);
+  const [reminderDaysBefore, setReminderDaysBefore] = useState<string>("0");
   const { scheduleFastingReminder } = useNotifications();
 
   useEffect(() => {
@@ -67,7 +84,8 @@ export const FastingCalendar = () => {
       // Load from localStorage if not logged in
       const saved = localStorage.getItem('fastingReminders');
       if (saved) {
-        setReminders(new Set(JSON.parse(saved)));
+        const parsed = JSON.parse(saved);
+        setReminders(new Map(parsed));
       }
       return;
     }
@@ -83,10 +101,13 @@ export const FastingCalendar = () => {
     }
 
     if (data) {
-      const reminderSet = new Set(
-        data.map(r => `${r.event_name}-${r.event_date}-${r.event_tradition}`)
+      const reminderMap = new Map(
+        data.map(r => [
+          `${r.event_name}-${r.event_date}-${r.event_tradition}`,
+          r.reminder_days_before || 0
+        ])
       );
-      setReminders(reminderSet);
+      setReminders(reminderMap);
     }
   };
 
@@ -115,9 +136,23 @@ export const FastingCalendar = () => {
     });
   };
 
-  const toggleReminder = async (event: FastingEvent) => {
+  const handleReminderClick = (event: FastingEvent) => {
     const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
-    const newReminders = new Set(reminders);
+    
+    if (reminders.has(eventKey)) {
+      // Remove reminder
+      removeReminder(event);
+    } else {
+      // Show dialog to select reminder preference
+      setSelectedEvent(event);
+      setReminderDaysBefore("0");
+      setShowReminderDialog(true);
+    }
+  };
+
+  const removeReminder = async (event: FastingEvent) => {
+    const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
+    const newReminders = new Map(reminders);
     
     // Parse the event date
     const [monthStr, dayStr] = event.startDate.split(' ');
@@ -126,61 +161,83 @@ export const FastingCalendar = () => {
     const eventDate = new Date(selectedYear, month, day);
     const eventDateStr = eventDate.toISOString().split('T')[0];
     
-    if (reminders.has(eventKey)) {
-      // Remove reminder
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        // Remove from database if logged in
-        await supabase
-          .from('fasting_reminders')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('event_name', event.name)
-          .eq('event_date', eventDateStr)
-          .eq('event_tradition', event.tradition);
-      }
-
-      newReminders.delete(eventKey);
-      localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders)));
-      toast.success("Reminder removed");
-    } else {
-      // Check if date has passed
-      const notifDate = new Date(selectedYear, month, day, 0, 0, 0);
-      if (notifDate <= new Date()) {
-        toast.error("Date has passed");
-        return;
-      }
-
-      // Schedule local notification at midnight
-      await scheduleFastingReminder(
-        event.name,
-        event.type,
-        event.tradition,
-        notifDate
-      );
-
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        // Save to database if logged in
-        await supabase
-          .from('fasting_reminders')
-          .insert({
-            user_id: user.id,
-            event_name: event.name,
-            event_date: eventDateStr,
-            event_tradition: event.tradition,
-            event_type: event.type
-          });
-      }
-
-      newReminders.add(eventKey);
-      localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders)));
-      toast.success("App notification set for midnight! 🔔");
-    }
+    // Remove reminder
+    const { data: { user } } = await supabase.auth.getUser();
     
+    if (user) {
+      // Remove from database if logged in
+      await supabase
+        .from('fasting_reminders')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('event_name', event.name)
+        .eq('event_date', eventDateStr)
+        .eq('event_tradition', event.tradition);
+    }
+
+    newReminders.delete(eventKey);
+    localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders)));
     setReminders(newReminders);
+    toast.success("Reminder removed");
+  };
+
+  const confirmReminder = async () => {
+    if (!selectedEvent) return;
+
+    const eventKey = `${selectedEvent.name}-${selectedEvent.startDate}-${selectedEvent.tradition}`;
+    const daysBefore = parseInt(reminderDaysBefore);
+    
+    // Parse the event date
+    const [monthStr, dayStr] = selectedEvent.startDate.split(' ');
+    const month = monthNames.indexOf(monthStr);
+    const day = parseInt(dayStr);
+    const eventDate = new Date(selectedYear, month, day);
+    const eventDateStr = eventDate.toISOString().split('T')[0];
+    
+    // Check if date has passed
+    const notifDate = new Date(selectedYear, month, day, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (notifDate <= today) {
+      toast.error("Date has passed");
+      setShowReminderDialog(false);
+      return;
+    }
+
+    // Schedule local notifications
+    await scheduleFastingReminder(
+      selectedEvent.name,
+      selectedEvent.type,
+      selectedEvent.tradition,
+      notifDate,
+      daysBefore
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user) {
+      // Save to database if logged in
+      await supabase
+        .from('fasting_reminders')
+        .insert({
+          user_id: user.id,
+          event_name: selectedEvent.name,
+          event_date: eventDateStr,
+          event_tradition: selectedEvent.tradition,
+          event_type: selectedEvent.type,
+          reminder_days_before: daysBefore
+        });
+    }
+
+    const newReminders = new Map(reminders);
+    newReminders.set(eventKey, daysBefore);
+    localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders)));
+    setReminders(newReminders);
+    
+    const daysText = daysBefore === 0 ? "on the day" : daysBefore === 1 ? "1 day before" : `${daysBefore} days before`;
+    toast.success(`Reminder set ${daysText}! 🔔`);
+    setShowReminderDialog(false);
   };
 
   const handlePreviousMonth = () => {
@@ -288,7 +345,7 @@ export const FastingCalendar = () => {
                         variant="ghost"
                         size="icon"
                         className="h-6 w-6"
-                        onClick={() => toggleReminder(event)}
+                        onClick={() => handleReminderClick(event)}
                       >
                         {hasReminder ? (
                           <Bell className="w-3 h-3" />
@@ -343,6 +400,39 @@ export const FastingCalendar = () => {
           selectedYear={selectedYear}
         />
       )}
+
+      {/* Reminder Preference Dialog */}
+      <Dialog open={showReminderDialog} onOpenChange={setShowReminderDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Set Reminder</DialogTitle>
+            <DialogDescription>
+              When would you like to be reminded about {selectedEvent?.name}?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Select value={reminderDaysBefore} onValueChange={setReminderDaysBefore}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose reminder timing" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">On the day of the {selectedEvent?.type}</SelectItem>
+                <SelectItem value="1">1 day before (daily reminders)</SelectItem>
+                <SelectItem value="2">2 days before (daily reminders)</SelectItem>
+                <SelectItem value="3">3 days before (daily reminders)</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setShowReminderDialog(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={confirmReminder} className="flex-1">
+                Set Reminder
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -49,6 +49,7 @@ export type Database = {
           event_tradition: string
           event_type: string
           id: string
+          reminder_days_before: number
           user_id: string
         }
         Insert: {
@@ -58,6 +59,7 @@ export type Database = {
           event_tradition: string
           event_type: string
           id?: string
+          reminder_days_before?: number
           user_id: string
         }
         Update: {
@@ -67,6 +69,7 @@ export type Database = {
           event_tradition?: string
           event_type?: string
           id?: string
+          reminder_days_before?: number
           user_id?: string
         }
         Relationships: []
