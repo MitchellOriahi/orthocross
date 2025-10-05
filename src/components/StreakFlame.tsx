@@ -21,11 +21,17 @@ export const StreakFlame = ({ days, size = "md" }: StreakFlameProps) => {
   return (
     <div className="relative inline-flex flex-col items-center gap-2">
       <div className={`${sizeClasses[size]} relative`}>
-        <div className="absolute inset-0 rounded-full blur-xl opacity-50 animate-glow-pulse" style={{ background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%)' }} />
+        <div className="absolute inset-0 rounded-full blur-xl opacity-50 animate-glow-pulse dark:hidden" style={{ background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%)' }} />
+        <div className="absolute inset-0 rounded-full blur-xl opacity-50 animate-glow-pulse hidden dark:block" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%)' }} />
         <Flame 
-          className={`${sizeClasses[size]} relative z-10 animate-flame-flicker drop-shadow-lg`}
+          className={`${sizeClasses[size]} relative z-10 animate-flame-flicker drop-shadow-lg dark:hidden`}
           style={{ color: '#ff6b35' }}
           fill="url(#fireGradient)"
+        />
+        <Flame 
+          className={`${sizeClasses[size]} relative z-10 animate-flame-flicker drop-shadow-lg hidden dark:block`}
+          style={{ color: '#3b82f6' }}
+          fill="url(#blueFireGradient)"
         />
         <svg width="0" height="0" className="absolute">
           <defs>
@@ -33,6 +39,11 @@ export const StreakFlame = ({ days, size = "md" }: StreakFlameProps) => {
               <stop offset="0%" stopColor="#ffd700" />
               <stop offset="50%" stopColor="#f7931e" />
               <stop offset="100%" stopColor="#ff6b35" />
+            </linearGradient>
+            <linearGradient id="blueFireGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#93c5fd" />
+              <stop offset="50%" stopColor="#60a5fa" />
+              <stop offset="100%" stopColor="#3b82f6" />
             </linearGradient>
           </defs>
         </svg>
