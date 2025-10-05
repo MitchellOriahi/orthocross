@@ -6,7 +6,10 @@ import { useToast } from "@/hooks/use-toast";
 import { JournalSidebar } from "./journal/JournalSidebar";
 import { JournalNotesList } from "./journal/JournalNotesList";
 import { JournalEditor } from "./journal/JournalEditor";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, Menu } from "lucide-react";
 
 // Extended types that match the actual database schema
 interface JournalNote {
@@ -30,6 +33,7 @@ interface JournalFolder {
 export const Journal = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   
   const [notes, setNotes] = useState<JournalNote[]>([]);
   const [folders, setFolders] = useState<JournalFolder[]>([]);
@@ -38,6 +42,8 @@ export const Journal = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [showNotesList, setShowNotesList] = useState(true);
   
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
@@ -86,9 +92,9 @@ export const Journal = () => {
     }
   }, [selectedNoteId, notes]);
 
-  // Auto-save
+  // Auto-save with debounce
   useEffect(() => {
-    if (!user || !selectedNoteId || isSaving) return;
+    if (!user || !selectedNoteId) return;
 
     const timeoutId = setTimeout(async () => {
       setIsSaving(true);
@@ -102,23 +108,23 @@ export const Journal = () => {
           })
           .eq('id', selectedNoteId);
         
-        // Refresh notes list
-        const { data } = await (supabase as any)
-          .from('journal_entries')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('updated_at', { ascending: false });
-        
-        if (data) setNotes(data);
+        // Update only the current note in the list instead of refreshing everything
+        setNotes(prevNotes => 
+          prevNotes.map(note => 
+            note.id === selectedNoteId 
+              ? { ...note, title: currentTitle, content: currentContent, updated_at: new Date().toISOString() }
+              : note
+          )
+        );
       } catch (error) {
         console.error('Error saving:', error);
       } finally {
-        setIsSaving(false);
+        setTimeout(() => setIsSaving(false), 300);
       }
-    }, 1000);
+    }, 1500);
 
     return () => clearTimeout(timeoutId);
-  }, [currentTitle, currentContent, selectedNoteId, user, isSaving]);
+  }, [currentTitle, currentContent, selectedNoteId, user]);
 
   const handleNoteCreate = async () => {
     if (!user) return;
@@ -149,6 +155,9 @@ export const Journal = () => {
   const handleNoteSelect = (noteId: string) => {
     setSelectedNoteId(noteId);
     setIsFullScreen(true);
+    if (isMobile) {
+      setShowNotesList(false);
+    }
   };
 
   const handleFolderCreate = async () => {
@@ -223,6 +232,8 @@ export const Journal = () => {
   const handleClose = () => {
     setIsFullScreen(false);
     setSelectedNoteId(null);
+    setShowSidebar(false);
+    setShowNotesList(true);
   };
 
   return (
@@ -241,50 +252,98 @@ export const Journal = () => {
 
       <Sheet open={isFullScreen} onOpenChange={setIsFullScreen}>
         <SheetContent side="bottom" className="h-screen w-screen p-0 max-w-none">
+          <SheetTitle className="sr-only">Journal Editor</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="border-b border-border p-2 flex items-center bg-card">
+              {isMobile && selectedNoteId && !showNotesList && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowNotesList(true)}
+                  className="mr-2"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </Button>
+              )}
+              {isMobile && !showSidebar && showNotesList && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowSidebar(true)}
+                  className="mr-2"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              )}
               <h2 className="text-lg font-semibold px-2">Journal</h2>
             </div>
             
             <div className="flex-1 flex overflow-hidden">
-              <div className="w-48">
-                <JournalSidebar
-                  folders={folders}
-                  selectedFolderId={selectedFolderId}
-                  onFolderSelect={setSelectedFolderId}
-                  onFolderCreate={handleFolderCreate}
-                  onFolderDelete={handleFolderDelete}
-                  onFolderRename={handleFolderRename}
-                />
-              </div>
-              
-              <div className="w-64">
-                <JournalNotesList
-                  notes={filteredNotes}
-                  selectedNoteId={selectedNoteId}
-                  onNoteSelect={handleNoteSelect}
-                  onNoteCreate={handleNoteCreate}
-                  onNoteDelete={handleNoteDelete}
-                  searchQuery={searchQuery}
-                  onSearchChange={setSearchQuery}
-                />
-              </div>
-              
-              <div className="flex-1">
-                {selectedNoteId ? (
-                  <JournalEditor
-                    title={currentTitle}
-                    content={currentContent}
-                    onTitleChange={setCurrentTitle}
-                    onContentChange={setCurrentContent}
-                    isSaving={isSaving}
+              {/* Desktop: Always show sidebar */}
+              {/* Mobile: Show sidebar only when toggled */}
+              {(!isMobile || showSidebar) && (
+                <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background' : 'w-48'}`}>
+                  {isMobile && (
+                    <div className="p-2 border-b border-border flex items-center">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowSidebar(false)}
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </Button>
+                      <h3 className="text-lg font-semibold ml-2">Folders</h3>
+                    </div>
+                  )}
+                  <JournalSidebar
+                    folders={folders}
+                    selectedFolderId={selectedFolderId}
+                    onFolderSelect={(folderId) => {
+                      setSelectedFolderId(folderId);
+                      if (isMobile) setShowSidebar(false);
+                    }}
+                    onFolderCreate={handleFolderCreate}
+                    onFolderDelete={handleFolderDelete}
+                    onFolderRename={handleFolderRename}
                   />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-muted-foreground">
-                    Select a note or create a new one
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
+              
+              {/* Desktop: Always show notes list */}
+              {/* Mobile: Show notes list only when no note is selected or when navigating back */}
+              {(!isMobile || showNotesList) && (
+                <div className={`${isMobile ? 'flex-1' : 'w-64'}`}>
+                  <JournalNotesList
+                    notes={filteredNotes}
+                    selectedNoteId={selectedNoteId}
+                    onNoteSelect={handleNoteSelect}
+                    onNoteCreate={handleNoteCreate}
+                    onNoteDelete={handleNoteDelete}
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                  />
+                </div>
+              )}
+              
+              {/* Desktop: Always show editor area */}
+              {/* Mobile: Show editor only when a note is selected and notes list is hidden */}
+              {(!isMobile || (selectedNoteId && !showNotesList)) && (
+                <div className="flex-1">
+                  {selectedNoteId ? (
+                    <JournalEditor
+                      title={currentTitle}
+                      content={currentContent}
+                      onTitleChange={setCurrentTitle}
+                      onContentChange={setCurrentContent}
+                      isSaving={isSaving}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted-foreground">
+                      Select a note or create a new one
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </SheetContent>

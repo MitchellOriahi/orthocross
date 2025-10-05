@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Highlighter, Type } from "lucide-react";
+import { Highlighter } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface JournalEditorProps {
   title: string;
@@ -30,6 +31,7 @@ export const JournalEditor = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [showHighlighter, setShowHighlighter] = useState(false);
   const [selectedColor, setSelectedColor] = useState(HIGHLIGHT_COLORS[0]);
+  const isMobile = useIsMobile();
 
   const handleHighlight = () => {
     const textarea = textareaRef.current;
@@ -95,12 +97,14 @@ export const JournalEditor = ({
       </div>
 
       {/* Editor */}
-      <div className="flex-1 overflow-auto p-6">
+      <div className={`flex-1 overflow-auto ${isMobile ? 'p-4' : 'p-6'}`}>
         <Input
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           placeholder="Title"
-          className="text-2xl font-bold border-none bg-transparent px-0 mb-4 focus-visible:ring-0 focus-visible:ring-offset-0"
+          className={`font-bold border-none bg-transparent px-0 mb-4 focus-visible:ring-0 focus-visible:ring-offset-0 ${
+            isMobile ? 'text-xl' : 'text-2xl'
+          }`}
         />
         
         <Textarea
@@ -108,7 +112,9 @@ export const JournalEditor = ({
           value={content}
           onChange={(e) => onContentChange(e.target.value)}
           placeholder="Start writing..."
-          className="min-h-[calc(100vh-300px)] resize-none border-none bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-base leading-relaxed"
+          className={`resize-none border-none bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 leading-relaxed ${
+            isMobile ? 'min-h-[calc(100vh-200px)] text-sm' : 'min-h-[calc(100vh-300px)] text-base'
+          }`}
         />
       </div>
     </div>
