@@ -44,33 +44,63 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
     : 'from-red-500/20 to-orange-600/20';
 
   return (
-    <div className="relative py-8">
+    <div className="relative py-8" style={{ minHeight: `${campaign.islands.length * 280}px` }}>
       {/* Winding path background */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+      <svg 
+        className="absolute inset-0 pointer-events-none" 
+        style={{ zIndex: 0, width: '100%', height: '100%' }}
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
+          </linearGradient>
+        </defs>
         {campaign.islands.map((_, index) => {
           if (index === campaign.islands.length - 1) return null;
           
-          const currentRow = Math.floor(index / 2);
-          const nextRow = Math.floor((index + 1) / 2);
           const isCurrentLeft = index % 2 === 0;
           const isNextLeft = (index + 1) % 2 === 0;
           
-          const startX = isCurrentLeft ? '25%' : '75%';
-          const endX = isNextLeft ? '25%' : '75%';
-          const startY = `${currentRow * 280 + 140}`;
-          const endY = `${nextRow * 280 + 140}`;
+          // Calculate positions based on actual layout
+          const startY = index * 280 + 120;
+          const endY = (index + 1) * 280 + 120;
+          const midY = (startY + endY) / 2;
           
-          return (
-            <path
-              key={index}
-              d={`M ${startX} ${startY} Q 50% ${(parseFloat(startY) + parseFloat(endY)) / 2} ${endX} ${endY}`}
-              stroke="hsl(var(--primary))"
-              strokeWidth="3"
-              fill="none"
-              opacity="0.2"
-              strokeDasharray="5,5"
-            />
-          );
+          // Determine if this is a same-side or cross-over connection
+          if (isCurrentLeft === isNextLeft) {
+            // Same side - gentle curve
+            const x = isCurrentLeft ? '25%' : '75%';
+            return (
+              <path
+                key={index}
+                d={`M ${x} ${startY} L ${x} ${endY}`}
+                stroke="url(#pathGradient)"
+                strokeWidth="8"
+                fill="none"
+                strokeLinecap="round"
+              />
+            );
+          } else {
+            // Cross over - S-curve
+            const startX = isCurrentLeft ? '25%' : '75%';
+            const endX = isNextLeft ? '25%' : '75%';
+            
+            return (
+              <path
+                key={index}
+                d={`M ${startX} ${startY} 
+                    C ${startX} ${midY - 40}, 
+                      ${endX} ${midY + 40}, 
+                      ${endX} ${endY}`}
+                stroke="url(#pathGradient)"
+                strokeWidth="8"
+                fill="none"
+                strokeLinecap="round"
+              />
+            );
+          }
         })}
       </svg>
 
