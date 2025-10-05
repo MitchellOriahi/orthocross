@@ -9,7 +9,7 @@ export interface ReminderTime {
 }
 
 const DEFAULT_REMINDERS: ReminderTime[] = [
-  { id: 1, hour: 12, minute: 0, enabled: true }, // Verse of the day at noon
+  { id: 1, hour: 12, minute: 0, enabled: false }, // Verse of the day at noon (off by default)
   { id: 2, hour: 18, minute: 0, enabled: true }, // Streak reminder at 6pm
 ];
 
