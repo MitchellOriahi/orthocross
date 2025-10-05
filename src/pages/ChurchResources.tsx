@@ -362,7 +362,7 @@ const ChurchResources = () => {
             >
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <Church className="w-16 h-16 text-primary" />
+                  <Church className="w-20 h-20 text-primary" />
                   <div>
                     <div className="text-3xl">Eastern Orthodox</div>
                     <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
@@ -378,7 +378,7 @@ const ChurchResources = () => {
             >
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <Church className="w-16 h-16 text-primary" />
+                  <Church className="w-20 h-20 text-primary" />
                   <div>
                     <div className="text-3xl">Oriental Orthodox</div>
                     <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
