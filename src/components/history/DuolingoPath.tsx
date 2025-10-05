@@ -54,31 +54,49 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
 
   return (
     <div className="relative py-8">
-      <div className="relative space-y-4">
-        {/* Trail Lines connecting islands */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0" style={{ width: '2px', zIndex: 0 }}>
-          {campaign.islands.map((island, index) => {
-            if (index === campaign.islands.length - 1) return null;
-            
-            const nextIsland = campaign.islands[index + 1];
-            const isNextCompleted = progress.find(p => p.islandId === nextIsland.id)?.completed || false;
-            
-            return (
-              <div
-                key={index}
-                className={`absolute left-1/2 -translate-x-1/2 transition-all duration-500 ${
-                  isNextCompleted ? 'bg-primary' : 'border-2 border-primary border-dashed'
-                }`}
-                style={{
-                  top: `${index * 300 + 80}px`,
-                  height: '220px',
-                  width: isNextCompleted ? '4px' : '2px',
-                  marginLeft: isNextCompleted ? '-2px' : '-1px'
-                }}
-              />
-            );
-          })}
-        </div>
+      {/* SVG Trail connecting all islands */}
+      <svg 
+        className="absolute top-0 left-0 w-full pointer-events-none"
+        style={{ zIndex: 0, height: `${campaign.islands.length * 300}px` }}
+        preserveAspectRatio="none"
+      >
+        {campaign.islands.map((island, index) => {
+          if (index === campaign.islands.length - 1) return null;
+          
+          // Check if next island is completed to make path solid
+          const nextIsland = campaign.islands[index + 1];
+          const isNextCompleted = progress.find(p => p.islandId === nextIsland.id)?.completed || false;
+          
+          // Calculate vertical positions (center of each island)
+          const startY = index * 300 + 140;
+          const endY = (index + 1) * 300 + 140;
+          const midY = (startY + endY) / 2;
+          
+          // Center position (50%)
+          const centerX = '50%';
+          
+          // Create smooth curved path connecting through center
+          const path = `M ${centerX} ${startY} 
+                       C ${centerX} ${startY + 80},
+                         ${centerX} ${endY - 80},
+                         ${centerX} ${endY}`;
+          
+          return (
+            <path
+              key={index}
+              d={path}
+              stroke="hsl(var(--primary))"
+              strokeWidth="6"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray={isNextCompleted ? "0" : "15 10"}
+              opacity={isNextCompleted ? "0.9" : "0.5"}
+              className="transition-all duration-700"
+            />
+          );
+        })}
+      </svg>
 
       <div className="relative space-y-8" style={{ zIndex: 1 }}>
         {campaign.islands.map((island, index) => {
@@ -151,7 +169,6 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
             </div>
           );
         })}
-      </div>
       </div>
 
       {/* Completion celebration */}
