@@ -9,6 +9,7 @@ import { BookSelector } from "@/components/BookSelector";
 import { BIBLE_BOOKS, getCategorizedBooks, BookInfo } from "@/data/bibleContent";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Progress } from "@/components/ui/progress";
 
 interface ReadingProgress {
   id: string;
@@ -28,6 +29,7 @@ const Index = () => {
   const [lastRead, setLastRead] = useState<ReadingProgress | null>(null);
   const [loading, setLoading] = useState(true);
   const [bibleCompletion, setBibleCompletion] = useState(0);
+  const [bookProgress, setBookProgress] = useState<Record<string, number>>({});
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
@@ -35,6 +37,7 @@ const Index = () => {
     if (user) {
       loadLastRead();
       loadBibleCompletion();
+      loadBookProgress();
     } else {
       setLoading(false);
     }
@@ -46,6 +49,7 @@ const Index = () => {
       if (!document.hidden && user) {
         loadBibleCompletion();
         loadLastRead();
+        loadBookProgress();
       }
     };
 
@@ -89,6 +93,32 @@ const Index = () => {
       setBibleCompletion(completion);
     } catch (error) {
       console.error('Error loading Bible completion:', error);
+    }
+  };
+
+  const loadBookProgress = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('completed_chapters')
+        .select('book_key, chapter')
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+
+      // Group completed chapters by book
+      const progressByBook: Record<string, number> = {};
+      
+      BIBLE_BOOKS.forEach((book) => {
+        const completedChapters = data?.filter(c => c.book_key === book.title).length || 0;
+        if (completedChapters > 0) {
+          const percentage = Math.round((completedChapters / book.totalChapters) * 100);
+          progressByBook[book.title] = percentage;
+        }
+      });
+
+      setBookProgress(progressByBook);
+    } catch (error) {
+      console.error('Error loading book progress:', error);
     }
   };
 
@@ -273,6 +303,14 @@ const Index = () => {
                                 >
                                   <div className="font-medium text-sm">{book.bookName}</div>
                                   <div className="text-xs text-muted-foreground">{book.totalChapters} Ch.</div>
+                                  {bookProgress[book.title] > 0 && (
+                                    <div className="mt-2 space-y-1">
+                                      <Progress value={bookProgress[book.title]} className="h-1.5" />
+                                      <div className="text-xs text-muted-foreground text-right">
+                                        {bookProgress[book.title]}%
+                                      </div>
+                                    </div>
+                                  )}
                                 </button>
                               ))}
                             </div>
@@ -310,6 +348,14 @@ const Index = () => {
                                 >
                                   <div className="font-medium text-sm">{book.bookName}</div>
                                   <div className="text-xs text-muted-foreground">{book.totalChapters} Ch.</div>
+                                  {bookProgress[book.title] > 0 && (
+                                    <div className="mt-2 space-y-1">
+                                      <Progress value={bookProgress[book.title]} className="h-1.5" />
+                                      <div className="text-xs text-muted-foreground text-right">
+                                        {bookProgress[book.title]}%
+                                      </div>
+                                    </div>
+                                  )}
                                 </button>
                               ))}
                             </div>
@@ -337,6 +383,14 @@ const Index = () => {
                         >
                           <div className="font-medium text-sm">{book.bookName}</div>
                           <div className="text-xs text-muted-foreground">{book.totalChapters} Ch.</div>
+                          {bookProgress[book.title] > 0 && (
+                            <div className="mt-2 space-y-1">
+                              <Progress value={bookProgress[book.title]} className="h-1.5" />
+                              <div className="text-xs text-muted-foreground text-right">
+                                {bookProgress[book.title]}%
+                              </div>
+                            </div>
+                          )}
                         </button>
                       ))}
                     </div>
