@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const SAMPLE_VERSES = [
   { reference: "John 3:16", text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life." },
@@ -17,6 +18,7 @@ const SAMPLE_VERSES = [
 export const VerseOfTheDay = () => {
   const [verse, setVerse] = useState<{ reference: string; text: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const { scheduleNotification } = useNotifications();
 
   useEffect(() => {
     const loadVerseOfTheDay = async () => {
@@ -49,6 +51,12 @@ export const VerseOfTheDay = () => {
 
       setVerse(randomVerse);
       setLoading(false);
+      
+      // Schedule notification for the verse
+      await scheduleNotification(
+        "Verse of the Day",
+        `${randomVerse.text} — ${randomVerse.reference}`
+      );
     };
 
     loadVerseOfTheDay();

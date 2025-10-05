@@ -349,14 +349,14 @@ const ChurchResources = () => {
           <div className="grid md:grid-cols-2 gap-6">
             {/* Eastern Orthodox Etiquette Card */}
             <Card 
-              className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all"
+              className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all p-8"
               onClick={() => setSelectedSection("eastern")}
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Church className="w-8 h-8 text-primary" />
+                <CardTitle className="flex items-center gap-3">
+                  <Church className="w-16 h-16 text-primary" />
                   <div>
-                    <div className="text-xl">Eastern Orthodox</div>
+                    <div className="text-3xl">Eastern Orthodox</div>
                     <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
                   </div>
                 </CardTitle>
@@ -365,14 +365,14 @@ const ChurchResources = () => {
 
             {/* Oriental Orthodox Etiquette Card */}
             <Card 
-              className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all"
+              className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all p-8"
               onClick={() => setSelectedSection("oriental")}
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Church className="w-8 h-8 text-primary" />
+                <CardTitle className="flex items-center gap-3">
+                  <Church className="w-16 h-16 text-primary" />
                   <div>
-                    <div className="text-xl">Oriental Orthodox</div>
+                    <div className="text-3xl">Oriental Orthodox</div>
                     <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
                   </div>
                 </CardTitle>
@@ -381,14 +381,14 @@ const ChurchResources = () => {
 
             {/* Prayers Card */}
             <Card 
-              className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all"
+              className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all p-8"
               onClick={() => setSelectedSection("prayers")}
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="w-8 h-8 text-primary" />
+                <CardTitle className="flex items-center gap-3">
+                  <BookOpen className="w-16 h-16 text-primary" />
                   <div>
-                    <div className="text-xl">Prayers</div>
+                    <div className="text-3xl">Prayers</div>
                     <div className="text-sm text-muted-foreground font-normal">Orthodox Prayer Collection</div>
                   </div>
                 </CardTitle>
@@ -397,14 +397,14 @@ const ChurchResources = () => {
 
             {/* Saints Card */}
             <Card 
-              className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all"
+              className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all p-8"
               onClick={() => setSelectedSection("saints")}
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Church className="w-8 h-8 text-primary" />
+                <CardTitle className="flex items-center gap-3">
+                  <Church className="w-16 h-16 text-primary" />
                   <div>
-                    <div className="text-xl">Saints</div>
+                    <div className="text-3xl">Saints</div>
                     <div className="text-sm text-muted-foreground font-normal">Lives of Orthodox Saints</div>
                   </div>
                 </CardTitle>
