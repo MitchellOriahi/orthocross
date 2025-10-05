@@ -22,6 +22,17 @@ const Home = () => {
     }
   }, []);
 
+  // Auto-play carousel
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    const interval = setInterval(() => {
+      carouselApi.scrollNext();
+    }, 3000); // Auto-scroll every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [carouselApi]);
+
   const handleBeginClick = () => {
     setHasClicked(true);
     localStorage.setItem("hasClickedBegin", "true");

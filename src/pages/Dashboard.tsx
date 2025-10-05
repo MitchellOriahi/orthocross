@@ -6,7 +6,7 @@ import { FastingCalendar } from "@/components/FastingCalendar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDay } from "@/components/VerseOfTheDay";
-import { Book, Home, BookOpen, Settings as SettingsIcon, LogOut, Scroll } from "lucide-react";
+import { Home, Settings as SettingsIcon, LogOut, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -173,25 +173,24 @@ const Dashboard = () => {
         </div>
       </header>
 
-      {/* Navigation Links */}
-      <section className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex flex-wrap gap-3 justify-end">
-            <Button variant="outline" size="sm" onClick={() => navigate('/orthodox-history')}>
-              <Scroll className="w-4 h-4" />
-              Orthodox History
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/index')}>
-              <BookOpen className="w-4 h-4" />
-              Browse Scripture
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/church-resources')}>
-              <Book className="w-4 h-4" />
-              Church Resources
-            </Button>
-          </div>
-        </div>
-      </section>
+
+      {/* Navigation Arrows */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
+        onClick={() => navigate('/index')}
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </Button>
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed right-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
+        onClick={() => navigate('/church-resources')}
+      >
+        <ChevronRight className="w-5 h-5" />
+      </Button>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 space-y-8">

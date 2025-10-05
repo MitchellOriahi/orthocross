@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Settings as SettingsIcon, LogOut, Trophy } from "lucide-react";
+import { Home, Settings as SettingsIcon, LogOut, Trophy, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -93,6 +93,16 @@ const OrthodoxHistory = () => {
 
   return (
     <div className="min-h-screen gradient-peaceful">
+      {/* Navigation Arrow */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed right-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
+        onClick={() => navigate('/index')}
+      >
+        <ChevronRight className="w-5 h-5" />
+      </Button>
+
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">

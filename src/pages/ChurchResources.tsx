@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Church, BookOpen, UserRound } from "lucide-react";
+import { ArrowLeft, Church, BookOpen, UserRound, ChevronLeft } from "lucide-react";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import {
   Accordion,
@@ -325,6 +325,16 @@ const ChurchResources = () => {
 
   return (
     <div className="min-h-screen gradient-peaceful">
+      {/* Navigation Arrow */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
+        onClick={() => navigate('/dashboard')}
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </Button>
+
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">

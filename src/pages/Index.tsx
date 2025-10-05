@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Play, ChevronRight } from "lucide-react";
+import { BookOpen, Play, ChevronRight, ChevronLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { BookSelector } from "@/components/BookSelector";
@@ -178,6 +178,24 @@ const Index = () => {
 
   return (
     <div className="min-h-screen gradient-peaceful">
+      {/* Navigation Arrows */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
+        onClick={() => navigate('/orthodox-history')}
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </Button>
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed right-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
+        onClick={() => navigate('/dashboard')}
+      >
+        <ChevronRight className="w-5 h-5" />
+      </Button>
+
       {/* Header */}
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
