@@ -15,11 +15,13 @@ interface DetailedContentViewProps {
 }
 
 export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete, iconUrl }: DetailedContentViewProps) => {
+  // If iconUrl exists, we'll show it on page 0, content starts from page 1
+  const contentPages = iconUrl ? ['__ICON_PAGE__', ...content] : content;
   const [currentPage, setCurrentPage] = useState(0);
   const [viewMode, setViewMode] = useState<'paginated' | 'scroll'>('paginated');
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const totalPages = content.length;
+  const totalPages = contentPages.length;
   const progressPercentage = ((currentPage + 1) / totalPages) * 100;
   const isComplete = currentPage === totalPages - 1;
 
@@ -90,27 +92,17 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl pb-20">
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row gap-6 items-center justify-center md:justify-start">
-            {iconUrl && (
-              <div className="flex-shrink-0">
-                <div className="w-32 h-32 md:w-40 md:h-40 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
-                  <img 
-                    src={`${iconUrl}?v=${Date.now()}`} 
-                    alt={title} 
-                    className="w-full h-full object-cover" 
-                  />
-                </div>
-              </div>
-            )}
-            <div className="flex-1 text-center md:text-left">
+        {/* Only show title/subtitle header if not on icon page or in scroll mode */}
+        {(viewMode === 'scroll' || currentPage !== 0 || !iconUrl) && (
+          <div className="mb-8">
+            <div className="flex flex-col items-center justify-center text-center">
               <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground break-words">
                 {title}
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground break-words">{subtitle}</p>
             </div>
           </div>
-        </div>
+        )}
 
         {viewMode === 'paginated' ? (
           <Card className="p-4 sm:p-8">
@@ -125,9 +117,27 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
               onClick={handleContentClick}
               className="prose dark:prose-invert max-w-none mb-8 min-h-[300px] sm:min-h-[500px] cursor-pointer"
             >
-              <p className="text-base sm:text-lg leading-relaxed whitespace-pre-line">
-                {content[currentPage]}
-              </p>
+              {contentPages[currentPage] === '__ICON_PAGE__' ? (
+                <div className="flex flex-col items-center justify-center gap-6 min-h-[500px]">
+                  <div className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-lg overflow-hidden border-2 border-primary/20 shadow-2xl">
+                    <img 
+                      src={`${iconUrl}?v=${Date.now()}`} 
+                      alt={title} 
+                      className="w-full h-full object-cover" 
+                    />
+                  </div>
+                  <div className="text-center">
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground">
+                      {title}
+                    </h1>
+                    <p className="text-lg sm:text-xl text-muted-foreground">{subtitle}</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-base sm:text-lg leading-relaxed whitespace-pre-line">
+                  {contentPages[currentPage]}
+                </p>
+              )}
             </div>
 
             <div className="pt-6 border-t space-y-4">
@@ -195,6 +205,17 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
         ) : (
           <Card className="p-4 sm:p-8">
             <div className="prose dark:prose-invert max-w-none">
+              {iconUrl && (
+                <div className="flex justify-center mb-8">
+                  <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-lg overflow-hidden border-2 border-primary/20 shadow-2xl">
+                    <img 
+                      src={`${iconUrl}?v=${Date.now()}`} 
+                      alt={title} 
+                      className="w-full h-full object-cover" 
+                    />
+                  </div>
+                </div>
+              )}
               {content.map((paragraph, index) => (
                 <div key={index} className="mb-6">
                   <p className="text-base sm:text-lg leading-relaxed whitespace-pre-line">
