@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      journal_entries: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       reading_progress: {
         Row: {
           book_key: string | null
@@ -116,6 +140,30 @@ export type Database = {
           scripture_title?: string
           user_id?: string
           verse_number?: number
+        }
+        Relationships: []
+      }
+      verse_of_the_day: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          verse_reference: string
+          verse_text: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          verse_reference: string
+          verse_text: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          verse_reference?: string
+          verse_text?: string
         }
         Relationships: []
       }

@@ -5,6 +5,8 @@ import { DailyReadingCard } from "@/components/DailyReadingCard";
 import { FastingCalendar } from "@/components/FastingCalendar";
 import { DoveMascot } from "@/components/DoveMascot";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Journal } from "@/components/Journal";
+import { VerseOfTheDay } from "@/components/VerseOfTheDay";
 import { Book, Home, BookOpen, Settings as SettingsIcon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,6 +16,15 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
   const [streakDays, setStreakDays] = useState(0);
+  const [lastReading, setLastReading] = useState<{
+    title: string;
+    passage: string;
+    progress: number;
+  }>({
+    title: "Gospel of John",
+    passage: "John 1:1",
+    progress: 0
+  });
 
   useEffect(() => {
     const fetchStreak = async () => {
@@ -30,7 +41,28 @@ const Dashboard = () => {
       }
     };
 
+    const fetchLastReading = async () => {
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('reading_progress')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('last_read_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (data) {
+        setLastReading({
+          title: data.scripture_title,
+          passage: data.scripture_passage,
+          progress: data.progress || 0
+        });
+      }
+    };
+
     fetchStreak();
+    fetchLastReading();
   }, [user]);
   
   return (
@@ -68,41 +100,28 @@ const Dashboard = () => {
           <StreakFlame days={streakDays} size="lg" />
         </section>
 
-        {/* Today's Reading */}
+        {/* Continue Reading */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-bold">Today's Reading</h2>
+          <h2 className="text-2xl font-bold">Continue Reading</h2>
           <DailyReadingCard
-            title="Gospel of John"
-            passage="John 3:1-21"
-            progress={0}
-            onStartReading={() => navigate('/reading', { state: { title: "Gospel of John", passage: "John 3:1-21", progress: 0 } })}
+            title={lastReading.title}
+            passage={lastReading.passage}
+            progress={lastReading.progress}
+            onStartReading={() => navigate('/reading', { state: lastReading })}
           />
         </section>
 
         {/* Additional Sections */}
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Reading Plan Overview */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold">This Week's Progress</h2>
-            <div className="grid gap-3">
-              <DailyReadingCard
-                title="Monday - Psalms"
-                passage="Psalm 23"
-                completed={true}
-                onStartReading={() => navigate('/reading', { state: { title: "Psalms", passage: "Psalm 23", progress: 100 } })}
-              />
-              <DailyReadingCard
-                title="Tuesday - Proverbs"
-                passage="Proverbs 3:1-12"
-                completed={true}
-                onStartReading={() => navigate('/reading', { state: { title: "Proverbs", passage: "Proverbs 3:1-12", progress: 100 } })}
-              />
-            </div>
-          </div>
+          {/* Verse of the Day */}
+          <VerseOfTheDay />
 
-          {/* Fasting Calendar */}
-          <FastingCalendar />
+          {/* Journal */}
+          <Journal />
         </div>
+
+        {/* Fasting Calendar */}
+        <FastingCalendar />
 
         {/* Quick Actions */}
         <section className="flex flex-wrap gap-4 justify-center py-8">
