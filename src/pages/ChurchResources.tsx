@@ -361,16 +361,12 @@ const ChurchResources = () => {
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-2 mb-8">
             <div className="relative inline-block mx-auto">
-              {/* Orthodox Cross on top */}
-              <div className="absolute left-1/2 -translate-x-1/2 -top-6 flex flex-col items-center">
+              {/* Regular Cross on top */}
+              <div className="absolute left-1/2 -translate-x-1/2 -top-5 flex flex-col items-center">
                 {/* Vertical bar */}
-                <div className="w-0.5 h-3 bg-primary"></div>
-                {/* Top horizontal bar (shortest) */}
-                <div className="w-3 h-0.5 bg-primary mb-0.5"></div>
-                {/* Middle horizontal bar (medium) */}
-                <div className="w-5 h-0.5 bg-primary mb-0.5"></div>
-                {/* Bottom slanted bar */}
-                <div className="w-4 h-0.5 bg-primary transform rotate-12 origin-center"></div>
+                <div className="w-0.5 h-4 bg-primary"></div>
+                {/* Horizontal bar */}
+                <div className="absolute top-1 left-1/2 -translate-x-1/2 w-3 h-0.5 bg-primary"></div>
               </div>
               {/* Connection line from cross to church */}
               <div className="absolute left-1/2 -translate-x-1/2 top-0 w-0.5 h-2 bg-primary"></div>
