@@ -23,8 +23,8 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Create audio element - Meditation ambient soundscape
-    audioRef.current = new Audio('https://assets.mixkit.co/music/preview/mixkit-meditation-bell-249.mp3');
+    // Create audio element - Peaceful ambient meditation music from Mixkit
+    audioRef.current = new Audio('https://assets.mixkit.co/music/preview/mixkit-dreaming-big-31.mp3');
     audioRef.current.loop = true;
     audioRef.current.volume = volume;
 
