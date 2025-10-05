@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNotifications } from "@/hooks/useNotifications";
 
@@ -21,41 +20,23 @@ export const VerseOfTheDay = () => {
   const { scheduleNotification } = useNotifications();
 
   useEffect(() => {
-    const loadVerseOfTheDay = async () => {
+    const loadVerseOfTheDay = () => {
+      // Get today's date as a string (YYYY-MM-DD)
       const today = new Date().toISOString().split('T')[0];
-
-      // Try to get today's verse from the database
-      const { data, error } = await supabase
-        .from('verse_of_the_day')
-        .select('*')
-        .eq('date', today)
-        .maybeSingle();
-
-      if (data) {
-        setVerse({ reference: data.verse_reference, text: data.verse_text });
-        setLoading(false);
-        return;
-      }
-
-      // If no verse for today, generate a new one
-      const randomVerse = SAMPLE_VERSES[Math.floor(Math.random() * SAMPLE_VERSES.length)];
       
-      // Save it to the database
-      await supabase
-        .from('verse_of_the_day')
-        .insert({
-          verse_reference: randomVerse.reference,
-          verse_text: randomVerse.text,
-          date: today
-        });
-
-      setVerse(randomVerse);
+      // Create a deterministic seed from the date
+      // This ensures the same verse is shown for everyone on the same day
+      const dateSeed = today.split('-').reduce((acc, num) => acc + parseInt(num), 0);
+      const verseIndex = dateSeed % SAMPLE_VERSES.length;
+      
+      const todaysVerse = SAMPLE_VERSES[verseIndex];
+      setVerse(todaysVerse);
       setLoading(false);
       
       // Schedule notification for the verse
-      await scheduleNotification(
+      scheduleNotification(
         "Verse of the Day",
-        `${randomVerse.text} — ${randomVerse.reference}`
+        `${todaysVerse.text} — ${todaysVerse.reference}`
       );
     };
 
@@ -80,7 +61,7 @@ export const VerseOfTheDay = () => {
     return () => {
       clearTimeout(midnightTimer);
     };
-  }, []);
+  }, [scheduleNotification]);
 
   if (loading) {
     return (
