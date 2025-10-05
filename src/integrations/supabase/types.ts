@@ -18,23 +18,100 @@ export type Database = {
         Row: {
           content: string | null
           created_at: string
+          folder_id: string | null
           id: string
+          title: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           content?: string | null
           created_at?: string
+          folder_id?: string | null
           id?: string
+          title?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           content?: string | null
           created_at?: string
+          folder_id?: string | null
           id?: string
+          title?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entries_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "journal_folders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journal_folders: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      orthodox_history_progress: {
+        Row: {
+          campaign_id: string
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          island_id: string
+          quiz_score: number | null
+          updated_at: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          campaign_id: string
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          island_id: string
+          quiz_score?: number | null
+          updated_at?: string
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          campaign_id?: string
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          island_id?: string
+          quiz_score?: number | null
+          updated_at?: string
+          user_id?: string
+          xp_earned?: number
         }
         Relationships: []
       }
@@ -79,6 +156,54 @@ export type Database = {
           scripture_passage?: string
           scripture_title?: string
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_avatars: {
+        Row: {
+          beard_option: string
+          created_at: string
+          equipped_armor: Json
+          eye_color: string
+          gender: string
+          hairstyle: string
+          hearts: number
+          id: string
+          outfit_palette: string
+          skin_tone: string
+          total_xp: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          beard_option?: string
+          created_at?: string
+          equipped_armor?: Json
+          eye_color?: string
+          gender?: string
+          hairstyle?: string
+          hearts?: number
+          id?: string
+          outfit_palette?: string
+          skin_tone?: string
+          total_xp?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          beard_option?: string
+          created_at?: string
+          equipped_armor?: Json
+          eye_color?: string
+          gender?: string
+          hairstyle?: string
+          hearts?: number
+          id?: string
+          outfit_palette?: string
+          skin_tone?: string
+          total_xp?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

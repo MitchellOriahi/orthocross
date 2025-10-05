@@ -7,7 +7,7 @@ import { DoveMascot } from "@/components/DoveMascot";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDay } from "@/components/VerseOfTheDay";
-import { Book, Home, BookOpen, Settings as SettingsIcon, LogOut } from "lucide-react";
+import { Book, Home, BookOpen, Settings as SettingsIcon, LogOut, Scroll } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -127,6 +127,10 @@ const Dashboard = () => {
 
         {/* Quick Actions */}
         <section className="flex flex-wrap gap-4 justify-center py-8">
+          <Button variant="outline" size="lg" onClick={() => navigate('/orthodox-history')}>
+            <Scroll className="w-5 h-5" />
+            Orthodox History
+          </Button>
           <Button variant="outline" size="lg" onClick={() => navigate('/index')}>
             <BookOpen className="w-5 h-5" />
             Browse Scripture

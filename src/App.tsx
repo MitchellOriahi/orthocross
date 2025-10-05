@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Reading from "./pages/Reading";
 import Settings from "./pages/Settings";
 import ChurchResources from "./pages/ChurchResources";
+import OrthodoxHistory from "./pages/OrthodoxHistory";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/reading" element={<ProtectedRoute><Reading /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
               <Route path="/church-resources" element={<ProtectedRoute><ChurchResources /></ProtectedRoute>} />
+              <Route path="/orthodox-history" element={<ProtectedRoute><OrthodoxHistory /></ProtectedRoute>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
               </Routes>
