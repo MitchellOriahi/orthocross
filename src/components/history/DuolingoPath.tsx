@@ -66,11 +66,15 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
             <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.7" />
           </linearGradient>
         </defs>
-        {campaign.islands.map((_, index) => {
+        {campaign.islands.map((island, index) => {
           if (index === campaign.islands.length - 1) return null;
           
           const isCurrentLeft = index % 2 === 0;
           const isNextLeft = (index + 1) % 2 === 0;
+          
+          // Check if the next island is completed to determine if path should be solid
+          const nextIsland = campaign.islands[index + 1];
+          const isNextCompleted = progress.find(p => p.islandId === nextIsland.id)?.completed || false;
           
           // Calculate positions based on actual layout
           const startY = index * 280 + 120;
@@ -89,6 +93,8 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                 strokeWidth="8"
                 fill="none"
                 strokeLinecap="round"
+                strokeDasharray={isNextCompleted ? "0" : "12 8"}
+                className="transition-all duration-500"
               />
             );
           } else {
@@ -107,6 +113,8 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                 strokeWidth="8"
                 fill="none"
                 strokeLinecap="round"
+                strokeDasharray={isNextCompleted ? "0" : "12 8"}
+                className="transition-all duration-500"
               />
             );
           }
