@@ -40,6 +40,19 @@ const Index = () => {
     }
   }, [user]);
 
+  // Reload Bible completion when page becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user) {
+        loadBibleCompletion();
+        loadLastRead();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [user]);
+
   const loadLastRead = async () => {
     try {
       const { data, error } = await supabase

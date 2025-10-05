@@ -240,13 +240,20 @@ const Reading = () => {
         }, {
           onConflict: 'user_id,book_key,chapter'
         });
+      
+      toast({
+        description: "Chapter completed! 🎉",
+      });
+      
+      // Navigate to next chapter if available
+      if (chapter < totalChapters) {
+        setTimeout(() => {
+          handleChapterChange(chapter + 1);
+        }, 500);
+      }
     } catch (error) {
       console.error('Error saving completed chapter:', error);
     }
-    
-    toast({
-      description: "Chapter completed! 🎉",
-    });
   };
 
   const isHighlighted = (verseNumber: number) => {

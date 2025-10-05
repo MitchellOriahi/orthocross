@@ -84,6 +84,51 @@ const Dashboard = () => {
     fetchStreak();
     fetchLastReading();
   }, [user]);
+
+  // Reload data when page becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user) {
+        const fetchLastReading = async () => {
+          const { data } = await supabase
+            .from('reading_progress')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('last_read_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (data) {
+            const { data: completedChapters } = await supabase
+              .from('completed_chapters')
+              .select('chapter')
+              .eq('user_id', user.id)
+              .eq('book_key', data.book_key);
+
+            const { BIBLE_BOOKS } = await import('@/data/bibleContent');
+            const bookInfo = BIBLE_BOOKS.find(b => b.title === data.book_key);
+            const totalChapters = bookInfo?.totalChapters || 1;
+            const completedCount = completedChapters?.length || 0;
+            const bookProgress = Math.round((completedCount / totalChapters) * 100);
+
+            setLastReading({
+              title: bookInfo?.bookName || data.scripture_title,
+              passage: `${bookInfo?.bookName || data.scripture_title} ${data.current_chapter}`,
+              progress: bookProgress,
+              bookKey: data.book_key,
+              chapter: data.current_chapter,
+              totalChapters: totalChapters
+            });
+          }
+        };
+
+        fetchLastReading();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [user]);
   
   return (
     <div className="min-h-screen gradient-peaceful">
