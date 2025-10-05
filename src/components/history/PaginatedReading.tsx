@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -12,6 +12,7 @@ const CHARS_PER_PAGE = 1200; // Approximately 200-250 words per page
 
 export const PaginatedReading = ({ content, onComplete }: PaginatedReadingProps) => {
   const [currentPage, setCurrentPage] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Split content into pages
   const pages = [];
@@ -52,6 +53,21 @@ export const PaginatedReading = ({ content, onComplete }: PaginatedReadingProps)
     }
   };
 
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!contentRef.current) return;
+    const rect = contentRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const halfWidth = rect.width / 2;
+
+    if (clickX < halfWidth) {
+      // Clicked on left side - go to previous page
+      handlePrev();
+    } else {
+      // Clicked on right side - go to next page
+      handleNext();
+    }
+  };
+
   return (
     <Card className="p-8">
       <div className="flex justify-end mb-4">
@@ -60,7 +76,11 @@ export const PaginatedReading = ({ content, onComplete }: PaginatedReadingProps)
         </div>
       </div>
       
-      <div className="prose dark:prose-invert max-w-none mb-8 min-h-[400px]">
+      <div 
+        ref={contentRef}
+        onClick={handleContentClick}
+        className="prose dark:prose-invert max-w-none mb-8 min-h-[400px] cursor-pointer"
+      >
         <p className="text-lg leading-relaxed whitespace-pre-line">{pages[currentPage]}</p>
       </div>
 

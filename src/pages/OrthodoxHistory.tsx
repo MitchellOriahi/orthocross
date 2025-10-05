@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home, Settings as SettingsIcon, LogOut, Trophy, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,8 @@ const OrthodoxHistory = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
   const [progress, setProgress] = useState<UserProgress[]>([]);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -76,6 +78,27 @@ const OrthodoxHistory = () => {
   const completedIslands = progress.filter(p => p.campaignId === selectedCampaign && p.completed).length;
   const progressPercent = campaign ? (completedIslands / campaign.islands.length) * 100 : 0;
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - go to next (Browse Scripture)
+        navigate('/index');
+      }
+    }
+  };
+
   if (selectedIsland && campaign) {
     const island = campaign.islands.find(i => i.id === selectedIsland.islandId);
     if (island) {
@@ -92,12 +115,16 @@ const OrthodoxHistory = () => {
 
 
   return (
-    <div className="min-h-screen gradient-peaceful">
-      {/* Navigation Arrow */}
+    <div 
+      className="min-h-screen gradient-peaceful"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Navigation Arrow - Hidden on mobile/tablet */}
       <Button
         variant="outline"
         size="icon"
-        className="fixed right-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
+        className="hidden lg:flex fixed right-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
         onClick={() => navigate('/index')}
       >
         <ChevronRight className="w-5 h-5" />

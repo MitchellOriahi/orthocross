@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, ChevronLeft, ChevronRight, Check } from "lucide-react";
@@ -16,6 +16,7 @@ interface DetailedContentViewProps {
 export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete }: DetailedContentViewProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [viewMode, setViewMode] = useState<'paginated' | 'scroll'>('paginated');
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const totalPages = content.length;
   const progressPercentage = ((currentPage + 1) / totalPages) * 100;
@@ -30,6 +31,21 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
   const handlePrev = () => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (viewMode !== 'paginated' || !contentRef.current) return;
+    const rect = contentRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const halfWidth = rect.width / 2;
+
+    if (clickX < halfWidth) {
+      // Clicked on left side - go to previous page
+      handlePrev();
+    } else {
+      // Clicked on right side - go to next page
+      handleNext();
     }
   };
 
@@ -88,7 +104,11 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
               </div>
             </div>
 
-            <div className="prose dark:prose-invert max-w-none mb-8 min-h-[300px] sm:min-h-[500px]">
+            <div 
+              ref={contentRef}
+              onClick={handleContentClick}
+              className="prose dark:prose-invert max-w-none mb-8 min-h-[300px] sm:min-h-[500px] cursor-pointer"
+            >
               <p className="text-base sm:text-lg leading-relaxed whitespace-pre-line">
                 {content[currentPage]}
               </p>

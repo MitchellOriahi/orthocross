@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,6 +30,8 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [bibleCompletion, setBibleCompletion] = useState(0);
   const [bookProgress, setBookProgress] = useState<Record<string, number>>({});
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
@@ -176,13 +178,41 @@ const Index = () => {
 
   const lastReadScripture = getLastReadScripture();
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - go to next (Dashboard)
+        navigate('/dashboard');
+      } else {
+        // Swipe right - go to previous (Orthodox History)
+        navigate('/orthodox-history');
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen gradient-peaceful">
-      {/* Navigation Arrows */}
+    <div 
+      className="min-h-screen gradient-peaceful"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Navigation Arrows - Hidden on mobile/tablet */}
       <Button
         variant="outline"
         size="icon"
-        className="fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
+        className="hidden lg:flex fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
         onClick={() => navigate('/orthodox-history')}
       >
         <ChevronLeft className="w-5 h-5" />
@@ -190,7 +220,7 @@ const Index = () => {
       <Button
         variant="outline"
         size="icon"
-        className="fixed right-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
+        className="hidden lg:flex fixed right-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
         onClick={() => navigate('/dashboard')}
       >
         <ChevronRight className="w-5 h-5" />

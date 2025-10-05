@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, BookOpen, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ const Reading = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
+  const contentRef = useRef<HTMLDivElement>(null);
   
   const state = location.state || {};
   const book = state.book || "John";
@@ -260,6 +261,25 @@ const Reading = () => {
     return highlights.some(h => h.verse_number === verseNumber);
   };
 
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!contentRef.current) return;
+    const rect = contentRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const halfWidth = rect.width / 2;
+
+    if (clickX < halfWidth) {
+      // Clicked on left side - go to previous chapter
+      if (chapter > 1) {
+        handlePrevChapter();
+      }
+    } else {
+      // Clicked on right side - go to next chapter
+      if (chapter < totalChapters) {
+        handleNextChapter();
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen gradient-peaceful">
       {/* Header */}
@@ -322,7 +342,7 @@ const Reading = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <Card className="p-8 shadow-sacred">
-            <div className="space-y-6">
+            <div className="space-y-6" ref={contentRef}>
               <div className="text-center border-b pb-4">
                 <h1 className="text-3xl font-bold">{bookName}</h1>
                 <p className="text-muted-foreground mt-2">Chapter {chapter}</p>
@@ -333,6 +353,7 @@ const Reading = () => {
                 <div 
                   className="space-y-4" 
                   style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
+                  onClick={handleContentClick}
                 >
                   {loadingVerses ? (
                     <div className="flex items-center justify-center py-12">
@@ -350,7 +371,10 @@ const Reading = () => {
                           ${isHighlighted(verse.number) ? 'bg-yellow-200/30 dark:bg-yellow-400/20' : 'hover:bg-muted/50'}
                           ${selectedVerse === verse.number ? 'ring-2 ring-primary' : ''}
                         `}
-                        onClick={() => handleVerseClick(verse.number)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVerseClick(verse.number);
+                        }}
                       >
                         <span className="font-bold text-primary mr-2">{verse.number}</span>
                         <span>{verse.text}</span>
@@ -380,7 +404,10 @@ const Reading = () => {
                   )}
                 </div>
               ) : (
-                <div style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}>
+                <div 
+                  style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
+                  onClick={handleContentClick}
+                >
                   {loadingVerses ? (
                     <div className="flex items-center justify-center py-12">
                       <div className="text-center">
