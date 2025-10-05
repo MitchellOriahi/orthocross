@@ -13,9 +13,11 @@ import {
 import { DetailedContentView } from "@/components/resources/DetailedContentView";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
+import { useToast } from "@/hooks/use-toast";
 
 const ChurchResources = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedSaint, setSelectedSaint] = useState<SaintDetail | null>(null);
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
 
@@ -26,6 +28,11 @@ const ChurchResources = () => {
         subtitle={selectedSaint.title}
         content={selectedSaint.content}
         onClose={() => setSelectedSaint(null)}
+        showProgress={true}
+        onComplete={() => {
+          toast({ description: `Completed reading about ${selectedSaint.name}! 🙏` });
+          setSelectedSaint(null);
+        }}
       />
     );
   }
@@ -37,6 +44,7 @@ const ChurchResources = () => {
         subtitle={selectedPrayer.title}
         content={selectedPrayer.content}
         onClose={() => setSelectedPrayer(null)}
+        showProgress={false}
       />
     );
   }
@@ -292,70 +300,18 @@ const ChurchResources = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="st-mary">
-                    <AccordionTrigger>Theotokos (Virgin Mary)</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground">
-                        The Mother of God, who gave birth to Jesus Christ. She is honored above all saints in Orthodox Christianity and is called upon for intercession and protection. Her title "Theotokos" means "God-bearer."
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="st-nicholas">
-                    <AccordionTrigger>St. Nicholas of Myra</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground">
-                        Known for his generosity and miracles, St. Nicholas (270-343 AD) was a bishop who helped the poor and defended the faith. He is one of the most beloved saints and is invoked for help in difficulties.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="st-george">
-                    <AccordionTrigger>St. George the Trophy-Bearer</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground">
-                        A soldier and martyr (c. 280-303 AD) known for his courage and faith. The iconic image of St. George slaying the dragon represents the victory of good over evil and faith over persecution.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="st-john-chrysostom">
-                    <AccordionTrigger>St. John Chrysostom</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground">
-                        Archbishop of Constantinople (347-407 AD) and one of the greatest preachers in Church history. His name "Chrysostom" means "golden-mouthed." He wrote the most commonly used Divine Liturgy in Orthodox Christianity.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="st-basil">
-                    <AccordionTrigger>St. Basil the Great</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground">
-                        One of the three Cappadocian Fathers (330-379 AD), St. Basil was a bishop, theologian, and monastic founder. He defended Orthodox faith against heresies and established guidelines for monastic life still used today.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="st-anthony">
-                    <AccordionTrigger>St. Anthony the Great</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground">
-                        The Father of Monasticism (251-356 AD), St. Anthony withdrew to the desert to live a life of prayer and asceticism. His example inspired the monastic movement that spread throughout Christianity.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="apostles">
-                    <AccordionTrigger>The Holy Apostles</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-sm text-muted-foreground">
-                        The twelve disciples chosen by Jesus Christ to spread the Gospel: Peter, Andrew, James, John, Philip, Bartholomew, Thomas, Matthew, James son of Alphaeus, Thaddeus, Simon, and Judas (replaced by Matthias). Also honored is St. Paul, the Apostle to the Gentiles.
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                <div className="space-y-2">
+                  {saintsContent.map((saint) => (
+                    <button
+                      key={saint.id}
+                      onClick={() => setSelectedSaint(saint)}
+                      className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all"
+                    >
+                      <div className="font-semibold text-base">{saint.name}</div>
+                      <div className="text-sm text-muted-foreground mt-1">{saint.title}</div>
+                    </button>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>

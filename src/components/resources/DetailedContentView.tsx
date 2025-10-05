@@ -1,21 +1,26 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 
 interface DetailedContentViewProps {
   title: string;
   subtitle: string;
   content: string[];
   onClose: () => void;
+  showProgress?: boolean;
+  onComplete?: () => void;
 }
 
-export const DetailedContentView = ({ title, subtitle, content, onClose }: DetailedContentViewProps) => {
+export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete }: DetailedContentViewProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [viewMode, setViewMode] = useState<'paginated' | 'scroll'>('paginated');
 
   const totalPages = content.length;
+  const progressPercentage = ((currentPage + 1) / totalPages) * 100;
+  const isComplete = currentPage === totalPages - 1;
 
   const handleNext = () => {
     if (currentPage < totalPages - 1) {
@@ -55,6 +60,16 @@ export const DetailedContentView = ({ title, subtitle, content, onClose }: Detai
               </Button>
             </div>
           </div>
+          
+          {showProgress && (
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">Reading Progress</span>
+                <span className="text-sm text-muted-foreground">{Math.round(progressPercentage)}%</span>
+              </div>
+              <Progress value={progressPercentage} className="h-2" />
+            </div>
+          )}
         </div>
       </header>
 
@@ -106,14 +121,25 @@ export const DetailedContentView = ({ title, subtitle, content, onClose }: Detai
                 ))}
               </div>
 
-              <Button
-                onClick={handleNext}
-                disabled={currentPage === totalPages - 1}
-                size="lg"
-              >
-                Next
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
+              {showProgress && isComplete && onComplete ? (
+                <Button
+                  onClick={onComplete}
+                  size="lg"
+                  variant="sacred"
+                >
+                  <Check className="w-5 h-5 mr-2" />
+                  Finish
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleNext}
+                  disabled={currentPage === totalPages - 1}
+                  size="lg"
+                >
+                  Next
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              )}
             </div>
           </Card>
         ) : (

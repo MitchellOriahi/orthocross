@@ -201,10 +201,15 @@ const Reading = () => {
     setSelectedVerse(verseNumber === selectedVerse ? null : verseNumber);
   };
 
-  const handleChapterChange = (newChapter: number) => {
+  const handleChapterChange = async (newChapter: number) => {
     setChapter(newChapter);
     setSelectedVerse(null);
     setProgress(0);
+    
+    // Save progress when changing chapters
+    if (user) {
+      await saveProgress(0);
+    }
   };
 
   const handleNextChapter = () => {
