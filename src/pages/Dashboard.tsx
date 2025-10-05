@@ -95,17 +95,6 @@ const Dashboard = () => {
     fetchLastReading();
   }, [user]);
 
-  // Auto-scroll on desktop for better initial view
-  useEffect(() => {
-    const isDesktop = window.innerWidth >= 768;
-    if (isDesktop) {
-      window.scrollTo({
-        top: 100,
-        behavior: 'smooth'
-      });
-    }
-  }, []);
-
   // Reload data when page becomes visible
   useEffect(() => {
     const handleVisibilityChange = () => {
