@@ -42,7 +42,12 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen gradient-peaceful">
+    <div className="min-h-screen gradient-peaceful relative">
+      {/* Instagram Handle */}
+      <div className="absolute top-4 right-4 text-xs text-muted-foreground">
+        @orthocross on Instagram
+      </div>
+      
       {/* Hero Section */}
       <section className="container mx-auto px-4 pt-20 text-center space-y-8">
         <div className="max-w-3xl mx-auto space-y-6">
