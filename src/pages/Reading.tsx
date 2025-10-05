@@ -303,35 +303,37 @@ const Reading = () => {
           />
 
           {/* Controls */}
-          <div className="flex items-center justify-between mt-4 gap-4">
+          <div className="flex items-center justify-between mt-4 gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
             <div className="flex items-center gap-2">
-              <Type className="w-4 h-4" />
+              <Type className="w-4 h-4 flex-shrink-0" />
               <Slider
                 value={fontSize}
                 onValueChange={setFontSize}
                 min={14}
                 max={24}
                 step={2}
-                className="w-32"
+                className="w-24 sm:w-32"
               />
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <Button
                 variant={readingMode === "scroll" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setReadingMode("scroll")}
+                className="text-xs sm:text-sm"
               >
-                <BookOpen className="w-4 h-4 mr-2" />
-                Scroll
+                <BookOpen className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Scroll</span>
               </Button>
               <Button
                 variant={readingMode === "page" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setReadingMode("page")}
+                className="text-xs sm:text-sm"
               >
-                <BookMarked className="w-4 h-4 mr-2" />
-                Page
+                <BookMarked className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Page</span>
               </Button>
             </div>
           </div>

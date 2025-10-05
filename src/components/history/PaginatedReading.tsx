@@ -71,8 +71,8 @@ export const PaginatedReading = ({ content, onComplete }: PaginatedReadingProps)
   return (
     <Card className="p-8">
       <div className="flex justify-end mb-4">
-        <div className="text-sm font-medium text-muted-foreground bg-primary/10 px-3 py-1 rounded-full">
-          Page {currentPage + 1} of {totalPages}
+        <div className="text-xs sm:text-sm font-medium text-muted-foreground bg-primary/10 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
+          <span className="hidden sm:inline">Page </span>{currentPage + 1}<span className="hidden sm:inline"> of</span><span className="sm:hidden">/</span> {totalPages}
         </div>
       </div>
       
