@@ -53,76 +53,32 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
     : 'from-red-500/20 to-orange-600/20';
 
   return (
-    <div className="relative py-8" style={{ minHeight: `${campaign.islands.length * 280}px` }}>
-      {/* Winding path connecting islands */}
-      <svg 
-        className="absolute inset-0 pointer-events-none overflow-visible" 
-        style={{ zIndex: 0, width: '100%', height: '100%' }}
-        preserveAspectRatio="xMidYMid meet"
-        viewBox="0 0 100 100"
-      >
-        <defs>
-          <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
-          </linearGradient>
-        </defs>
-        {campaign.islands.map((island, index) => {
-          if (index === campaign.islands.length - 1) return null;
-          
-          const isCurrentLeft = index % 2 === 0;
-          const isNextLeft = (index + 1) % 2 === 0;
-          
-          // Check if the next island is completed to make the path solid
-          const nextIsland = campaign.islands[index + 1];
-          const isNextCompleted = progress.find(p => p.islandId === nextIsland.id)?.completed || false;
-          
-          // Calculate positions as percentages
-          const startY = (index * 280 + 120) / (campaign.islands.length * 280) * 100;
-          const endY = ((index + 1) * 280 + 120) / (campaign.islands.length * 280) * 100;
-          const midY = (startY + endY) / 2;
-          
-          // Determine if this is a same-side or cross-over connection
-          if (isCurrentLeft === isNextLeft) {
-            // Same side - vertical line
-            const x = isCurrentLeft ? 25 : 75;
-            return (
-              <path
-                key={index}
-                d={`M ${x} ${startY} L ${x} ${endY}`}
-                stroke="hsl(var(--primary))"
-                strokeWidth="1.5"
-                fill="none"
-                strokeLinecap="round"
-                strokeDasharray={isNextCompleted ? "0" : "3 2"}
-                className="transition-all duration-500"
-                opacity={isNextCompleted ? "0.8" : "0.5"}
-              />
-            );
-          } else {
-            // Cross over - S-curve
-            const startX = isCurrentLeft ? 25 : 75;
-            const endX = isNextLeft ? 25 : 75;
+    <div className="relative py-8">
+      <div className="relative space-y-4">
+        {/* Trail Lines connecting islands */}
+        <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0" style={{ width: '2px', zIndex: 0 }}>
+          {campaign.islands.map((island, index) => {
+            if (index === campaign.islands.length - 1) return null;
+            
+            const nextIsland = campaign.islands[index + 1];
+            const isNextCompleted = progress.find(p => p.islandId === nextIsland.id)?.completed || false;
             
             return (
-              <path
+              <div
                 key={index}
-                d={`M ${startX} ${startY} 
-                    C ${startX} ${midY - 5}, 
-                      ${endX} ${midY + 5}, 
-                      ${endX} ${endY}`}
-                stroke="hsl(var(--primary))"
-                strokeWidth="1.5"
-                fill="none"
-                strokeLinecap="round"
-                strokeDasharray={isNextCompleted ? "0" : "3 2"}
-                className="transition-all duration-500"
-                opacity={isNextCompleted ? "0.8" : "0.5"}
+                className={`absolute left-1/2 -translate-x-1/2 transition-all duration-500 ${
+                  isNextCompleted ? 'bg-primary' : 'border-2 border-primary border-dashed'
+                }`}
+                style={{
+                  top: `${index * 300 + 80}px`,
+                  height: '220px',
+                  width: isNextCompleted ? '4px' : '2px',
+                  marginLeft: isNextCompleted ? '-2px' : '-1px'
+                }}
               />
             );
-          }
-        })}
-      </svg>
+          })}
+        </div>
 
       <div className="relative space-y-8" style={{ zIndex: 1 }}>
         {campaign.islands.map((island, index) => {
@@ -132,12 +88,12 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
           return (
             <div 
               key={island.id} 
-              className={`flex items-center gap-8 ${isLeftSide ? 'flex-row' : 'flex-row-reverse'}`}
-              style={{ minHeight: '240px' }}
+              className="flex items-center justify-center gap-8 relative"
+              style={{ minHeight: '280px' }}
             >
-              {/* Island Card */}
-              <div className="flex-1 max-w-md">
-                <Card 
+              {/* Island Card - Left */}
+              <div className={`flex-1 max-w-md ${isLeftSide ? 'text-right' : 'text-left order-3'}`}>
+                <Card
                   className={`relative overflow-hidden transition-all duration-300 hover:scale-105 cursor-pointer ${
                     status.isCompleted ? 'border-primary shadow-xl' : ''
                   } ${!status.isUnlocked ? 'opacity-60' : ''}`}
@@ -175,8 +131,8 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                 </Card>
               </div>
 
-              {/* Status Circle */}
-              <div className="flex-shrink-0">
+              {/* Status Circle - Center */}
+              <div className="flex-shrink-0 relative z-10 order-2">
                 <div className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
                   status.isCompleted 
                     ? 'bg-primary shadow-lg shadow-primary/50' 
@@ -191,10 +147,11 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
               </div>
 
               {/* Spacer for other side */}
-              <div className="flex-1 max-w-md" />
+              <div className={`flex-1 max-w-md ${isLeftSide ? 'order-3' : 'order-1'}`} />
             </div>
           );
         })}
+      </div>
       </div>
 
       {/* Completion celebration */}
