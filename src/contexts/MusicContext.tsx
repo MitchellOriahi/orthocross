@@ -23,8 +23,8 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Create audio element
-    audioRef.current = new Audio('https://cdn.pixabay.com/download/audio/2022/03/10/audio_4a26f8258e.mp3');
+    // Create audio element - Dunbarton Meditative Ambient Soundscape
+    audioRef.current = new Audio('https://cdn.pixabay.com/audio/2023/02/20/audio_b1f0b66320.mp3');
     audioRef.current.loop = true;
     audioRef.current.volume = volume;
 
