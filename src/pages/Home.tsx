@@ -37,8 +37,8 @@ const Home = () => {
             <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
-            Welcome to the <span className="gradient-sacred bg-clip-text text-transparent">OrthoCross App</span>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            Welcome to the <span className="text-foreground">OrthoCross App</span>
           </h1>
           
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -60,12 +60,12 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container mx-auto px-4 py-20">
+      <section id="features" className="container mx-auto px-4 py-12">
         <div className="relative max-w-6xl mx-auto">
           <Carousel
             opts={{
               align: "start",
-              loop: false,
+              loop: true,
             }}
             className="w-full"
             setApi={setCarouselApi}

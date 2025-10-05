@@ -55,7 +55,7 @@ export const CongratulationsModal = ({
 
           {/* Congratulations Message */}
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold gradient-sacred bg-clip-text text-transparent">
+            <h2 className="text-3xl font-bold text-foreground">
               Congratulations!
             </h2>
             <p className="text-lg text-muted-foreground">

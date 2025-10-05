@@ -156,7 +156,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5">
             <div className="mb-6">
               <Trophy className="w-24 h-24 mx-auto mb-4 text-primary animate-bounce" />
-              <h2 className="text-4xl font-bold mb-2 gradient-sacred bg-clip-text text-transparent">
+              <h2 className="text-4xl font-bold mb-2 text-foreground">
                 🎉 Congratulations! 🎉
               </h2>
               <p className="text-xl text-muted-foreground">Island Complete!</p>
@@ -166,7 +166,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
               <p className="text-sm uppercase tracking-wider text-muted-foreground mb-2">You've Earned</p>
               <div className="relative">
                 <Shield className="w-32 h-32 mx-auto mb-4 text-primary" />
-                <p className="text-3xl font-bold capitalize gradient-sacred bg-clip-text text-transparent">
+                <p className="text-3xl font-bold capitalize text-foreground">
                   {island.awardPiece.replace(/_/g, ' ')}
                 </p>
               </div>

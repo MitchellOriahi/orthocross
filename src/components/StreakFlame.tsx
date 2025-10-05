@@ -28,7 +28,7 @@ export const StreakFlame = ({ days, size = "md" }: StreakFlameProps) => {
         />
       </div>
       <div className="text-center">
-        <div className="text-2xl font-bold gradient-sacred bg-clip-text text-transparent">
+        <div className="text-2xl font-bold text-foreground">
           {days}
         </div>
         <div className={`${textSizeClasses[size]} text-muted-foreground font-medium`}>

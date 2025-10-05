@@ -93,7 +93,7 @@ const OrthodoxHistory = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img src={orthodoxCrossLogo} alt="Orthodox Cross" className="w-12 h-12 object-contain" />
-              <h1 className="text-2xl font-bold gradient-sacred bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold text-foreground">
                 Orthodox History Quest
               </h1>
             </div>
