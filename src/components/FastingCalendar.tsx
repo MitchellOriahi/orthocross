@@ -55,7 +55,7 @@ export const FastingCalendar = () => {
   const [reminders, setReminders] = useState<Set<string>>(new Set());
   const [showCalendarView, setShowCalendarView] = useState(false);
   const [selectedTradition, setSelectedTradition] = useState<"Eastern Orthodox" | "Oriental Orthodox">("Eastern Orthodox");
-  const { scheduleNotification } = useNotifications();
+  const { scheduleFastingReminder } = useNotifications();
 
   useEffect(() => {
     loadReminders();
@@ -63,7 +63,14 @@ export const FastingCalendar = () => {
 
   const loadReminders = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) {
+      // Load from localStorage if not logged in
+      const saved = localStorage.getItem('fastingReminders');
+      if (saved) {
+        setReminders(new Set(JSON.parse(saved)));
+      }
+      return;
+    }
 
     const { data, error } = await supabase
       .from('fasting_reminders')
@@ -109,12 +116,6 @@ export const FastingCalendar = () => {
   };
 
   const toggleReminder = async (event: FastingEvent) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error("Please sign in to set reminders");
-      return;
-    }
-
     const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
     const newReminders = new Set(reminders);
     
@@ -126,23 +127,23 @@ export const FastingCalendar = () => {
     const eventDateStr = eventDate.toISOString().split('T')[0];
     
     if (reminders.has(eventKey)) {
-      // Remove reminder from database
-      const { error } = await supabase
-        .from('fasting_reminders')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('event_name', event.name)
-        .eq('event_date', eventDateStr)
-        .eq('event_tradition', event.tradition);
-
-      if (error) {
-        console.error('Error removing reminder:', error);
-        toast.error("Failed to remove reminder");
-        return;
+      // Remove reminder
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        // Remove from database if logged in
+        await supabase
+          .from('fasting_reminders')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('event_name', event.name)
+          .eq('event_date', eventDateStr)
+          .eq('event_tradition', event.tradition);
       }
 
       newReminders.delete(eventKey);
-      toast.success("Reminder removed - you won't receive SMS");
+      localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders)));
+      toast.success("Reminder removed");
     } else {
       // Check if date has passed
       const notifDate = new Date(selectedYear, month, day, 0, 0, 0);
@@ -151,33 +152,32 @@ export const FastingCalendar = () => {
         return;
       }
 
-      // Add reminder to database
-      const { error } = await supabase
-        .from('fasting_reminders')
-        .insert({
-          user_id: user.id,
-          event_name: event.name,
-          event_date: eventDateStr,
-          event_tradition: event.tradition,
-          event_type: event.type
-        });
+      // Schedule local notification at midnight
+      await scheduleFastingReminder(
+        event.name,
+        event.type,
+        event.tradition,
+        notifDate
+      );
 
-      if (error) {
-        console.error('Error adding reminder:', error);
-        toast.error("Failed to set reminder");
-        return;
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        // Save to database if logged in
+        await supabase
+          .from('fasting_reminders')
+          .insert({
+            user_id: user.id,
+            event_name: event.name,
+            event_date: eventDateStr,
+            event_tradition: event.tradition,
+            event_type: event.type
+          });
       }
 
       newReminders.add(eventKey);
-      
-      // Also schedule local notification
-      await scheduleNotification(
-        event.type === "fast" ? "Fast Beginning" : "Feast Day",
-        `${event.name} begins today (${event.tradition})`,
-        notifDate
-      );
-      
-      toast.success("SMS reminder set for midnight!");
+      localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders)));
+      toast.success("App notification set for midnight! 🔔");
     }
     
     setReminders(newReminders);

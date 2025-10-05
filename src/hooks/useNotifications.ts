@@ -9,8 +9,8 @@ export interface ReminderTime {
 }
 
 const DEFAULT_REMINDERS: ReminderTime[] = [
-  { id: 1, hour: 12, minute: 0, enabled: true },
-  { id: 2, hour: 18, minute: 0, enabled: true },
+  { id: 1, hour: 12, minute: 0, enabled: true }, // Verse of the day at noon
+  { id: 2, hour: 18, minute: 0, enabled: true }, // Streak reminder at 6pm
 ];
 
 export const useNotifications = () => {
@@ -80,9 +80,23 @@ export const useNotifications = () => {
             scheduledDate.setDate(scheduledDate.getDate() + 1);
           }
 
+          // Determine notification based on time
+          let title = "";
+          let body = "";
+          
+          if (reminder.hour === 12) {
+            // Verse of the day at noon
+            title = "📖 Verse of the Day";
+            body = "Check out today's inspiring verse!";
+          } else if (reminder.hour === 18) {
+            // Streak reminder at 6pm
+            title = "Keep Your Streak! 🔥";
+            body = "Don't forget your daily Bible reading to maintain your streak!";
+          }
+
           return {
-            title: "Keep Your Streak! 🔥",
-            body: "Don't forget your daily Bible reading to maintain your streak!",
+            title,
+            body,
             id: 1000 + reminder.id,
             schedule: {
               at: scheduledDate,
@@ -94,10 +108,38 @@ export const useNotifications = () => {
 
       if (notifications.length > 0) {
         await LocalNotifications.schedule({ notifications });
-        console.log(`Scheduled ${notifications.length} streak reminders`);
+        console.log(`Scheduled ${notifications.length} daily reminders`);
       }
     } catch (error) {
-      console.log('Error scheduling streak reminders:', error);
+      console.log('Error scheduling reminders:', error);
+    }
+  };
+
+  const scheduleFastingReminder = async (eventName: string, eventType: string, tradition: string, date: Date) => {
+    try {
+      // Schedule for midnight
+      const midnightDate = new Date(date);
+      midnightDate.setHours(0, 0, 0, 0);
+
+      const title = eventType === "fast" ? "🕊️ Fast Beginning" : "✨ Feast Day";
+      const body = eventType === "fast"
+        ? `${eventName} begins today (${tradition}). Remember to observe the fast.`
+        : `Today is ${eventName} (${tradition}). May you have a blessed feast day!`;
+
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            title,
+            body,
+            id: Math.floor(Math.random() * 100000),
+            schedule: { at: midnightDate },
+          },
+        ],
+      });
+
+      console.log(`Scheduled fasting reminder for ${eventName} at midnight`);
+    } catch (error) {
+      console.log('Error scheduling fasting reminder:', error);
     }
   };
 
@@ -114,6 +156,7 @@ export const useNotifications = () => {
   return { 
     scheduleNotification, 
     scheduleStreakReminders,
+    scheduleFastingReminder,
     updateStreakReminders,
     getStreakReminders,
   };
