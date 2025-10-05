@@ -1,1 +1,4 @@
 project_id = "atjpjmhumzfpotrkefaz"
+
+[functions.fetch-bible-chapter]
+verify_jwt = false

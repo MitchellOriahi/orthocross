@@ -36,8 +36,45 @@ const Reading = () => {
   const [highlights, setHighlights] = useState<VerseHighlight[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
+  const [verses, setVerses] = useState<Array<{number: number; text: string}>>([]);
+  const [loadingVerses, setLoadingVerses] = useState(false);
 
-  const verses = bibleContent[book]?.[chapter] || [];
+  // Load verses from API or fallback to hardcoded content
+  useEffect(() => {
+    const loadVerses = async () => {
+      setLoadingVerses(true);
+      
+      // Check if we have hardcoded content for Orthodox books
+      const hardcodedVerses = bibleContent[book]?.[chapter];
+      if (hardcodedVerses && hardcodedVerses.length > 0) {
+        setVerses(hardcodedVerses);
+        setLoadingVerses(false);
+        return;
+      }
+
+      // Otherwise fetch from Bible API
+      try {
+        const { data, error } = await supabase.functions.invoke('fetch-bible-chapter', {
+          body: { book, chapter }
+        });
+
+        if (error) throw error;
+        
+        if (data?.verses && data.verses.length > 0) {
+          setVerses(data.verses);
+        } else {
+          setVerses([]);
+        }
+      } catch (error) {
+        console.error('Error loading verses:', error);
+        setVerses([]);
+      } finally {
+        setLoadingVerses(false);
+      }
+    };
+
+    loadVerses();
+  }, [book, chapter]);
 
   useEffect(() => {
     if (user) {
@@ -258,7 +295,14 @@ const Reading = () => {
                 className="space-y-4" 
                 style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
               >
-                {verses.length > 0 ? (
+                {loadingVerses ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-muted-foreground">Loading verses...</p>
+                    </div>
+                  </div>
+                ) : verses.length > 0 ? (
                   verses.map((verse) => (
                     <div
                       key={verse.number}
