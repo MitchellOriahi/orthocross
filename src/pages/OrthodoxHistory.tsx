@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { DoveMascot } from "@/components/DoveMascot";
+import orthodoxCrossLogo from "@/assets/orthodox-cross-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { historyContent } from "@/data/historyContent";
@@ -146,7 +146,7 @@ const OrthodoxHistory = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <DoveMascot size="sm" />
+              <img src={orthodoxCrossLogo} alt="Orthodox Cross" className="w-12 h-12 object-contain" />
               <h1 className="text-2xl font-bold gradient-sacred bg-clip-text text-transparent">
                 Orthodox History Quest
               </h1>
