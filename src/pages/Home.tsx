@@ -45,7 +45,7 @@ const Home = () => {
             Build your daily spiritual practice with Bible reading streaks, fasting reminders, and Orthodox learning, engaging and meaningful, every day.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-12">
             <Button 
               variant="sacred" 
               size="lg"
@@ -59,7 +59,7 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container mx-auto px-4 pt-8">
+      <section id="features" className="container mx-auto px-4 pt-12 pb-12">
         <div className="relative max-w-6xl mx-auto">
           <Carousel
             opts={{
