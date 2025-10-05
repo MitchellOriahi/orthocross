@@ -11,7 +11,7 @@ import { Home, Settings as SettingsIcon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import orthodoxCrossLogo from "@/assets/orthodox-cross-logo.png";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -153,8 +153,8 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-12 h-12 bg-foreground dark:bg-background rounded-lg flex items-center justify-center p-1.5">
-                <img src={orthodoxCrossLogo} alt="Orthodox Cross" className="w-full h-full object-contain" />
+              <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center p-1">
+                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-lg sm:text-2xl font-bold">Dashboard</h1>
             </div>

@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BottomNavigation } from "@/components/BottomNavigation";
-import orthodoxCrossLogo from "@/assets/orthodox-cross-logo.png";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { historyContent } from "@/data/historyContent";
@@ -98,8 +98,8 @@ const OrthodoxHistory = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-foreground dark:bg-background rounded-lg flex items-center justify-center p-1.5">
-                <img src={orthodoxCrossLogo} alt="Orthodox Cross" className="w-full h-full object-contain" />
+              <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center p-1">
+                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-2xl font-bold text-foreground">
                 Orthodox History Quest
