@@ -360,19 +360,7 @@ const ChurchResources = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-2 mb-8">
-            <div className="relative inline-block mx-auto">
-              {/* Regular Cross on top */}
-              <div className="absolute left-1/2 -translate-x-1/2 -top-5 flex flex-col items-center">
-                {/* Vertical bar */}
-                <div className="w-0.5 h-4 bg-primary"></div>
-                {/* Horizontal bar */}
-                <div className="absolute top-1 left-1/2 -translate-x-1/2 w-3 h-0.5 bg-primary"></div>
-              </div>
-              {/* Connection line from cross to church */}
-              <div className="absolute left-1/2 -translate-x-1/2 top-0 w-0.5 h-2 bg-primary"></div>
-              {/* Church icon */}
-              <Church className="w-12 h-12 text-primary" />
-            </div>
+            <Church className="w-12 h-12 mx-auto text-primary" />
             <h2 className="text-3xl font-bold">Orthodox Church Guide</h2>
             <p className="text-muted-foreground">Learn the traditions and proper conduct in Orthodox worship</p>
           </div>
