@@ -121,7 +121,9 @@ const Dashboard = () => {
         </div>
 
         {/* Fasting Calendar */}
-        <FastingCalendar />
+        <div className="max-h-[400px] overflow-auto">
+          <FastingCalendar />
+        </div>
 
         {/* Quick Actions */}
         <section className="flex flex-wrap gap-4 justify-center py-8">
