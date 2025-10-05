@@ -272,14 +272,22 @@ const Reading = () => {
             </div>
             
             <div className="flex items-center gap-2">
-              <Toggle
-                pressed={readingMode === "scroll"}
-                onPressedChange={(pressed) => setReadingMode(pressed ? "scroll" : "page")}
-                aria-label="Toggle reading mode"
+              <Button
+                variant={readingMode === "scroll" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setReadingMode("scroll")}
               >
                 <BookOpen className="w-4 h-4 mr-2" />
-                {readingMode === "scroll" ? "Scroll" : "Page"}
-              </Toggle>
+                Scroll
+              </Button>
+              <Button
+                variant={readingMode === "page" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setReadingMode("page")}
+              >
+                <BookMarked className="w-4 h-4 mr-2" />
+                Page
+              </Button>
             </div>
           </div>
         </div>
@@ -296,55 +304,86 @@ const Reading = () => {
               </div>
 
               {/* Verses */}
-              <div 
-                className="space-y-4" 
-                style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
-              >
-                {loadingVerses ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="text-center">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
-                      <p className="text-muted-foreground">Loading verses...</p>
+              {readingMode === "scroll" ? (
+                <div 
+                  className="space-y-4" 
+                  style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
+                >
+                  {loadingVerses ? (
+                    <div className="flex items-center justify-center py-12">
+                      <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+                        <p className="text-muted-foreground">Loading verses...</p>
+                      </div>
                     </div>
-                  </div>
-                ) : verses.length > 0 ? (
-                  verses.map((verse) => (
-                    <div
-                      key={verse.number}
-                      className={`
-                        group relative p-3 rounded-lg transition-all cursor-pointer
-                        ${isHighlighted(verse.number) ? 'bg-yellow-200/30 dark:bg-yellow-400/20' : 'hover:bg-muted/50'}
-                        ${selectedVerse === verse.number ? 'ring-2 ring-primary' : ''}
-                      `}
-                      onClick={() => handleVerseClick(verse.number)}
-                    >
-                      <span className="font-bold text-primary mr-2">{verse.number}</span>
-                      <span>{verse.text}</span>
-                      
-                      {selectedVerse === verse.number && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="absolute right-2 top-2"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleHighlight(verse.number);
-                          }}
-                        >
-                          <Highlighter className="w-4 h-4 mr-2" />
-                          {isHighlighted(verse.number) ? 'Remove' : 'Highlight'}
-                        </Button>
-                      )}
+                  ) : verses.length > 0 ? (
+                    verses.map((verse) => (
+                      <div
+                        key={verse.number}
+                        className={`
+                          group relative p-3 rounded-lg transition-all cursor-pointer
+                          ${isHighlighted(verse.number) ? 'bg-yellow-200/30 dark:bg-yellow-400/20' : 'hover:bg-muted/50'}
+                          ${selectedVerse === verse.number ? 'ring-2 ring-primary' : ''}
+                        `}
+                        onClick={() => handleVerseClick(verse.number)}
+                      >
+                        <span className="font-bold text-primary mr-2">{verse.number}</span>
+                        <span>{verse.text}</span>
+                        
+                        {selectedVerse === verse.number && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="absolute right-2 top-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleHighlight(verse.number);
+                            }}
+                          >
+                            <Highlighter className="w-4 h-4 mr-2" />
+                            {isHighlighted(verse.number) ? 'Remove' : 'Highlight'}
+                          </Button>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <BookMarked className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>Chapter content not yet available</p>
+                      <p className="text-sm mt-2">This chapter will be added soon</p>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <BookMarked className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>Chapter content not yet available</p>
-                    <p className="text-sm mt-2">This chapter will be added soon</p>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}>
+                  {loadingVerses ? (
+                    <div className="flex items-center justify-center py-12">
+                      <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+                        <p className="text-muted-foreground">Loading verses...</p>
+                      </div>
+                    </div>
+                  ) : verses.length > 0 ? (
+                    <div className="prose prose-lg max-w-none">
+                      <p className="leading-relaxed">
+                        {verses.map((verse, idx) => (
+                          <span key={verse.number}>
+                            <sup className="font-bold text-primary">{verse.number}</sup>
+                            {verse.text}
+                            {idx < verses.length - 1 && ' '}
+                          </span>
+                        ))}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <BookMarked className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>Chapter content not yet available</p>
+                      <p className="text-sm mt-2">This chapter will be added soon</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Chapter Navigation */}
               <div className="flex items-center justify-between pt-6 border-t">

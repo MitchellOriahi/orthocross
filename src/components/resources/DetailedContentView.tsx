@@ -130,6 +130,15 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
                   <Check className="w-5 h-5 mr-2" />
                   Finish
                 </Button>
+              ) : !showProgress && isComplete ? (
+                <Button
+                  onClick={onClose}
+                  size="lg"
+                  variant="sacred"
+                >
+                  <Check className="w-5 h-5 mr-2" />
+                  Finish
+                </Button>
               ) : (
                 <Button
                   onClick={handleNext}
@@ -158,6 +167,17 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
                 ))}
               </div>
             </ScrollArea>
+            
+            <div className="flex justify-center mt-6 pt-6 border-t">
+              <Button
+                onClick={showProgress && onComplete ? onComplete : onClose}
+                size="lg"
+                variant="sacred"
+              >
+                <Check className="w-5 h-5 mr-2" />
+                Finish
+              </Button>
+            </div>
           </Card>
         )}
       </main>

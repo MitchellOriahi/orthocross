@@ -73,7 +73,7 @@ const ChurchResources = () => {
         <div className="max-w-6xl mx-auto space-y-6">
           <div className="text-center space-y-2 mb-8">
             <Church className="w-12 h-12 mx-auto text-primary" />
-            <h2 className="text-3xl font-bold">Orthodox Church Etiquette Guide</h2>
+            <h2 className="text-3xl font-bold">Orthodox Church Guide</h2>
             <p className="text-muted-foreground">Learn the traditions and proper conduct in Orthodox worship</p>
           </div>
 

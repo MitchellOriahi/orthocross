@@ -68,12 +68,12 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen gradient-peaceful">
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+      <header className="bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img src={orthodoxCrossLogo} alt="Orthodox Cross" className="w-10 h-10 object-contain" />
-              <h1 className="text-2xl font-bold gradient-sacred bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold">
                 Orthodox Companion
               </h1>
             </div>
