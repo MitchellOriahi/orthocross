@@ -97,7 +97,7 @@ const ChurchResources = () => {
               <Card className="shadow-elevated border-border/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <img src={stBasilIcon} alt="St. Basil" className="w-5 h-5 text-primary" />
+                    <Church className="w-5 h-5 text-primary" />
                     Eastern Orthodox Church Etiquette
                   </CardTitle>
                 </CardHeader>
@@ -362,7 +362,7 @@ const ChurchResources = () => {
             >
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <img src={stBasilIcon} alt="St. Basil" className="w-16 h-16" />
+                  <Church className="w-16 h-16 text-primary" />
                   <div>
                     <div className="text-3xl">Eastern Orthodox</div>
                     <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
