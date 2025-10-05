@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Calendar, ChevronLeft, ChevronRight, Bell, BellOff } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Bell, BellOff, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNotifications } from "@/hooks/useNotifications";
 import { toast } from "sonner";
+import { FastingCalendarView } from "./FastingCalendarView";
 
 interface FastingEvent {
   name: string;
@@ -49,6 +50,7 @@ export const FastingCalendar = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [reminders, setReminders] = useState<Set<string>>(new Set());
+  const [showCalendarView, setShowCalendarView] = useState(false);
   const { scheduleNotification } = useNotifications();
 
   useEffect(() => {
@@ -141,50 +143,64 @@ export const FastingCalendar = () => {
   const displayMonthName = monthNames[selectedMonth];
 
   return (
-    <Card className="shadow-elevated border-border/50">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-primary" />
-            {displayMonthName} {selectedYear} Fasts & Feasts
-          </div>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={handlePreviousMonth}>
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleNextMonth}>
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {monthEvents.length > 0 ? (
-          monthEvents.map((event, index) => {
-            const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
-            const hasReminder = reminders.has(eventKey);
-            
-            return (
-              <div 
-                key={index}
-                className={`p-3 rounded-lg border space-y-2 ${
-                  event.type === "fast" 
-                    ? "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50" 
-                    : "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900/50"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <h4 className={`font-semibold ${
+    <div className="space-y-4">
+      <Card className="shadow-elevated border-border/50">
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-primary" />
+              {displayMonthName} {selectedYear} Fasts & Feasts
+            </div>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" onClick={handlePreviousMonth}>
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={handleNextMonth}>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {monthEvents.length > 0 ? (
+            monthEvents.map((event, index) => {
+              const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
+              const hasReminder = reminders.has(eventKey);
+              const isEastern = event.tradition === "Eastern Orthodox";
+              
+              return (
+                <div 
+                  key={index}
+                  className={`p-3 rounded-lg border-2 space-y-2 ${
                     event.type === "fast" 
-                      ? "text-red-900 dark:text-red-100" 
-                      : "text-blue-900 dark:text-blue-100"
-                  }`}>
-                    {event.name}
-                  </h4>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs">
-                      {event.tradition}
-                    </Badge>
+                      ? isEastern
+                        ? "bg-red-100 dark:bg-red-900/40 border-red-400 dark:border-red-700" 
+                        : "bg-red-50 dark:bg-red-950/30 border-red-300 dark:border-red-800"
+                      : isEastern
+                        ? "bg-blue-100 dark:bg-blue-900/40 border-blue-400 dark:border-blue-700"
+                        : "bg-blue-50 dark:bg-blue-950/30 border-blue-300 dark:border-blue-800"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex flex-col gap-1">
+                      <h4 className={`font-semibold ${
+                        event.type === "fast" 
+                          ? "text-red-900 dark:text-red-100" 
+                          : "text-blue-900 dark:text-blue-100"
+                      }`}>
+                        {event.name}
+                      </h4>
+                      <Badge 
+                        variant="outline" 
+                        className={`text-xs w-fit ${
+                          isEastern 
+                            ? "bg-amber-100 dark:bg-amber-900/40 border-amber-500 text-amber-900 dark:text-amber-100" 
+                            : "bg-purple-100 dark:bg-purple-900/40 border-purple-500 text-purple-900 dark:text-purple-100"
+                        }`}
+                      >
+                        {isEastern ? "⛪ Eastern Orthodox" : "✝️ Oriental Orthodox"}
+                      </Badge>
+                    </div>
                     {event.isMajor && (
                       <Button
                         variant="ghost"
@@ -200,23 +216,45 @@ export const FastingCalendar = () => {
                       </Button>
                     )}
                   </div>
+                  <p className={`text-sm font-medium ${
+                    event.type === "fast" 
+                      ? "text-red-800 dark:text-red-200" 
+                      : "text-blue-800 dark:text-blue-200"
+                  }`}>
+                    {event.endDate ? `${event.startDate} - ${event.endDate}` : event.startDate}
+                  </p>
                 </div>
-                <p className={`text-sm ${
-                  event.type === "fast" 
-                    ? "text-red-700 dark:text-red-300" 
-                    : "text-blue-700 dark:text-blue-300"
-                }`}>
-                  {event.endDate ? `${event.startDate} - ${event.endDate}` : event.startDate}
-                </p>
-              </div>
-            );
-          })
-        ) : (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            No fasts or feasts this month
-          </p>
-        )}
-      </CardContent>
-    </Card>
+              );
+            })
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              No fasts or feasts this month
+            </p>
+          )}
+          
+          {/* Toggle Calendar View Button */}
+          <Button
+            variant="outline"
+            className="w-full mt-4"
+            onClick={() => setShowCalendarView(!showCalendarView)}
+          >
+            {showCalendarView ? (
+              <>
+                <ChevronUp className="w-4 h-4 mr-2" />
+                Hide Calendar View
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-4 h-4 mr-2" />
+                Show Calendar View
+              </>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+      
+      {/* Collapsible Calendar View */}
+      {showCalendarView && <FastingCalendarView />}
+    </div>
   );
 };

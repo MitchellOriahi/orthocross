@@ -216,14 +216,7 @@ const Dashboard = () => {
         </div>
 
         {/* Fasting Calendar */}
-        <div className="space-y-6">
-          <div className="max-h-[400px] overflow-auto">
-            <FastingCalendar />
-          </div>
-          
-          {/* Calendar View */}
-          <FastingCalendarView />
-        </div>
+        <FastingCalendar />
       </main>
 
       <BottomNavigation />

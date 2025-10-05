@@ -98,15 +98,23 @@ export const FastingCalendarView = () => {
       const isWeeklyFast = weeklyFasts.includes(day);
       const hasFeast = events.some(e => e.type === "feast");
       const hasFast = events.some(e => e.type === "fast");
+      const hasEastern = events.some(e => e.tradition === "Eastern");
       
       days.push(
         <div
           key={day}
           className={`h-20 border border-border/50 p-1 overflow-hidden ${
-            hasFeast ? "bg-blue-50 dark:bg-blue-950/20" :
-            hasFast ? "bg-red-50 dark:bg-red-950/20" :
-            isWeeklyFast ? "bg-red-50/50 dark:bg-red-950/10" :
-            "bg-background"
+            hasFeast 
+              ? hasEastern
+                ? "bg-blue-200 dark:bg-blue-900/50" 
+                : "bg-blue-100 dark:bg-blue-950/30"
+              : hasFast 
+                ? hasEastern
+                  ? "bg-red-200 dark:bg-red-900/50"
+                  : "bg-red-100 dark:bg-red-950/30"
+                : isWeeklyFast 
+                  ? "bg-red-50 dark:bg-red-950/20" 
+                  : "bg-background"
           }`}
         >
           <div className="font-semibold text-sm">{day}</div>
@@ -114,11 +122,13 @@ export const FastingCalendarView = () => {
             {events.map((event, idx) => (
               <div
                 key={idx}
-                className={`text-[10px] truncate ${
-                  event.type === "feast" ? "text-blue-700 dark:text-blue-300" : "text-red-700 dark:text-red-300"
+                className={`text-[10px] truncate font-medium ${
+                  event.type === "feast" 
+                    ? "text-blue-900 dark:text-blue-100" 
+                    : "text-red-900 dark:text-red-100"
                 }`}
               >
-                {event.name}
+                {event.tradition === "Eastern" ? "⛪" : "✝️"} {event.name}
               </div>
             ))}
           </div>
@@ -150,19 +160,25 @@ export const FastingCalendarView = () => {
         {/* Legend */}
         <div className="flex flex-wrap gap-3 text-xs">
           <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-red-100 dark:bg-red-950/30 border border-red-300 dark:border-red-900" />
-            <span>Major Fast</span>
+            <div className="w-4 h-4 bg-red-200 dark:bg-red-900/50 border border-red-400 dark:border-red-700" />
+            <span>⛪ Eastern Fast</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-red-50 dark:bg-red-950/10 border border-red-200 dark:border-red-900/30" />
+            <div className="w-4 h-4 bg-red-100 dark:bg-red-950/30 border border-red-300 dark:border-red-800" />
+            <span>✝️ Oriental Fast</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30" />
             <span>Wed/Fri Fast</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-blue-100 dark:bg-blue-950/30 border border-blue-300 dark:border-blue-900" />
-            <span>Feast</span>
+            <div className="w-4 h-4 bg-blue-200 dark:bg-blue-900/50 border border-blue-400 dark:border-blue-700" />
+            <span>⛪ Eastern Feast</span>
           </div>
-          <Badge variant="outline" className="text-[10px] px-1 py-0">Eastern</Badge>
-          <Badge variant="outline" className="text-[10px] px-1 py-0">Oriental</Badge>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 bg-blue-100 dark:bg-blue-950/30 border border-blue-300 dark:border-blue-800" />
+            <span>✝️ Oriental Feast</span>
+          </div>
         </div>
 
         {/* Calendar Grid */}
