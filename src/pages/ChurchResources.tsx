@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Church, Landmark, BookOpen, UserRound } from "lucide-react";
+import { ArrowLeft, Church, BookOpen, UserRound } from "lucide-react";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import stBasilIcon from "@/assets/st-basil-icon.png";
 import {
   Accordion,
   AccordionContent,
@@ -96,7 +97,7 @@ const ChurchResources = () => {
               <Card className="shadow-elevated border-border/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Church className="w-5 h-5 text-primary" />
+                    <img src={stBasilIcon} alt="St. Basil" className="w-5 h-5 text-primary" />
                     Eastern Orthodox Church Etiquette
                   </CardTitle>
                 </CardHeader>
@@ -179,7 +180,7 @@ const ChurchResources = () => {
               <Card className="shadow-elevated border-border/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Landmark className="w-5 h-5 text-primary" />
+                    <Church className="w-5 h-5 text-primary" />
                     Oriental Orthodox Church Etiquette
                   </CardTitle>
                 </CardHeader>
@@ -361,7 +362,7 @@ const ChurchResources = () => {
             >
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <Church className="w-16 h-16 text-primary" />
+                  <img src={stBasilIcon} alt="St. Basil" className="w-16 h-16" />
                   <div>
                     <div className="text-3xl">Eastern Orthodox</div>
                     <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
@@ -377,7 +378,7 @@ const ChurchResources = () => {
             >
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <Landmark className="w-16 h-16 text-primary" />
+                  <Church className="w-16 h-16 text-primary" />
                   <div>
                     <div className="text-3xl">Oriental Orthodox</div>
                     <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
