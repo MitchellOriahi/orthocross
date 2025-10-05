@@ -131,12 +131,33 @@ const Index = () => {
     }
   };
 
-  const startReading = (scripture: BookInfo, chapter: number = 1) => {
+  const startReading = async (scripture: BookInfo, chapter?: number) => {
+    // If no chapter specified, find the last read chapter for this book
+    if (!chapter && user) {
+      try {
+        const { data, error } = await supabase
+          .from('completed_chapters')
+          .select('chapter')
+          .eq('user_id', user.id)
+          .eq('book_key', scripture.title)
+          .order('completed_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (!error && data) {
+          // Start from the next chapter after the last completed one
+          chapter = Math.min(data.chapter + 1, scripture.totalChapters);
+        }
+      } catch (error) {
+        console.error('Error fetching last read chapter:', error);
+      }
+    }
+
     navigate('/reading', {
       state: {
         book: scripture.title,
         bookName: scripture.bookName,
-        chapter: chapter,
+        chapter: chapter || 1,
         totalChapters: scripture.totalChapters,
       }
     });
@@ -287,7 +308,7 @@ const Index = () => {
                               {books.map((book) => (
                                 <button
                                   key={book.title}
-                                  onClick={() => startReading(book, 1)}
+                                  onClick={() => startReading(book)}
                                   className={`p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
                                     lastRead?.book_key === book.title
                                       ? 'border-primary bg-primary/5'
@@ -332,7 +353,7 @@ const Index = () => {
                               {books.map((book) => (
                                 <button
                                   key={book.title}
-                                  onClick={() => startReading(book, 1)}
+                                  onClick={() => startReading(book)}
                                   className={`p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
                                     lastRead?.book_key === book.title
                                       ? 'border-primary bg-primary/5'
@@ -367,7 +388,7 @@ const Index = () => {
                       {additional.map((book) => (
                         <button
                           key={book.title}
-                          onClick={() => startReading(book, 1)}
+                          onClick={() => startReading(book)}
                           className={`p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
                             lastRead?.book_key === book.title
                               ? 'border-primary bg-primary/5'
