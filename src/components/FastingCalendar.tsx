@@ -218,7 +218,7 @@ export const FastingCalendar = () => {
                             : "bg-purple-100 dark:bg-purple-900/40 border-purple-500 text-purple-900 dark:text-purple-100"
                         }`}
                       >
-                        {isEastern ? "⛪ Eastern Orthodox" : "✝️ Oriental Orthodox"}
+                        {isEastern ? "⛪ Eastern Orthodox" : "⛪ Oriental Orthodox"}
                       </Badge>
                     </div>
                     {event.isMajor && (

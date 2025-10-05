@@ -131,7 +131,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
     return days;
   };
 
-  const traditionIcon = selectedTradition === "Eastern Orthodox" ? "⛪" : "✝️";
+  const traditionIcon = "⛪";
 
   return (
     <Card className="shadow-elevated border-border/50">
