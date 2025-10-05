@@ -6,36 +6,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface PaginatedReadingProps {
   content: string;
   onComplete: () => void;
+  iconUrl?: string;
 }
 
 const CHARS_PER_PAGE = 1200; // Approximately 200-250 words per page
 
-export const PaginatedReading = ({ content, onComplete }: PaginatedReadingProps) => {
+export const PaginatedReading = ({ content, onComplete, iconUrl }: PaginatedReadingProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Split content into pages
-  const pages = [];
-  let currentIndex = 0;
-  
-  while (currentIndex < content.length) {
-    let endIndex = currentIndex + CHARS_PER_PAGE;
-    
-    // Try to break at a sentence or paragraph
-    if (endIndex < content.length) {
-      const nextPeriod = content.indexOf('. ', endIndex);
-      const nextNewline = content.indexOf('\n\n', endIndex);
-      
-      if (nextPeriod > 0 && nextPeriod < endIndex + 100) {
-        endIndex = nextPeriod + 1;
-      } else if (nextNewline > 0 && nextNewline < endIndex + 100) {
-        endIndex = nextNewline + 1;
-      }
-    }
-    
-    pages.push(content.slice(currentIndex, endIndex).trim());
-    currentIndex = endIndex;
-  }
+  // Split content by paragraphs (each paragraph becomes a page)
+  const pages = content.split('\n\n').filter(p => p.trim().length > 0);
 
   const totalPages = pages.length;
 
@@ -75,6 +56,14 @@ export const PaginatedReading = ({ content, onComplete }: PaginatedReadingProps)
           <span className="hidden sm:inline">Page </span>{currentPage + 1}<span className="hidden sm:inline"> of</span><span className="sm:hidden">/</span> {totalPages}
         </div>
       </div>
+      
+      {currentPage === 0 && iconUrl && (
+        <div className="flex justify-center mb-6">
+          <div className="w-48 h-48 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
+            <img src={iconUrl} alt="Historical Icon" className="w-full h-full object-cover" />
+          </div>
+        </div>
+      )}
       
       <div 
         ref={contentRef}

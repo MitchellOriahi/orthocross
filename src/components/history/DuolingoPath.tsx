@@ -187,7 +187,7 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
               }`}>
                 {status.isCompleted ? (
                   <Flame 
-                    className="w-8 h-8 dark:hidden" 
+                    className="w-8 h-8 dark:hidden animate-flame-flicker" 
                     style={{ color: '#ff6b35' }}
                     fill="#ff6b35"
                     strokeWidth={2} 
@@ -195,7 +195,7 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                 ) : null}
                 {status.isCompleted ? (
                   <Flame 
-                    className="w-8 h-8 hidden dark:block" 
+                    className="w-8 h-8 hidden dark:block animate-flame-flicker" 
                     style={{ color: '#3b82f6' }}
                     fill="#3b82f6"
                     strokeWidth={2} 

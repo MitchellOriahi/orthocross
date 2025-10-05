@@ -20,6 +20,7 @@ interface Island {
   reading: string;
   quiz: Quiz[];
   awardPiece: string;
+  iconUrl?: string;
 }
 
 interface IslandDetailProps {
@@ -92,13 +93,14 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
     <div className="min-h-screen gradient-peaceful">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" onClick={onBack}>
+          <div className="flex items-center justify-between gap-4">
+            <Button variant="ghost" onClick={onBack} className="flex-shrink-0">
               <ArrowLeft className="w-5 h-5 mr-2" />
-              Back to Path
+              <span className="hidden sm:inline">Back to Path</span>
+              <span className="sm:hidden">Back</span>
             </Button>
-            <h2 className="text-lg font-semibold">{island.title}</h2>
-            <div className="w-32" />
+            <h2 className="text-base sm:text-lg font-semibold truncate">{island.title}</h2>
+            <div className="w-20 sm:w-32 flex-shrink-0" />
           </div>
         </div>
       </header>
@@ -110,6 +112,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
           <PaginatedReading
             content={island.reading}
             onComplete={handleStartQuiz}
+            iconUrl={island.iconUrl}
           />
         )}
 
