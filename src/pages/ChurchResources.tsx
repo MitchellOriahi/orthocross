@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Church, BookOpen } from "lucide-react";
+import { ArrowLeft, Church, BookOpen, UserRound } from "lucide-react";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import {
   Accordion,
@@ -292,7 +292,7 @@ const ChurchResources = () => {
               <Card className="shadow-elevated border-border/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Church className="w-5 h-5 text-primary" />
+                    <UserRound className="w-5 h-5 text-primary" />
                     Saints
                   </CardTitle>
                 </CardHeader>
@@ -402,7 +402,7 @@ const ChurchResources = () => {
             >
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <Church className="w-16 h-16 text-primary" />
+                  <UserRound className="w-16 h-16 text-primary" />
                   <div>
                     <div className="text-3xl">Saints</div>
                     <div className="text-sm text-muted-foreground font-normal">Lives of Orthodox Saints</div>

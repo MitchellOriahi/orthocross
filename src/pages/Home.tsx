@@ -41,17 +41,16 @@ const Home = () => {
             Welcome to the <span className="text-foreground">OrthoCross App</span>
           </h1>
           
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Build your daily spiritual practice with Bible reading streaks, fasting reminders, 
-            and Orthodox learning, engaging and meaningful, every day.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Build your daily spiritual practice with Bible reading streaks, fasting reminders, and Orthodox learning, engaging and meaningful, every day.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Button 
               variant="sacred" 
               size="lg"
               onClick={handleBeginClick}
-              className="text-lg px-8"
+              className="text-2xl px-16 py-8 h-auto"
             >
               {hasClicked ? "Continue Your Journey" : "Begin Your Journey"}
             </Button>
@@ -60,7 +59,7 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container mx-auto px-4 py-12">
+      <section id="features" className="container mx-auto px-4 py-16">
         <div className="relative max-w-6xl mx-auto">
           <Carousel
             opts={{
