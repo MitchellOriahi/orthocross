@@ -18,59 +18,21 @@ export type Database = {
         Row: {
           content: string | null
           created_at: string
-          folder_id: string | null
           id: string
-          title: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           content?: string | null
           created_at?: string
-          folder_id?: string | null
           id?: string
-          title?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           content?: string | null
           created_at?: string
-          folder_id?: string | null
           id?: string
-          title?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "journal_entries_folder_id_fkey"
-            columns: ["folder_id"]
-            isOneToOne: false
-            referencedRelation: "journal_folders"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      journal_folders: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
           updated_at?: string
           user_id?: string
         }
