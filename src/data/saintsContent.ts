@@ -6,9 +6,9 @@ import anthonyIcon from "@/assets/saints/anthony-icon.jpg";
 import athanasiusIcon from "@/assets/saints/athanasius-icon.jpg";
 import basilIcon from "@/assets/saints/basil-icon.jpg";
 import markIcon from "@/assets/saints/mark-icon.jpg";
-import ephremIcon from "@/assets/saints/ephrem-icon.jpg";
+import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
 import maryEgyptIcon from "@/assets/saints/mary-egypt-icon.jpg";
-import gregoryNazianzusIcon from "@/assets/saints/gregory-nazianzus-icon.jpg";
+import photiniIcon from "@/assets/saints/photini-icon.jpg";
 import severusIcon from "@/assets/saints/severus-icon.jpg";
 
 export interface SaintDetail {
@@ -214,27 +214,27 @@ export const saintsContent: SaintDetail[] = [
     ]
   },
   {
-    id: "ephrem",
-    name: "St. Ephrem the Syrian",
-    title: "Harp of the Holy Spirit",
+    id: "moses-black",
+    name: "St. Moses the Black",
+    title: "The Ethiopian",
     tradition: "Oriental",
-    iconUrl: ephremIcon,
+    iconUrl: mosesBlackIcon,
     content: [
-      "Ephrem was born around 306 AD in Nisibis, Mesopotamia (modern-day Turkey), to Christian parents. His father may have been a pagan priest who converted to Christianity. From his youth, Ephrem showed deep devotion to God and a remarkable poetic gift that would make him one of the most beloved hymnographers in Christian history.",
+      "Moses was born in Ethiopia in the fourth century AD, around 330 AD. Little is known about his early life, but he was sold into slavery in Egypt as a young man. He served in the household of an Egyptian government official, but his immense physical strength and violent temperament made him a difficult slave.",
       
-      "In Nisibis, Ephrem became a deacon and teacher, founding a school of biblical exegesis. He remained a deacon throughout his life, never seeking ordination to the priesthood, demonstrating his humility. For most of his early life, he served under Bishop Jacob of Nisibis, whom he accompanied to the Council of Nicaea in 325 AD.",
+      "After being dismissed from service, possibly for theft or violence, Moses became the leader of a band of robbers. For years, he terrorized the region around Alexandria, known for his brutality and strength. Standing over six feet tall with a powerful build, he was feared throughout Egypt. His life seemed destined for violence and crime.",
       
-      "Ephrem witnessed Nisibis survive three sieges by the Persian army (in 338, 346, and 350 AD). He attributed the city's deliverance to the prayers and holiness of Bishop Jacob. However, after the Roman Emperor Jovian ceded Nisibis to Persia in 363 AD, Ephrem left with other Christians and settled in Edessa (modern Urfa, Turkey).",
+      "The turning point came when Moses and his gang attempted to rob a monastery in the desert of Scetis. The monks showed him unexpected kindness and hospitality. Their peace, joy, and forgiveness in the face of his threats deeply moved Moses. He realized the emptiness of his life of violence and asked to join the monastic community.",
       
-      "In Edessa, Ephrem established a school of theology and continued teaching until his death. His teaching method was revolutionary: he composed hymns and poems to convey theological truths. This made deep theological concepts accessible to ordinary believers who could sing and memorize these compositions.",
+      "The monks initially hesitated, uncertain whether his conversion was genuine. But Moses persevered, demonstrating sincere repentance. He was eventually accepted and became a monk under the spiritual direction of St. Isidore of Scetis. His transformation from violent robber to gentle monk became legendary in the desert.",
       
-      "Ephrem wrote prolifically in Syriac, producing biblical commentaries, theological treatises, and hundreds of hymns. His poetic compositions are characterized by rich imagery, profound theology, and deep devotion. He used the form of the 'madrasha' (teaching hymn) and 'memra' (metrical homily) to instruct the faithful.",
+      "Moses's struggle with his former life was intense. He battled demons of lust, violence, and anger. He practiced extreme asceticism, including long vigils, fasting, and acts of humility. Once, when he was overcome with temptation, he carried water all night to tend the gardens of elderly monks who could not do so themselves.",
       
-      "His hymns served a dual purpose: they taught orthodox doctrine while combating the spread of heresies, particularly those of Bardaisan, Marcion, and Mani, who also used popular songs to spread their teachings. Ephrem's superior poetry and orthodox content helped preserve the faith of the Syriac-speaking Church.",
+      "His former companions in crime once came to rob the monastery. When they were captured and brought before the monks, Moses recognized them. Rather than seeking revenge, he spoke to them of God's mercy and his own transformation. His testimony and forgiveness converted several of his former gang members to monasticism.",
       
-      "Ephrem showed great compassion for the poor and suffering. During a famine in 372-373 AD, he organized relief efforts, caring for the sick and distributing food. He convinced the wealthy to support the poor and personally supervised the care of the dying. His humility and charity increased his influence tremendously.",
+      "Moses was ordained a priest despite his initial objections based on his past and his race. The ordaining bishop tested his humility by having other clergy insult him for being black. When Moses endured this patiently, the bishop declared: 'Moses, you are white within!' He became known for his wisdom, humility, and spiritual insight.",
       
-      "Ephrem died in Edessa on June 9, 373 AD. His last instructions to his disciples emphasized humility and simplicity in death as in life. His writings were quickly translated into Greek, Latin, Armenian, and other languages, spreading his influence throughout Christianity. He is called the 'Harp of the Holy Spirit' for his magnificent hymns. His feast is celebrated on January 28th, and his poetic legacy continues to enrich Orthodox worship and theology."
+      "Around 405 AD, when Moses was about 75 years old, barbarians attacked the monastery. Though warned in advance, Moses refused to flee, saying: 'All who take the sword will perish by the sword.' He and six other monks were martyred. St. Moses the Black's life demonstrates that no one is beyond God's mercy and that the greatest sinners can become the greatest saints. His feast day is August 28th, and he is particularly venerated in the Ethiopian and Coptic Orthodox Churches."
     ]
   },
   {
@@ -268,27 +268,29 @@ export const saintsContent: SaintDetail[] = [
     ]
   },
   {
-    id: "gregory-nazianzus",
-    name: "St. Gregory the Theologian",
-    title: "The Theologian",
+    id: "photini",
+    name: "St. Photini the Samaritan",
+    title: "Equal to the Apostles",
     tradition: "Eastern",
-    iconUrl: gregoryNazianzusIcon,
+    iconUrl: photiniIcon,
     content: [
-      "Gregory was born around 329 AD in Arianzus, near Nazianzus in Cappadocia (modern Turkey). His father, Gregory the Elder, was bishop of Nazianzus, and his mother Nonna was renowned for her piety. From birth, his mother dedicated him to God's service, and she prayed fervently that he would serve the Church.",
+      "Photini, whose name means 'the luminous one' or 'enlightened,' is known in the Gospels as the Samaritan woman whom Christ met at Jacob's Well in Sychar. This encounter, recorded in John 4, is one of the longest conversations Jesus had with any individual in the Gospels, and it transformed her life completely.",
       
-      "Gregory received the finest education available, studying in Caesarea, Alexandria, and finally Athens - the intellectual capital of the ancient world. In Athens, he formed a deep friendship with Basil the Great. They studied philosophy, rhetoric, and literature, but both felt called to dedicate their learning to God's service.",
+      "Before meeting Christ, Photini had lived a troubled life. She had been married five times, and was living with a man who was not her husband. When Jesus revealed He knew everything about her past, she was amazed. But instead of condemning her, He offered her 'living water' - eternal life and spiritual transformation.",
       
-      "After returning to Cappadocia around 356 AD, Gregory initially joined Basil in the monastic life. However, his father, now elderly and needing help, persuaded Gregory to be ordained a priest. Gregory initially resisted but eventually submitted. His ordination sermon reflects his struggle with unworthiness and his understanding of the weight of priestly responsibility.",
+      "Christ revealed to Photini that He was the Messiah - something He rarely stated so directly. Her encounter at the well became a profound theological discourse about true worship, moving beyond the disputes between Jews and Samaritans. Jesus taught her that 'God is spirit, and those who worship Him must worship in spirit and truth.'",
       
-      "In 372 AD, Basil, now archbishop, appointed Gregory as bishop of Sasima to strengthen his ecclesiastical position. Gregory resented this political appointment to a desolate village and felt his friend had used him. Though the friendship was eventually restored, Gregory never took up residence in Sasima but instead helped his aging father in Nazianzus.",
+      "Immediately after her conversion, Photini ran into the city and proclaimed: 'Come, see a man who told me everything I ever did. Could this be the Christ?' Her testimony was so compelling that many Samaritans came to believe in Jesus. She became the first evangelist to the Samaritans, demonstrating that apostolic ministry was not limited to the Twelve.",
       
-      "In 379 AD, the orthodox community in Constantinople, which had been dominated by Arians for decades, invited Gregory to lead them. In a small chapel called Anastasia ('Resurrection'), Gregory delivered his five 'Theological Orations' - masterful expositions of Trinitarian doctrine that earned him the title 'the Theologian,' a title shared only with John the Evangelist.",
+      "According to tradition, after Pentecost, Photini, along with her five sisters (Anatola, Photo, Photis, Parasceve, and Cyriaca), her two sons (Victor and Josiah), and several others, traveled throughout the Roman Empire preaching the Gospel. She is said to have baptized many and performed miracles in Christ's name.",
       
-      "His orations brilliantly defended the divinity of the Son and the Holy Spirit against Arianism and Macedonianism. He explained the relationship between the three persons of the Trinity with unprecedented clarity and eloquence. His teaching influenced the Council of Constantinople in 381 AD and shaped Trinitarian theology for all subsequent generations.",
+      "Photini traveled to Carthage in North Africa, where she continued her evangelistic work. Her bold preaching and the miracles accompanying her ministry led to the conversion of thousands. She particularly emphasized Christ's message of God's mercy and the availability of salvation to all people, regardless of their past.",
       
-      "At the Council of Constantinople in 381 AD, Gregory was appointed Patriarch of Constantinople. However, his appointment was contested, and political intrigues made his position untenable. In characteristic humility, Gregory resigned after only a few months, delivering a farewell oration in which he forgave his enemies and commended the Church to God's care.",
+      "During the persecution under Emperor Nero (around 66 AD), Photini was arrested in Rome along with her family and companions. They were brought before Nero himself. Despite threats and torture, she fearlessly confessed Christ and refused to sacrifice to the Roman gods. Her courage inspired many, including some of Nero's own household, to convert to Christianity.",
       
-      "Gregory retired to his family estate in Arianzus, where he spent his final years in prayer, writing, and theological reflection. He composed poetry, theological treatises, and letters that continued to influence the Church. He died around 390 AD. His theological precision, combined with deep spirituality and literary brilliance, made him one of the three great Cappadocian Fathers. His feast day is January 25th, and his writings remain essential reading for Orthodox theology."
+      "Photini and her companions endured various tortures. According to tradition, she was thrown into a well (echoing the well where she first met Christ), but survived miraculously. She was finally martyred by being thrown into a deep pit where she died of her wounds. Her last words were prayers for her persecutors and thanksgiving for being found worthy to die for Christ.",
+      
+      "The Orthodox Church honors St. Photini with the title 'Equal to the Apostles' - a rare distinction given to those whose evangelistic work was comparable to the Twelve Apostles. She is commemorated on the Sunday of the Samaritan Woman (the fifth Sunday of Pascha) and on February 26th. Her life demonstrates that Christ calls everyone, regardless of their past, to become His witnesses and that women played a crucial role in spreading the Gospel from the earliest days of the Church."
     ]
   },
   {
