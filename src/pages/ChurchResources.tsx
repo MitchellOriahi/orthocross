@@ -240,66 +240,44 @@ const ChurchResources = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Additional books recognized in various Orthodox traditions:
+                  Additional books recognized in various Orthodox traditions. Click to read:
                 </p>
-                <ul className="grid md:grid-cols-2 gap-2 text-sm">
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    1 Enoch
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    Jubilees
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    1 Meqabyan (Ethiopian Maccabees)
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    2 Meqabyan
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    3 Meqabyan
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    Paralipomena of Jeremiah
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    Joseph ben Gorion
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    The Book of the Covenant
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    Didascalia
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    The Shepherd of Hermas
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    Sinodos
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    Clement (Ethiopic Clement)
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    Ethiopic Book of the Nativity
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                    Ethiopic Book of the Resurrection
-                  </li>
-                </ul>
+                <div className="grid md:grid-cols-2 gap-3">
+                  {[
+                    { title: "1 Enoch", passage: "1 Enoch 1-5" },
+                    { title: "Jubilees", passage: "Jubilees 1" },
+                    { title: "1 Meqabyan", passage: "1 Meqabyan 1" },
+                    { title: "2 Meqabyan", passage: "2 Meqabyan 1" },
+                    { title: "3 Meqabyan", passage: "3 Meqabyan 1" },
+                    { title: "Paralipomena of Jeremiah", passage: "Paralipomena 1" },
+                    { title: "Joseph ben Gorion", passage: "Joseph ben Gorion 1" },
+                    { title: "The Book of the Covenant", passage: "Book of Covenant 1" },
+                    { title: "Didascalia", passage: "Didascalia 1" },
+                    { title: "The Shepherd of Hermas", passage: "Shepherd of Hermas 1" },
+                    { title: "Sinodos", passage: "Sinodos 1" },
+                    { title: "Clement", passage: "Ethiopic Clement 1" },
+                    { title: "Ethiopic Book of the Nativity", passage: "Nativity 1" },
+                    { title: "Ethiopic Book of the Resurrection", passage: "Resurrection 1" }
+                  ].map((book) => (
+                    <Button
+                      key={book.title}
+                      variant="outline"
+                      className="justify-start h-auto py-3 px-4 text-left hover:bg-accent transition-colors"
+                      onClick={() => navigate('/reading', { 
+                        state: { 
+                          title: book.title, 
+                          passage: book.passage,
+                          progress: 0
+                        } 
+                      })}
+                    >
+                      <div className="flex items-center gap-3 w-full">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
+                        <span className="text-sm font-medium">{book.title}</span>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>
