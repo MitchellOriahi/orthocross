@@ -20,6 +20,9 @@ const Dashboard = () => {
     title: string;
     passage: string;
     progress: number;
+    bookKey?: string;
+    chapter?: number;
+    totalChapters?: number;
   }>({
     title: "Gospel of John",
     passage: "John 1:1",
@@ -53,10 +56,27 @@ const Dashboard = () => {
         .maybeSingle();
 
       if (data) {
+        // Get completed chapters for this book to calculate progress
+        const { data: completedChapters } = await supabase
+          .from('completed_chapters')
+          .select('chapter')
+          .eq('user_id', user.id)
+          .eq('book_key', data.book_key);
+
+        // Import book info to get total chapters
+        const { BIBLE_BOOKS } = await import('@/data/bibleContent');
+        const bookInfo = BIBLE_BOOKS.find(b => b.title === data.book_key);
+        const totalChapters = bookInfo?.totalChapters || 1;
+        const completedCount = completedChapters?.length || 0;
+        const bookProgress = Math.round((completedCount / totalChapters) * 100);
+
         setLastReading({
-          title: data.scripture_title,
-          passage: data.scripture_passage,
-          progress: data.progress || 0
+          title: bookInfo?.bookName || data.scripture_title,
+          passage: `${bookInfo?.bookName || data.scripture_title} ${data.current_chapter}`,
+          progress: bookProgress,
+          bookKey: data.book_key,
+          chapter: data.current_chapter,
+          totalChapters: totalChapters
         });
       }
     };
@@ -107,7 +127,20 @@ const Dashboard = () => {
             title={lastReading.title}
             passage={lastReading.passage}
             progress={lastReading.progress}
-            onStartReading={() => navigate('/reading', { state: lastReading })}
+            onStartReading={() => {
+              if (lastReading.bookKey && lastReading.chapter) {
+                navigate('/reading', {
+                  state: {
+                    book: lastReading.bookKey,
+                    bookName: lastReading.title,
+                    chapter: lastReading.chapter,
+                    totalChapters: lastReading.totalChapters
+                  }
+                });
+              } else {
+                navigate('/index');
+              }
+            }}
           />
         </section>
 

@@ -224,8 +224,26 @@ const Reading = () => {
     }
   };
 
-  const markChapterComplete = () => {
-    saveProgress(100);
+  const markChapterComplete = async () => {
+    if (!user) return;
+    
+    await saveProgress(100);
+    
+    // Save to completed_chapters table
+    try {
+      await supabase
+        .from('completed_chapters')
+        .upsert({
+          user_id: user.id,
+          book_key: book,
+          chapter: chapter,
+        }, {
+          onConflict: 'user_id,book_key,chapter'
+        });
+    } catch (error) {
+      console.error('Error saving completed chapter:', error);
+    }
+    
     toast({
       description: "Chapter completed! 🎉",
     });

@@ -27,12 +27,14 @@ const Index = () => {
   const { user } = useAuth();
   const [lastRead, setLastRead] = useState<ReadingProgress | null>(null);
   const [loading, setLoading] = useState(true);
+  const [bibleCompletion, setBibleCompletion] = useState(0);
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
   useEffect(() => {
     if (user) {
       loadLastRead();
+      loadBibleCompletion();
     } else {
       setLoading(false);
     }
@@ -54,6 +56,26 @@ const Index = () => {
       console.error('Error loading last read:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadBibleCompletion = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('completed_chapters')
+        .select('book_key, chapter')
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+
+      // Calculate total chapters in the Bible
+      const totalChapters = BIBLE_BOOKS.reduce((sum, book) => sum + book.totalChapters, 0);
+      const completedChapters = data?.length || 0;
+      const completion = Math.round((completedChapters / totalChapters) * 100);
+      
+      setBibleCompletion(completion);
+    } catch (error) {
+      console.error('Error loading Bible completion:', error);
     }
   };
 
@@ -187,6 +209,29 @@ const Index = () => {
                     currentBook={lastRead?.book_key}
                   />
                 </div>
+
+                {/* Bible Completion Progress */}
+                {user && (
+                  <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10">
+                    <CardContent className="p-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-semibold">Overall Bible Completion</span>
+                          <span className="font-bold text-primary">{bibleCompletion}%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div
+                            className="bg-primary rounded-full h-3 transition-all duration-500"
+                            style={{ width: `${bibleCompletion}%` }}
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Track your progress through the entire Bible
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* OLD TESTAMENT */}
                 <Card className="border-orange-500/30 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20">

@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      completed_chapters: {
+        Row: {
+          book_key: string
+          chapter: number
+          completed_at: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          book_key: string
+          chapter: number
+          completed_at?: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          book_key?: string
+          chapter?: number
+          completed_at?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           content: string | null
