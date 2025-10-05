@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Play } from "lucide-react";
+import { BookOpen, Play, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { BookSelector } from "@/components/BookSelector";
+import { BIBLE_BOOKS, getCategorizedBooks, BookInfo } from "@/data/bibleContent";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface ReadingProgress {
   id: string;
@@ -20,20 +22,13 @@ interface ReadingProgress {
   last_read_at: string;
 }
 
-const AVAILABLE_SCRIPTURES = [
-  { title: "John", bookName: "Gospel of John", totalChapters: 21 },
-  { title: "Psalms", bookName: "Psalms", totalChapters: 150 },
-  { title: "Proverbs", bookName: "Proverbs", totalChapters: 31 },
-  { title: "Matthew", bookName: "Gospel of Matthew", totalChapters: 28 },
-  { title: "Romans", bookName: "Romans", totalChapters: 16 },
-  { title: "James", bookName: "James", totalChapters: 5 },
-];
-
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [lastRead, setLastRead] = useState<ReadingProgress | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
   useEffect(() => {
     if (user) {
@@ -64,7 +59,7 @@ const Index = () => {
 
   const continueReading = () => {
     if (lastRead) {
-      const scripture = AVAILABLE_SCRIPTURES.find(s => s.title === lastRead.book_key);
+      const scripture = BIBLE_BOOKS.find(s => s.title === lastRead.book_key);
       if (scripture) {
         navigate('/reading', {
           state: {
@@ -78,7 +73,7 @@ const Index = () => {
     }
   };
 
-  const startReading = (scripture: typeof AVAILABLE_SCRIPTURES[0], chapter: number = 1) => {
+  const startReading = (scripture: BookInfo, chapter: number = 1) => {
     navigate('/reading', {
       state: {
         book: scripture.title,
@@ -91,7 +86,7 @@ const Index = () => {
 
   const getLastReadScripture = () => {
     if (!lastRead) return null;
-    return AVAILABLE_SCRIPTURES.find(s => s.title === lastRead.book_key);
+    return BIBLE_BOOKS.find(s => s.title === lastRead.book_key);
   };
 
   const lastReadScripture = getLastReadScripture();
@@ -153,41 +148,126 @@ const Index = () => {
                 </Card>
               )}
 
-              {/* Book Selector */}
-              <div className="space-y-4">
+              {/* Scripture Library */}
+              <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-2xl font-bold">Scripture Library</h2>
                     <p className="text-sm text-muted-foreground">
-                      Choose any book and chapter to begin reading
+                      Complete Bible organized by categories
                     </p>
                   </div>
                   <BookSelector 
-                    books={AVAILABLE_SCRIPTURES}
+                    books={BIBLE_BOOKS}
                     onSelectBook={startReading}
                     currentBook={lastRead?.book_key}
                   />
                 </div>
 
-                {/* Quick Access Books */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                  {AVAILABLE_SCRIPTURES.map((scripture) => (
-                    <button
-                      key={scripture.title}
-                      onClick={() => startReading(scripture, 1)}
-                      className={`p-4 rounded-lg border-2 transition-all text-left ${
-                        lastRead?.book_key === scripture.title
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-primary/50 hover:bg-accent'
-                      }`}
-                    >
-                      <div className="font-semibold text-sm mb-1">{scripture.bookName}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {scripture.totalChapters} Ch.
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                {/* OLD TESTAMENT */}
+                <Card className="border-orange-500/30 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20">
+                  <CardContent className="p-6">
+                    <h3 className="text-2xl font-bold mb-4 text-orange-700 dark:text-orange-400">Old Testament</h3>
+                    <Accordion type="multiple" className="space-y-2">
+                      {Object.entries(oldTestament).map(([category, books]) => (
+                        <AccordionItem key={category} value={category} className="border rounded-lg bg-background/50">
+                          <AccordionTrigger className="px-4 hover:no-underline">
+                            <div className="flex items-center gap-2">
+                              <div className="font-semibold text-lg">{category}</div>
+                              <div className="text-xs text-muted-foreground">({books.length} books)</div>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-4 pb-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
+                              {books.map((book) => (
+                                <button
+                                  key={book.title}
+                                  onClick={() => startReading(book, 1)}
+                                  className={`p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
+                                    lastRead?.book_key === book.title
+                                      ? 'border-primary bg-primary/5'
+                                      : 'border-border'
+                                  }`}
+                                >
+                                  <div className="font-medium text-sm">{book.bookName}</div>
+                                  <div className="text-xs text-muted-foreground">{book.totalChapters} Ch.</div>
+                                </button>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </CardContent>
+                </Card>
+
+                {/* NEW TESTAMENT */}
+                <Card className="border-blue-500/30 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20">
+                  <CardContent className="p-6">
+                    <h3 className="text-2xl font-bold mb-4 text-blue-700 dark:text-blue-400">New Testament</h3>
+                    <Accordion type="multiple" className="space-y-2">
+                      {Object.entries(newTestament).map(([category, books]) => (
+                        <AccordionItem key={category} value={category} className="border rounded-lg bg-background/50">
+                          <AccordionTrigger className="px-4 hover:no-underline">
+                            <div className="flex items-center gap-2">
+                              <div className="font-semibold text-lg">{category}</div>
+                              <div className="text-xs text-muted-foreground">({books.length} books)</div>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-4 pb-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
+                              {books.map((book) => (
+                                <button
+                                  key={book.title}
+                                  onClick={() => startReading(book, 1)}
+                                  className={`p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
+                                    lastRead?.book_key === book.title
+                                      ? 'border-primary bg-primary/5'
+                                      : 'border-border'
+                                  }`}
+                                >
+                                  <div className="font-medium text-sm">{book.bookName}</div>
+                                  <div className="text-xs text-muted-foreground">{book.totalChapters} Ch.</div>
+                                </button>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </CardContent>
+                </Card>
+
+                {/* ADDITIONAL READINGS */}
+                <Card className="border-purple-500/30 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/20 dark:to-purple-900/20">
+                  <CardContent className="p-6">
+                    <h3 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">Orthodox Additional Readings</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {additional.map((book) => (
+                        <button
+                          key={book.title}
+                          onClick={() => startReading(book, 1)}
+                          className={`p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
+                            lastRead?.book_key === book.title
+                              ? 'border-primary bg-primary/5'
+                              : 'border-border'
+                          }`}
+                        >
+                          <div className="font-medium text-sm">{book.bookName}</div>
+                          <div className="text-xs text-muted-foreground">{book.totalChapters} Ch.</div>
+                        </button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* API Note */}
+                <Card className="border-muted bg-muted/20">
+                  <CardContent className="p-4 text-center text-sm text-muted-foreground">
+                    <p>📖 Complete Bible text content will be loaded from Bible API</p>
+                    <p className="text-xs mt-1">Currently showing book structure and navigation</p>
+                  </CardContent>
+                </Card>
               </div>
             </>
           )}

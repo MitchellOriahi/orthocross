@@ -10,7 +10,134 @@ export interface Chapter {
   verses: Verse[];
 }
 
+export interface BookInfo {
+  title: string;
+  bookName: string;
+  totalChapters: number;
+  category: string;
+  testament: 'OT' | 'NT' | 'Additional';
+}
+
+// Complete Bible book structure organized by categories
+export const BIBLE_BOOKS: BookInfo[] = [
+  // OLD TESTAMENT - THE LAW
+  { title: "Genesis", bookName: "Genesis", totalChapters: 50, category: "The Law", testament: "OT" },
+  { title: "Exodus", bookName: "Exodus", totalChapters: 40, category: "The Law", testament: "OT" },
+  { title: "Leviticus", bookName: "Leviticus", totalChapters: 27, category: "The Law", testament: "OT" },
+  { title: "Numbers", bookName: "Numbers", totalChapters: 36, category: "The Law", testament: "OT" },
+  { title: "Deuteronomy", bookName: "Deuteronomy", totalChapters: 34, category: "The Law", testament: "OT" },
+  
+  // OLD TESTAMENT - HISTORY
+  { title: "Joshua", bookName: "Joshua", totalChapters: 24, category: "History", testament: "OT" },
+  { title: "Judges", bookName: "Judges", totalChapters: 21, category: "History", testament: "OT" },
+  { title: "Ruth", bookName: "Ruth", totalChapters: 4, category: "History", testament: "OT" },
+  { title: "1 Samuel", bookName: "1 Samuel", totalChapters: 31, category: "History", testament: "OT" },
+  { title: "2 Samuel", bookName: "2 Samuel", totalChapters: 24, category: "History", testament: "OT" },
+  { title: "1 Kings", bookName: "1 Kings", totalChapters: 22, category: "History", testament: "OT" },
+  { title: "2 Kings", bookName: "2 Kings", totalChapters: 25, category: "History", testament: "OT" },
+  { title: "1 Chronicles", bookName: "1 Chronicles", totalChapters: 29, category: "History", testament: "OT" },
+  { title: "2 Chronicles", bookName: "2 Chronicles", totalChapters: 36, category: "History", testament: "OT" },
+  { title: "Ezra", bookName: "Ezra", totalChapters: 10, category: "History", testament: "OT" },
+  { title: "Nehemiah", bookName: "Nehemiah", totalChapters: 13, category: "History", testament: "OT" },
+  { title: "Esther", bookName: "Esther", totalChapters: 10, category: "History", testament: "OT" },
+  
+  // OLD TESTAMENT - WISDOM
+  { title: "Job", bookName: "Job", totalChapters: 42, category: "Wisdom", testament: "OT" },
+  { title: "Psalms", bookName: "Psalms", totalChapters: 150, category: "Wisdom", testament: "OT" },
+  { title: "Proverbs", bookName: "Proverbs", totalChapters: 31, category: "Wisdom", testament: "OT" },
+  { title: "Ecclesiastes", bookName: "Ecclesiastes", totalChapters: 12, category: "Wisdom", testament: "OT" },
+  { title: "Song of Songs", bookName: "Song of Songs", totalChapters: 8, category: "Wisdom", testament: "OT" },
+  
+  // OLD TESTAMENT - PROPHETS
+  { title: "Isaiah", bookName: "Isaiah", totalChapters: 66, category: "Prophets", testament: "OT" },
+  { title: "Jeremiah", bookName: "Jeremiah", totalChapters: 52, category: "Prophets", testament: "OT" },
+  { title: "Lamentations", bookName: "Lamentations", totalChapters: 5, category: "Prophets", testament: "OT" },
+  { title: "Ezekiel", bookName: "Ezekiel", totalChapters: 48, category: "Prophets", testament: "OT" },
+  { title: "Daniel", bookName: "Daniel", totalChapters: 12, category: "Prophets", testament: "OT" },
+  { title: "Hosea", bookName: "Hosea", totalChapters: 14, category: "Prophets", testament: "OT" },
+  { title: "Joel", bookName: "Joel", totalChapters: 3, category: "Prophets", testament: "OT" },
+  { title: "Amos", bookName: "Amos", totalChapters: 9, category: "Prophets", testament: "OT" },
+  { title: "Obadiah", bookName: "Obadiah", totalChapters: 1, category: "Prophets", testament: "OT" },
+  { title: "Jonah", bookName: "Jonah", totalChapters: 4, category: "Prophets", testament: "OT" },
+  { title: "Micah", bookName: "Micah", totalChapters: 7, category: "Prophets", testament: "OT" },
+  { title: "Nahum", bookName: "Nahum", totalChapters: 3, category: "Prophets", testament: "OT" },
+  { title: "Habakkuk", bookName: "Habakkuk", totalChapters: 3, category: "Prophets", testament: "OT" },
+  { title: "Zephaniah", bookName: "Zephaniah", totalChapters: 3, category: "Prophets", testament: "OT" },
+  { title: "Haggai", bookName: "Haggai", totalChapters: 2, category: "Prophets", testament: "OT" },
+  { title: "Zechariah", bookName: "Zechariah", totalChapters: 14, category: "Prophets", testament: "OT" },
+  { title: "Malachi", bookName: "Malachi", totalChapters: 4, category: "Prophets", testament: "OT" },
+  
+  // NEW TESTAMENT - THE GOSPELS
+  { title: "Matthew", bookName: "Matthew", totalChapters: 28, category: "The Gospels", testament: "NT" },
+  { title: "Mark", bookName: "Mark", totalChapters: 16, category: "The Gospels", testament: "NT" },
+  { title: "Luke", bookName: "Luke", totalChapters: 24, category: "The Gospels", testament: "NT" },
+  { title: "John", bookName: "John", totalChapters: 21, category: "The Gospels", testament: "NT" },
+  
+  // NEW TESTAMENT - CHURCH HISTORY
+  { title: "Acts", bookName: "Acts", totalChapters: 28, category: "Church History", testament: "NT" },
+  
+  // NEW TESTAMENT - PAUL'S LETTERS
+  { title: "Romans", bookName: "Romans", totalChapters: 16, category: "Paul's Letters", testament: "NT" },
+  { title: "1 Corinthians", bookName: "1 Corinthians", totalChapters: 16, category: "Paul's Letters", testament: "NT" },
+  { title: "2 Corinthians", bookName: "2 Corinthians", totalChapters: 13, category: "Paul's Letters", testament: "NT" },
+  { title: "Galatians", bookName: "Galatians", totalChapters: 6, category: "Paul's Letters", testament: "NT" },
+  { title: "Ephesians", bookName: "Ephesians", totalChapters: 6, category: "Paul's Letters", testament: "NT" },
+  { title: "Philippians", bookName: "Philippians", totalChapters: 4, category: "Paul's Letters", testament: "NT" },
+  { title: "Colossians", bookName: "Colossians", totalChapters: 4, category: "Paul's Letters", testament: "NT" },
+  { title: "1 Thessalonians", bookName: "1 Thessalonians", totalChapters: 5, category: "Paul's Letters", testament: "NT" },
+  { title: "2 Thessalonians", bookName: "2 Thessalonians", totalChapters: 3, category: "Paul's Letters", testament: "NT" },
+  { title: "1 Timothy", bookName: "1 Timothy", totalChapters: 6, category: "Paul's Letters", testament: "NT" },
+  { title: "2 Timothy", bookName: "2 Timothy", totalChapters: 4, category: "Paul's Letters", testament: "NT" },
+  { title: "Titus", bookName: "Titus", totalChapters: 3, category: "Paul's Letters", testament: "NT" },
+  { title: "Philemon", bookName: "Philemon", totalChapters: 1, category: "Paul's Letters", testament: "NT" },
+  
+  // NEW TESTAMENT - GENERAL LETTERS
+  { title: "Hebrews", bookName: "Hebrews", totalChapters: 13, category: "General Letters", testament: "NT" },
+  { title: "James", bookName: "James", totalChapters: 5, category: "General Letters", testament: "NT" },
+  { title: "1 Peter", bookName: "1 Peter", totalChapters: 5, category: "General Letters", testament: "NT" },
+  { title: "2 Peter", bookName: "2 Peter", totalChapters: 3, category: "General Letters", testament: "NT" },
+  { title: "1 John", bookName: "1 John", totalChapters: 5, category: "General Letters", testament: "NT" },
+  { title: "2 John", bookName: "2 John", totalChapters: 1, category: "General Letters", testament: "NT" },
+  { title: "3 John", bookName: "3 John", totalChapters: 1, category: "General Letters", testament: "NT" },
+  { title: "Jude", bookName: "Jude", totalChapters: 1, category: "General Letters", testament: "NT" },
+  
+  // NEW TESTAMENT - PROPHECY
+  { title: "Revelation", bookName: "Revelation", totalChapters: 22, category: "Prophecy", testament: "NT" },
+  
+  // ORTHODOX ADDITIONAL READINGS
+  { title: "1 Enoch", bookName: "1 Enoch", totalChapters: 108, category: "Additional Readings", testament: "Additional" },
+  { title: "Jubilees", bookName: "Jubilees", totalChapters: 50, category: "Additional Readings", testament: "Additional" },
+  { title: "1 Meqabyan", bookName: "1 Meqabyan", totalChapters: 36, category: "Additional Readings", testament: "Additional" },
+  { title: "2 Meqabyan", bookName: "2 Meqabyan", totalChapters: 21, category: "Additional Readings", testament: "Additional" },
+  { title: "3 Meqabyan", bookName: "3 Meqabyan", totalChapters: 10, category: "Additional Readings", testament: "Additional" },
+];
+
+export const getCategorizedBooks = () => {
+  const oldTestament: Record<string, BookInfo[]> = {};
+  const newTestament: Record<string, BookInfo[]> = {};
+  const additional: BookInfo[] = [];
+
+  BIBLE_BOOKS.forEach(book => {
+    if (book.testament === 'OT') {
+      if (!oldTestament[book.category]) {
+        oldTestament[book.category] = [];
+      }
+      oldTestament[book.category].push(book);
+    } else if (book.testament === 'NT') {
+      if (!newTestament[book.category]) {
+        newTestament[book.category] = [];
+      }
+      newTestament[book.category].push(book);
+    } else {
+      additional.push(book);
+    }
+  });
+
+  return { oldTestament, newTestament, additional };
+};
+
 // Content for Orthodox additional readings and canonical books
+// NOTE: For complete Bible text, integrate with a Bible API like api.bible or bible-api.com
 export const bibleContent: Record<string, Record<number, Verse[]>> = {
   "John": {
     1: [
