@@ -1,8 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Church } from "lucide-react";
+import { ArrowLeft, Church, BookOpen } from "lucide-react";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const ChurchResources = () => {
   const navigate = useNavigate();
@@ -44,68 +50,82 @@ const ChurchResources = () => {
                   Eastern Orthodox Church Etiquette
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Before Entering</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Arrive early to prepare your heart for worship</li>
-                    <li>• Turn off or silence all electronic devices</li>
-                    <li>• Women traditionally cover their heads with a scarf</li>
-                    <li>• Men remove hats before entering</li>
-                  </ul>
-                </div>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="before-entering">
+                    <AccordionTrigger>Before Entering</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Arrive early to prepare your heart for worship</li>
+                        <li>• Turn off or silence all electronic devices</li>
+                        <li>• Women traditionally cover their heads with a scarf</li>
+                        <li>• Men remove hats before entering</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Upon Entering</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Make the sign of the cross and bow</li>
-                    <li>• Venerate icons by making the sign of the cross and kissing them</li>
-                    <li>• Light candles as an offering and prayer</li>
-                    <li>• Stand quietly or find your place</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="upon-entering">
+                    <AccordionTrigger>Upon Entering</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Make the sign of the cross and bow</li>
+                        <li>• Venerate icons by making the sign of the cross and kissing them</li>
+                        <li>• Light candles as an offering and prayer</li>
+                        <li>• Stand quietly or find your place</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">During the Service</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Stand for most of the service (sitting is allowed when appropriate)</li>
-                    <li>• Make the sign of the cross at designated times</li>
-                    <li>• Bow when the priest censes or blesses</li>
-                    <li>• Refrain from talking or unnecessary movement</li>
-                    <li>• Do not cross your legs when sitting</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="during-service">
+                    <AccordionTrigger>During the Service</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Stand for most of the service (sitting is allowed when appropriate)</li>
+                        <li>• Make the sign of the cross at designated times</li>
+                        <li>• Bow when the priest censes or blesses</li>
+                        <li>• Refrain from talking or unnecessary movement</li>
+                        <li>• Do not cross your legs when sitting</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Holy Communion</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Fast from midnight before receiving communion</li>
-                    <li>• Confess your sins beforehand</li>
-                    <li>• Approach with hands crossed over chest</li>
-                    <li>• Open your mouth wide to receive on a spoon</li>
-                    <li>• Consume antidoron (blessed bread) after</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="holy-communion">
+                    <AccordionTrigger>Holy Communion</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Fast from midnight before receiving communion</li>
+                        <li>• Confess your sins beforehand</li>
+                        <li>• Approach with hands crossed over chest</li>
+                        <li>• Open your mouth wide to receive on a spoon</li>
+                        <li>• Consume antidoron (blessed bread) after</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Dress Code</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Dress modestly and respectfully</li>
-                    <li>• Women: Skirts/dresses below the knee, shoulders covered</li>
-                    <li>• Men: Long pants, collared shirts preferred</li>
-                    <li>• Avoid casual or revealing clothing</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="dress-code">
+                    <AccordionTrigger>Dress Code</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Dress modestly and respectfully</li>
+                        <li>• Women: Skirts/dresses below the knee, shoulders covered</li>
+                        <li>• Men: Long pants, collared shirts preferred</li>
+                        <li>• Avoid casual or revealing clothing</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">General Conduct</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Children should be taught to be reverent and quiet</li>
-                    <li>• Avoid leaving during the Gospel or consecration</li>
-                    <li>• Wait until dismissal before departing</li>
-                    <li>• Greet others quietly with "Christ is in our midst"</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="general-conduct">
+                    <AccordionTrigger>General Conduct</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Children should be taught to be reverent and quiet</li>
+                        <li>• Avoid leaving during the Gospel or consecration</li>
+                        <li>• Wait until dismissal before departing</li>
+                        <li>• Greet others quietly with "Christ is in our midst"</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
 
@@ -117,78 +137,169 @@ const ChurchResources = () => {
                   Oriental Orthodox Church Etiquette
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Before Entering</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Arrive before the service begins</li>
-                    <li>• Remove shoes in some traditions (Ethiopian, Eritrean)</li>
-                    <li>• Women cover their heads with a scarf</li>
-                    <li>• Turn off all electronic devices</li>
-                  </ul>
-                </div>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="before-entering">
+                    <AccordionTrigger>Before Entering</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Arrive before the service begins</li>
+                        <li>• Remove shoes in some traditions (Ethiopian, Eritrean)</li>
+                        <li>• Women cover their heads with a scarf</li>
+                        <li>• Turn off all electronic devices</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Upon Entering</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Make the sign of the cross (may differ by tradition)</li>
-                    <li>• Bow or prostrate before the altar</li>
-                    <li>• Kiss icons and crosses respectfully</li>
-                    <li>• Take your place quietly</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="upon-entering">
+                    <AccordionTrigger>Upon Entering</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Make the sign of the cross (may differ by tradition)</li>
+                        <li>• Bow or prostrate before the altar</li>
+                        <li>• Kiss icons and crosses respectfully</li>
+                        <li>• Take your place quietly</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">During the Service</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Stand for the entire service (traditional practice)</li>
-                    <li>• Make prostrations at designated times</li>
-                    <li>• Use prayer ropes or rosaries for personal prayer</li>
-                    <li>• Maintain silence and focus on worship</li>
-                    <li>• Follow the congregation in responses and hymns</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="during-service">
+                    <AccordionTrigger>During the Service</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Stand for the entire service (traditional practice)</li>
+                        <li>• Make prostrations at designated times</li>
+                        <li>• Use prayer ropes or rosaries for personal prayer</li>
+                        <li>• Maintain silence and focus on worship</li>
+                        <li>• Follow the congregation in responses and hymns</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Holy Communion</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Fast from midnight or for designated hours</li>
-                    <li>• Confess sins and receive absolution</li>
-                    <li>• Men typically receive before women and children</li>
-                    <li>• Receive with reverence and humility</li>
-                    <li>• Some churches use a spoon, others intinction</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="holy-communion">
+                    <AccordionTrigger>Holy Communion</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Fast from midnight or for designated hours</li>
+                        <li>• Confess sins and receive absolution</li>
+                        <li>• Men typically receive before women and children</li>
+                        <li>• Receive with reverence and humility</li>
+                        <li>• Some churches use a spoon, others intinction</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Dress Code</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Dress in white or light colors for special feasts</li>
-                    <li>• Women: Long dresses/skirts, arms and shoulders covered</li>
-                    <li>• Men: Long pants, shirts with sleeves</li>
-                    <li>• Traditional garments are often worn</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="dress-code">
+                    <AccordionTrigger>Dress Code</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Dress in white or light colors for special feasts</li>
+                        <li>• Women: Long dresses/skirts, arms and shoulders covered</li>
+                        <li>• Men: Long pants, shirts with sleeves</li>
+                        <li>• Traditional garments are often worn</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Cultural Practices</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Kiss hands of clergy as a sign of respect</li>
-                    <li>• Receive blessings from priests after service</li>
-                    <li>• Participate in coffee and fellowship after liturgy</li>
-                    <li>• Learn and use traditional greetings in the church language</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="cultural-practices">
+                    <AccordionTrigger>Cultural Practices</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Kiss hands of clergy as a sign of respect</li>
+                        <li>• Receive blessings from priests after service</li>
+                        <li>• Participate in coffee and fellowship after liturgy</li>
+                        <li>• Learn and use traditional greetings in the church language</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Special Notes</h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Services are often longer than Western services</li>
-                    <li>• Ancient languages may be used (Coptic, Armenian, Syriac, etc.)</li>
-                    <li>• Incense and elaborate rituals are common</li>
-                    <li>• Respect photography restrictions during services</li>
-                  </ul>
-                </div>
+                  <AccordionItem value="special-notes">
+                    <AccordionTrigger>Special Notes</AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li>• Services are often longer than Western services</li>
+                        <li>• Ancient languages may be used (Coptic, Armenian, Syriac, etc.)</li>
+                        <li>• Incense and elaborate rituals are common</li>
+                        <li>• Respect photography restrictions during services</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Additional Readings Section */}
+          <div className="mt-8">
+            <Card className="shadow-elevated border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary" />
+                  Additional Readings
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Additional books recognized in various Orthodox traditions:
+                </p>
+                <ul className="grid md:grid-cols-2 gap-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    1 Enoch
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Jubilees
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    1 Meqabyan (Ethiopian Maccabees)
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    2 Meqabyan
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    3 Meqabyan
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Paralipomena of Jeremiah
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Joseph ben Gorion
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    The Book of the Covenant
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Didascalia
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    The Shepherd of Hermas
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Sinodos
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Clement (Ethiopic Clement)
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Ethiopic Book of the Nativity
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    Ethiopic Book of the Resurrection
+                  </li>
+                </ul>
               </CardContent>
             </Card>
           </div>
