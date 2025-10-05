@@ -75,8 +75,8 @@ export const TutorialIntro = () => {
   const Icon = slide.icon;
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={isOpen}>
+      <DialogContent className="sm:max-w-md" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
         <div className="flex flex-col items-center text-center space-y-6 py-6">
           {/* Icon */}
           <div className={`w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center ${slide.animation}`}>
