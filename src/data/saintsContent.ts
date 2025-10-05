@@ -7,7 +7,7 @@ import athanasiusIcon from "@/assets/saints/athanasius-icon.jpg";
 import basilIcon from "@/assets/saints/basil-icon.jpg";
 import markIcon from "@/assets/saints/mark-icon.jpg";
 import ephremIcon from "@/assets/saints/ephrem-icon.jpg";
-import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
+import maryEgyptIcon from "@/assets/saints/mary-egypt-icon.jpg";
 import gregoryNazianzusIcon from "@/assets/saints/gregory-nazianzus-icon.jpg";
 import severusIcon from "@/assets/saints/severus-icon.jpg";
 
@@ -238,27 +238,33 @@ export const saintsContent: SaintDetail[] = [
     ]
   },
   {
-    id: "moses-black",
-    name: "St. Moses the Black",
-    title: "The Ethiopian",
+    id: "mary-egypt",
+    name: "St. Mary of Egypt",
+    title: "The Penitent",
     tradition: "Oriental",
-    iconUrl: mosesBlackIcon,
+    iconUrl: maryEgyptIcon,
     content: [
-      "Moses was born in Ethiopia in the fourth century AD, around 330 AD. Little is known about his early life, but he was sold into slavery in Egypt as a young man. He served in the household of an Egyptian government official, but his immense physical strength and violent temperament made him a difficult slave.",
+      "Mary was born in Egypt around 344 AD. At the age of twelve, she left her parents' home and went to Alexandria, where she lived a life of sin and debauchery for seventeen years. She supported herself through weaving and begging, but gave her body freely to countless men, driven by an insatiable passion rather than material need.",
       
-      "After being dismissed from service, possibly for theft or violence, Moses became the leader of a band of robbers. For years, he terrorized the region around Alexandria, known for his brutality and strength. Standing over six feet tall with a powerful build, he was feared throughout Egypt. His life seemed destined for violence and crime.",
+      "At age 29, Mary joined a group of pilgrims sailing to Jerusalem for the feast of the Exaltation of the Holy Cross, but her motive was not devotion—it was to find more opportunities for sin. She seduced many young pilgrims during the voyage, paying for her passage with her body and continuing her dissolute lifestyle.",
       
-      "The turning point came when Moses and his gang attempted to rob a monastery in the desert of Scetis. The monks showed him unexpected kindness and hospitality. Their peace, joy, and forgiveness in the face of his threats deeply moved Moses. He realized the emptiness of his life of violence and asked to join the monastic community.",
+      "When the pilgrims entered the Church of the Holy Sepulchre, Mary attempted to follow them inside. However, an invisible force prevented her from crossing the threshold. Three times she tried to enter, and three times she was pushed back. While others entered freely, she alone was barred, as if the very stones rejected her presence.",
       
-      "The monks initially hesitated, uncertain whether his conversion was genuine. But Moses persevered, demonstrating sincere repentance. He was eventually accepted and became a monk under the spiritual direction of St. Isidore of Scetis. His transformation from violent robber to gentle monk became legendary in the desert.",
+      "Suddenly aware of the weight of her sins, Mary was overcome with remorse. She saw an icon of the Theotokos in the church courtyard and fell down weeping before it, begging the Mother of God for mercy and promising to renounce her former life completely if she could be granted entrance to venerate the Cross.",
       
-      "Moses's struggle with his former life was intense. He battled demons of lust, violence, and anger. He practiced extreme asceticism, including long vigils, fasting, and acts of humility. Once, when he was overcome with temptation, he carried water all night to tend the gardens of elderly monks who could not do so themselves.",
+      "After her tearful prayer, Mary tried once more to enter the church—and this time, she was able to cross the threshold. She venerated the Holy Cross with tears of repentance, then returned to the icon of the Theotokos. A voice told her to cross the Jordan River, where she would find rest. She received Holy Communion and three loaves of bread, then set out for the wilderness.",
       
-      "His former companions in crime once came to rob the monastery. When they were captured and brought before the monks, Moses recognized them. Rather than seeking revenge, he spoke to them of God's mercy and his own transformation. His testimony and forgiveness converted several of his former gang members to monasticism.",
+      "Mary spent the next 47 years alone in the desert beyond the Jordan, living in complete solitude and extreme asceticism. Her only possessions were the three loaves of bread, which miraculously lasted many years, and the worn cloak she had been given. She faced terrible temptations—memories of her past sins, cravings for fine foods, the songs and dances of her former life haunted her.",
       
-      "Moses was ordained a priest despite his initial objections based on his past and his race. The ordaining bishop tested his humility by having other clergy insult him for being black. When Moses endured this patiently, the bishop declared: 'Moses, you are white within!' He became known for his wisdom, humility, and spiritual insight.",
+      "Through intense prayer, prostrations, and tears of repentance, Mary gradually conquered these temptations. Her only food was desert plants; her only drink was water from the Jordan. The sun burned her skin, her hair became white and matted, her clothes fell to rags. She spent her days in prayer, having memorized the Psalms and prayers from the brief instruction she received before entering the desert.",
       
-      "Around 405 AD, when Moses was about 75 years old, barbarians attacked the monastery. Though warned in advance, Moses refused to flee, saying: 'All who take the sword will perish by the sword.' He and six other monks were martyred. St. Moses the Black's life demonstrates that no one is beyond God's mercy and that the greatest sinners can become the greatest saints. His feast day is August 28th, and he is particularly venerated in the Ethiopian and Coptic Orthodox Churches."
+      "In 431 AD, after 47 years in the desert, the monk Zosimas encountered Mary during his Lenten retreat in the wilderness. He was astonished to see a figure that seemed barely human. When he called out, she asked him to throw her his cloak, for her own clothing had long since deteriorated. She then told him her entire story, asking him to tell no one until after her death.",
+      
+      "Mary demonstrated spiritual gifts of clairvoyance, levitation, and profound knowledge of Scripture despite her lack of formal education. She asked Zosimas to return the following year on Holy Thursday to bring her Holy Communion. When he returned as requested, he witnessed her walking across the Jordan River to meet him. After receiving Communion, she asked him to return again the next year.",
+      
+      "When Zosimas returned in 433 AD, he found Mary's body lying in the desert sand, with a message written beside it: 'Abba Zosimas, bury the body of humble Mary in this place. Return dust to dust, and pray to the Lord for me. I departed on the very night I received the Divine Mysteries.' A lion appeared and helped him dig her grave with its paws.",
+      
+      "St. Mary of Egypt's life is one of the most powerful testimonies to the possibility of repentance and transformation in all of Christian literature. From the depths of sin, she rose to become a great ascetic and saint. Her story is read in Orthodox churches during Great Lent as an encouragement that no sin is too great for God's mercy. She is venerated on April 1st in the Eastern Orthodox Church and her life continues to inspire penitents throughout the ages."
     ]
   },
   {
