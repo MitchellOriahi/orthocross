@@ -27,7 +27,6 @@ const OrthodoxHistory = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
   const [progress, setProgress] = useState<UserProgress[]>([]);
-  const [showAvatarCustomizer, setShowAvatarCustomizer] = useState(false);
 
   useEffect(() => {
     loadProgress();
@@ -86,18 +85,6 @@ const OrthodoxHistory = () => {
     }
   }
 
-  if (showAvatarCustomizer) {
-    return (
-      <AvatarCustomizer
-        onClose={() => setShowAvatarCustomizer(false)}
-        equippedArmor={progress.filter(p => p.completed).map(p => {
-          const c = historyContent.campaigns.find(camp => camp.id === p.campaignId);
-          const i = c?.islands.find(isl => isl.id === p.islandId);
-          return i?.awardPiece || '';
-        })}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen gradient-peaceful">
@@ -113,9 +100,6 @@ const OrthodoxHistory = () => {
             <nav className="flex items-center gap-2">
               <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
                 <Home className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={() => setShowAvatarCustomizer(true)}>
-                <Trophy className="w-5 h-5" />
               </Button>
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />

@@ -52,6 +52,26 @@ export const VerseOfTheDay = () => {
     };
 
     loadVerseOfTheDay();
+
+    // Check for midnight and refresh verse
+    const checkMidnight = () => {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0);
+      const timeUntilMidnight = midnight.getTime() - now.getTime();
+      
+      return setTimeout(() => {
+        loadVerseOfTheDay();
+        // Set up daily interval after first midnight
+        setInterval(loadVerseOfTheDay, 24 * 60 * 60 * 1000);
+      }, timeUntilMidnight);
+    };
+
+    const midnightTimer = checkMidnight();
+    
+    return () => {
+      clearTimeout(midnightTimer);
+    };
   }, []);
 
   if (loading) {
