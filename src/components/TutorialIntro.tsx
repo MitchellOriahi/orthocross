@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Flame, Book, Hand, Move } from "lucide-react";
+import { ChevronLeft, ChevronRight, Flame, Book, Hand, Move, Settings } from "lucide-react";
 
 const slides = [
   {
@@ -15,6 +15,12 @@ const slides = [
     description: "Use the navigation bar at the bottom to quickly move between sections",
     icon: Move,
     animation: "animate-slide-in-right"
+  },
+  {
+    title: "Background Music",
+    description: "Enjoy calming ambient music while you read. You can turn it on/off anytime in Settings",
+    icon: Settings,
+    animation: "animate-fade-in"
   },
   {
     title: "Build Your Streak",
