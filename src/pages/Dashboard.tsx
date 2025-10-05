@@ -100,7 +100,7 @@ const Dashboard = () => {
     const isDesktop = window.innerWidth >= 768;
     if (isDesktop) {
       window.scrollTo({
-        top: 300,
+        top: 100,
         behavior: 'smooth'
       });
     }
