@@ -196,7 +196,7 @@ const Settings = () => {
           {/* App Information */}
           <Card className="shadow-elevated">
             <CardHeader>
-              <CardTitle>About OrthoCross App</CardTitle>
+              <CardTitle>OrthoCross App</CardTitle>
               <CardDescription>
                 Version 1.0.0
               </CardDescription>
