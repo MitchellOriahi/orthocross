@@ -119,7 +119,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
             >
               {contentPages[currentPage] === '__ICON_PAGE__' ? (
                 <div className="flex flex-col items-center justify-center gap-6 min-h-[500px]">
-                  <div className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-lg overflow-hidden border-2 border-primary/20 shadow-2xl bg-background">
+                  <div className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-lg overflow-hidden shadow-2xl">
                     <img 
                       src={`${iconUrl}?v=${Date.now()}`} 
                       alt={title} 
@@ -207,7 +207,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
             <div className="prose dark:prose-invert max-w-none">
               {iconUrl && (
                 <div className="flex justify-center mb-8">
-                  <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-lg overflow-hidden border-2 border-primary/20 shadow-2xl bg-background">
+                  <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-lg overflow-hidden shadow-2xl">
                     <img 
                       src={`${iconUrl}?v=${Date.now()}`} 
                       alt={title} 
