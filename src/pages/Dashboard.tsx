@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { StreakFlame } from "@/components/StreakFlame";
 import { DailyReadingCard } from "@/components/DailyReadingCard";
@@ -6,7 +6,8 @@ import { FastingCalendar } from "@/components/FastingCalendar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDay } from "@/components/VerseOfTheDay";
-import { Home, Settings as SettingsIcon, LogOut, ChevronLeft, ChevronRight } from "lucide-react";
+import { BottomNavigation } from "@/components/BottomNavigation";
+import { Home, Settings as SettingsIcon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,8 +17,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
   const [streakDays, setStreakDays] = useState(0);
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
   const [lastReading, setLastReading] = useState<{
     title: string;
     passage: string;
@@ -146,37 +145,9 @@ const Dashboard = () => {
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [user]);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    touchEndX.current = e.changedTouches[0].clientX;
-    handleSwipe();
-  };
-
-  const handleSwipe = () => {
-    const swipeThreshold = 50;
-    const diff = touchStartX.current - touchEndX.current;
-
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        // Swipe left - go to next (Church Resources)
-        navigate('/church-resources');
-      } else {
-        // Swipe right - go to previous (Browse Scripture)
-        navigate('/index');
-      }
-    }
-  };
   
   return (
-    <div 
-      className="min-h-screen gradient-peaceful"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div className="min-h-screen gradient-peaceful pb-20">
       {/* Header */}
       <header className="bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
@@ -202,25 +173,6 @@ const Dashboard = () => {
           </div>
         </div>
       </header>
-
-
-      {/* Navigation Arrows - Hidden on mobile/tablet */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="hidden lg:flex fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
-        onClick={() => navigate('/index')}
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="hidden lg:flex fixed right-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
-        onClick={() => navigate('/church-resources')}
-      >
-        <ChevronRight className="w-5 h-5" />
-      </Button>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 space-y-8">
@@ -267,6 +219,8 @@ const Dashboard = () => {
           <FastingCalendar />
         </div>
       </main>
+
+      <BottomNavigation />
     </div>
   );
 };

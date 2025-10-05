@@ -11,16 +11,10 @@ const slides = [
     animation: "animate-fade-in"
   },
   {
-    title: "Swipe to Navigate",
-    description: "On mobile, swipe left or right to move between Orthodox History, Scripture, Dashboard, and Resources",
+    title: "Navigate with Ease",
+    description: "Use the navigation bar at the bottom to quickly move between sections",
     icon: Move,
     animation: "animate-slide-in-right"
-  },
-  {
-    title: "Tap to Flip Pages",
-    description: "Tap the left side to go back, right side to go forward when reading Scripture, prayers, or history",
-    icon: Hand,
-    animation: "animate-scale-in"
   },
   {
     title: "Build Your Streak",
@@ -70,10 +64,6 @@ export const TutorialIntro = () => {
     setIsOpen(false);
   };
 
-  const handleSkip = () => {
-    localStorage.setItem("hasSeenTutorial", "true");
-    setIsOpen(false);
-  };
 
   const slide = slides[currentSlide];
   const Icon = slide.icon;
@@ -110,32 +100,22 @@ export const TutorialIntro = () => {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center justify-between w-full gap-4">
-            <Button
-              variant="ghost"
-              onClick={handleSkip}
-              className="flex-1"
-            >
-              Skip
-            </Button>
-            
-            <div className="flex gap-2">
-              {currentSlide > 0 && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handlePrevious}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-              )}
+          <div className="flex items-center justify-center w-full gap-2">
+            {currentSlide > 0 && (
               <Button
-                onClick={handleNext}
-                className="min-w-24"
+                variant="outline"
+                size="icon"
+                onClick={handlePrevious}
               >
-                {currentSlide === slides.length - 1 ? "Get Started" : "Next"}
+                <ChevronLeft className="h-4 w-4" />
               </Button>
-            </div>
+            )}
+            <Button
+              onClick={handleNext}
+              className="min-w-32"
+            >
+              {currentSlide === slides.length - 1 ? "Get Started" : "Next"}
+            </Button>
           </div>
         </div>
       </DialogContent>

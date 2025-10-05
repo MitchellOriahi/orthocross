@@ -1,11 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Play, ChevronRight, ChevronLeft } from "lucide-react";
+import { BookOpen, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { BookSelector } from "@/components/BookSelector";
+import { BottomNavigation } from "@/components/BottomNavigation";
 import { BIBLE_BOOKS, getCategorizedBooks, BookInfo } from "@/data/bibleContent";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -30,8 +31,6 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [bibleCompletion, setBibleCompletion] = useState(0);
   const [bookProgress, setBookProgress] = useState<Record<string, number>>({});
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
@@ -178,53 +177,8 @@ const Index = () => {
 
   const lastReadScripture = getLastReadScripture();
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    touchEndX.current = e.changedTouches[0].clientX;
-    handleSwipe();
-  };
-
-  const handleSwipe = () => {
-    const swipeThreshold = 50;
-    const diff = touchStartX.current - touchEndX.current;
-
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        // Swipe left - go to next (Dashboard)
-        navigate('/dashboard');
-      } else {
-        // Swipe right - go to previous (Orthodox History)
-        navigate('/orthodox-history');
-      }
-    }
-  };
-
   return (
-    <div 
-      className="min-h-screen gradient-peaceful"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Navigation Arrows - Hidden on mobile/tablet */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="hidden lg:flex fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
-        onClick={() => navigate('/orthodox-history')}
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="hidden lg:flex fixed right-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
-        onClick={() => navigate('/dashboard')}
-      >
-        <ChevronRight className="w-5 h-5" />
-      </Button>
+    <div className="min-h-screen gradient-peaceful pb-20">
 
       {/* Header */}
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
@@ -470,6 +424,8 @@ const Index = () => {
           <p>© 2025 OrthoCross App. Building faith through daily practice.</p>
         </div>
       </footer>
+
+      <BottomNavigation />
     </div>
   );
 };

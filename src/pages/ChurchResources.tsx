@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Church, BookOpen, UserRound, ChevronLeft } from "lucide-react";
+import { ArrowLeft, Church, BookOpen, UserRound } from "lucide-react";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import {
   Accordion,
@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { DetailedContentView } from "@/components/resources/DetailedContentView";
+import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
@@ -23,34 +24,11 @@ const ChurchResources = () => {
   const [selectedSection, setSelectedSection] = useState<SectionType>(null);
   const [selectedSaint, setSelectedSaint] = useState<SaintDetail | null>(null);
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    touchEndX.current = e.changedTouches[0].clientX;
-    handleSwipe();
-  };
-
-  const handleSwipe = () => {
-    const swipeThreshold = 50;
-    const diff = touchStartX.current - touchEndX.current;
-
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff < 0) {
-        // Swipe right - go to previous (Dashboard)
-        navigate('/dashboard');
-      }
-    }
-  };
 
   if (selectedSaint) {
     return (
@@ -347,20 +325,7 @@ const ChurchResources = () => {
   }
 
   return (
-    <div 
-      className="min-h-screen gradient-peaceful"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Navigation Arrow - Hidden on mobile/tablet */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="hidden lg:flex fixed left-4 top-1/2 -translate-y-1/2 z-40 shadow-lg"
-        onClick={() => navigate('/dashboard')}
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </Button>
+    <div className="min-h-screen gradient-peaceful pb-20">
 
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
@@ -455,6 +420,8 @@ const ChurchResources = () => {
           </div>
         </div>
       </main>
+
+      <BottomNavigation />
     </div>
   );
 };
