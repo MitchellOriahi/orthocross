@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, ChevronLeft, ChevronRight, Check } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 
 interface DetailedContentViewProps {
@@ -35,7 +34,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background">
+    <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -73,7 +72,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-8 max-w-4xl pb-20">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold mb-2 text-foreground">
             {title}
@@ -89,8 +88,8 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
               </div>
             </div>
 
-            <div className="prose dark:prose-invert max-w-none mb-8 min-h-[500px]">
-              <p className="text-lg leading-relaxed whitespace-pre-line">
+            <div className="prose dark:prose-invert max-w-none mb-8 min-h-[300px] sm:min-h-[500px]">
+              <p className="text-base sm:text-lg leading-relaxed whitespace-pre-line">
                 {content[currentPage]}
               </p>
             </div>
@@ -152,21 +151,19 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
             </div>
           </Card>
         ) : (
-          <Card className="p-8">
-            <ScrollArea className="h-[calc(100vh-300px)]">
-              <div className="prose dark:prose-invert max-w-none">
-                {content.map((paragraph, index) => (
-                  <div key={index} className="mb-6">
-                    <p className="text-lg leading-relaxed whitespace-pre-line">
-                      {paragraph}
-                    </p>
-                    {index < content.length - 1 && (
-                      <div className="h-px bg-border/50 my-6" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
+          <Card className="p-4 sm:p-8">
+            <div className="prose dark:prose-invert max-w-none">
+              {content.map((paragraph, index) => (
+                <div key={index} className="mb-6">
+                  <p className="text-base sm:text-lg leading-relaxed whitespace-pre-line">
+                    {paragraph}
+                  </p>
+                  {index < content.length - 1 && (
+                    <div className="h-px bg-border/50 my-6" />
+                  )}
+                </div>
+              ))}
+            </div>
             
             <div className="flex justify-center mt-6 pt-6 border-t">
               <Button
