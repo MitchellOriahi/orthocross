@@ -244,36 +244,31 @@ const ChurchResources = () => {
                 </p>
                 <div className="grid md:grid-cols-2 gap-3">
                   {[
-                    { title: "1 Enoch", passage: "1 Enoch 1-5" },
-                    { title: "Jubilees", passage: "Jubilees 1" },
-                    { title: "1 Meqabyan", passage: "1 Meqabyan 1" },
-                    { title: "2 Meqabyan", passage: "2 Meqabyan 1" },
-                    { title: "3 Meqabyan", passage: "3 Meqabyan 1" },
-                    { title: "Paralipomena of Jeremiah", passage: "Paralipomena 1" },
-                    { title: "Joseph ben Gorion", passage: "Joseph ben Gorion 1" },
-                    { title: "The Book of the Covenant", passage: "Book of Covenant 1" },
-                    { title: "Didascalia", passage: "Didascalia 1" },
-                    { title: "The Shepherd of Hermas", passage: "Shepherd of Hermas 1" },
-                    { title: "Sinodos", passage: "Sinodos 1" },
-                    { title: "Clement", passage: "Ethiopic Clement 1" },
-                    { title: "Ethiopic Book of the Nativity", passage: "Nativity 1" },
-                    { title: "Ethiopic Book of the Resurrection", passage: "Resurrection 1" }
+                    { book: "1 Enoch", bookName: "Book of 1 Enoch", totalChapters: 2 },
+                    { book: "Jubilees", bookName: "Book of Jubilees", totalChapters: 1 },
+                    { book: "1 Meqabyan", bookName: "1 Meqabyan", totalChapters: 2 },
+                    { book: "2 Meqabyan", bookName: "2 Meqabyan", totalChapters: 1 },
+                    { book: "3 Meqabyan", bookName: "3 Meqabyan", totalChapters: 1 },
+                    { book: "Paralipomena of Jeremiah", bookName: "Paralipomena of Jeremiah", totalChapters: 1 },
+                    { book: "The Shepherd of Hermas", bookName: "The Shepherd of Hermas", totalChapters: 1 },
+                    { book: "Ethiopic Clement", bookName: "Ethiopic Clement", totalChapters: 1 },
                   ].map((book) => (
                     <Button
-                      key={book.title}
+                      key={book.book}
                       variant="outline"
                       className="justify-start h-auto py-3 px-4 text-left hover:bg-accent transition-colors"
                       onClick={() => navigate('/reading', { 
                         state: { 
-                          title: book.title, 
-                          passage: book.passage,
-                          progress: 0
+                          book: book.book,
+                          bookName: book.bookName,
+                          chapter: 1,
+                          totalChapters: book.totalChapters
                         } 
                       })}
                     >
                       <div className="flex items-center gap-3 w-full">
                         <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
-                        <span className="text-sm font-medium">{book.title}</span>
+                        <span className="text-sm font-medium">{book.bookName}</span>
                       </div>
                     </Button>
                   ))}
