@@ -59,27 +59,31 @@ const Dashboard = () => {
       if (lastCompleted) {
         const bookKey = lastCompleted.book_key;
         const lastChapter = lastCompleted.chapter;
-
-        // Get all completed chapters for this book
-        const { data: completedChapters } = await supabase
-          .from('completed_chapters')
-          .select('chapter')
-          .eq('user_id', user.id)
-          .eq('book_key', bookKey);
+        const nextChapter = lastChapter + 1;
 
         // Import book info to get total chapters and book name
         const { BIBLE_BOOKS } = await import('@/data/bibleContent');
         const bookInfo = BIBLE_BOOKS.find(b => b.title === bookKey);
         const totalChapters = bookInfo?.totalChapters || 1;
-        const completedCount = completedChapters?.length || 0;
-        const bookProgress = Math.round((completedCount / totalChapters) * 100);
+        const bookName = bookInfo?.bookName || bookKey;
+
+        // Get progress for the next chapter (current reading position)
+        const { data: chapterProgress } = await supabase
+          .from('reading_progress')
+          .select('progress')
+          .eq('user_id', user.id)
+          .eq('book_key', bookKey)
+          .eq('current_chapter', nextChapter)
+          .maybeSingle();
+
+        const currentProgress = chapterProgress?.progress || 0;
 
         setLastReading({
-          title: bookInfo?.bookName || bookKey,
-          passage: `${bookInfo?.bookName || bookKey} ${lastChapter}`,
-          progress: bookProgress,
+          title: bookName,
+          passage: `${bookName} ${nextChapter}`,
+          progress: currentProgress,
           bookKey: bookKey,
-          chapter: lastChapter + 1, // Continue from next chapter
+          chapter: nextChapter,
           totalChapters: totalChapters
         });
       }
@@ -105,25 +109,29 @@ const Dashboard = () => {
           if (lastCompleted) {
             const bookKey = lastCompleted.book_key;
             const lastChapter = lastCompleted.chapter;
-
-            const { data: completedChapters } = await supabase
-              .from('completed_chapters')
-              .select('chapter')
-              .eq('user_id', user.id)
-              .eq('book_key', bookKey);
+            const nextChapter = lastChapter + 1;
 
             const { BIBLE_BOOKS } = await import('@/data/bibleContent');
             const bookInfo = BIBLE_BOOKS.find(b => b.title === bookKey);
             const totalChapters = bookInfo?.totalChapters || 1;
-            const completedCount = completedChapters?.length || 0;
-            const bookProgress = Math.round((completedCount / totalChapters) * 100);
+            const bookName = bookInfo?.bookName || bookKey;
+
+            const { data: chapterProgress } = await supabase
+              .from('reading_progress')
+              .select('progress')
+              .eq('user_id', user.id)
+              .eq('book_key', bookKey)
+              .eq('current_chapter', nextChapter)
+              .maybeSingle();
+
+            const currentProgress = chapterProgress?.progress || 0;
 
             setLastReading({
-              title: bookInfo?.bookName || bookKey,
-              passage: `${bookInfo?.bookName || bookKey} ${lastChapter}`,
-              progress: bookProgress,
+              title: bookName,
+              passage: `${bookName} ${nextChapter}`,
+              progress: currentProgress,
               bookKey: bookKey,
-              chapter: lastChapter + 1,
+              chapter: nextChapter,
               totalChapters: totalChapters
             });
           }
