@@ -81,7 +81,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
         </div>
 
         {viewMode === 'paginated' ? (
-          <Card className="p-8">
+          <Card className="p-4 sm:p-8">
             <div className="flex justify-end mb-4">
               <div className="text-sm font-medium text-muted-foreground bg-primary/10 px-3 py-1 rounded-full">
                 Page {currentPage + 1} of {totalPages}
@@ -94,18 +94,53 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
               </p>
             </div>
 
-            <div className="flex items-center justify-between gap-4 pt-6 border-t">
-              <Button
-                onClick={handlePrev}
-                disabled={currentPage === 0}
-                variant="outline"
-                size="lg"
-              >
-                <ChevronLeft className="w-5 h-5 mr-2" />
-                Previous
-              </Button>
+            <div className="pt-6 border-t space-y-4">
+              <div className="flex items-center justify-between gap-2">
+                <Button
+                  onClick={handlePrev}
+                  disabled={currentPage === 0}
+                  variant="outline"
+                  size="lg"
+                  className="flex-1"
+                >
+                  <ChevronLeft className="w-5 h-5 sm:mr-2" />
+                  <span className="hidden sm:inline">Previous</span>
+                </Button>
 
-              <div className="flex gap-2">
+                {showProgress && isComplete && onComplete ? (
+                  <Button
+                    onClick={onComplete}
+                    size="lg"
+                    variant="sacred"
+                    className="flex-1"
+                  >
+                    <Check className="w-5 h-5 sm:mr-2" />
+                    <span className="hidden sm:inline">Finish</span>
+                  </Button>
+                ) : !showProgress && isComplete ? (
+                  <Button
+                    onClick={onClose}
+                    size="lg"
+                    variant="sacred"
+                    className="flex-1"
+                  >
+                    <Check className="w-5 h-5 sm:mr-2" />
+                    <span className="hidden sm:inline">Finish</span>
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleNext}
+                    disabled={currentPage === totalPages - 1}
+                    size="lg"
+                    className="flex-1"
+                  >
+                    <span className="hidden sm:inline">Next</span>
+                    <ChevronRight className="w-5 h-5 sm:ml-2" />
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex gap-2 justify-center">
                 {Array.from({ length: totalPages }).map((_, i) => (
                   <button
                     key={i}
@@ -119,35 +154,6 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
                   />
                 ))}
               </div>
-
-              {showProgress && isComplete && onComplete ? (
-                <Button
-                  onClick={onComplete}
-                  size="lg"
-                  variant="sacred"
-                >
-                  <Check className="w-5 h-5 mr-2" />
-                  Finish
-                </Button>
-              ) : !showProgress && isComplete ? (
-                <Button
-                  onClick={onClose}
-                  size="lg"
-                  variant="sacred"
-                >
-                  <Check className="w-5 h-5 mr-2" />
-                  Finish
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleNext}
-                  disabled={currentPage === totalPages - 1}
-                  size="lg"
-                >
-                  Next
-                  <ChevronRight className="w-5 h-5 ml-2" />
-                </Button>
-              )}
             </div>
           </Card>
         ) : (
