@@ -99,8 +99,8 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
         {viewMode === 'paginated' ? (
           <Card className="p-4 sm:p-8">
             <div className="flex justify-end mb-4">
-              <div className="text-sm font-medium text-muted-foreground bg-primary/10 px-3 py-1 rounded-full">
-                Page {currentPage + 1} of {totalPages}
+              <div className="text-xs sm:text-sm font-medium text-muted-foreground bg-primary/10 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
+                <span className="hidden sm:inline">Page </span>{currentPage + 1}<span className="hidden sm:inline"> of</span><span className="sm:hidden">/</span> {totalPages}
               </div>
             </div>
 
@@ -121,10 +121,10 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
                   disabled={currentPage === 0}
                   variant="outline"
                   size="lg"
-                  className="flex-1"
+                  className="flex-1 min-w-0"
                 >
-                  <ChevronLeft className="w-5 h-5 sm:mr-2" />
-                  <span className="hidden sm:inline">Previous</span>
+                  <ChevronLeft className="w-5 h-5 sm:mr-2 flex-shrink-0" />
+                  <span className="hidden sm:inline truncate">Previous</span>
                 </Button>
 
                 {showProgress && isComplete && onComplete ? (
@@ -132,30 +132,30 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
                     onClick={onComplete}
                     size="lg"
                     variant="sacred"
-                    className="flex-1"
+                    className="flex-1 min-w-0"
                   >
-                    <Check className="w-5 h-5 sm:mr-2" />
-                    <span className="hidden sm:inline">Finish</span>
+                    <Check className="w-5 h-5 sm:mr-2 flex-shrink-0" />
+                    <span className="hidden sm:inline truncate">Finish</span>
                   </Button>
                 ) : !showProgress && isComplete ? (
                   <Button
                     onClick={onClose}
                     size="lg"
                     variant="sacred"
-                    className="flex-1"
+                    className="flex-1 min-w-0"
                   >
-                    <Check className="w-5 h-5 sm:mr-2" />
-                    <span className="hidden sm:inline">Finish</span>
+                    <Check className="w-5 h-5 sm:mr-2 flex-shrink-0" />
+                    <span className="hidden sm:inline truncate">Finish</span>
                   </Button>
                 ) : (
                   <Button
                     onClick={handleNext}
                     disabled={currentPage === totalPages - 1}
                     size="lg"
-                    className="flex-1"
+                    className="flex-1 min-w-0"
                   >
-                    <span className="hidden sm:inline">Next</span>
-                    <ChevronRight className="w-5 h-5 sm:ml-2" />
+                    <span className="hidden sm:inline truncate">Next</span>
+                    <ChevronRight className="w-5 h-5 sm:ml-2 flex-shrink-0" />
                   </Button>
                 )}
               </div>

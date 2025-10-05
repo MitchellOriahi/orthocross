@@ -440,20 +440,22 @@ const Reading = () => {
               )}
 
               {/* Chapter Navigation */}
-              <div className="flex items-center justify-between pt-6 border-t">
+              <div className="flex items-center justify-between pt-6 border-t gap-2 flex-wrap sm:flex-nowrap">
                 <Button
                   variant="outline"
                   onClick={handlePrevChapter}
                   disabled={chapter === 1}
+                  className="flex-shrink-0"
+                  size="sm"
                 >
-                  <ChevronLeft className="w-4 h-4 mr-2" />
-                  Previous
+                  <ChevronLeft className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Previous</span>
                 </Button>
 
                 {verses.length > 0 && (
-                  <Button variant="sacred" onClick={markChapterComplete}>
-                    <BookMarked className="w-4 h-4 mr-2" />
-                    Mark Complete
+                  <Button variant="sacred" onClick={markChapterComplete} size="sm" className="text-xs sm:text-sm">
+                    <BookMarked className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden xs:inline">Mark </span>Complete
                   </Button>
                 )}
 
@@ -461,9 +463,11 @@ const Reading = () => {
                   variant="outline"
                   onClick={handleNextChapter}
                   disabled={chapter === totalChapters}
+                  className="flex-shrink-0"
+                  size="sm"
                 >
-                  Next
-                  <ChevronRight className="w-4 h-4 ml-2" />
+                  <span className="hidden sm:inline">Next</span>
+                  <ChevronRight className="w-4 h-4 sm:ml-2" />
                 </Button>
               </div>
             </div>
