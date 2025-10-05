@@ -16,6 +16,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
   const [streakDays, setStreakDays] = useState(0);
+  const [isJournalExpanded, setIsJournalExpanded] = useState(false);
   const [lastReading, setLastReading] = useState<{
     title: string;
     passage: string;
@@ -118,11 +119,30 @@ const Dashboard = () => {
             <VerseOfTheDay />
 
             {/* Journal */}
-            <Journal />
+            <div 
+              className={`transition-all duration-300 cursor-pointer ${
+                isJournalExpanded ? 'h-[600px]' : 'h-[200px] overflow-hidden'
+              }`}
+              onClick={() => !isJournalExpanded && setIsJournalExpanded(true)}
+            >
+              <Journal />
+            </div>
+            {isJournalExpanded && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setIsJournalExpanded(false)}
+                className="w-full"
+              >
+                Collapse Journal
+              </Button>
+            )}
           </div>
 
           {/* Fasting Calendar */}
-          <FastingCalendar />
+          <div className="max-h-[400px] overflow-hidden">
+            <FastingCalendar />
+          </div>
         </div>
 
         {/* Quick Actions */}
