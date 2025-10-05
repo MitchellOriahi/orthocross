@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 interface FastingEvent {
   name: string;
@@ -53,10 +51,15 @@ const getWeeklyFastDays = (month: number, year: number) => {
   return days;
 };
 
-export const FastingCalendarView = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
+interface FastingCalendarViewProps {
+  selectedTradition: "Eastern Orthodox" | "Oriental Orthodox";
+  selectedMonth: number;
+  selectedYear: number;
+}
+
+export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear }: FastingCalendarViewProps) => {
+  const currentMonth = selectedMonth;
+  const currentYear = selectedYear;
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -70,18 +73,12 @@ export const FastingCalendarView = () => {
 
   const getEventsForDay = (day: number) => {
     return fastingEvents.filter(event => {
+      const matchesTradition = event.tradition === (selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental");
       return event.date.getDate() === day &&
              event.date.getMonth() === currentMonth &&
-             event.date.getFullYear() === currentYear;
+             event.date.getFullYear() === currentYear &&
+             matchesTradition;
     });
-  };
-
-  const handlePreviousMonth = () => {
-    setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
   };
 
   const renderCalendarDays = () => {
@@ -98,20 +95,15 @@ export const FastingCalendarView = () => {
       const isWeeklyFast = weeklyFasts.includes(day);
       const hasFeast = events.some(e => e.type === "feast");
       const hasFast = events.some(e => e.type === "fast");
-      const hasEastern = events.some(e => e.tradition === "Eastern");
       
       days.push(
         <div
           key={day}
           className={`h-20 border border-border/50 p-1 overflow-hidden ${
             hasFeast 
-              ? hasEastern
-                ? "bg-blue-200 dark:bg-blue-900/50" 
-                : "bg-blue-100 dark:bg-blue-950/30"
+              ? "bg-blue-200 dark:bg-blue-900/50" 
               : hasFast 
-                ? hasEastern
-                  ? "bg-red-200 dark:bg-red-900/50"
-                  : "bg-red-100 dark:bg-red-950/30"
+                ? "bg-red-200 dark:bg-red-900/50"
                 : isWeeklyFast 
                   ? "bg-red-50 dark:bg-red-950/20" 
                   : "bg-background"
@@ -128,7 +120,7 @@ export const FastingCalendarView = () => {
                     : "text-red-900 dark:text-red-100"
                 }`}
               >
-                {event.tradition === "Eastern" ? "⛪" : "✝️"} {event.name}
+                {event.name}
               </div>
             ))}
           </div>
@@ -139,33 +131,21 @@ export const FastingCalendarView = () => {
     return days;
   };
 
+  const traditionIcon = selectedTradition === "Eastern Orthodox" ? "⛪" : "✝️";
+
   return (
     <Card className="shadow-elevated border-border/50">
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">
-            {monthNames[currentMonth]} {currentYear} Fasts & Feasts
-          </CardTitle>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={handlePreviousMonth}>
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleNextMonth}>
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
+        <CardTitle className="text-xl flex items-center gap-2">
+          {traditionIcon} {monthNames[currentMonth]} {currentYear} - {selectedTradition}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Legend */}
         <div className="flex flex-wrap gap-3 text-xs">
           <div className="flex items-center gap-1">
             <div className="w-4 h-4 bg-red-200 dark:bg-red-900/50 border border-red-400 dark:border-red-700" />
-            <span>⛪ Eastern Fast</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-red-100 dark:bg-red-950/30 border border-red-300 dark:border-red-800" />
-            <span>✝️ Oriental Fast</span>
+            <span>{traditionIcon} Major Fast</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-4 h-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30" />
@@ -173,11 +153,7 @@ export const FastingCalendarView = () => {
           </div>
           <div className="flex items-center gap-1">
             <div className="w-4 h-4 bg-blue-200 dark:bg-blue-900/50 border border-blue-400 dark:border-blue-700" />
-            <span>⛪ Eastern Feast</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4 bg-blue-100 dark:bg-blue-950/30 border border-blue-300 dark:border-blue-800" />
-            <span>✝️ Oriental Feast</span>
+            <span>{traditionIcon} Feast Day</span>
           </div>
         </div>
 

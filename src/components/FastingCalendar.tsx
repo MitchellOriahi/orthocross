@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useNotifications } from "@/hooks/useNotifications";
 import { toast } from "sonner";
 import { FastingCalendarView } from "./FastingCalendarView";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 interface FastingEvent {
   name: string;
@@ -51,6 +53,7 @@ export const FastingCalendar = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [reminders, setReminders] = useState<Set<string>>(new Set());
   const [showCalendarView, setShowCalendarView] = useState(false);
+  const [selectedTradition, setSelectedTradition] = useState<"Eastern Orthodox" | "Oriental Orthodox">("Eastern Orthodox");
   const { scheduleNotification } = useNotifications();
 
   useEffect(() => {
@@ -73,14 +76,11 @@ export const FastingCalendar = () => {
         return monthNames.indexOf(monthStr);
       });
       
-      return eventMonths.some(m => m === month);
+      return eventMonths.some(m => m === month) && event.tradition === selectedTradition;
     });
     
-    // Sort: Eastern first, then by type (feasts then fasts), then by date
+    // Sort by type (feasts then fasts), then by date
     return events.sort((a, b) => {
-      if (a.tradition !== b.tradition) {
-        return a.tradition === "Eastern Orthodox" ? -1 : 1;
-      }
       if (a.type !== b.type) {
         return a.type === "feast" ? -1 : 1;
       }
@@ -160,6 +160,22 @@ export const FastingCalendar = () => {
               </Button>
             </div>
           </CardTitle>
+          
+          {/* Tradition Selector */}
+          <RadioGroup
+            value={selectedTradition}
+            onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
+            className="flex gap-4 mt-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Eastern Orthodox" id="eastern" />
+              <Label htmlFor="eastern" className="cursor-pointer">⛪ Eastern Orthodox</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Oriental Orthodox" id="oriental" />
+              <Label htmlFor="oriental" className="cursor-pointer">✝️ Oriental Orthodox</Label>
+            </div>
+          </RadioGroup>
         </CardHeader>
         <CardContent className="space-y-3">
           {monthEvents.length > 0 ? (
@@ -254,7 +270,13 @@ export const FastingCalendar = () => {
       </Card>
       
       {/* Collapsible Calendar View */}
-      {showCalendarView && <FastingCalendarView />}
+      {showCalendarView && (
+        <FastingCalendarView 
+          selectedTradition={selectedTradition}
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
+        />
+      )}
     </div>
   );
 };
