@@ -151,9 +151,9 @@ const Dashboard = () => {
       <header className="bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={orthodoxCrossLogo} alt="Orthodox Cross" className="w-10 h-10 object-contain" />
-              <h1 className="text-2xl font-bold">Dashboard</h1>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <img src={orthodoxCrossLogo} alt="Orthodox Cross" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
+              <h1 className="text-lg sm:text-2xl font-bold">Dashboard</h1>
             </div>
             <nav className="flex items-center gap-2">
               <Button variant="ghost" size="icon" onClick={() => navigate('/home')}>

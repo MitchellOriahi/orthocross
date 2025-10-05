@@ -39,6 +39,15 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
     };
   };
 
+  const extractTimeframe = (title: string) => {
+    const match = title.match(/\(([^)]+)\)/);
+    return match ? match[1] : '';
+  };
+
+  const removeTimeframe = (title: string) => {
+    return title.replace(/\s*\([^)]+\)/, '').trim();
+  };
+
   const themeColors = campaign.theme === 'byzantine' 
     ? 'from-amber-500/20 to-yellow-600/20' 
     : 'from-red-500/20 to-orange-600/20';
@@ -129,9 +138,9 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="text-sm font-semibold text-muted-foreground mb-2">
-                          Island {index + 1}
+                          {extractTimeframe(island.title) || `Island ${index + 1}`}
                         </div>
-                        <h3 className="text-lg font-bold mb-3 line-clamp-2">{island.title}</h3>
+                        <h3 className="text-lg font-bold mb-3 line-clamp-2">{removeTimeframe(island.title)}</h3>
                       </div>
                     </div>
                     
