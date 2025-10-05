@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, ChevronLeft, ChevronRight, Bell, BellOff, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Bell, BellOff, ChevronDown, ChevronUp, Church } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -145,7 +145,7 @@ export const FastingCalendar = () => {
   return (
     <div className="space-y-4">
       <Card className="shadow-elevated border-border/50">
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-primary" />
@@ -165,19 +165,23 @@ export const FastingCalendar = () => {
           <RadioGroup
             value={selectedTradition}
             onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
-            className="flex gap-4 mt-4"
+            className="flex gap-4 mt-3"
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Eastern Orthodox" id="eastern" />
-              <Label htmlFor="eastern" className="cursor-pointer">⛪ Eastern Orthodox</Label>
+              <Label htmlFor="eastern" className="cursor-pointer flex items-center gap-1.5">
+                <Church className="w-4 h-4" /> Eastern Orthodox
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Oriental Orthodox" id="oriental" />
-              <Label htmlFor="oriental" className="cursor-pointer">✝️ Oriental Orthodox</Label>
+              <Label htmlFor="oriental" className="cursor-pointer flex items-center gap-1.5">
+                <Church className="w-4 h-4" /> Oriental Orthodox
+              </Label>
             </div>
           </RadioGroup>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 pt-3">
           {monthEvents.length > 0 ? (
             monthEvents.map((event, index) => {
               const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
