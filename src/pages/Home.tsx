@@ -9,11 +9,13 @@ import {
   CarouselItem,
   CarouselApi,
 } from "@/components/ui/carousel";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Home = () => {
   const navigate = useNavigate();
   const [hasClicked, setHasClicked] = useState(false);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const clicked = localStorage.getItem("hasClickedBegin");
@@ -22,16 +24,16 @@ const Home = () => {
     }
   }, []);
 
-  // Auto-play carousel
+  // Auto-play carousel - slower on mobile/tablet
   useEffect(() => {
     if (!carouselApi) return;
 
     const interval = setInterval(() => {
       carouselApi.scrollNext();
-    }, 3000); // Auto-scroll every 3 seconds
+    }, isMobile ? 5000 : 3000); // 5s on mobile/tablet, 3s on desktop
 
     return () => clearInterval(interval);
-  }, [carouselApi]);
+  }, [carouselApi, isMobile]);
 
   const handleBeginClick = () => {
     setHasClicked(true);

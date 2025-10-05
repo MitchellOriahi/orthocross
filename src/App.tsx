@@ -8,6 +8,7 @@ import { ThemeProvider } from "next-themes";
 import { MusicProvider } from "@/contexts/MusicContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { TutorialIntro } from "@/components/TutorialIntro";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
@@ -34,6 +35,7 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <TutorialIntro />
           <BrowserRouter>
             <AuthProvider>
               <Routes>
