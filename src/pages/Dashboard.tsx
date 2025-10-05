@@ -173,14 +173,10 @@ const Dashboard = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Streak Section with Navigation */}
-        <section className="flex flex-col md:flex-row items-start justify-between py-8 gap-6">
-          <div className="flex-1 flex justify-center md:justify-start">
-            <StreakFlame days={streakDays} size="lg" />
-          </div>
-          <div className="flex flex-col gap-3 md:pt-4">
+      {/* Navigation Links */}
+      <section className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex flex-wrap gap-3 justify-end">
             <Button variant="outline" size="sm" onClick={() => navigate('/orthodox-history')}>
               <Scroll className="w-4 h-4" />
               Orthodox History
@@ -194,6 +190,14 @@ const Dashboard = () => {
               Church Resources
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8 space-y-8">
+        {/* Streak Section */}
+        <section className="flex justify-center py-8">
+          <StreakFlame days={streakDays} size="lg" />
         </section>
 
         {/* Continue Reading */}
