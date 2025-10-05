@@ -21,11 +21,21 @@ export const StreakFlame = ({ days, size = "md" }: StreakFlameProps) => {
   return (
     <div className="relative inline-flex flex-col items-center gap-2">
       <div className={`${sizeClasses[size]} relative`}>
-        <div className="absolute inset-0 gradient-sacred rounded-full blur-xl opacity-50 animate-glow-pulse" />
+        <div className="absolute inset-0 rounded-full blur-xl opacity-50 animate-glow-pulse" style={{ background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%)' }} />
         <Flame 
-          className={`${sizeClasses[size]} relative z-10 text-primary animate-flame-flicker drop-shadow-lg`}
-          fill="currentColor"
+          className={`${sizeClasses[size]} relative z-10 animate-flame-flicker drop-shadow-lg`}
+          style={{ color: '#ff6b35' }}
+          fill="url(#fireGradient)"
         />
+        <svg width="0" height="0" className="absolute">
+          <defs>
+            <linearGradient id="fireGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#ffd700" />
+              <stop offset="50%" stopColor="#f7931e" />
+              <stop offset="100%" stopColor="#ff6b35" />
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
       <div className="text-center">
         <div className="text-2xl font-bold text-foreground">

@@ -33,7 +33,7 @@ const Home = () => {
       {/* Hero Section */}
       <section className="container mx-auto px-4 pt-20 text-center space-y-8">
         <div className="max-w-3xl mx-auto space-y-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-background rounded-2xl shadow-sacred mb-4 p-2">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-foreground dark:bg-background rounded-2xl shadow-sacred mb-4 p-2">
             <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
           </div>
           
@@ -110,8 +110,8 @@ const Home = () => {
                   onClick={() => navigate('/church-resources')}
                   className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 space-y-4 shadow-elevated hover:shadow-sacred transition-smooth text-left w-full h-full"
                 >
-                  <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
-                    <Book className="w-full h-full text-foreground" />
+                  <div className="w-12 h-12 bg-foreground dark:bg-background rounded-lg flex items-center justify-center p-1.5">
+                    <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                   </div>
                   <h3 className="text-2xl font-bold">Church Resources</h3>
                   <p className="text-muted-foreground">
