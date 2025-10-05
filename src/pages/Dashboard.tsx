@@ -113,15 +113,17 @@ const Dashboard = () => {
 
         {/* Additional Sections */}
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Verse of the Day */}
-          <VerseOfTheDay />
+          <div className="space-y-6">
+            {/* Verse of the Day */}
+            <VerseOfTheDay />
 
-          {/* Journal */}
-          <Journal />
+            {/* Journal */}
+            <Journal />
+          </div>
+
+          {/* Fasting Calendar */}
+          <FastingCalendar />
         </div>
-
-        {/* Fasting Calendar */}
-        <FastingCalendar />
 
         {/* Quick Actions */}
         <section className="flex flex-wrap gap-4 justify-center py-8">
