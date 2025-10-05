@@ -8,7 +8,7 @@ import basilIcon from "@/assets/saints/basil-icon.jpg";
 import markIcon from "@/assets/saints/mark-icon.jpg";
 import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
 import maryEgyptIcon from "@/assets/saints/mary-egypt-icon.jpg";
-import photiniIcon from "@/assets/saints/photini-icon.jpg";
+import catherineIcon from "@/assets/saints/catherine-icon.jpg";
 import severusIcon from "@/assets/saints/severus-icon.jpg";
 
 export interface SaintDetail {
@@ -268,29 +268,29 @@ export const saintsContent: SaintDetail[] = [
     ]
   },
   {
-    id: "photini",
-    name: "St. Photini the Samaritan",
-    title: "Equal to the Apostles",
+    id: "catherine",
+    name: "St. Catherine of Alexandria",
+    title: "The Great Martyr",
     tradition: "Eastern",
-    iconUrl: photiniIcon,
+    iconUrl: catherineIcon,
     content: [
-      "Photini, whose name means 'the luminous one' or 'enlightened,' is known in the Gospels as the Samaritan woman whom Christ met at Jacob's Well in Sychar. This encounter, recorded in John 4, is one of the longest conversations Jesus had with any individual in the Gospels, and it transformed her life completely.",
+      "Catherine was born around 287 AD in Alexandria, Egypt, to a noble pagan family of the highest social rank. Renowned for her exceptional beauty, she was even more celebrated for her brilliant intellect. By the age of eighteen, she had mastered philosophy, rhetoric, logic, mathematics, and multiple languages, surpassing the most learned scholars of her time.",
       
-      "Before meeting Christ, Photini had lived a troubled life. She had been married five times, and was living with a man who was not her husband. When Jesus revealed He knew everything about her past, she was amazed. But instead of condemning her, He offered her 'living water' - eternal life and spiritual transformation.",
+      "Despite her family's paganism and numerous suitors seeking her hand in marriage, Catherine felt drawn to something higher. According to tradition, she had a vision of the Virgin Mary and the Christ Child. When she expressed her desire to be united with Christ, she was told she must first be baptized. After her baptism, she had another vision in which Christ placed a ring on her finger, making her His spiritual bride.",
       
-      "Christ revealed to Photini that He was the Messiah - something He rarely stated so directly. Her encounter at the well became a profound theological discourse about true worship, moving beyond the disputes between Jews and Samaritans. Jesus taught her that 'God is spirit, and those who worship Him must worship in spirit and truth.'",
+      "Around 305 AD, Emperor Maxentius came to Alexandria and ordered all citizens to participate in pagan sacrifices. Catherine, now a devout Christian, went to the emperor and boldly challenged him, arguing against the worship of false gods and proclaiming Christ as the one true God. Maxentius was impressed by her courage and eloquence but determined to prove her wrong.",
       
-      "Immediately after her conversion, Photini ran into the city and proclaimed: 'Come, see a man who told me everything I ever did. Could this be the Christ?' Her testimony was so compelling that many Samaritans came to believe in Jesus. She became the first evangelist to the Samaritans, demonstrating that apostolic ministry was not limited to the Twelve.",
+      "The emperor summoned fifty of the most learned pagan philosophers and rhetoricians to debate Catherine and refute her Christian arguments. To everyone's astonishment, not only did Catherine defeat all fifty scholars in debate, but her wisdom and arguments were so compelling that the philosophers themselves converted to Christianity. Enraged, Maxentius had them all burned to death.",
       
-      "According to tradition, after Pentecost, Photini, along with her five sisters (Anatola, Photo, Photis, Parasceve, and Cyriaca), her two sons (Victor and Josiah), and several others, traveled throughout the Roman Empire preaching the Gospel. She is said to have baptized many and performed miracles in Christ's name.",
+      "The emperor then tried a different approach, offering Catherine wealth, power, and a position as his consort if she would renounce Christ and worship the pagan gods. She refused absolutely, declaring her eternal devotion to Christ. Meanwhile, many were being converted by her witness, including the empress Valeria Augusta and the commander of the imperial guard, Porphyrius, along with 200 of his soldiers.",
       
-      "Photini traveled to Carthage in North Africa, where she continued her evangelistic work. Her bold preaching and the miracles accompanying her ministry led to the conversion of thousands. She particularly emphasized Christ's message of God's mercy and the availability of salvation to all people, regardless of their past.",
+      "Maxentius ordered Catherine to be imprisoned and tortured. While in prison, she was visited by the empress and Porphyrius, whom she strengthened in their new faith. Angels ministered to her wounds. When Maxentius discovered the conversions of his wife and the commander, he had them both executed. The 200 soldiers who had converted were also martyred.",
       
-      "During the persecution under Emperor Nero (around 66 AD), Photini was arrested in Rome along with her family and companions. They were brought before Nero himself. Despite threats and torture, she fearlessly confessed Christ and refused to sacrifice to the Roman gods. Her courage inspired many, including some of Nero's own household, to convert to Christianity.",
+      "The emperor constructed a terrible instrument of torture for Catherine - a machine with four spiked wheels designed to tear her body apart. When Catherine was bound to the device, she prayed, and an angel struck the machine, destroying it and killing many pagan bystanders. This miracle led to even more conversions. The broken wheel became her primary symbol in iconography.",
       
-      "Photini and her companions endured various tortures. According to tradition, she was thrown into a well (echoing the well where she first met Christ), but survived miraculously. She was finally martyred by being thrown into a deep pit where she died of her wounds. Her last words were prayers for her persecutors and thanksgiving for being found worthy to die for Christ.",
+      "Finally, on November 25, around 310 AD, Maxentius ordered Catherine to be beheaded. According to tradition, when her head was struck off, milk flowed from her veins instead of blood, symbolizing her purity. Angels carried her body to Mount Sinai, where a monastery was later built in her honor. St. Catherine's Monastery, one of the oldest working Christian monasteries in the world, stands there to this day.",
       
-      "The Orthodox Church honors St. Photini with the title 'Equal to the Apostles' - a rare distinction given to those whose evangelistic work was comparable to the Twelve Apostles. She is commemorated on the Sunday of the Samaritan Woman (the fifth Sunday of Pascha) and on February 26th. Her life demonstrates that Christ calls everyone, regardless of their past, to become His witnesses and that women played a crucial role in spreading the Gospel from the earliest days of the Church."
+      "St. Catherine is venerated as one of the greatest martyrs of the Church and patron saint of philosophers, scholars, students, and educators. She is one of the 'Fourteen Holy Helpers' - saints invoked against specific difficulties. Her feast day is celebrated on November 25th. Her life exemplifies how wisdom and learning, when united with faith, become powerful tools for defending truth and converting souls to Christ."
     ]
   },
   {
