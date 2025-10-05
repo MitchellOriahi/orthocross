@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Heart } from "lucide-react";
+import { ArrowLeft, Heart, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -35,7 +35,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
   const [stage, setStage] = useState<'reading' | 'quiz' | 'complete'>('reading');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const { toast } = useToast();
 
   const handleStartQuiz = () => {
@@ -43,15 +43,31 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
   };
 
   const handleAnswerSelect = (value: string) => {
-    setSelectedAnswer(parseInt(value));
+    setSelectedAnswer(value);
   };
 
   const handleSubmitAnswer = () => {
-    if (selectedAnswer === null) return;
+    if (!selectedAnswer) return;
 
-    const isCorrect = selectedAnswer === island.quiz[currentQuestion].correctAnswer;
+    const selectedIndex = parseInt(selectedAnswer);
+    const isCorrect = selectedIndex === island.quiz[currentQuestion].correctAnswer;
     
-    if (!isCorrect && hearts > 0) {
+    if (isCorrect) {
+      // Gain a heart on correct answer (up to max)
+      if (hearts < historyContent.maxHearts) {
+        setHearts(hearts + 1);
+        toast({
+          title: "Correct! ✓",
+          description: `You gained a heart! ${hearts + 1} hearts.`,
+        });
+      } else {
+        toast({
+          title: "Correct! ✓",
+          description: "Great job!",
+        });
+      }
+    } else {
+      // Lose a heart on wrong answer
       setHearts(hearts - 1);
       toast({
         title: "Incorrect Answer",
@@ -70,12 +86,12 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
       }
     }
 
-    const newAnswers = [...answers, selectedAnswer];
+    const newAnswers = [...answers, selectedIndex];
     setAnswers(newAnswers);
 
     if (currentQuestion < island.quiz.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
+      setSelectedAnswer('');
     } else {
       // Calculate score
       const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
@@ -84,11 +100,6 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
       
       setStage('complete');
       onComplete(campaignId, island.id, xpEarned, score);
-      
-      toast({
-        title: "Island Complete!",
-        description: `You earned ${xpEarned} XP! Score: ${score.toFixed(0)}%`,
-      });
     }
   };
 
@@ -142,7 +153,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
             <Card className="p-8">
               <h2 className="text-xl font-bold mb-6">{island.quiz[currentQuestion].question}</h2>
               
-              <RadioGroup value={selectedAnswer?.toString()} onValueChange={handleAnswerSelect}>
+              <RadioGroup value={selectedAnswer} onValueChange={handleAnswerSelect}>
                 <div className="space-y-4">
                   {island.quiz[currentQuestion].options.map((option, index) => (
                     <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-accent cursor-pointer">
@@ -157,7 +168,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
 
               <Button 
                 onClick={handleSubmitAnswer} 
-                disabled={selectedAnswer === null}
+                disabled={!selectedAnswer}
                 size="lg" 
                 className="w-full mt-8"
               >
@@ -168,15 +179,28 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
         )}
 
         {stage === 'complete' && (
-          <Card className="p-8 text-center">
-            <Trophy className="w-24 h-24 mx-auto mb-6 text-primary" />
-            <h2 className="text-3xl font-bold mb-4">Quest Complete!</h2>
-            <p className="text-xl mb-6">You've earned a piece of the Armor of God:</p>
-            <div className="bg-primary/10 rounded-lg p-6 mb-8">
-              <p className="text-2xl font-bold capitalize">{island.awardPiece.replace(/_/g, ' ')}</p>
+          <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5">
+            <div className="mb-6">
+              <Trophy className="w-24 h-24 mx-auto mb-4 text-primary animate-bounce" />
+              <h2 className="text-4xl font-bold mb-2 gradient-sacred bg-clip-text text-transparent">
+                🎉 Congratulations! 🎉
+              </h2>
+              <p className="text-xl text-muted-foreground">Island Complete!</p>
             </div>
-            <Button onClick={onBack} size="lg">
-              Return to Path
+            
+            <div className="bg-card border-2 border-primary rounded-xl p-8 mb-6 shadow-lg">
+              <p className="text-sm uppercase tracking-wider text-muted-foreground mb-2">You've Earned</p>
+              <div className="relative">
+                <Shield className="w-32 h-32 mx-auto mb-4 text-primary" />
+                <p className="text-3xl font-bold capitalize gradient-sacred bg-clip-text text-transparent">
+                  {island.awardPiece.replace(/_/g, ' ')}
+                </p>
+              </div>
+              <p className="text-sm text-muted-foreground mt-4">A piece of the Armor of God</p>
+            </div>
+            
+            <Button onClick={onBack} size="lg" className="w-full">
+              Continue Your Journey
             </Button>
           </Card>
         )}
