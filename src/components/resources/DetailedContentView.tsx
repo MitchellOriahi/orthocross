@@ -90,18 +90,22 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl pb-20">
-        <div className="mb-8 text-center">
-          {iconUrl && (
-            <div className="flex justify-center mb-6">
-              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20 shadow-lg">
-                <img src={iconUrl} alt={title} className="w-full h-full object-cover" />
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row gap-6 items-start">
+            {iconUrl && (
+              <div className="flex-shrink-0">
+                <div className="w-32 h-32 md:w-40 md:h-40 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
+                  <img src={iconUrl} alt={title} className="w-full h-full object-cover" />
+                </div>
               </div>
+            )}
+            <div className="flex-1 text-center md:text-left">
+              <h1 className="text-4xl font-bold mb-2 text-foreground">
+                {title}
+              </h1>
+              <p className="text-xl text-muted-foreground">{subtitle}</p>
             </div>
-          )}
-          <h1 className="text-4xl font-bold mb-2 text-foreground">
-            {title}
-          </h1>
-          <p className="text-xl text-muted-foreground">{subtitle}</p>
+          </div>
         </div>
 
         {viewMode === 'paginated' ? (
