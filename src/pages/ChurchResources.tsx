@@ -284,9 +284,14 @@ const ChurchResources = () => {
                       <button
                         key={prayer.id}
                         onClick={() => setSelectedPrayer(prayer)}
-                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all"
+                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative"
                       >
-                        <div className="font-semibold text-base">{prayer.name}</div>
+                        <div className="absolute top-2 right-2 text-xs px-2 py-1 rounded-md bg-primary/10 text-primary font-medium">
+                          {prayer.tradition === "Oriental" && "☦️ Oriental"}
+                          {prayer.tradition === "Eastern" && "☦️ Eastern"}
+                          {prayer.tradition === "Eastern/Oriental" && "☦️ Eastern/Oriental"}
+                        </div>
+                        <div className="font-semibold text-base pr-32">{prayer.name}</div>
                         <div className="text-sm text-muted-foreground mt-1">{prayer.title}</div>
                       </button>
                     ))}
@@ -309,9 +314,14 @@ const ChurchResources = () => {
                       <button
                         key={saint.id}
                         onClick={() => setSelectedSaint(saint)}
-                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all"
+                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative"
                       >
-                        <div className="font-semibold text-base">{saint.name}</div>
+                        <div className="absolute top-2 right-2 text-xs px-2 py-1 rounded-md bg-primary/10 text-primary font-medium">
+                          {saint.tradition === "Oriental" && "☦️ Oriental"}
+                          {saint.tradition === "Eastern" && "☦️ Eastern"}
+                          {saint.tradition === "Eastern/Oriental" && "☦️ Eastern/Oriental"}
+                        </div>
+                        <div className="font-semibold text-base pr-32">{saint.name}</div>
                         <div className="text-sm text-muted-foreground mt-1">{saint.title}</div>
                       </button>
                     ))}

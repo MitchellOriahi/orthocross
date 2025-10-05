@@ -180,16 +180,16 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
 
               {/* Status Circle */}
               <div className="flex-shrink-0">
-                <div className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  status.isCompleted 
-                    ? 'bg-primary shadow-lg shadow-primary/50' 
-                    : 'bg-card border-4 border-primary/30'
-                }`}>
-                  {status.isCompleted ? (
-                    <Flame className="w-8 h-8 text-black dark:text-white fill-black dark:fill-white" strokeWidth={2} />
-                  ) : (
-                    <Circle className="w-8 h-8 text-muted-foreground" strokeWidth={3} />
-                  )}
+              <div className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
+                status.isCompleted 
+                  ? 'bg-white dark:bg-gray-900 shadow-lg shadow-primary/50 border-2 border-primary' 
+                  : 'bg-card border-4 border-primary/30'
+              }`}>
+                {status.isCompleted ? (
+                  <Flame className="w-8 h-8 text-black dark:text-white fill-black dark:fill-white" strokeWidth={2} />
+                ) : (
+                  <Circle className="w-8 h-8 text-muted-foreground" strokeWidth={3} />
+                )}
                 </div>
               </div>
 
