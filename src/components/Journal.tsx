@@ -7,8 +7,6 @@ import { JournalSidebar } from "./journal/JournalSidebar";
 import { JournalNotesList } from "./journal/JournalNotesList";
 import { JournalEditor } from "./journal/JournalEditor";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 // Extended types that match the actual database schema
 interface JournalNote {
@@ -203,6 +201,16 @@ export const Journal = () => {
     setFolders(folders.map(f => f.id === folderId ? { ...f, name: newName } : f));
   };
 
+  const handleNoteDelete = async (noteId: string) => {
+    if (!confirm("Delete this note?")) return;
+    
+    await (supabase as any).from('journal_entries').delete().eq('id', noteId);
+    setNotes(notes.filter(n => n.id !== noteId));
+    if (selectedNoteId === noteId) {
+      setSelectedNoteId(null);
+    }
+  };
+
   const filteredNotes = notes.filter(note => {
     if (!searchQuery) return true;
     const searchLower = searchQuery.toLowerCase();
@@ -234,15 +242,8 @@ export const Journal = () => {
       <Sheet open={isFullScreen} onOpenChange={setIsFullScreen}>
         <SheetContent side="bottom" className="h-screen w-screen p-0 max-w-none">
           <div className="h-full flex flex-col">
-            <div className="border-b border-border p-2 flex items-center justify-between bg-card">
+            <div className="border-b border-border p-2 flex items-center bg-card">
               <h2 className="text-lg font-semibold px-2">Journal</h2>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClose}
-              >
-                <X className="h-5 w-5" />
-              </Button>
             </div>
             
             <div className="flex-1 flex overflow-hidden">
@@ -263,6 +264,7 @@ export const Journal = () => {
                   selectedNoteId={selectedNoteId}
                   onNoteSelect={handleNoteSelect}
                   onNoteCreate={handleNoteCreate}
+                  onNoteDelete={handleNoteDelete}
                   searchQuery={searchQuery}
                   onSearchChange={setSearchQuery}
                 />

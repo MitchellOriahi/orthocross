@@ -1,4 +1,4 @@
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,6 +17,7 @@ interface JournalNotesListProps {
   selectedNoteId: string | null;
   onNoteSelect: (noteId: string) => void;
   onNoteCreate: () => void;
+  onNoteDelete: (noteId: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
 }
@@ -26,6 +27,7 @@ export const JournalNotesList = ({
   selectedNoteId,
   onNoteSelect,
   onNoteCreate,
+  onNoteDelete,
   searchQuery,
   onSearchChange,
 }: JournalNotesListProps) => {
@@ -71,28 +73,43 @@ export const JournalNotesList = ({
             notes.map((note) => {
               const { title, preview } = getPreviewText(note);
               return (
-                <button
+                <div
                   key={note.id}
-                  onClick={() => onNoteSelect(note.id)}
                   className={cn(
-                    "w-full text-left p-3 rounded-lg transition-colors",
+                    "group relative p-3 rounded-lg transition-colors",
                     selectedNoteId === note.id
                       ? "bg-accent"
                       : "hover:bg-accent/50"
                   )}
                 >
-                  <div className="font-medium text-sm truncate mb-1">
-                    {title}
-                  </div>
-                  <div className="text-xs text-muted-foreground line-clamp-2 mb-1">
-                    {preview}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(note.updated_at), {
-                      addSuffix: true,
-                    })}
-                  </div>
-                </button>
+                  <button
+                    onClick={() => onNoteSelect(note.id)}
+                    className="w-full text-left"
+                  >
+                    <div className="font-medium text-sm truncate mb-1 pr-8">
+                      {title}
+                    </div>
+                    <div className="text-xs text-muted-foreground line-clamp-2 mb-1">
+                      {preview}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {formatDistanceToNow(new Date(note.updated_at), {
+                        addSuffix: true,
+                      })}
+                    </div>
+                  </button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onNoteDelete(note.id);
+                    }}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
               );
             })
           )}

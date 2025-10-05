@@ -229,50 +229,178 @@ const ChurchResources = () => {
             </Card>
           </div>
 
-          {/* Additional Readings Section */}
-          <div className="mt-8">
+          {/* Prayers and Saints Section */}
+          <div className="mt-8 grid md:grid-cols-2 gap-6">
+            {/* Prayers Section */}
             <Card className="shadow-elevated border-border/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BookOpen className="w-5 h-5 text-primary" />
-                  Additional Readings
+                  Prayers
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Additional books recognized in various Orthodox traditions. Click to read:
-                </p>
-                <div className="grid md:grid-cols-2 gap-3">
-                  {[
-                    { book: "1 Enoch", bookName: "Book of 1 Enoch", totalChapters: 2 },
-                    { book: "Jubilees", bookName: "Book of Jubilees", totalChapters: 1 },
-                    { book: "1 Meqabyan", bookName: "1 Meqabyan", totalChapters: 2 },
-                    { book: "2 Meqabyan", bookName: "2 Meqabyan", totalChapters: 1 },
-                    { book: "3 Meqabyan", bookName: "3 Meqabyan", totalChapters: 1 },
-                    { book: "Paralipomena of Jeremiah", bookName: "Paralipomena of Jeremiah", totalChapters: 1 },
-                    { book: "The Shepherd of Hermas", bookName: "The Shepherd of Hermas", totalChapters: 1 },
-                    { book: "Ethiopic Clement", bookName: "Ethiopic Clement", totalChapters: 1 },
-                  ].map((book) => (
-                    <Button
-                      key={book.book}
-                      variant="outline"
-                      className="justify-start h-auto py-3 px-4 text-left hover:bg-accent transition-colors"
-                      onClick={() => navigate('/reading', { 
-                        state: { 
-                          book: book.book,
-                          bookName: book.bookName,
-                          chapter: 1,
-                          totalChapters: book.totalChapters
-                        } 
-                      })}
-                    >
-                      <div className="flex items-center gap-3 w-full">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
-                        <span className="text-sm font-medium">{book.bookName}</span>
-                      </div>
-                    </Button>
-                  ))}
-                </div>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="lords-prayer">
+                    <AccordionTrigger>The Lord's Prayer</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground whitespace-pre-line">
+                        Our Father, who art in heaven,
+                        hallowed be thy Name.
+                        Thy Kingdom come,
+                        thy will be done,
+                        on earth as it is in heaven.
+                        Give us this day our daily bread.
+                        And forgive us our trespasses,
+                        as we forgive those who trespass against us.
+                        And lead us not into temptation,
+                        but deliver us from evil.
+                        For thine is the kingdom, and the power, and the glory,
+                        forever and ever. Amen.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="nicene-creed">
+                    <AccordionTrigger>The Nicene Creed</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground whitespace-pre-line">
+                        I believe in one God, the Father Almighty, Maker of heaven and earth, and of all things visible and invisible.
+
+                        And in one Lord Jesus Christ, the only-begotten Son of God, begotten of the Father before all ages; Light of Light, true God of true God, begotten, not made, of one essence with the Father, by whom all things were made.
+
+                        Who for us men and for our salvation came down from heaven and was incarnate of the Holy Spirit and the Virgin Mary and became man.
+
+                        He was crucified for us under Pontius Pilate, and suffered and was buried; And He rose on the third day, according to the Scriptures.
+
+                        He ascended into heaven and is seated at the right hand of the Father; And He will come again with glory to judge the living and dead. His kingdom shall have no end.
+
+                        And in the Holy Spirit, the Lord, the Creator of life, who proceeds from the Father, who together with the Father and the Son is worshipped and glorified, who spoke through the prophets.
+
+                        In one, holy, catholic, and apostolic Church.
+
+                        I confess one baptism for the forgiveness of sins.
+
+                        I look for the resurrection of the dead, and the life of the age to come. Amen.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="jesus-prayer">
+                    <AccordionTrigger>The Jesus Prayer</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        Lord Jesus Christ, Son of God, have mercy on me, a sinner.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="trisagion">
+                    <AccordionTrigger>Trisagion Prayer</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground whitespace-pre-line">
+                        Holy God, Holy Mighty, Holy Immortal, have mercy on us. (3x)
+
+                        Glory to the Father, and to the Son, and to the Holy Spirit,
+                        now and ever and unto ages of ages. Amen.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="morning-prayer">
+                    <AccordionTrigger>Morning Prayer</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground whitespace-pre-line">
+                        Having risen from sleep, I thank You, O Holy Trinity, for through Your great goodness and patience You were not angered with me, an idler and sinner, nor have You destroyed me in my sins, but have shown Your usual love for mankind. And when I was prostrate in despair, You raised me to keep the morning watch and glorify Your power. And now enlighten my mind's eyes and open my mouth to study Your words and understand Your commandments, and to do Your will, and sing to You in heartfelt adoration, and praise Your most holy Name, of the Father and of the Son and of the Holy Spirit, now and ever and unto ages of ages. Amen.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="evening-prayer">
+                    <AccordionTrigger>Evening Prayer</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground whitespace-pre-line">
+                        O Lord our God, as You are good and love mankind, forgive me wherein I have sinned today in word, deed, and thought. Grant me peaceful and undisturbed sleep. Send Your Guardian Angel to protect and guard me from every evil. For You are the guardian of our souls and bodies, and to You we give glory: to the Father and to the Son and to the Holy Spirit, now and ever and unto ages of ages. Amen.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
+
+            {/* Saints Section */}
+            <Card className="shadow-elevated border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Church className="w-5 h-5 text-primary" />
+                  Saints
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="st-mary">
+                    <AccordionTrigger>Theotokos (Virgin Mary)</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        The Mother of God, who gave birth to Jesus Christ. She is honored above all saints in Orthodox Christianity and is called upon for intercession and protection. Her title "Theotokos" means "God-bearer."
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="st-nicholas">
+                    <AccordionTrigger>St. Nicholas of Myra</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        Known for his generosity and miracles, St. Nicholas (270-343 AD) was a bishop who helped the poor and defended the faith. He is one of the most beloved saints and is invoked for help in difficulties.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="st-george">
+                    <AccordionTrigger>St. George the Trophy-Bearer</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        A soldier and martyr (c. 280-303 AD) known for his courage and faith. The iconic image of St. George slaying the dragon represents the victory of good over evil and faith over persecution.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="st-john-chrysostom">
+                    <AccordionTrigger>St. John Chrysostom</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        Archbishop of Constantinople (347-407 AD) and one of the greatest preachers in Church history. His name "Chrysostom" means "golden-mouthed." He wrote the most commonly used Divine Liturgy in Orthodox Christianity.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="st-basil">
+                    <AccordionTrigger>St. Basil the Great</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        One of the three Cappadocian Fathers (330-379 AD), St. Basil was a bishop, theologian, and monastic founder. He defended Orthodox faith against heresies and established guidelines for monastic life still used today.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="st-anthony">
+                    <AccordionTrigger>St. Anthony the Great</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        The Father of Monasticism (251-356 AD), St. Anthony withdrew to the desert to live a life of prayer and asceticism. His example inspired the monastic movement that spread throughout Christianity.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="apostles">
+                    <AccordionTrigger>The Holy Apostles</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-sm text-muted-foreground">
+                        The twelve disciples chosen by Jesus Christ to spread the Gospel: Peter, Andrew, James, John, Philip, Bartholomew, Thomas, Matthew, James son of Alphaeus, Thaddeus, Simon, and Judas (replaced by Matthias). Also honored is St. Paul, the Apostle to the Gentiles.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
           </div>
