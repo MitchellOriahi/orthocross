@@ -85,42 +85,35 @@ const Index = () => {
 
       if (error) throw error;
 
-      // Calculate total chapters in the Bible
-      const totalChapters = BIBLE_BOOKS.reduce((sum, book) => sum + book.totalChapters, 0);
-      const completedChapters = data?.length || 0;
-      const completion = Math.round((completedChapters / totalChapters) * 100);
-      
-      setBibleCompletion(completion);
-    } catch (error) {
-      console.error('Error loading Bible completion:', error);
-    }
-  };
-
-  const loadBookProgress = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('completed_chapters')
-        .select('book_key, chapter')
-        .eq('user_id', user?.id);
-
-      if (error) throw error;
-
-      // Group completed chapters by book
+      // Calculate progress for each book and overall completion simultaneously
+      // This ensures perfect synchronization between individual book progress and overall completion
       const progressByBook: Record<string, number> = {};
+      let totalCompletedChapters = 0;
+      const totalBibleChapters = BIBLE_BOOKS.reduce((sum, book) => sum + book.totalChapters, 0);
       
       BIBLE_BOOKS.forEach((book) => {
         const completedChapters = data?.filter(c => c.book_key === book.title).length || 0;
+        totalCompletedChapters += completedChapters;
+        
         if (completedChapters > 0) {
           const percentage = Math.round((completedChapters / book.totalChapters) * 100);
           progressByBook[book.title] = percentage;
         }
       });
 
+      // Overall Bible completion = (total completed chapters / total Bible chapters)
+      // This directly corresponds to the sum of all individual book progress
+      const completion = Math.round((totalCompletedChapters / totalBibleChapters) * 100);
+      
       setBookProgress(progressByBook);
+      setBibleCompletion(completion);
     } catch (error) {
-      console.error('Error loading book progress:', error);
+      console.error('Error loading Bible completion:', error);
     }
   };
+
+  // Use the same function for book progress to keep them in sync
+  const loadBookProgress = loadBibleCompletion;
 
   const continueReading = () => {
     if (lastRead) {
