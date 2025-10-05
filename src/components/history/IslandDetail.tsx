@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { ArrowLeft, Heart, Shield } from "lucide-react";
+import { ArrowLeft, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { historyContent } from "@/data/historyContent";
 import { useToast } from "@/hooks/use-toast";
 import { PaginatedReading } from "./PaginatedReading";
 
@@ -26,13 +25,11 @@ interface Island {
 interface IslandDetailProps {
   island: Island;
   campaignId: string;
-  onComplete: (campaignId: string, islandId: string, xp: number, score: number) => void;
+  onComplete: (campaignId: string, islandId: string, score: number) => void;
   onBack: () => void;
-  hearts: number;
-  setHearts: (hearts: number) => void;
 }
 
-export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, setHearts }: IslandDetailProps) => {
+export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandDetailProps) => {
   const [stage, setStage] = useState<'reading' | 'quiz' | 'complete'>('reading');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -61,37 +58,16 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
     const isCorrect = originalIndex === island.quiz[currentQuestion].correctAnswer;
     
     if (isCorrect) {
-      // Gain a heart on correct answer (up to max)
-      if (hearts < historyContent.maxHearts) {
-        setHearts(hearts + 1);
-        toast({
-          title: "Correct! ✓",
-          description: `You gained a heart! ${hearts + 1} hearts.`,
-        });
-      } else {
-        toast({
-          title: "Correct! ✓",
-          description: "Great job!",
-        });
-      }
-    } else {
-      // Lose a heart on wrong answer
-      setHearts(hearts - 1);
       toast({
-        title: "Incorrect Answer",
-        description: `You lost a heart. ${hearts - 1} hearts remaining.`,
+        title: "Correct! ✓",
+        description: "Great job!",
+      });
+    } else {
+      toast({
+        title: "Incorrect",
+        description: "Keep trying!",
         variant: "destructive"
       });
-      
-      if (hearts - 1 === 0) {
-        toast({
-          title: "Out of Hearts",
-          description: "You've run out of hearts. Try again later!",
-          variant: "destructive"
-        });
-        onBack();
-        return;
-      }
     }
 
     const newAnswers = [...answers, originalIndex];
@@ -104,10 +80,9 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
       // Calculate score
       const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
       const score = (correctCount / island.quiz.length) * 100;
-      const xpEarned = historyContent.xpPerReading + (correctCount * historyContent.xpPerCorrectAnswer) + (score === 100 ? historyContent.xpPerIslandPerfect : 0);
       
       setStage('complete');
-      onComplete(campaignId, island.id, xpEarned, score);
+      onComplete(campaignId, island.id, score);
     }
   };
 
@@ -122,14 +97,8 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack, hearts, s
               <ArrowLeft className="w-5 h-5 mr-2" />
               Back to Path
             </Button>
-            <div className="flex items-center gap-2">
-              {Array.from({ length: historyContent.maxHearts }).map((_, i) => (
-                <Heart 
-                  key={i} 
-                  className={`w-5 h-5 ${i < hearts ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`}
-                />
-              ))}
-            </div>
+            <h2 className="text-lg font-semibold">{island.title}</h2>
+            <div className="w-32" />
           </div>
         </div>
       </header>

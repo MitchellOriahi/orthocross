@@ -179,6 +179,157 @@ export const historyContent = {
           ]
         }
       ]
+    },
+    {
+      id: "oriental_orthodox_history",
+      displayName: "Oriental Orthodox History",
+      fullSetTitle: "The Full Oriental Armor of God",
+      theme: "oriental",
+      islands: [
+        {
+          id: "oo_1",
+          title: "The Ancient Oriental Traditions (1st–4th c.)",
+          awardPiece: "belt_of_truth",
+          reading: "The Oriental Orthodox Churches trace their roots to the very beginning of Christianity. When the Apostles spread the Gospel, they didn't just go to Greece and Rome. St. Mark founded the Church in Alexandria, Egypt, which became one of the greatest centers of Christian learning. St. Thomas traveled all the way to India, and tradition says St. Bartholomew went to Armenia. These ancient churches developed their own beautiful traditions while keeping the same faith.\n\nThe Coptic Church in Egypt is one of the oldest. 'Copt' comes from the Greek word for 'Egyptian.' From the earliest days, the Egyptian Christians were known for their deep faith and their contributions to theology. The famous Catechetical School of Alexandria taught many great Christian thinkers. The Ethiopian Church received Christianity very early too - the Bible tells us about the Ethiopian eunuch who was baptized by Philip the Apostle.\n\nThe Armenian Church claims to be the first nation to officially adopt Christianity. In 301 AD, King Tiridates III made Christianity the state religion of Armenia, even before Constantine legalized it in Rome. This was thanks to St. Gregory the Illuminator, who converted the king and became the first head of the Armenian Church.\n\nThe Syriac tradition developed in Antioch and spread throughout the Middle East. These Christians kept the ancient Syriac language (a dialect close to what Jesus spoke) in their worship. The Syrian Orthodox Church and the Church of the East both come from this tradition.\n\nThese ancient churches gave us incredible spiritual treasures. The Desert Fathers and Mothers - those holy monks who went into the Egyptian and Syrian deserts to pray - came from these traditions. St. Anthony, St. Macarius, and many others showed the world what it means to dedicate everything to God. Their wisdom is still treasured today.",
+          quiz: [
+            {
+              question: "Which Apostle founded the Church of Alexandria?",
+              options: ["St. Mark", "St. Peter", "St. Paul", "St. John"],
+              correctAnswer: 0
+            },
+            {
+              question: "Which nation was the first to officially adopt Christianity?",
+              options: ["Armenia", "Ethiopia", "Rome", "Greece"],
+              correctAnswer: 0
+            },
+            {
+              question: "What does 'Copt' mean?",
+              options: ["Egyptian", "Ancient", "Desert", "Holy"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "oo_2",
+          title: "Council of Chalcedon and the Split (451)",
+          awardPiece: "breastplate_of_righteousness",
+          reading: "In 451 AD, a great council met at Chalcedon to discuss how to understand Jesus Christ. Everyone agreed that Jesus is both fully God and fully human. But they disagreed on exactly how to say this.\n\nThe Council of Chalcedon said Jesus is one person with two distinct natures - divine and human - 'united without confusion, without change, without division, without separation.' But the Churches of Alexandria, Ethiopia, Eritrea, Syria, Armenia, and India had concerns. They worried this language made Jesus sound like two separate beings joined together, rather than one united person.\n\nThese churches preferred the teaching of St. Cyril of Alexandria, who emphasized 'one nature of the Word incarnate' (mia physis). They said Jesus is one complete nature - divinely human and humanly divine - not two separate natures side by side. They wanted to emphasize the perfect unity of Christ.\n\nThe disagreement was partly about words and partly about emphasis. Both sides condemned the same heresies - they both rejected the idea that Jesus was only divine (as Eutyches taught) or that He was divided into two persons (as Nestorius taught). But their different ways of explaining the truth led to a tragic separation.\n\nSadly, political factors made things worse. The Byzantine Empire wanted unity on its terms. The Churches that didn't accept Chalcedon were persecuted at times. The Coptic and Syrian Churches suffered under Byzantine rule. When the Arabs conquered these lands in the 600s, some Christians saw it as relief from Byzantine oppression.\n\nToday, many theologians believe the disagreement was largely about words, not essential beliefs. Recent dialogues show that Oriental and Eastern Orthodox Christians believe the same things about Jesus, just expressed differently. Both traditions teach that Jesus is one person who is fully divine and fully human, united perfectly in one. The separation that began in 451 was a tragedy that we hope to heal through love and understanding.",
+          quiz: [
+            {
+              question: "The Council of Chalcedon met in which year?",
+              options: ["451", "325", "381", "787"],
+              correctAnswer: 0
+            },
+            {
+              question: "Oriental Orthodox Churches preferred the formula of:",
+              options: ["St. Cyril of Alexandria ('one nature of the Word incarnate')", "Pope Leo I", "Emperor Marcian", "St. Augustine"],
+              correctAnswer: 0
+            },
+            {
+              question: "Recent theological dialogues have shown:",
+              options: ["Both sides condemned the same heresies and share core beliefs", "Irreconcilable differences in faith", "Need for one side to submit completely", "That the dispute was about church politics only"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "oo_3",
+          title: "Survival Under Islamic Rule (7th–15th c.)",
+          awardPiece: "sandals_of_gospel_of_peace",
+          reading: "When Arab Muslims conquered Egypt, Syria, and other regions in the 600s and 700s, the Oriental Orthodox Churches entered a new chapter. As dhimmis (protected peoples), Christians could practice their faith but faced restrictions and extra taxes. They couldn't build new churches easily, ring church bells loudly, or ride horses in some areas. Despite these challenges, the Churches not only survived but sometimes thrived.\n\nThe Coptic Church of Egypt became the guardian of an ancient language and culture. Coptic Christians developed a rich tradition of art, music, and literature. They produced thousands of beautifully illustrated manuscripts. Coptic monasteries in the Egyptian desert became centers of continuous prayer and learning that have lasted to this day.\n\nOver centuries, many Christians converted to Islam, sometimes by choice and sometimes under pressure. The Christian population slowly declined. Arabic replaced Coptic as the everyday language, though Coptic remained the liturgical language. The Church adapted while maintaining its core identity and faith.\n\nThe Ethiopian Church had a unique situation. After the rise of Islam cut them off from other Christian lands, they developed in isolation. Ethiopian Christianity mixed with local traditions to create something distinctive. They kept Saturday Sabbath along with Sunday worship. They practiced circumcision and followed many Old Testament laws. They preserved ancient books that were lost elsewhere, like the Book of Enoch.\n\nEthiopian Christians carved amazing churches out of solid rock - the famous churches of Lalibela look like they're rising from the earth itself. They created a vast literature in Ge'ez, their sacred language. Ethiopian monks lived in almost inaccessible monasteries on mountain peaks and islands.\n\nThe Armenian Church faced waves of invasions - Persians, Arabs, Mongols, and later Turks. The Armenian people were often conquered and scattered, but wherever they went, they built churches and maintained their faith. Armenian monks created beautiful illuminated manuscripts. The Armenian alphabet itself, created by St. Mesrop Mashtots, became a sacred symbol of identity.\n\nThrough all these centuries of difficulty, these Churches produced saints, theologians, and faithful Christians who kept the ancient faith alive.",
+          quiz: [
+            {
+              question: "What was the status of Christians under early Islamic rule?",
+              options: ["Dhimmis (protected peoples with restrictions)", "Fully equal citizens", "Completely banned from worship", "Required military service"],
+              correctAnswer: 0
+            },
+            {
+              question: "Ethiopian Christianity is unique for:",
+              options: ["Keeping both Sabbath and Sunday, preserving ancient texts", "Rejecting all monasticism", "Using only Arabic in liturgy", "Having no ordained clergy"],
+              correctAnswer: 0
+            },
+            {
+              question: "Who created the Armenian alphabet?",
+              options: ["St. Mesrop Mashtots", "St. Gregory the Illuminator", "King Tiridates", "St. Cyril"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "oo_4",
+          title: "Modern Persecutions and Martyrdom (19th–20th c.)",
+          awardPiece: "shield_of_faith",
+          reading: "The modern era brought terrible suffering to Oriental Orthodox Christians. The Armenian Genocide of 1915-1923 was one of history's greatest tragedies. The Ottoman Turkish government systematically killed an estimated 1.5 million Armenians. Christian leaders, including bishops and priests, were among the first targeted. Whole communities were marched into the desert to die. Ancient churches and monasteries were destroyed.\n\nDespite this horror, the Armenian Church survived. Armenians scattered around the world built new churches and kept their faith and culture alive. The Armenian Church became a symbol of survival and identity for the Armenian people. Every year on April 24, Armenians worldwide remember the genocide and honor the martyrs.\n\nThe Assyrian Christians (Church of the East) faced similar devastation. The Seyfo massacres killed hundreds of thousands of Assyrian Christians. Ancient Assyrian Christian communities that had existed since apostolic times were nearly wiped out. Today, Assyrian Christians are scattered in diaspora, trying to preserve their ancient Syriac heritage.\n\nIn Egypt, Coptic Christians faced growing discrimination and occasional violence. While Egypt was more stable than some regions, Copts still experienced persecution. Churches were attacked, and Christians were sometimes prevented from repairing or building churches. Despite this, the Coptic Church remained strong, with millions of faithful members.\n\nUnder communist rule, the Ethiopian Church faced severe persecution. The communist Derg regime killed church leaders, confiscated church property, and tried to destroy the Church's influence. Thousands of Christians died for their faith. But when communism fell in 1991, the Church began to recover and rebuild.\n\nThe Syrian Orthodox Church suffered terribly in the recent Syrian civil war. Ancient monasteries were damaged or destroyed. Christians fled as refugees. ISIS terrorists specifically targeted Christians, destroying churches and killing believers who refused to deny Christ.\n\nThrough all this suffering, these ancient Churches produced countless martyrs - ordinary Christians who chose death rather than deny their faith. Their courage witnesses to the truth of Christ and the strength that God gives to those who trust in Him.",
+          quiz: [
+            {
+              question: "The Armenian Genocide occurred during:",
+              options: ["1915-1923", "1870-1880", "1940-1945", "1990-1995"],
+              correctAnswer: 0
+            },
+            {
+              question: "Which church faced severe persecution under communist rule?",
+              options: ["Ethiopian Orthodox", "Armenian Apostolic", "Syrian Orthodox", "Coptic Orthodox"],
+              correctAnswer: 0
+            },
+            {
+              question: "The Seyfo massacres primarily affected:",
+              options: ["Assyrian Christians", "Ethiopian Christians", "Armenian Christians", "Coptic Christians"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "oo_5",
+          title: "Oriental Orthodoxy Today and Ecumenical Dialogue",
+          awardPiece: "helmet_of_salvation",
+          reading: "Today, the Oriental Orthodox Churches are found all over the world. Large diaspora communities exist in North America, Europe, and Australia. While persecution continues in some Middle Eastern countries, these ancient Churches are sharing their treasures with the world.\n\nThe Coptic Orthodox Church is the largest Oriental Orthodox Church, with millions of members primarily in Egypt but also in significant diaspora communities. Pope Shenouda III (1971-2012) was a beloved leader who strengthened the Church and built bridges with other Christians. Today's Pope Tawadros II continues this work.\n\nThe Ethiopian and Eritrean Orthodox Churches are growing and vibrant. Ethiopian Christianity influences every aspect of Ethiopian culture. The Eritrean Church became independent in 1993 when Eritrea gained independence from Ethiopia. Both churches maintain the ancient traditions and are seeing growth in diaspora communities.\n\nThe Armenian Apostolic Church, split between the Catholicosates of Echmiadzin and Cilicia, remains central to Armenian identity worldwide. The Armenian Church has been a leader in ecumenical dialogue while maintaining its distinct traditions. Armenian communities around the world gather in their churches to preserve their language, culture, and faith.\n\nThe Syrian Orthodox Church, the Malankara Orthodox Church of India, and other Oriental Orthodox churches continue their ancient traditions while adapting to modern contexts. The Indian Orthodox Church is particularly vibrant, with millions of members in Kerala and growing communities worldwide.\n\nImportant progress has been made in dialogue between Oriental and Eastern Orthodox Churches. In 1990, church leaders jointly declared that the theological disputes of the past were based on misunderstandings. While full communion hasn't been achieved, many theologians believe there are no essential doctrinal differences - only different ways of expressing the same truths about Christ.\n\nThese ancient Churches have given the world countless saints, beautiful liturgies, sacred music, and theological wisdom. Their survival through centuries of persecution is itself a miracle and a witness to the power of God. Their emphasis on mystery, their beautiful worship, their ascetic traditions, and their preservation of ancient practices offer gifts to the whole Christian world.",
+          quiz: [
+            {
+              question: "The largest Oriental Orthodox Church is:",
+              options: ["Coptic Orthodox Church", "Armenian Apostolic Church", "Ethiopian Orthodox Church", "Syrian Orthodox Church"],
+              correctAnswer: 0
+            },
+            {
+              question: "The 1990 joint declaration between Oriental and Eastern Orthodox Churches stated:",
+              options: ["Past theological disputes were based on misunderstandings", "Complete doctrinal unity achieved", "Irreconcilable differences confirmed", "Merger into one church"],
+              correctAnswer: 0
+            },
+            {
+              question: "The Malankara Orthodox Church is primarily located in:",
+              options: ["India", "Egypt", "Armenia", "Syria"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "oo_6",
+          title: "Oriental Orthodox Spirituality and Practice",
+          awardPiece: "sword_of_the_spirit",
+          reading: "Oriental Orthodox spirituality is deeply rooted in the monastic and ascetic traditions of the early Church. The Desert Fathers and Mothers came from Egypt and Syria, and their wisdom continues to shape these Churches. Fasting is taken very seriously - Copts fast over 200 days a year, abstaining from all animal products during fasting periods.\n\nWorship in Oriental Orthodox Churches is meant to be a taste of heaven. Services are long and filled with ancient hymns, incense, and prayers. The Coptic liturgy of St. Basil can last several hours. Ethiopian Divine Liturgy includes sacred dancing and drumming, with priests carrying prayer staffs and sistra (musical instruments). Everything engages the senses to draw the worshiper into God's presence.\n\nIcons and sacred art are central but have distinct styles. Coptic icons tend to be more abstract and two-dimensional, with large eyes that draw you into prayer. Ethiopian icons often include many figures and tell biblical stories in vibrant colors. Armenian illuminated manuscripts are masterpieces of intricate design and gold leaf.\n\nThese Churches maintain strict clerical traditions. Most priests are married men, but bishops must be monks. The monastic life is highly valued. Coptic monasteries like St. Anthony's and St. Paul's in the Egyptian desert have been continuously inhabited for over 1,600 years. Ethiopian monasteries preserve ancient manuscripts and maintain constant cycles of prayer.\n\nVeneration of Mary the Theotokos (God-bearer) is deep and constant. Every service includes hymns to Mary. The Coptic Church calls her 'Our Lady, the Mother of Light.' Ethiopian Christians honor Mary with special intensity, and one of their holiest sites is the supposed resting place of the Ark of the Covenant in Axum.\n\nThe saints are seen as ever-present intercessors. Each church honors its own local saints along with universal ones. Ethiopians honor the Nine Saints who brought monasticism to Ethiopia. Armenians honor St. Gregory the Illuminator. Copts honor the great Desert Fathers and a host of martyrs.\n\nTheosis - becoming like God through His grace - remains the goal of Christian life, expressed through ascetic practice, participation in the mysteries (sacraments), prayer, and love. These ancient Churches have preserved and lived out this understanding for nearly two thousand years, offering the world a glimpse of the earliest Christian spirituality.",
+          quiz: [
+            {
+              question: "Coptic Christians fast approximately how many days per year?",
+              options: ["Over 200 days", "40 days", "100 days", "365 days"],
+              correctAnswer: 0
+            },
+            {
+              question: "What distinguishes Ethiopian Divine Liturgy?",
+              options: ["Sacred dancing and drumming", "Complete silence", "Absence of clergy", "Use of Latin only"],
+              correctAnswer: 0
+            },
+            {
+              question: "St. Anthony's and St. Paul's monasteries have been inhabited for over:",
+              options: ["1,600 years", "500 years", "1,000 years", "2,000 years"],
+              correctAnswer: 0
+            },
+            {
+              question: "In Oriental Orthodox spirituality, the ultimate goal is:",
+              options: ["Theosis (becoming like God through His grace)", "Personal wealth", "Political power", "Philosophical knowledge alone"],
+              correctAnswer: 0
+            }
+          ]
+        }
+      ]
     }
   ]
 };

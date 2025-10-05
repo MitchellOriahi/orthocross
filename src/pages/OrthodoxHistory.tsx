@@ -27,13 +27,10 @@ const OrthodoxHistory = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
   const [progress, setProgress] = useState<UserProgress[]>([]);
-  const [totalXp, setTotalXp] = useState(0);
-  const [hearts, setHearts] = useState(historyContent.maxHearts);
   const [showAvatarCustomizer, setShowAvatarCustomizer] = useState(false);
 
   useEffect(() => {
     loadProgress();
-    loadAvatarData();
   }, [user]);
 
   const loadProgress = async () => {
@@ -54,33 +51,8 @@ const OrthodoxHistory = () => {
     }
   };
 
-  const loadAvatarData = async () => {
-    if (!user) return;
 
-    const { data } = await supabase
-      .from('user_avatars')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (data) {
-      setTotalXp(data.total_xp);
-      setHearts(data.hearts);
-    } else {
-      // Create default avatar
-      await supabase.from('user_avatars').insert({
-        user_id: user.id,
-        gender: 'male',
-        skin_tone: 'medium',
-        hairstyle: 'short_cropped',
-        eye_color: 'brown',
-        beard_option: 'none',
-        outfit_palette: 'earth'
-      });
-    }
-  };
-
-  const handleIslandComplete = async (campaignId: string, islandId: string, xpEarned: number, score: number) => {
+  const handleIslandComplete = async (campaignId: string, islandId: string, score: number) => {
     if (!user) return;
 
     await supabase.from('orthodox_history_progress').upsert({
@@ -88,21 +60,10 @@ const OrthodoxHistory = () => {
       campaign_id: campaignId,
       island_id: islandId,
       completed: true,
-      xp_earned: xpEarned,
       quiz_score: score,
       completed_at: new Date().toISOString()
     });
 
-    const newTotalXp = totalXp + xpEarned;
-    await supabase
-      .from('user_avatars')
-      .update({ 
-        total_xp: newTotalXp,
-        hearts: hearts 
-      })
-      .eq('user_id', user.id);
-
-    setTotalXp(newTotalXp);
     await loadProgress();
     setSelectedIsland(null);
   };
@@ -120,8 +81,6 @@ const OrthodoxHistory = () => {
           campaignId={selectedIsland.campaignId}
           onComplete={handleIslandComplete}
           onBack={() => setSelectedIsland(null)}
-          hearts={hearts}
-          setHearts={setHearts}
         />
       );
     }
@@ -175,7 +134,6 @@ const OrthodoxHistory = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-2xl font-bold mb-2">Your Progress</h2>
-              <p className="text-muted-foreground">XP: {totalXp} • Hearts: {"❤️".repeat(hearts)}</p>
             </div>
           </div>
           <Progress value={progressPercent} className="h-3" />
