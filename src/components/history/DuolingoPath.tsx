@@ -151,7 +151,7 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                   <div className="relative z-10 p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <div className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2">
+                        <div className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 whitespace-nowrap">
                           {extractTimeframe(island.title) || `Island ${index + 1}`}
                         </div>
                         <h3 className="text-sm sm:text-base md:text-lg font-bold mb-3">{removeTimeframe(island.title)}</h3>
