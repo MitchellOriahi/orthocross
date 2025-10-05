@@ -335,7 +335,7 @@ const ChurchResources = () => {
               <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-2xl font-bold">Church Resources</h1>
+              <h1 className="text-2xl font-bold">Resources</h1>
             </div>
             <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
               <ArrowLeft className="w-5 h-5" />
