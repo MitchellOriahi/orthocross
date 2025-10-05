@@ -14,6 +14,8 @@ import { IslandDetail } from "@/components/history/IslandDetail";
 import { AvatarCustomizer } from "@/components/history/AvatarCustomizer";
 import { DuolingoPath } from "@/components/history/DuolingoPath";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Mascot } from "@/components/Mascot";
+import { getRandomMascotFromCampaign } from "@/data/mascotsConfig";
 
 interface UserProgress {
   campaignId: string;
@@ -76,6 +78,7 @@ const OrthodoxHistory = () => {
   const campaign = historyContent.campaigns.find(c => c.id === selectedCampaign);
   const completedIslands = progress.filter(p => p.campaignId === selectedCampaign && p.completed).length;
   const progressPercent = campaign ? (completedIslands / campaign.islands.length) * 100 : 0;
+  const currentMascot = getRandomMascotFromCampaign(selectedCampaign);
 
   if (selectedIsland && campaign) {
     const island = campaign.islands.find(i => i.id === selectedIsland.islandId);
@@ -95,8 +98,8 @@ const OrthodoxHistory = () => {
     <div className="min-h-screen gradient-peaceful pb-20">
 
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
@@ -121,15 +124,25 @@ const OrthodoxHistory = () => {
 
       <main className="container mx-auto px-4 py-8 max-w-5xl">
         <Card className="p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
+          <div className="flex items-start gap-6 mb-4">
+            <div className="flex-1">
               <h2 className="text-2xl font-bold mb-2">Your Progress</h2>
+              <Progress value={progressPercent} className="h-3 mb-2" />
+              <p className="text-sm text-muted-foreground">
+                {completedIslands} of {campaign?.islands.length} islands completed in {campaign?.displayName}
+              </p>
             </div>
+            {currentMascot && (
+              <div className="hidden sm:block">
+                <Mascot 
+                  mascotId={currentMascot.id} 
+                  pose={completedIslands > 0 ? "celebrate" : "point_right"}
+                  size="lg"
+                  message={completedIslands > 0 ? "Keep going!" : "Let's begin your journey!"}
+                />
+              </div>
+            )}
           </div>
-          <Progress value={progressPercent} className="h-3" />
-          <p className="text-sm text-muted-foreground mt-2">
-            {completedIslands} of {campaign?.islands.length} islands completed in {campaign?.displayName}
-          </p>
         </Card>
 
         <Tabs value={selectedCampaign} onValueChange={setSelectedCampaign} className="space-y-8">
