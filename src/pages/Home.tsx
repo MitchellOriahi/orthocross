@@ -31,7 +31,7 @@ const Home = () => {
   return (
     <div className="min-h-screen gradient-peaceful">
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center space-y-8">
+      <section className="container mx-auto px-4 pt-20 text-center space-y-8">
         <div className="max-w-3xl mx-auto space-y-6">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-background rounded-2xl shadow-sacred mb-4 p-2">
             <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
