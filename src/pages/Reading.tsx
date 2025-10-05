@@ -24,12 +24,11 @@ const Reading = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   
-  const { book, bookName, chapter: initialChapter, totalChapters } = location.state || {
-    book: "John",
-    bookName: "Gospel of John",
-    chapter: 1,
-    totalChapters: 21,
-  };
+  const state = location.state || {};
+  const book = state.book || "John";
+  const bookName = state.bookName || "Gospel of John";
+  const initialChapter = state.chapter || 1;
+  const totalChapters = state.totalChapters || 21;
 
   const [fontSize, setFontSize] = useState([18]);
   const [chapter, setChapter] = useState(initialChapter);
