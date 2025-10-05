@@ -181,7 +181,7 @@ export const FastingCalendar = () => {
             </div>
           </RadioGroup>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 pt-16">
           {monthEvents.length > 0 ? (
             monthEvents.map((event, index) => {
               const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
