@@ -41,7 +41,13 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
 
   const extractTimeframe = (title: string) => {
     const match = title.match(/\(([^)]+)\)/);
-    return match ? match[1] : '';
+    if (!match) return '';
+    
+    // Add AD to dates
+    const timeframe = match[1];
+    // Handle ranges like "33–313" or single dates like "1054"
+    const withAD = timeframe.replace(/(\d+)/g, '$1 AD');
+    return withAD;
   };
 
   const removeTimeframe = (title: string) => {
@@ -145,10 +151,10 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                   <div className="relative z-10 p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <div className="text-sm font-semibold text-muted-foreground mb-2">
+                        <div className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2">
                           {extractTimeframe(island.title) || `Island ${index + 1}`}
                         </div>
-                        <h3 className="text-base md:text-lg font-bold mb-3 line-clamp-2">{removeTimeframe(island.title)}</h3>
+                        <h3 className="text-sm sm:text-base md:text-lg font-bold mb-3">{removeTimeframe(island.title)}</h3>
                       </div>
                     </div>
                     
