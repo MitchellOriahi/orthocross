@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { FastingCalendarView } from "./FastingCalendarView";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FastingEvent {
   name: string;
@@ -57,11 +58,30 @@ export const FastingCalendar = () => {
   const { scheduleNotification } = useNotifications();
 
   useEffect(() => {
-    const saved = localStorage.getItem('fastingReminders');
-    if (saved) {
-      setReminders(new Set(JSON.parse(saved)));
-    }
+    loadReminders();
   }, []);
+
+  const loadReminders = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('fasting_reminders')
+      .select('*')
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Error loading reminders:', error);
+      return;
+    }
+
+    if (data) {
+      const reminderSet = new Set(
+        data.map(r => `${r.event_name}-${r.event_date}-${r.event_tradition}`)
+      );
+      setReminders(reminderSet);
+    }
+  };
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -89,36 +109,78 @@ export const FastingCalendar = () => {
   };
 
   const toggleReminder = async (event: FastingEvent) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("Please sign in to set reminders");
+      return;
+    }
+
     const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
     const newReminders = new Set(reminders);
     
+    // Parse the event date
+    const [monthStr, dayStr] = event.startDate.split(' ');
+    const month = monthNames.indexOf(monthStr);
+    const day = parseInt(dayStr);
+    const eventDate = new Date(selectedYear, month, day);
+    const eventDateStr = eventDate.toISOString().split('T')[0];
+    
     if (reminders.has(eventKey)) {
+      // Remove reminder from database
+      const { error } = await supabase
+        .from('fasting_reminders')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('event_name', event.name)
+        .eq('event_date', eventDateStr)
+        .eq('event_tradition', event.tradition);
+
+      if (error) {
+        console.error('Error removing reminder:', error);
+        toast.error("Failed to remove reminder");
+        return;
+      }
+
       newReminders.delete(eventKey);
-      toast.success("Reminder removed");
+      toast.success("Reminder removed - you won't receive SMS");
     } else {
-      newReminders.add(eventKey);
-      
-      // Schedule notification for midnight on the start date
-      const [monthStr, dayStr] = event.startDate.split(' ');
-      const month = monthNames.indexOf(monthStr);
-      const day = parseInt(dayStr);
+      // Check if date has passed
       const notifDate = new Date(selectedYear, month, day, 0, 0, 0);
-      
-      if (notifDate > new Date()) {
-        await scheduleNotification(
-          event.type === "fast" ? "Fast Beginning" : "Feast Day",
-          `${event.name} begins today (${event.tradition})`,
-          notifDate
-        );
-        toast.success("Reminder set");
-      } else {
+      if (notifDate <= new Date()) {
         toast.error("Date has passed");
         return;
       }
+
+      // Add reminder to database
+      const { error } = await supabase
+        .from('fasting_reminders')
+        .insert({
+          user_id: user.id,
+          event_name: event.name,
+          event_date: eventDateStr,
+          event_tradition: event.tradition,
+          event_type: event.type
+        });
+
+      if (error) {
+        console.error('Error adding reminder:', error);
+        toast.error("Failed to set reminder");
+        return;
+      }
+
+      newReminders.add(eventKey);
+      
+      // Also schedule local notification
+      await scheduleNotification(
+        event.type === "fast" ? "Fast Beginning" : "Feast Day",
+        `${event.name} begins today (${event.tradition})`,
+        notifDate
+      );
+      
+      toast.success("SMS reminder set for midnight!");
     }
     
     setReminders(newReminders);
-    localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders)));
   };
 
   const handlePreviousMonth = () => {

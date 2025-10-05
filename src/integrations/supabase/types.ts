@@ -41,6 +41,36 @@ export type Database = {
         }
         Relationships: []
       }
+      fasting_reminders: {
+        Row: {
+          created_at: string
+          event_date: string
+          event_name: string
+          event_tradition: string
+          event_type: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_date: string
+          event_name: string
+          event_tradition: string
+          event_type: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_date?: string
+          event_name?: string
+          event_tradition?: string
+          event_type?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           content: string | null

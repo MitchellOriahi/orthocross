@@ -10,37 +10,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface FastingEvent {
-  name: string;
-  date: string;
-  tradition: string;
-  type: "fast" | "feast";
-}
-
-const majorEvents: FastingEvent[] = [
-  { name: "Nativity Fast", date: "2025-11-15", tradition: "Eastern Orthodox", type: "fast" },
-  { name: "Nativity of Christ", date: "2025-12-25", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Theophany (Epiphany)", date: "2026-01-06", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Nativity Fast", date: "2025-11-25", tradition: "Oriental Orthodox", type: "fast" },
-  { name: "Nativity of Christ", date: "2026-01-07", tradition: "Oriental Orthodox", type: "feast" },
-  { name: "Nineveh Fast", date: "2025-02-03", tradition: "Oriental Orthodox", type: "fast" },
-  { name: "Great Lent", date: "2025-02-10", tradition: "Oriental Orthodox", type: "fast" },
-  { name: "Great Lent", date: "2025-03-03", tradition: "Eastern Orthodox", type: "fast" },
-  { name: "Annunciation", date: "2025-03-25", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Palm Sunday", date: "2025-04-13", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Pascha (Easter)", date: "2025-04-20", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Ascension", date: "2025-05-29", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Pentecost", date: "2025-06-08", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Apostles' Fast", date: "2025-06-15", tradition: "Eastern Orthodox", type: "fast" },
-  { name: "Apostles' Fast", date: "2025-06-16", tradition: "Oriental Orthodox", type: "fast" },
-  { name: "Transfiguration", date: "2025-08-06", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Dormition Fast", date: "2025-08-01", tradition: "Eastern Orthodox", type: "fast" },
-  { name: "Dormition Fast", date: "2025-08-07", tradition: "Oriental Orthodox", type: "fast" },
-  { name: "Dormition of Theotokos", date: "2025-08-15", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Nativity of Theotokos", date: "2025-09-08", tradition: "Eastern Orthodox", type: "feast" },
-  { name: "Elevation of the Cross", date: "2025-09-14", tradition: "Eastern Orthodox", type: "feast" },
-];
-
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -49,70 +18,92 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get all users with phone numbers
-    const { data: profiles, error: profilesError } = await supabase
-      .from("profiles")
-      .select("id, phone_number")
-      .not("phone_number", "is", null);
-
-    if (profilesError) throw profilesError;
-
+    // Get today's date (midnight)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split('T')[0];
 
-    // Check which events are happening today
-    const todaysEvents = majorEvents.filter(event => {
-      const eventDate = new Date(event.date);
-      eventDate.setHours(0, 0, 0, 0);
-      return eventDate.getTime() === today.getTime();
-    });
+    console.log('Checking fasting reminders for date:', todayStr);
 
-    if (todaysEvents.length === 0) {
+    // Get all reminders for today
+    const { data: reminders, error: remindersError } = await supabase
+      .from("fasting_reminders")
+      .select("*, profiles!inner(phone_number)")
+      .eq("event_date", todayStr);
+
+    if (remindersError) {
+      console.error('Error fetching reminders:', remindersError);
+      throw remindersError;
+    }
+
+    if (!reminders || reminders.length === 0) {
+      console.log('No reminders for today');
       return new Response(
-        JSON.stringify({ message: "No events today" }),
+        JSON.stringify({ message: "No reminders for today", date: todayStr }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    // Send SMS to all users for each event
+    console.log(`Found ${reminders.length} reminders for today`);
+
+    // Send SMS to all users with reminders
     const notifications = [];
-    for (const event of todaysEvents) {
-      const message = event.type === "fast" 
-        ? `${event.name} begins today (${event.tradition}). Remember to observe the fast.`
-        : `Today is ${event.name} (${event.tradition}). May you have a blessed feast day!`;
+    for (const reminder of reminders) {
+      const profile = reminder.profiles as any;
+      
+      if (!profile?.phone_number) {
+        console.log(`User ${reminder.user_id} has no phone number, skipping`);
+        continue;
+      }
 
-      for (const profile of profiles || []) {
-        if (profile.phone_number) {
-          // Call the SMS function
-          const smsResponse = await fetch(
-            `${supabaseUrl}/functions/v1/send-sms-notification`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${supabaseServiceKey}`,
-              },
-              body: JSON.stringify({
-                to: profile.phone_number,
-                message: message,
-              }),
-            }
-          );
+      const message = reminder.event_type === "fast" 
+        ? `🕊️ ${reminder.event_name} begins today (${reminder.event_tradition}). Remember to observe the fast.`
+        : `✨ Today is ${reminder.event_name} (${reminder.event_tradition}). May you have a blessed feast day!`;
 
+      console.log(`Sending SMS to ${profile.phone_number} for event: ${reminder.event_name}`);
+
+      // Call the SMS function
+      try {
+        const smsResponse = await supabase.functions.invoke('send-sms-notification', {
+          body: {
+            to: profile.phone_number,
+            message: message,
+          },
+        });
+
+        if (smsResponse.error) {
+          console.error('SMS error:', smsResponse.error);
           notifications.push({
-            user_id: profile.id,
-            event: event.name,
-            success: smsResponse.ok,
+            user_id: reminder.user_id,
+            event: reminder.event_name,
+            success: false,
+            error: smsResponse.error.message,
+          });
+        } else {
+          console.log('SMS sent successfully:', smsResponse.data);
+          notifications.push({
+            user_id: reminder.user_id,
+            event: reminder.event_name,
+            success: true,
           });
         }
+      } catch (error: any) {
+        console.error('Error invoking SMS function:', error);
+        notifications.push({
+          user_id: reminder.user_id,
+          event: reminder.event_name,
+          success: false,
+          error: error.message,
+        });
       }
     }
 
     return new Response(
       JSON.stringify({ 
         message: "Notifications processed",
-        events: todaysEvents.length,
-        notifications: notifications.length,
+        date: todayStr,
+        reminders_found: reminders.length,
+        notifications_sent: notifications.filter(n => n.success).length,
         results: notifications,
       }),
       {
