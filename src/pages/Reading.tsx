@@ -57,21 +57,54 @@ const Reading = () => {
   const [verses, setVerses] = useState<Array<{number: number; text: string}>>([]);
   const [loadingVerses, setLoadingVerses] = useState(false);
 
-  // Load verses from API or fallback to hardcoded content
+  // Load verses from database first, then API, then fallback to hardcoded content
   useEffect(() => {
     const loadVerses = async () => {
       setLoadingVerses(true);
       
-      // Check if we have hardcoded content for Orthodox books
-      const hardcodedVerses = bibleContent[book]?.[chapter];
-      if (hardcodedVerses && hardcodedVerses.length > 0) {
-        setVerses(hardcodedVerses);
-        setLoadingVerses(false);
-        return;
-      }
-
-      // Otherwise fetch from Bible API
       try {
+        // First, try to load from database
+        const { data: dbVerses, error: dbError } = await supabase
+          .from('bible_verses')
+          .select('verse_number, verse_text')
+          .eq('book', book)
+          .eq('chapter', chapter)
+          .order('verse_number');
+
+        if (!dbError && dbVerses && dbVerses.length > 0) {
+          const formattedVerses = dbVerses.map(v => ({
+            number: v.verse_number,
+            text: v.verse_text
+          }));
+          setVerses(formattedVerses);
+          setLoadingVerses(false);
+          return;
+        }
+
+        // If not in database, check hardcoded content
+        const hardcodedVerses = bibleContent[book]?.[chapter];
+        if (hardcodedVerses && hardcodedVerses.length > 0) {
+          setVerses(hardcodedVerses);
+          
+          // Save hardcoded verses to database for future use
+          const versesToInsert = hardcodedVerses.map(v => ({
+            book,
+            chapter,
+            verse_number: v.number,
+            verse_text: v.text
+          }));
+          
+          await supabase
+            .from('bible_verses')
+            .upsert(versesToInsert, {
+              onConflict: 'book,chapter,verse_number'
+            });
+          
+          setLoadingVerses(false);
+          return;
+        }
+
+        // Finally, try fetching from Bible API
         const { data, error } = await supabase.functions.invoke('fetch-bible-chapter', {
           body: { book, chapter }
         });
@@ -80,6 +113,20 @@ const Reading = () => {
         
         if (data?.verses && data.verses.length > 0) {
           setVerses(data.verses);
+          
+          // Save API verses to database for future use
+          const versesToInsert = data.verses.map((v: {number: number, text: string}) => ({
+            book,
+            chapter,
+            verse_number: v.number,
+            verse_text: v.text
+          }));
+          
+          await supabase
+            .from('bible_verses')
+            .upsert(versesToInsert, {
+              onConflict: 'book,chapter,verse_number'
+            });
         } else {
           setVerses([]);
         }

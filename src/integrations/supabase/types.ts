@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      bible_verses: {
+        Row: {
+          book: string
+          chapter: number
+          created_at: string
+          id: string
+          updated_at: string
+          verse_number: number
+          verse_text: string
+        }
+        Insert: {
+          book: string
+          chapter: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          verse_number: number
+          verse_text: string
+        }
+        Update: {
+          book?: string
+          chapter?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          verse_number?: number
+          verse_text?: string
+        }
+        Relationships: []
+      }
       completed_chapters: {
         Row: {
           book_key: string

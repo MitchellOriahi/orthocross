@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import { populateInitialVerses } from "@/scripts/populateInitialVerses";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -33,6 +34,26 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
+    // Populate initial verses on first load
+    const checkAndPopulate = async () => {
+      if (!user) return;
+      
+      const hasPopulated = localStorage.getItem('bible_verses_populated');
+      
+      if (!hasPopulated) {
+        console.log('Populating initial Bible verses...');
+        try {
+          await populateInitialVerses();
+          localStorage.setItem('bible_verses_populated', 'true');
+          console.log('Initial verses populated successfully');
+        } catch (error) {
+          console.error('Error populating verses:', error);
+        }
+      }
+    };
+    
+    checkAndPopulate();
+    
     const fetchStreak = async () => {
       if (!user) return;
       
