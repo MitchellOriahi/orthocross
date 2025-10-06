@@ -8,7 +8,7 @@ import markIcon from "@/assets/saints/mark-icon.jpg";
 import maryEgyptIcon from "@/assets/saints/mary-egypt-icon.jpg";
 import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
 import nicholasIcon from "@/assets/saints/nicholas-icon.jpg";
-import ephremIcon from "@/assets/saints/ephrem-icon.jpg";
+import gregoryNazianzusIcon from "@/assets/saints/gregory-nazianzus-icon.jpg";
 import theotokosIcon from "@/assets/saints/theotokos-icon.jpg";
 
 export interface SaintDetail {
@@ -270,27 +270,27 @@ export const saintsContent: SaintDetail[] = [
     ]
   },
   {
-    id: "ephrem-syrian",
-    name: "St. Ephrem the Syrian",
-    title: "Harp of the Holy Spirit",
-    tradition: "Oriental",
-    iconUrl: ephremIcon,
+    id: "gregory-nazianzus",
+    name: "St. Gregory the Theologian",
+    title: "The Triune Light",
+    tradition: "Eastern/Oriental",
+    iconUrl: gregoryNazianzusIcon,
     content: [
-      "Ephrem was born around 306 AD in Nisibis, Mesopotamia (modern-day Turkey), into a Christian family. Little is known about his early life, but according to tradition, he was baptized as a young man and immediately devoted himself to the study of Scripture and theology. He became a student of St. Jacob of Nisibis, the city's bishop and founder of its famous theological school.",
+      "Gregory was born around 329 AD in Arianzus, near Nazianzus in Cappadocia (modern Turkey), to Nonna and Gregory the Elder, who later became bishop of Nazianzus. His mother was renowned for her piety, and his father converted from a heretical sect to orthodox Christianity. Gregory was raised in a deeply Christian household and dedicated to God from before his birth.",
       
-      "Ephrem was ordained a deacon and remained in that order throughout his life, never accepting priestly ordination despite his theological brilliance. He became a teacher at the School of Nisibis, where he trained generations of clergy and theologians. His teaching combined rigorous biblical exegesis with poetic expression, making complex theology accessible through hymns and verse.",
+      "He received an exceptional education, studying in Caesarea, Alexandria, and finally Athens, where he met St. Basil the Great. Their friendship became one of the most famous in Christian history. Both men were brilliant scholars who mastered rhetoric, philosophy, and literature. Gregory later wrote: 'I seemed to perceive a single soul inhabiting two bodies.'",
       
-      "In 363 AD, after the Roman Empire ceded Nisibis to the Persian Empire, Ephrem and most of the Christian population fled to Edessa (modern Urfa in Turkey). There he continued his theological work and established a school of theology. Edessa became a major center of Syriac Christianity, and Ephrem's influence shaped the entire Syriac theological and liturgical tradition.",
+      "After completing his studies around 356 AD, Gregory returned home and was baptized. He initially felt called to monastic life and joined Basil in Pontus to pursue contemplation. However, his father, now elderly and needing help, ordained Gregory to the priesthood against his will. Gregory initially fled, troubled by the responsibility, but eventually returned and served faithfully.",
       
-      "Ephrem is best known as a hymnographer and poet. He composed thousands of hymns (madrāšē) and metrical homilies (mēmrē) in Syriac. His works addressed theological controversies, biblical interpretation, ascetic practices, and liturgical themes. He used poetry not merely for aesthetic purposes but as a teaching tool, knowing that people would remember theological truths better when sung.",
+      "Gregory's theological genius emerged through his writings and orations. His five 'Theological Orations,' delivered in Constantinople in 380 AD, are considered masterpieces of Trinitarian theology. They earned him the title 'the Theologian' - an honor given to only three figures in Orthodox history (along with John the Apostle and Symeon the New Theologian).",
       
-      "His hymns were often written to combat heresies. He composed beautiful Syriac hymns to counter the spread of Gnostic and Arian teachings, which were being disseminated through popular songs. His orthodox hymns, set to pleasing melodies and taught to choirs of women, successfully competed with heretical compositions and preserved orthodoxy among the common people.",
+      "In 379 AD, Gregory was called to Constantinople to help restore orthodox Christianity after years of Arian domination. He arrived to find only a small orthodox congregation meeting in a private house. Through his eloquent preaching and clear explanation of Trinitarian doctrine, he transformed the situation. His sermons attracted crowds and converted many from Arianism.",
       
-      "Ephrem's theology emphasized the mystery of the Incarnation, the role of the Theotokos, and the importance of asceticism. His Marian hymns are among the earliest and most beautiful in Christian literature, celebrating Mary as the New Eve and the God-bearer. His symbolic and poetic approach to theology influenced both Eastern and Western Christianity.",
+      "At the Second Ecumenical Council in Constantinople (381 AD), Gregory was appointed Archbishop of Constantinople. However, his appointment was disputed by bishops from Egypt and Macedonia. Weary of ecclesiastical politics and longing for contemplation, Gregory resigned after only a few months, famously declaring: 'I shall not set my hand again to such business; it is not worth contending over.'",
       
-      "During a famine in Edessa, Ephrem emerged from his scholarly seclusion to organize relief efforts. He accused the wealthy of hoarding grain and convinced them to distribute food to the poor. He personally cared for the sick and dying, demonstrating that theological learning must be united with active charity.",
+      "Gregory retired to his family estate in Arianzus, where he spent his final years in prayer, writing poetry and theological works. His letters, orations, and poems are treasured in both Eastern and Western Christianity. His writings on the Trinity, the Incarnation, and the Holy Spirit shaped orthodox theology for all subsequent generations.",
       
-      "Ephrem died in Edessa on June 9, 373 AD, probably a victim of the plague he contracted while caring for others during the epidemic. His literary legacy is immense—hundreds of his hymns survive, and his theological works influenced Syrian, Armenian, Byzantine, and Latin Christianity. He was declared a Doctor of the Church by Pope Benedict XV in 1920. His feast day is celebrated on January 28th, and he remains one of the most beloved saints in the Oriental Orthodox Churches."
+      "He died around 390 AD and is venerated as one of the three 'Cappadocian Fathers' along with Basil the Great and Gregory of Nyssa. His feast day is celebrated on January 25th. The title 'the Theologian' reflects his profound understanding of God's nature - particularly his articulation of the mystery of the Trinity and the full divinity of the Holy Spirit."
     ]
   },
   {
