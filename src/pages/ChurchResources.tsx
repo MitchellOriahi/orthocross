@@ -370,9 +370,7 @@ const ChurchResources = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-2 mb-8">
-            <svg className="w-12 h-12 mx-auto text-primary" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M10.5 2a1.5 1.5 0 0 1 3 0v5.5H19a1.5 1.5 0 0 1 0 3h-5.5V22a1.5 1.5 0 0 1-3 0v-11.5H5a1.5 1.5 0 0 1 0-3h5.5V2z" />
-            </svg>
+            <Church className="w-12 h-12 mx-auto text-primary" />
             <h2 className="text-3xl font-bold">Orthodox Church Guide</h2>
             <p className="text-muted-foreground">Learn the traditions and proper conduct in Orthodox worship</p>
           </div>
