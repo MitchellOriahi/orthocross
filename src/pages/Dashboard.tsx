@@ -212,6 +212,17 @@ const Dashboard = () => {
               totalChapters: totalChapters,
               bookProgress: bookProgressPercentage
             });
+          } else {
+            // No completed chapters, set default
+            setLastReading({
+              title: "Gospel of John",
+              passage: "John 1",
+              progress: 0,
+              bookKey: "John",
+              chapter: 1,
+              totalChapters: 21,
+              bookProgress: 0
+            });
           }
         };
 
