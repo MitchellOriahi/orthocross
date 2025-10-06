@@ -238,6 +238,54 @@ export type Database = {
         }
         Relationships: []
       }
+      pinned_prayers: {
+        Row: {
+          id: string
+          pinned_at: string
+          prayer_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          pinned_at?: string
+          prayer_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          pinned_at?: string
+          prayer_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      prayer_highlights: {
+        Row: {
+          created_at: string
+          highlight_color: string
+          id: string
+          prayer_id: string
+          sentence_index: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          highlight_color: string
+          id?: string
+          prayer_id: string
+          sentence_index: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          highlight_color?: string
+          id?: string
+          prayer_id?: string
+          sentence_index?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

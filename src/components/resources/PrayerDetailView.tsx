@@ -1,21 +1,32 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Highlighter } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/lib/utils";
 
 interface PrayerDetailViewProps {
   name: string;
   title: string;
   content: string[];
   onClose: () => void;
+  prayerId: string;
 }
 
-export const PrayerDetailView = ({ name, title, content, onClose }: PrayerDetailViewProps) => {
+const HIGHLIGHT_COLORS = [
+  { name: "Yellow", class: "bg-yellow-200 dark:bg-yellow-900/50", value: "yellow" },
+  { name: "Green", class: "bg-green-200 dark:bg-green-900/50", value: "green" },
+  { name: "Blue", class: "bg-blue-200 dark:bg-blue-900/50", value: "blue" },
+  { name: "Pink", class: "bg-pink-200 dark:bg-pink-900/50", value: "pink" },
+];
+
+export const PrayerDetailView = ({ name, title, content, onClose, prayerId }: PrayerDetailViewProps) => {
   const [isExplanationOpen, setIsExplanationOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'paginated' | 'scroll'>(() => {
     // Load saved preference from localStorage
@@ -99,7 +110,8 @@ export const PrayerDetailView = ({ name, title, content, onClose }: PrayerDetail
                 <div className="p-4">
                   <ExplanationView 
                     content={explanationContent} 
-                    viewMode={viewMode} 
+                    viewMode={viewMode}
+                    prayerId={prayerId}
                   />
                 </div>
               </div>
@@ -115,13 +127,94 @@ export const PrayerDetailView = ({ name, title, content, onClose }: PrayerDetail
 interface ExplanationViewProps {
   content: string[];
   viewMode: 'paginated' | 'scroll';
+  prayerId: string;
 }
 
-const ExplanationView = ({ content, viewMode }: ExplanationViewProps) => {
+const ExplanationView = ({ content, viewMode, prayerId }: ExplanationViewProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const [highlights, setHighlights] = useState<Record<number, string>>({});
+  const [showHighlighter, setShowHighlighter] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(HIGHLIGHT_COLORS[0]);
+
+  // Split content into sentences
+  const allSentences = content.flatMap(paragraph => 
+    paragraph.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0)
+  );
 
   const totalPages = content.length;
+
+  // Load highlights
+  useEffect(() => {
+    if (!user) return;
+
+    const loadHighlights = async () => {
+      const { data } = await supabase
+        .from('prayer_highlights')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('prayer_id', prayerId);
+
+      if (data) {
+        const highlightMap: Record<number, string> = {};
+        data.forEach(h => {
+          highlightMap[h.sentence_index] = h.highlight_color;
+        });
+        setHighlights(highlightMap);
+      }
+    };
+
+    loadHighlights();
+  }, [user, prayerId]);
+
+  const handleSentenceClick = async (sentenceIndex: number) => {
+    if (!user) return;
+
+    const currentHighlight = highlights[sentenceIndex];
+    
+    if (currentHighlight) {
+      // Remove highlight
+      await supabase
+        .from('prayer_highlights')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('prayer_id', prayerId)
+        .eq('sentence_index', sentenceIndex);
+      
+      const newHighlights = { ...highlights };
+      delete newHighlights[sentenceIndex];
+      setHighlights(newHighlights);
+    } else {
+      // Add highlight
+      await supabase
+        .from('prayer_highlights')
+        .upsert({
+          user_id: user.id,
+          prayer_id: prayerId,
+          sentence_index: sentenceIndex,
+          highlight_color: selectedColor.value,
+        });
+      
+      setHighlights({
+        ...highlights,
+        [sentenceIndex]: selectedColor.value,
+      });
+    }
+  };
+
+  const getHighlightClass = (color: string) => {
+    const colorObj = HIGHLIGHT_COLORS.find(c => c.value === color);
+    return colorObj?.class || '';
+  };
+
+  const getSentencesInParagraph = (paragraphIndex: number) => {
+    let sentenceCount = 0;
+    for (let i = 0; i < paragraphIndex; i++) {
+      sentenceCount += content[i].split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0).length;
+    }
+    return sentenceCount;
+  };
 
   const handleNext = () => {
     if (currentPage < totalPages - 1) {
@@ -150,24 +243,111 @@ const ExplanationView = ({ content, viewMode }: ExplanationViewProps) => {
 
   if (viewMode === 'scroll') {
     return (
-      <div className="prose dark:prose-invert max-w-none">
-        {content.map((paragraph, index) => (
-          <div key={index} className="mb-6">
-            <p className="text-base sm:text-lg leading-relaxed whitespace-pre-line">
-              {paragraph}
-            </p>
-            {index < content.length - 1 && (
-              <div className="h-px bg-border/50 my-6" />
+      <div>
+        <div className="flex justify-start mb-4">
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setShowHighlighter(!showHighlighter)}
+            >
+              <Highlighter className="h-4 w-4" />
+            </Button>
+            
+            {showHighlighter && (
+              <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-lg shadow-lg z-10 flex gap-1">
+                {HIGHLIGHT_COLORS.map((color) => (
+                  <button
+                    key={color.name}
+                    onClick={() => {
+                      setSelectedColor(color);
+                      setShowHighlighter(false);
+                    }}
+                    className={cn(
+                      "w-6 h-6 rounded border border-border",
+                      color.class,
+                      selectedColor.value === color.value && "ring-2 ring-primary"
+                    )}
+                    title={color.name}
+                  />
+                ))}
+              </div>
             )}
           </div>
-        ))}
+        </div>
+
+        <div className="prose dark:prose-invert max-w-none">
+          {content.map((paragraph, paragraphIndex) => {
+            const sentences = paragraph.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+            const startSentenceIndex = getSentencesInParagraph(paragraphIndex);
+            
+            return (
+              <div key={paragraphIndex} className="mb-6">
+                <div className="text-base sm:text-lg leading-relaxed">
+                  {sentences.map((sentence, sentenceIndex) => {
+                    const globalIndex = startSentenceIndex + sentenceIndex;
+                    const highlight = highlights[globalIndex];
+                    
+                    return (
+                      <span
+                        key={sentenceIndex}
+                        onClick={() => handleSentenceClick(globalIndex)}
+                        className={cn(
+                          "cursor-pointer transition-all inline",
+                          highlight && getHighlightClass(highlight)
+                        )}
+                      >
+                        {sentence}{' '}
+                      </span>
+                    );
+                  })}
+                </div>
+                {paragraphIndex < content.length - 1 && (
+                  <div className="h-px bg-border/50 my-6" />
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between items-center mb-4">
+        <div className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setShowHighlighter(!showHighlighter)}
+          >
+            <Highlighter className="h-4 w-4" />
+          </Button>
+          
+          {showHighlighter && (
+            <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-lg shadow-lg z-10 flex gap-1">
+              {HIGHLIGHT_COLORS.map((color) => (
+                <button
+                  key={color.name}
+                  onClick={() => {
+                    setSelectedColor(color);
+                    setShowHighlighter(false);
+                  }}
+                  className={cn(
+                    "w-6 h-6 rounded border border-border",
+                    color.class,
+                    selectedColor.value === color.value && "ring-2 ring-primary"
+                  )}
+                  title={color.name}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="text-xs sm:text-sm font-medium text-muted-foreground bg-primary/10 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
           <span className="hidden sm:inline">Page </span>{currentPage + 1}<span className="hidden sm:inline"> of</span><span className="sm:hidden">/</span> {totalPages}
         </div>
@@ -175,12 +355,28 @@ const ExplanationView = ({ content, viewMode }: ExplanationViewProps) => {
 
       <div 
         ref={contentRef}
-        onClick={handleContentClick}
-        className="prose dark:prose-invert max-w-none mb-8 min-h-[300px] sm:min-h-[400px] cursor-pointer"
+        className="prose dark:prose-invert max-w-none mb-8 min-h-[300px] sm:min-h-[400px]"
       >
-        <p className="text-base sm:text-lg leading-relaxed whitespace-pre-line">
-          {content[currentPage]}
-        </p>
+        <div className="text-base sm:text-lg leading-relaxed">
+          {content[currentPage].split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0).map((sentence, sentenceIndex) => {
+            const startIndex = getSentencesInParagraph(currentPage);
+            const globalIndex = startIndex + sentenceIndex;
+            const highlight = highlights[globalIndex];
+            
+            return (
+              <span
+                key={sentenceIndex}
+                onClick={() => handleSentenceClick(globalIndex)}
+                className={cn(
+                  "cursor-pointer transition-all inline",
+                  highlight && getHighlightClass(highlight)
+                )}
+              >
+                {sentence}{' '}
+              </span>
+            );
+          })}
+        </div>
       </div>
 
       <div className="pt-6 border-t space-y-4">

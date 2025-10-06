@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Church, BookOpen, UserRound } from "lucide-react";
+import { ArrowLeft, Church, BookOpen, UserRound, Pin } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import stBasilIcon from "@/assets/st-basil-icon.png";
 import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
@@ -25,14 +27,73 @@ type SectionType = "eastern" | "oriental" | "prayers" | "saints" | null;
 const ChurchResources = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [selectedSection, setSelectedSection] = useState<SectionType>(null);
   const [selectedSaint, setSelectedSaint] = useState<SaintDetail | null>(null);
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
+  const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Load pinned prayers
+  useEffect(() => {
+    if (!user) return;
+    
+    const loadPinnedPrayers = async () => {
+      const { data } = await supabase
+        .from('pinned_prayers')
+        .select('prayer_id')
+        .eq('user_id', user.id);
+      
+      if (data) {
+        setPinnedPrayerIds(new Set(data.map(p => p.prayer_id)));
+      }
+    };
+    
+    loadPinnedPrayers();
+  }, [user]);
+
+  const handlePinPrayer = async (prayerId: string) => {
+    if (!user) {
+      toast({ description: "Please sign in to pin prayers", variant: "destructive" });
+      return;
+    }
+
+    const isPinned = pinnedPrayerIds.has(prayerId);
+
+    if (isPinned) {
+      // Unpin
+      await supabase
+        .from('pinned_prayers')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('prayer_id', prayerId);
+      
+      const newPinned = new Set(pinnedPrayerIds);
+      newPinned.delete(prayerId);
+      setPinnedPrayerIds(newPinned);
+      toast({ description: "Prayer unpinned" });
+    } else {
+      // Check limit
+      if (pinnedPrayerIds.size >= 3) {
+        toast({ description: "You can only pin up to 3 prayers", variant: "destructive" });
+        return;
+      }
+
+      // Pin
+      await supabase
+        .from('pinned_prayers')
+        .insert({ user_id: user.id, prayer_id: prayerId });
+      
+      const newPinned = new Set(pinnedPrayerIds);
+      newPinned.add(prayerId);
+      setPinnedPrayerIds(newPinned);
+      toast({ description: "Prayer pinned to top" });
+    }
+  };
 
   if (selectedSaint) {
     return (
@@ -60,6 +121,7 @@ const ChurchResources = () => {
         name={selectedPrayer.name}
         title={selectedPrayer.title}
         content={selectedPrayer.content}
+        prayerId={selectedPrayer.id}
         onClose={() => {
           setSelectedPrayer(null);
           setSelectedSection("prayers");
@@ -282,27 +344,60 @@ const ChurchResources = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {prayersContent.map((prayer) => (
-                      <button
-                        key={prayer.id}
-                        onClick={() => setSelectedPrayer(prayer)}
-                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative"
-                      >
-                        <div className="absolute top-2 right-2 text-xs px-2 py-1 rounded-md bg-primary/10 font-medium">
-                          {prayer.tradition === "Oriental" && <span className="text-orange-500">Oriental</span>}
-                          {prayer.tradition === "Eastern" && <span className="text-blue-500">Eastern</span>}
-                          {prayer.tradition === "Eastern/Oriental" && (
-                            <>
-                              <span className="text-blue-500">Eastern</span>
-                              <span className="text-primary">/</span>
-                              <span className="text-orange-500">Oriental</span>
-                            </>
-                          )}
-                        </div>
-                        <div className="font-semibold text-base pr-32">{prayer.name}</div>
-                        <div className="text-sm text-muted-foreground mt-1">{prayer.title}</div>
-                      </button>
-                    ))}
+                    {/* Sort prayers: pinned first, then others */}
+                    {[...prayersContent]
+                      .sort((a, b) => {
+                        const aIsPinned = pinnedPrayerIds.has(a.id);
+                        const bIsPinned = pinnedPrayerIds.has(b.id);
+                        if (aIsPinned && !bIsPinned) return -1;
+                        if (!aIsPinned && bIsPinned) return 1;
+                        return 0;
+                      })
+                      .map((prayer) => {
+                        const isPinned = pinnedPrayerIds.has(prayer.id);
+                        return (
+                          <div key={prayer.id} className="relative group">
+                            <button
+                              onClick={() => setSelectedPrayer(prayer)}
+                              className={`w-full p-4 text-left rounded-lg border hover:border-primary hover:bg-accent transition-all relative ${
+                                isPinned ? 'border-primary bg-primary/5' : 'border-border'
+                              }`}
+                            >
+                              <div className="absolute top-2 right-2 flex items-center gap-2">
+                                <div className="text-xs px-2 py-1 rounded-md bg-primary/10 font-medium">
+                                  {prayer.tradition === "Oriental" && <span className="text-orange-500">Oriental</span>}
+                                  {prayer.tradition === "Eastern" && <span className="text-blue-500">Eastern</span>}
+                                  {prayer.tradition === "Eastern/Oriental" && (
+                                    <>
+                                      <span className="text-blue-500">Eastern</span>
+                                      <span className="text-primary">/</span>
+                                      <span className="text-orange-500">Oriental</span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="font-semibold text-base pr-32">
+                                {isPinned && <Pin className="inline w-4 h-4 mr-2 text-primary fill-primary" />}
+                                {prayer.name}
+                              </div>
+                              <div className="text-sm text-muted-foreground mt-1">{prayer.title}</div>
+                            </button>
+                            {user && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute right-2 bottom-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handlePinPrayer(prayer.id);
+                                }}
+                              >
+                                <Pin className={`w-4 h-4 ${isPinned ? 'fill-primary text-primary' : ''}`} />
+                              </Button>
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
                 </CardContent>
               </Card>
