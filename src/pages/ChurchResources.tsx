@@ -23,6 +23,7 @@ import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
 
 type SectionType = "eastern" | "oriental" | "prayers" | "saints" | null;
+type PrayerFilterType = "all" | "Eastern" | "Oriental";
 
 const ChurchResources = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const ChurchResources = () => {
   const [selectedSaint, setSelectedSaint] = useState<SaintDetail | null>(null);
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
+  const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -341,11 +343,40 @@ const ChurchResources = () => {
                     <BookOpen className="w-5 h-5 text-primary" />
                     Prayers
                   </CardTitle>
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      variant={prayerFilter === "all" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setPrayerFilter("all")}
+                    >
+                      All
+                    </Button>
+                    <Button
+                      variant={prayerFilter === "Eastern" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setPrayerFilter("Eastern")}
+                      className={prayerFilter === "Eastern" ? "" : "text-blue-500 hover:text-blue-600 border-blue-500/50"}
+                    >
+                      Eastern
+                    </Button>
+                    <Button
+                      variant={prayerFilter === "Oriental" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setPrayerFilter("Oriental")}
+                      className={prayerFilter === "Oriental" ? "" : "text-orange-500 hover:text-orange-600 border-orange-500/50"}
+                    >
+                      Oriental
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {/* Sort prayers: pinned first, then others */}
+                    {/* Sort prayers: pinned first, then others, then filter */}
                     {[...prayersContent]
+                      .filter((prayer) => {
+                        if (prayerFilter === "all") return true;
+                        return prayer.tradition.includes(prayerFilter);
+                      })
                       .sort((a, b) => {
                         const aIsPinned = pinnedPrayerIds.has(a.id);
                         const bIsPinned = pinnedPrayerIds.has(b.id);
