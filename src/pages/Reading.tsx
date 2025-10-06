@@ -435,15 +435,23 @@ const Reading = () => {
     const clickX = e.clientX - rect.left;
     const halfWidth = rect.width / 2;
 
-    if (clickX < halfWidth) {
-      // Clicked on left side - go to previous chapter
-      if (chapter > 1) {
-        handlePrevChapter();
+    if (readingMode === "page") {
+      // In page mode, navigate verses
+      if (clickX < halfWidth) {
+        handlePrevVerse();
+      } else {
+        handleNextVerse();
       }
     } else {
-      // Clicked on right side - go to next chapter
-      if (chapter < totalChapters) {
-        handleNextChapter();
+      // In scroll mode, navigate chapters
+      if (clickX < halfWidth) {
+        if (chapter > 1) {
+          handlePrevChapter();
+        }
+      } else {
+        if (chapter < totalChapters) {
+          handleNextChapter();
+        }
       }
     }
   };
@@ -727,36 +735,71 @@ const Reading = () => {
                 </div>
               )}
 
-              {/* Chapter Navigation */}
+              {/* Navigation */}
               <div className="flex items-center justify-between pt-6 border-t gap-2 flex-wrap sm:flex-nowrap">
-                <Button
-                  variant="outline"
-                  onClick={handlePrevChapter}
-                  disabled={chapter === 1}
-                  className="flex-shrink-0"
-                  size="sm"
-                >
-                  <ChevronLeft className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Previous</span>
-                </Button>
+                {readingMode === "page" ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={handlePrevVerse}
+                      disabled={currentVerseIndex === 0 && chapter === 1}
+                      className="flex-shrink-0"
+                      size="sm"
+                    >
+                      <ChevronLeft className="w-4 h-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Previous</span>
+                    </Button>
 
-                {verses.length > 0 && (
-                  <Button variant="sacred" onClick={markChapterComplete} size="sm" className="text-xs sm:text-sm">
-                    <BookMarked className="w-4 h-4 sm:mr-2" />
-                    <span className="hidden xs:inline">Mark </span>Complete
-                  </Button>
+                    {verses.length > 0 && currentVerseIndex === verses.length - 1 && (
+                      <Button variant="sacred" onClick={markChapterComplete} size="sm" className="text-xs sm:text-sm">
+                        <BookMarked className="w-4 h-4 sm:mr-2" />
+                        <span className="hidden xs:inline">Mark </span>Complete
+                      </Button>
+                    )}
+
+                    <Button
+                      variant="outline"
+                      onClick={handleNextVerse}
+                      disabled={currentVerseIndex === verses.length - 1 && chapter === totalChapters}
+                      className="flex-shrink-0"
+                      size="sm"
+                    >
+                      <span className="hidden sm:inline">Next</span>
+                      <ChevronRight className="w-4 h-4 sm:ml-2" />
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={handlePrevChapter}
+                      disabled={chapter === 1}
+                      className="flex-shrink-0"
+                      size="sm"
+                    >
+                      <ChevronLeft className="w-4 h-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Previous</span>
+                    </Button>
+
+                    {verses.length > 0 && (
+                      <Button variant="sacred" onClick={markChapterComplete} size="sm" className="text-xs sm:text-sm">
+                        <BookMarked className="w-4 h-4 sm:mr-2" />
+                        <span className="hidden xs:inline">Mark </span>Complete
+                      </Button>
+                    )}
+
+                    <Button
+                      variant="outline"
+                      onClick={handleNextChapter}
+                      disabled={chapter === totalChapters}
+                      className="flex-shrink-0"
+                      size="sm"
+                    >
+                      <span className="hidden sm:inline">Next</span>
+                      <ChevronRight className="w-4 h-4 sm:ml-2" />
+                    </Button>
+                  </>
                 )}
-
-                <Button
-                  variant="outline"
-                  onClick={handleNextChapter}
-                  disabled={chapter === totalChapters}
-                  className="flex-shrink-0"
-                  size="sm"
-                >
-                  <span className="hidden sm:inline">Next</span>
-                  <ChevronRight className="w-4 h-4 sm:ml-2" />
-                </Button>
               </div>
             </div>
           </Card>
