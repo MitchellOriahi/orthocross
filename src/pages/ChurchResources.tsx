@@ -387,8 +387,24 @@ const ChurchResources = () => {
                       .sort((a, b) => {
                         const aIsPinned = pinnedPrayerIds.has(a.id);
                         const bIsPinned = pinnedPrayerIds.has(b.id);
+                        
+                        // First sort by pinned status
                         if (aIsPinned && !bIsPinned) return -1;
                         if (!aIsPinned && bIsPinned) return 1;
+                        
+                        // If both have same pinned status and we're on "all" filter, sort by tradition
+                        if (prayerFilter === "all") {
+                          const getTraditionOrder = (tradition: string) => {
+                            if (tradition === "Eastern/Oriental") return 0;
+                            if (tradition === "Eastern") return 1;
+                            if (tradition === "Oriental") return 2;
+                            return 3;
+                          };
+                          const aOrder = getTraditionOrder(a.tradition);
+                          const bOrder = getTraditionOrder(b.tradition);
+                          return aOrder - bOrder;
+                        }
+                        
                         return 0;
                       })
                       .map((prayer) => {
@@ -422,7 +438,14 @@ const ChurchResources = () => {
                               </div>
                               <div className="font-semibold text-base pr-32">
                                 {isPinned && <Pin className="inline w-4 h-4 mr-2 text-primary fill-primary" />}
-                                {prayer.name}
+                                {prayer.name === "Coptic 'Our Father'" ? (
+                                  <span className="inline-flex flex-col leading-tight">
+                                    <span>Coptic</span>
+                                    <span>"Our Father"</span>
+                                  </span>
+                                ) : (
+                                  prayer.name
+                                )}
                               </div>
                               <div className="text-sm text-muted-foreground mt-1">{prayer.title}</div>
                             </button>
