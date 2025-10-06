@@ -1,4 +1,4 @@
-import { Plus, Search, Trash2, Pin, PinOff } from "lucide-react";
+import { Plus, Search, Trash2, Pin, PinOff, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -22,6 +22,8 @@ interface JournalNotesListProps {
   onNotePin: (noteId: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  viewMode: 'list' | 'gallery';
+  onViewModeChange: (mode: 'list' | 'gallery') => void;
 }
 
 export const JournalNotesList = ({
@@ -33,6 +35,8 @@ export const JournalNotesList = ({
   onNotePin,
   searchQuery,
   onSearchChange,
+  viewMode,
+  onViewModeChange,
 }: JournalNotesListProps) => {
   const getPreviewText = (note: JournalNote) => {
     const title = note.title || "Untitled";
@@ -44,7 +48,7 @@ export const JournalNotesList = ({
   const pinnedNotes = notes.filter(n => n.pinned);
   const unpinnedNotes = notes.filter(n => !n.pinned);
 
-  const renderNoteCard = (note: JournalNote) => {
+  const renderListNote = (note: JournalNote) => {
     const { title, preview } = getPreviewText(note);
     return (
       <div
@@ -100,19 +104,97 @@ export const JournalNotesList = ({
     );
   };
 
+  const renderGalleryNote = (note: JournalNote) => {
+    const { title, preview } = getPreviewText(note);
+    return (
+      <div
+        key={note.id}
+        className={cn(
+          "group relative rounded-lg overflow-hidden transition-all",
+          selectedNoteId === note.id ? "ring-2 ring-primary" : "hover:shadow-md"
+        )}
+      >
+        <button
+          onClick={() => onNoteSelect(note.id)}
+          className="w-full text-left bg-card"
+        >
+          <div className="aspect-square bg-gradient-to-br from-accent/20 to-accent/5 p-4 flex items-center justify-center">
+            <div className="text-sm text-muted-foreground line-clamp-6 text-center">
+              {preview || "Empty note"}
+            </div>
+          </div>
+          <div className="p-3">
+            <div className="font-medium text-sm truncate mb-1">
+              {title}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {formatDistanceToNow(new Date(note.updated_at), { addSuffix: true })}
+            </div>
+          </div>
+        </button>
+        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 bg-background/80 backdrop-blur"
+            onClick={(e) => {
+              e.stopPropagation();
+              onNotePin(note.id);
+            }}
+          >
+            {note.pinned ? (
+              <PinOff className="h-3 w-3" />
+            ) : (
+              <Pin className="h-3 w-3" />
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 bg-background/80 backdrop-blur"
+            onClick={(e) => {
+              e.stopPropagation();
+              onNoteDelete(note.id);
+            }}
+          >
+            <Trash2 className="h-3 w-3" />
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col h-full border-r border-border bg-card/30">
       <div className="p-3 border-b border-border space-y-2">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold">Notes</h3>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={onNoteCreate}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn("h-7 w-7", viewMode === 'list' && "bg-accent")}
+              onClick={() => onViewModeChange('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn("h-7 w-7", viewMode === 'gallery' && "bg-accent")}
+              onClick={() => onViewModeChange('gallery')}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={onNoteCreate}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         <div className="relative">
           <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
@@ -126,26 +208,26 @@ export const JournalNotesList = ({
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-2 space-y-1">
+        <div className={cn("p-2", viewMode === 'gallery' && "grid grid-cols-2 gap-2")}>
           {notes.length === 0 ? (
-            <div className="text-center py-8 text-sm text-muted-foreground">
+            <div className="col-span-2 text-center py-8 text-sm text-muted-foreground">
               Click + to create your first note
             </div>
           ) : (
             <>
               {pinnedNotes.length > 0 && (
-                <div className="mb-4">
+                <div className={cn("mb-4", viewMode === 'gallery' && "col-span-2")}>
                   <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">Journal Cover</h4>
-                  <div className="space-y-1">
-                    {pinnedNotes.map((note) => renderNoteCard(note))}
+                  <div className={cn(viewMode === 'list' ? "space-y-1" : "grid grid-cols-2 gap-2")}>
+                    {pinnedNotes.map((note) => viewMode === 'list' ? renderListNote(note) : renderGalleryNote(note))}
                   </div>
                 </div>
               )}
               {unpinnedNotes.length > 0 && (
-                <div>
+                <div className={cn(viewMode === 'gallery' && "col-span-2")}>
                   <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">All Notes</h4>
-                  <div className="space-y-1">
-                    {unpinnedNotes.map((note) => renderNoteCard(note))}
+                  <div className={cn(viewMode === 'list' ? "space-y-1" : "grid grid-cols-2 gap-2")}>
+                    {unpinnedNotes.map((note) => viewMode === 'list' ? renderListNote(note) : renderGalleryNote(note))}
                   </div>
                 </div>
               )}

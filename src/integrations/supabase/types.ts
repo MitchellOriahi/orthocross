@@ -243,6 +243,7 @@ export type Database = {
           created_at: string
           fasting_notifications_enabled: boolean | null
           id: string
+          journal_view_mode: string | null
           phone_number: string | null
           streak_notifications_enabled: boolean | null
           updated_at: string
@@ -251,6 +252,7 @@ export type Database = {
           created_at?: string
           fasting_notifications_enabled?: boolean | null
           id: string
+          journal_view_mode?: string | null
           phone_number?: string | null
           streak_notifications_enabled?: boolean | null
           updated_at?: string
@@ -259,6 +261,7 @@ export type Database = {
           created_at?: string
           fasting_notifications_enabled?: boolean | null
           id?: string
+          journal_view_mode?: string | null
           phone_number?: string | null
           streak_notifications_enabled?: boolean | null
           updated_at?: string

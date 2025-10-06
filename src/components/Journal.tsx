@@ -49,6 +49,26 @@ export const Journal = () => {
   
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
+  const [viewMode, setViewMode] = useState<'list' | 'gallery'>('list');
+
+  // Load view preference
+  useEffect(() => {
+    if (!user) return;
+
+    const loadViewPreference = async () => {
+      const { data } = await (supabase as any)
+        .from('profiles')
+        .select('journal_view_mode')
+        .eq('id', user.id)
+        .single();
+      
+      if (data?.journal_view_mode) {
+        setViewMode(data.journal_view_mode);
+      }
+    };
+
+    loadViewPreference();
+  }, [user]);
 
   // Load folders and notes
   useEffect(() => {
@@ -252,6 +272,16 @@ export const Journal = () => {
     });
   };
 
+  const handleViewModeChange = async (newMode: 'list' | 'gallery') => {
+    setViewMode(newMode);
+    if (!user) return;
+    
+    await (supabase as any)
+      .from('profiles')
+      .update({ journal_view_mode: newMode })
+      .eq('id', user.id);
+  };
+
   const filteredNotes = notes.filter(note => {
     if (!searchQuery) return true;
     const searchLower = searchQuery.toLowerCase();
@@ -380,6 +410,8 @@ export const Journal = () => {
                     onNotePin={handleNotePin}
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
+                    viewMode={viewMode}
+                    onViewModeChange={handleViewModeChange}
                   />
                 </div>
               )}
