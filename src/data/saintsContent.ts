@@ -13,8 +13,10 @@ import theotokosIcon from "@/assets/saints/theotokos-icon.jpg";
 
 export interface SaintDetail {
   id: string;
+  prefix: string;
   name: string;
-  title: string;
+  epithet: string;
+  shortDescription: string;
   tradition: "Oriental" | "Eastern" | "Eastern/Oriental";
   iconUrl: string;
   content: string[];
@@ -23,8 +25,10 @@ export interface SaintDetail {
 export const saintsContent: SaintDetail[] = [
   {
     id: "anthony",
-    name: "St. Anthony",
-    title: "the Great, Father of Monasticism",
+    prefix: "St.",
+    name: "Anthony",
+    epithet: "the Great",
+    shortDescription: "Father of Monasticism",
     tradition: "Eastern/Oriental",
     iconUrl: anthonyIcon,
     content: [
@@ -47,8 +51,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "athanasius",
-    name: "St. Athanasius",
-    title: "the Great, Pillar of Orthodoxy",
+    prefix: "St.",
+    name: "Athanasius",
+    epithet: "the Great",
+    shortDescription: "Pillar of Orthodoxy",
     tradition: "Eastern/Oriental",
     iconUrl: athanasiusIcon,
     content: [
@@ -71,8 +77,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "basil",
-    name: "St. Basil",
-    title: "the Great, Father of Eastern Monasticism",
+    prefix: "St.",
+    name: "Basil",
+    epithet: "the Great",
+    shortDescription: "Father of Eastern Monasticism",
     tradition: "Eastern",
     iconUrl: basilIcon,
     content: [
@@ -95,8 +103,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "catherine",
-    name: "St. Catherine",
-    title: "of Alexandria, The Great Martyr",
+    prefix: "St.",
+    name: "Catherine",
+    epithet: "of Alexandria",
+    shortDescription: "The Great Martyr",
     tradition: "Eastern",
     iconUrl: catherineIcon,
     content: [
@@ -121,8 +131,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "george",
-    name: "St. George",
-    title: "the Trophy-Bearer, The Great Martyr",
+    prefix: "St.",
+    name: "George",
+    epithet: "the Trophy-Bearer",
+    shortDescription: "The Great Martyr",
     tradition: "Eastern/Oriental",
     iconUrl: georgeIcon,
     content: [
@@ -145,8 +157,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "john-chrysostom",
-    name: "St. John Chrysostom",
-    title: "The Golden-Mouthed",
+    prefix: "St.",
+    name: "John Chrysostom",
+    epithet: "",
+    shortDescription: "The Golden-Mouthed",
     tradition: "Eastern",
     iconUrl: johnChrysostomIcon,
     content: [
@@ -169,8 +183,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "mark",
-    name: "St. Mark",
-    title: "the Apostle, Founder of the Coptic Church",
+    prefix: "St.",
+    name: "Mark",
+    epithet: "the Apostle",
+    shortDescription: "Founder of the Coptic Church",
     tradition: "Oriental",
     iconUrl: markIcon,
     content: [
@@ -193,8 +209,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "mary-egypt",
-    name: "St. Mary of Egypt",
-    title: "The Penitent",
+    prefix: "St.",
+    name: "Mary",
+    epithet: "of Egypt",
+    shortDescription: "The Penitent",
     tradition: "Oriental",
     iconUrl: maryEgyptIcon,
     content: [
@@ -223,8 +241,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "moses-black",
-    name: "St. Moses",
-    title: "the Black, The Ethiopian",
+    prefix: "St.",
+    name: "Moses",
+    epithet: "the Black",
+    shortDescription: "The Ethiopian",
     tradition: "Oriental",
     iconUrl: mosesBlackIcon,
     content: [
@@ -247,8 +267,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "nicholas",
-    name: "St. Nicholas",
-    title: "of Myra, The Wonderworker",
+    prefix: "St.",
+    name: "Nicholas",
+    epithet: "of Myra",
+    shortDescription: "The Wonderworker",
     tradition: "Eastern",
     iconUrl: nicholasIcon,
     content: [
@@ -271,8 +293,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "paisios-athonite",
-    name: "St. Paisios",
-    title: "the Athonite, Elder of Mount Athos",
+    prefix: "St.",
+    name: "Paisios",
+    epithet: "the Athonite",
+    shortDescription: "Elder of Mount Athos",
     tradition: "Eastern",
     iconUrl: paisiosIcon,
     content: [
@@ -295,8 +319,10 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "theotokos",
+    prefix: "",
     name: "Theotokos",
-    title: "(Virgin Mary), The Mother of God",
+    epithet: "(Virgin Mary)",
+    shortDescription: "The Mother of God",
     tradition: "Eastern/Oriental",
     iconUrl: theotokosIcon,
     content: [

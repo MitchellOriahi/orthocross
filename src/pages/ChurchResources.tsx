@@ -34,8 +34,8 @@ const ChurchResources = () => {
   if (selectedSaint) {
     return (
       <DetailedContentView
-        title={selectedSaint.name}
-        subtitle={selectedSaint.title}
+        title={`${selectedSaint.prefix} ${selectedSaint.name}${selectedSaint.epithet ? ` ${selectedSaint.epithet}` : ''}`}
+        subtitle={selectedSaint.shortDescription}
         content={selectedSaint.content}
         onClose={() => {
           setSelectedSaint(null);
@@ -43,7 +43,7 @@ const ChurchResources = () => {
         }}
         showProgress={true}
         onComplete={() => {
-          toast({ description: `Completed reading about ${selectedSaint.name}! 🙏` });
+          toast({ description: `Completed reading about ${selectedSaint.prefix} ${selectedSaint.name}! 🙏` });
           setSelectedSaint(null);
           setSelectedSection("saints");
         }}
@@ -314,18 +314,20 @@ const ChurchResources = () => {
                       <button
                         key={saint.id}
                         onClick={() => setSelectedSaint(saint)}
-                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative flex items-center gap-4"
+                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative flex items-start gap-4"
                       >
                         <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary/20">
                           <img 
                             src={saint.iconUrl} 
-                            alt={saint.name}
+                            alt={`${saint.prefix} ${saint.name}`}
                             className="w-full h-full object-cover scale-125"
                           />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-base pr-20 sm:pr-28 whitespace-normal leading-snug">{saint.name}</div>
-                          <div className="text-sm text-muted-foreground mt-1 pr-16 sm:pr-24 whitespace-normal leading-snug">{saint.title}</div>
+                        <div className="flex-1 min-w-0 pt-1">
+                          {saint.prefix && <div className="text-xs font-medium text-muted-foreground">{saint.prefix}</div>}
+                          <div className="font-bold text-lg leading-tight">{saint.name}</div>
+                          {saint.epithet && <div className="text-sm font-medium text-muted-foreground mt-0.5">{saint.epithet}</div>}
+                          <div className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{saint.shortDescription}</div>
                         </div>
                         <div className="absolute top-3 right-3 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-primary/10 text-primary font-medium whitespace-nowrap">
                           {saint.tradition === "Oriental" && "Oriental"}
