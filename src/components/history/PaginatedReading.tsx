@@ -200,7 +200,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
       
       <div 
         ref={contentRef}
-        className="prose dark:prose-invert max-w-none mb-8 min-h-[300px]"
+        className="prose dark:prose-invert max-w-none mb-8 min-h-[400px] flex items-start"
       >
         <div className="text-base sm:text-lg leading-relaxed space-y-3">
           {pageSentences[currentPage].map((sentence, idx) => {
