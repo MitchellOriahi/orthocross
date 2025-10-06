@@ -8,7 +8,7 @@ import markIcon from "@/assets/saints/mark-icon.jpg";
 import maryEgyptIcon from "@/assets/saints/mary-egypt-icon.jpg";
 import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
 import nicholasIcon from "@/assets/saints/nicholas-icon.jpg";
-import gregoryNazianzusIcon from "@/assets/saints/gregory-nazianzus-icon.jpg";
+import paisiosIcon from "@/assets/saints/paisios-icon.jpg";
 import theotokosIcon from "@/assets/saints/theotokos-icon.jpg";
 
 export interface SaintDetail {
@@ -270,27 +270,27 @@ export const saintsContent: SaintDetail[] = [
     ]
   },
   {
-    id: "gregory-nazianzus",
-    name: "St. Gregory the Theologian",
-    title: "The Triune Light",
-    tradition: "Eastern/Oriental",
-    iconUrl: gregoryNazianzusIcon,
+    id: "paisios-athonite",
+    name: "St. Paisios the Athonite",
+    title: "Elder of Mount Athos",
+    tradition: "Eastern",
+    iconUrl: paisiosIcon,
     content: [
-      "Gregory was born around 329 AD in Arianzus, near Nazianzus in Cappadocia (modern Turkey), to Nonna and Gregory the Elder, who later became bishop of Nazianzus. His mother was renowned for her piety, and his father converted from a heretical sect to orthodox Christianity. Gregory was raised in a deeply Christian household and dedicated to God from before his birth.",
+      "Paisios was born Arsenios Eznepidis on July 25, 1924, in Farasa, Cappadocia (modern Turkey), just days before the population exchange between Greece and Turkey. His devout parents had prayed to St. Arsenios of Cappadocia for a son, and when the saint baptized the infant, he prophesied: 'This child will become a monk and a great spiritual father.'",
       
-      "He received an exceptional education, studying in Caesarea, Alexandria, and finally Athens, where he met St. Basil the Great. Their friendship became one of the most famous in Christian history. Both men were brilliant scholars who mastered rhetoric, philosophy, and literature. Gregory later wrote: 'I seemed to perceive a single soul inhabiting two bodies.'",
+      "After his family fled to Greece, Arsenios grew up in poverty but with deep faith. As a young man, he worked as a carpenter to support his family. Despite opportunities for a comfortable life, he felt called to monasticism. However, he delayed entering the monastery to care for his sisters until they were married.",
       
-      "After completing his studies around 356 AD, Gregory returned home and was baptized. He initially felt called to monastic life and joined Basil in Pontus to pursue contemplation. However, his father, now elderly and needing help, ordained Gregory to the priesthood against his will. Gregory initially fled, troubled by the responsibility, but eventually returned and served faithfully.",
+      "In 1945, at age 21, Arsenios entered the Monastery of Esphigmenou on Mount Athos, taking the name Averkios. He was later tonsured a monk with the name Paisios, after St. Paisios II, the former patriarch of Constantinople. His monastic life was characterized by extreme asceticism, constant prayer, and deep humility.",
       
-      "Gregory's theological genius emerged through his writings and orations. His five 'Theological Orations,' delivered in Constantinople in 380 AD, are considered masterpieces of Trinitarian theology. They earned him the title 'the Theologian' - an honor given to only three figures in Orthodox history (along with John the Apostle and Symeon the New Theologian).",
+      "During his military service (1945-1949) in the Greek Civil War, Paisios served as a radio operator, insisting on never firing a weapon. He volunteered for the most dangerous missions, trusting completely in God's protection. His selfless bravery and prayer life deeply impressed his fellow soldiers.",
       
-      "In 379 AD, Gregory was called to Constantinople to help restore orthodox Christianity after years of Arian domination. He arrived to find only a small orthodox congregation meeting in a private house. Through his eloquent preaching and clear explanation of Trinitarian doctrine, he transformed the situation. His sermons attracted crowds and converted many from Arianism.",
+      "After completing his military service, Paisios returned to monastic life, living in various monasteries and hermitages on Mount Athos. He spent years in the desert of Sinai and later at the Monastery of Stavronikita. In 1966, he moved to a small hermitage near the Monastery of Koutloumousiou, where he lived in extreme asceticism and prayer.",
       
-      "At the Second Ecumenical Council in Constantinople (381 AD), Gregory was appointed Archbishop of Constantinople. However, his appointment was disputed by bishops from Egypt and Macedonia. Weary of ecclesiastical politics and longing for contemplation, Gregory resigned after only a few months, famously declaring: 'I shall not set my hand again to such business; it is not worth contending over.'",
+      "Paisios became renowned as a spiritual father and elder (geronta). Thousands of pilgrims from around the world sought his counsel. Despite his desire for solitude, he received visitors with inexhaustible love and patience, often going days without sleep to help those who came to him. His spiritual gifts included prophecy, discernment, and miraculous healings.",
       
-      "Gregory retired to his family estate in Arianzus, where he spent his final years in prayer, writing poetry and theological works. His letters, orations, and poems are treasured in both Eastern and Western Christianity. His writings on the Trinity, the Incarnation, and the Holy Spirit shaped orthodox theology for all subsequent generations.",
+      "His teachings emphasized simplicity, humility, and trust in God's providence. He often said: 'The person who wants to become good cannot do so by coercion but through freedom. God Himself does not coerce anyone. He advises, guides, He does everything possible, but He does not coerce.' His sayings and letters have been compiled into numerous books.",
       
-      "He died around 390 AD and is venerated as one of the three 'Cappadocian Fathers' along with Basil the Great and Gregory of Nyssa. His feast day is celebrated on January 25th. The title 'the Theologian' reflects his profound understanding of God's nature - particularly his articulation of the mystery of the Trinity and the full divinity of the Holy Spirit."
+      "Elder Paisios reposed on July 12, 1994, after a long struggle with cancer, which he bore with patience and without complaint. Thousands attended his funeral at the Monastery of Saint John the Theologian in Souroti, where he is buried. He was canonized by the Ecumenical Patriarchate in 2015. His feast day is celebrated on July 12th, and he is venerated as one of the greatest spiritual fathers of modern Orthodox Christianity."
     ]
   },
   {
