@@ -107,11 +107,11 @@ const OrthodoxHistory = () => {
               </div>
               <h1 className="text-2xl font-bold">History</h1>
             </div>
-            <nav className="flex items-center gap-2 mr-2">
+            <nav className="flex items-center gap-2 mr-6">
+              <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
               </Button>
-              <ThemeToggle />
             </nav>
           </div>
         </div>
