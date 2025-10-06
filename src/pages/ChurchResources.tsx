@@ -105,7 +105,7 @@ const ChurchResources = () => {
       const newPinned = new Set(pinnedPrayerIds);
       newPinned.add(prayerId);
       setPinnedPrayerIds(newPinned);
-      toast({ description: "Prayer pinned to top" });
+      toast({ description: "Prayer pinned to top", duration: 3000 });
     }
   };
 
