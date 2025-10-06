@@ -46,21 +46,16 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
             Mark Chapters as Read
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Notice the <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary mx-1">
-              <Info className="w-3 h-3" />
-            </span> button next to your Bible progress meter? That's your quick access tool for tracking your reading journey.
+        <CardContent className="space-y-6">
+          <p className="text-center text-lg">
+            See the <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary mx-1">
+              <Info className="w-4 h-4" />
+            </span> button?
           </p>
           
-          <div className="p-4 bg-accent/50 rounded-lg border border-border">
-            <p className="text-sm font-medium mb-2">Already reading the Bible elsewhere?</p>
-            <p className="text-sm text-muted-foreground">
-              No worries! Use the grid inside to quickly mark chapters you've already completed. 
-              Tap any book, then tap the chapters you've read. It's that simple to sync your progress 
-              and make this app feel like home.
-            </p>
-          </div>
+          <p className="text-center text-muted-foreground">
+            Tap it to quickly mark chapters you've already read
+          </p>
 
           <p className="text-xs text-center text-muted-foreground">
             {canDismiss ? "Tap anywhere to continue" : "Please wait a moment..."}
