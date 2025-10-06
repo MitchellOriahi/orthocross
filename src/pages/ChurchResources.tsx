@@ -37,7 +37,6 @@ const ChurchResources = () => {
         title={selectedSaint.name}
         subtitle={selectedSaint.title}
         content={selectedSaint.content}
-        iconUrl={selectedSaint.iconUrl}
         onClose={() => {
           setSelectedSaint(null);
           setSelectedSection("saints");
