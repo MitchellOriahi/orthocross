@@ -7,7 +7,11 @@ const slides = [
   {
     title: "Welcome to OrthoCross",
     description: "Let's take a quick tour of the app's features",
-    icon: Cross,
+    icon: () => (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2v20M6 8h12" />
+      </svg>
+    ),
     animation: "animate-fade-in"
   },
   {
@@ -31,7 +35,11 @@ const slides = [
   {
     title: "Ready to Begin",
     description: "Explore the app and start your Orthodox journey today",
-    icon: Cross,
+    icon: () => (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2v20M6 8h12" />
+      </svg>
+    ),
     animation: "animate-scale-in"
   }
 ];
