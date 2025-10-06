@@ -47,7 +47,10 @@ const Reading = () => {
 
   const [fontSize, setFontSize] = useState([18]);
   const [chapter, setChapter] = useState(initialChapter);
-  const [readingMode, setReadingMode] = useState<"scroll" | "page">("scroll");
+  const [readingMode, setReadingMode] = useState<"scroll" | "page">(() => {
+    const saved = localStorage.getItem('readingMode');
+    return (saved === 'scroll' || saved === 'page') ? saved : 'scroll';
+  });
   const [highlights, setHighlights] = useState<VerseHighlight[]>([]);
   const [bookmarks, setBookmarks] = useState<VerseBookmark[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
@@ -148,6 +151,11 @@ const Reading = () => {
       loadProgress();
     }
   }, [user, book, chapter]);
+
+  // Persist reading mode preference
+  useEffect(() => {
+    localStorage.setItem('readingMode', readingMode);
+  }, [readingMode]);
 
   const loadHighlights = async () => {
     try {
