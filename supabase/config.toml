@@ -4,7 +4,7 @@ project_id = "atjpjmhumzfpotrkefaz"
 verify_jwt = false
 
 [functions.import-scripture]
-verify_jwt = false
+verify_jwt = true
 
 [functions.process-zip-upload]
-verify_jwt = false
+verify_jwt = true
