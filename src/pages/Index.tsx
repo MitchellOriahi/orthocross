@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Play } from "lucide-react";
+import { BookOpen, Play, Download, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { BookSelector } from "@/components/BookSelector";
@@ -11,6 +11,8 @@ import { BIBLE_BOOKS, getCategorizedBooks, BookInfo } from "@/data/bibleContent"
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
 
 interface ReadingProgress {
   id: string;
@@ -27,10 +29,13 @@ interface ReadingProgress {
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [lastRead, setLastRead] = useState<ReadingProgress | null>(null);
   const [loading, setLoading] = useState(true);
   const [bibleCompletion, setBibleCompletion] = useState(0);
   const [bookProgress, setBookProgress] = useState<Record<string, number>>({});
+  const [hasScriptureData, setHasScriptureData] = useState(true);
+  const [importing, setImporting] = useState(false);
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
@@ -44,10 +49,76 @@ const Index = () => {
       loadLastRead();
       loadBibleCompletion();
       loadBookProgress();
+      checkScriptureData();
     } else {
       setLoading(false);
     }
   }, [user]);
+
+  const checkScriptureData = async () => {
+    try {
+      const { count } = await supabase
+        .from('bible_verses')
+        .select('*', { count: 'exact', head: true });
+      
+      setHasScriptureData((count ?? 0) > 100);
+    } catch (error) {
+      console.error('Error checking scripture data:', error);
+    }
+  };
+
+  const handleImportScripture = async () => {
+    setImporting(true);
+    try {
+      const response = await fetch('/orthodox_books_bundle.zip');
+      const blob = await response.blob();
+      const file = new File([blob], 'orthodox_books_bundle.zip', { type: 'application/zip' });
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      const importResponse = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-zip-upload`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (!importResponse.ok) {
+        throw new Error(`Import failed: ${importResponse.statusText}`);
+      }
+
+      const result = await importResponse.json();
+
+      if (result.errors && result.errors.length > 0) {
+        console.error('Import errors:', result.errors);
+      }
+
+      toast({
+        title: "Import Successful",
+        description: `Imported ${result.totalVerses} verses from ${result.processedBooks.length} books.`,
+      });
+
+      setHasScriptureData(true);
+      await checkScriptureData();
+    } catch (error) {
+      console.error('Import error:', error);
+      toast({
+        title: "Import Failed",
+        description: error instanceof Error ? error.message : "Failed to import scripture data.",
+        variant: "destructive",
+      });
+    } finally {
+      setImporting(false);
+    }
+  };
 
   // Reload Bible completion when page becomes visible
   useEffect(() => {
@@ -218,6 +289,26 @@ const Index = () => {
             <>
               {/* Scripture Library */}
               <div className="space-y-6">
+                {!hasScriptureData && (
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Scripture Data Not Loaded</AlertTitle>
+                    <AlertDescription>
+                      <div className="space-y-3 mt-2">
+                        <p>To read all books, chapters, and verses, import the complete scripture library.</p>
+                        <Button 
+                          onClick={handleImportScripture}
+                          disabled={importing}
+                          className="gap-2"
+                        >
+                          <Download className="w-4 h-4" />
+                          {importing ? "Importing..." : "Import Scripture Library"}
+                        </Button>
+                      </div>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-2xl font-bold">Scripture Library</h2>
