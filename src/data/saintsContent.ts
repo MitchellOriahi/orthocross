@@ -23,8 +23,8 @@ export interface SaintDetail {
 export const saintsContent: SaintDetail[] = [
   {
     id: "anthony",
-    name: "St. Anthony the Great",
-    title: "Father of Monasticism",
+    name: "St. Anthony",
+    title: "the Great, Father of Monasticism",
     tradition: "Eastern/Oriental",
     iconUrl: anthonyIcon,
     content: [
@@ -47,8 +47,8 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "athanasius",
-    name: "St. Athanasius the Great",
-    title: "Pillar of Orthodoxy",
+    name: "St. Athanasius",
+    title: "the Great, Pillar of Orthodoxy",
     tradition: "Eastern/Oriental",
     iconUrl: athanasiusIcon,
     content: [
@@ -71,8 +71,8 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "basil",
-    name: "St. Basil the Great",
-    title: "Father of Eastern Monasticism",
+    name: "St. Basil",
+    title: "the Great, Father of Eastern Monasticism",
     tradition: "Eastern",
     iconUrl: basilIcon,
     content: [
@@ -95,8 +95,8 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "catherine",
-    name: "St. Catherine of Alexandria",
-    title: "The Great Martyr",
+    name: "St. Catherine",
+    title: "of Alexandria, The Great Martyr",
     tradition: "Eastern",
     iconUrl: catherineIcon,
     content: [
@@ -121,8 +121,8 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "george",
-    name: "St. George the Trophy-Bearer",
-    title: "The Great Martyr",
+    name: "St. George",
+    title: "the Trophy-Bearer, The Great Martyr",
     tradition: "Eastern/Oriental",
     iconUrl: georgeIcon,
     content: [
@@ -169,8 +169,8 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "mark",
-    name: "St. Mark the Apostle",
-    title: "Founder of the Coptic Church",
+    name: "St. Mark",
+    title: "the Apostle, Founder of the Coptic Church",
     tradition: "Oriental",
     iconUrl: markIcon,
     content: [
@@ -223,8 +223,8 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "moses-black",
-    name: "St. Moses the Black",
-    title: "The Ethiopian",
+    name: "St. Moses",
+    title: "the Black, The Ethiopian",
     tradition: "Oriental",
     iconUrl: mosesBlackIcon,
     content: [
@@ -247,8 +247,8 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "nicholas",
-    name: "St. Nicholas of Myra",
-    title: "The Wonderworker",
+    name: "St. Nicholas",
+    title: "of Myra, The Wonderworker",
     tradition: "Eastern",
     iconUrl: nicholasIcon,
     content: [
@@ -271,8 +271,8 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "paisios-athonite",
-    name: "St. Paisios the Athonite",
-    title: "Elder of Mount Athos",
+    name: "St. Paisios",
+    title: "the Athonite, Elder of Mount Athos",
     tradition: "Eastern",
     iconUrl: paisiosIcon,
     content: [
@@ -295,8 +295,8 @@ export const saintsContent: SaintDetail[] = [
   },
   {
     id: "theotokos",
-    name: "Theotokos (Virgin Mary)",
-    title: "The Mother of God",
+    name: "Theotokos",
+    title: "(Virgin Mary), The Mother of God",
     tradition: "Eastern/Oriental",
     iconUrl: theotokosIcon,
     content: [
