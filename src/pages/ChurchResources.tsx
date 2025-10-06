@@ -372,16 +372,18 @@ const ChurchResources = () => {
       <main className="container mx-auto px-4 py-2">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-0 mb-4">
-            <div className="w-24 h-24 mx-auto relative mb-1">
+            <div className="w-32 h-32 mx-auto relative mb-1">
               <img 
                 src={orthodoxCrossBlack} 
                 alt="Orthodox Cross" 
                 className="w-full h-full object-contain dark:hidden"
+                style={{ filter: 'drop-shadow(0 0 12px rgba(0, 0, 0, 0.3))' }}
               />
               <img 
                 src={orthodoxCrossWhite} 
                 alt="Orthodox Cross" 
                 className="w-full h-full object-contain hidden dark:block"
+                style={{ filter: 'drop-shadow(0 0 16px rgba(255, 255, 255, 0.5))' }}
               />
             </div>
             <h2 className="text-3xl font-bold">Orthodox Church Guide</h2>
