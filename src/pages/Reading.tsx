@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, BookOpen, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter } from "lucide-react";
+import { ArrowLeft, Scroll, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -11,12 +11,21 @@ import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChapterSelector } from "@/components/ChapterSelector";
 import { bibleContent } from "@/data/bibleContent";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface VerseHighlight {
   id: string;
   verse_number: number;
   highlight_color: string;
 }
+
+const HIGHLIGHT_COLORS = [
+  { name: 'Yellow', value: 'yellow', bg: 'bg-yellow-200/30 dark:bg-yellow-400/20' },
+  { name: 'Green', value: 'green', bg: 'bg-green-200/30 dark:bg-green-400/20' },
+  { name: 'Blue', value: 'blue', bg: 'bg-blue-200/30 dark:bg-blue-400/20' },
+  { name: 'Pink', value: 'pink', bg: 'bg-pink-200/30 dark:bg-pink-400/20' },
+  { name: 'Purple', value: 'purple', bg: 'bg-purple-200/30 dark:bg-purple-400/20' },
+];
 
 const Reading = () => {
   const navigate = useNavigate();
@@ -36,6 +45,7 @@ const Reading = () => {
   const [readingMode, setReadingMode] = useState<"scroll" | "page">("scroll");
   const [highlights, setHighlights] = useState<VerseHighlight[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
+  const [selectedColor, setSelectedColor] = useState('yellow');
   const [progress, setProgress] = useState(0);
   const [verses, setVerses] = useState<Array<{number: number; text: string}>>([]);
   const [loadingVerses, setLoadingVerses] = useState(false);
@@ -157,21 +167,35 @@ const Reading = () => {
     }
   }, [chapter, user]);
 
-  const toggleHighlight = async (verseNumber: number) => {
+  const toggleHighlight = async (verseNumber: number, color: string) => {
     if (!user) return;
 
     const existingHighlight = highlights.find(h => h.verse_number === verseNumber);
 
     try {
       if (existingHighlight) {
-        const { error } = await supabase
-          .from('verse_highlights')
-          .delete()
-          .eq('id', existingHighlight.id);
+        // Update the color if it's different, otherwise remove
+        if (existingHighlight.highlight_color !== color) {
+          const { error } = await supabase
+            .from('verse_highlights')
+            .update({ highlight_color: color })
+            .eq('id', existingHighlight.id);
 
-        if (error) throw error;
-        setHighlights(highlights.filter(h => h.verse_number !== verseNumber));
-        toast({ description: "Highlight removed" });
+          if (error) throw error;
+          setHighlights(highlights.map(h => 
+            h.verse_number === verseNumber ? { ...h, highlight_color: color } : h
+          ));
+          toast({ description: "Highlight color updated" });
+        } else {
+          const { error } = await supabase
+            .from('verse_highlights')
+            .delete()
+            .eq('id', existingHighlight.id);
+
+          if (error) throw error;
+          setHighlights(highlights.filter(h => h.verse_number !== verseNumber));
+          toast({ description: "Highlight removed" });
+        }
       } else {
         const { data, error } = await supabase
           .from('verse_highlights')
@@ -180,7 +204,7 @@ const Reading = () => {
             scripture_title: book,
             chapter: chapter,
             verse_number: verseNumber,
-            highlight_color: 'yellow',
+            highlight_color: color,
           })
           .select()
           .single();
@@ -257,8 +281,9 @@ const Reading = () => {
     }
   };
 
-  const isHighlighted = (verseNumber: number) => {
-    return highlights.some(h => h.verse_number === verseNumber);
+  const getHighlightColor = (verseNumber: number) => {
+    const highlight = highlights.find(h => h.verse_number === verseNumber);
+    return highlight ? HIGHLIGHT_COLORS.find(c => c.value === highlight.highlight_color) : null;
   };
 
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -323,7 +348,7 @@ const Reading = () => {
                 onClick={() => setReadingMode("scroll")}
                 className="text-xs sm:text-sm"
               >
-                <BookOpen className="w-4 h-4 sm:mr-2" />
+                <Scroll className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">Scroll</span>
               </Button>
               <Button
@@ -365,38 +390,75 @@ const Reading = () => {
                       </div>
                     </div>
                   ) : verses.length > 0 ? (
-                    verses.map((verse) => (
-                      <div
-                        key={verse.number}
-                        className={`
-                          group relative p-3 rounded-lg transition-all cursor-pointer
-                          ${isHighlighted(verse.number) ? 'bg-yellow-200/30 dark:bg-yellow-400/20' : 'hover:bg-muted/50'}
-                          ${selectedVerse === verse.number ? 'ring-2 ring-primary' : ''}
-                        `}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleVerseClick(verse.number);
-                        }}
-                      >
-                        <span className="font-bold text-primary mr-2">{verse.number}</span>
-                        <span>{verse.text}</span>
-                        
-                        {selectedVerse === verse.number && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="absolute right-2 top-2"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleHighlight(verse.number);
-                            }}
-                          >
-                            <Highlighter className="w-4 h-4 mr-2" />
-                            {isHighlighted(verse.number) ? 'Remove' : 'Highlight'}
-                          </Button>
-                        )}
-                      </div>
-                    ))
+                    verses.map((verse) => {
+                      const highlightColor = getHighlightColor(verse.number);
+                      return (
+                        <div
+                          key={verse.number}
+                          className={`
+                            group relative p-3 rounded-lg transition-all cursor-pointer
+                            ${highlightColor ? highlightColor.bg : 'hover:bg-muted/50'}
+                            ${selectedVerse === verse.number ? 'ring-2 ring-primary' : ''}
+                          `}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleVerseClick(verse.number);
+                          }}
+                        >
+                          <span className="font-bold text-primary mr-2">{verse.number}</span>
+                          <span>{verse.text}</span>
+                          
+                          {selectedVerse === verse.number && (
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="absolute right-2 top-2"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Highlighter className="w-4 h-4 mr-2" />
+                                  Highlight
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-48 p-2" onClick={(e) => e.stopPropagation()}>
+                                <div className="space-y-2">
+                                  {HIGHLIGHT_COLORS.map((color) => (
+                                    <Button
+                                      key={color.value}
+                                      variant="ghost"
+                                      className="w-full justify-start"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleHighlight(verse.number, color.value);
+                                      }}
+                                    >
+                                      <div className={`w-4 h-4 rounded mr-2 ${color.bg}`}></div>
+                                      {color.name}
+                                    </Button>
+                                  ))}
+                                  {highlightColor && (
+                                    <>
+                                      <div className="border-t my-2"></div>
+                                      <Button
+                                        variant="ghost"
+                                        className="w-full justify-start text-destructive"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          toggleHighlight(verse.number, highlightColor.value);
+                                        }}
+                                      >
+                                        Remove Highlight
+                                      </Button>
+                                    </>
+                                  )}
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          )}
+                        </div>
+                      );
+                    })
                   ) : (
                     <div className="text-center py-12 text-muted-foreground">
                       <BookMarked className="w-12 h-12 mx-auto mb-4 opacity-50" />
