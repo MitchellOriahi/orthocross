@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Church, BookOpen, UserRound } from "lucide-react";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import stBasilIcon from "@/assets/st-basil-icon.png";
-import orthodoxCrossBlack from "@/assets/orthodox-cross-black.png";
-import orthodoxCrossWhite from "@/assets/orthodox-cross-white-traced.png";
+import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
+import orthodoxCrossWhite from "@/assets/orthodox-cross-white-new.png";
 import {
   Accordion,
   AccordionContent,
