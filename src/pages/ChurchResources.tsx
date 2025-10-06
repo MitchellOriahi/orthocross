@@ -318,7 +318,7 @@ const ChurchResources = () => {
                       >
                         <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary/20">
                           <img 
-                            src={saint.cardImageUrl} 
+                            src={saint.iconUrl} 
                             alt={saint.name}
                             className="w-full h-full object-cover"
                           />

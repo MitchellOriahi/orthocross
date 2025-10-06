@@ -1,36 +1,22 @@
-import anthonySilhouette from "@/assets/saints/anthony-silhouette.png";
-import athanasiusSilhouette from "@/assets/saints/athanasius-silhouette.png";
-import basilSilhouette from "@/assets/saints/basil-silhouette.png";
-import catherineSilhouette from "@/assets/saints/catherine-silhouette.png";
-import georgeSilhouette from "@/assets/saints/george-silhouette.png";
-import johnChrysostomSilhouette from "@/assets/saints/john-chrysostom-silhouette.png";
-import markSilhouette from "@/assets/saints/mark-silhouette.png";
-import maryEgyptSilhouette from "@/assets/saints/mary-egypt-silhouette.png";
-import mosesBlackSilhouette from "@/assets/saints/moses-black-silhouette.png";
-import nicholasSilhouette from "@/assets/saints/nicholas-silhouette.png";
-import severusSilhouette from "@/assets/saints/severus-silhouette.png";
-import theotokosSilhouette from "@/assets/saints/theotokos-silhouette.png";
-
-import anthonyCard from "@/assets/saints/anthony-card.jpg";
-import athanasiusCard from "@/assets/saints/athanasius-card.jpg";
-import basilCard from "@/assets/saints/basil-card.jpg";
-import catherineCard from "@/assets/saints/catherine-card.jpg";
-import georgeCard from "@/assets/saints/george-card.jpg";
-import johnChrysostomCard from "@/assets/saints/john-chrysostom-card.jpg";
-import markCard from "@/assets/saints/mark-card.jpg";
-import maryEgyptCard from "@/assets/saints/mary-egypt-card.jpg";
-import mosesBlackCard from "@/assets/saints/moses-black-card.jpg";
-import nicholasCard from "@/assets/saints/nicholas-card.jpg";
-import severusCard from "@/assets/saints/severus-card.jpg";
-import theotokosCard from "@/assets/saints/theotokos-card.jpg";
+import anthonyIcon from "@/assets/saints/anthony-icon.jpg";
+import athanasiusIcon from "@/assets/saints/athanasius-icon.jpg";
+import basilIcon from "@/assets/saints/basil-icon.jpg";
+import catherineIcon from "@/assets/saints/catherine-icon.jpg";
+import georgeIcon from "@/assets/saints/george-icon.jpg";
+import johnChrysostomIcon from "@/assets/saints/john-chrysostom-icon.jpg";
+import markIcon from "@/assets/saints/mark-icon.jpg";
+import maryEgyptIcon from "@/assets/saints/mary-egypt-icon.jpg";
+import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
+import nicholasIcon from "@/assets/saints/nicholas-icon.jpg";
+import severusIcon from "@/assets/saints/severus-icon.jpg";
+import theotokosIcon from "@/assets/saints/theotokos-icon.jpg";
 
 export interface SaintDetail {
   id: string;
   name: string;
   title: string;
   tradition: "Oriental" | "Eastern" | "Eastern/Oriental";
-  iconUrl?: string;
-  cardImageUrl: string;
+  iconUrl: string;
   content: string[];
 }
 
@@ -40,8 +26,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Anthony the Great",
     title: "Father of Monasticism",
     tradition: "Eastern/Oriental",
-    iconUrl: anthonySilhouette,
-    cardImageUrl: anthonyCard,
+    iconUrl: anthonyIcon,
     content: [
       "Anthony was born around 251 AD in Herakleopolis Magna in Egypt to wealthy Christian parents. Orphaned at age 18, he heard the Gospel reading: 'If you would be perfect, go, sell what you possess and give to the poor, and you will have treasure in heaven.' Taking these words literally, Anthony sold all his possessions, provided for his younger sister, and gave the rest to the poor.",
       
@@ -65,8 +50,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Athanasius the Great",
     title: "Pillar of Orthodoxy",
     tradition: "Eastern/Oriental",
-    iconUrl: athanasiusSilhouette,
-    cardImageUrl: athanasiusCard,
+    iconUrl: athanasiusIcon,
     content: [
       "Athanasius was born around 296 AD in Alexandria, Egypt. Raised in a Christian family, he received an excellent theological education. As a young deacon, he served under Bishop Alexander of Alexandria and accompanied him to the Council of Nicaea in 325 AD, where the Arian heresy was condemned.",
       
@@ -90,8 +74,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Basil the Great",
     title: "Father of Eastern Monasticism",
     tradition: "Eastern",
-    iconUrl: basilSilhouette,
-    cardImageUrl: basilCard,
+    iconUrl: basilIcon,
     content: [
       "Basil was born around 330 AD in Caesarea, Cappadocia (modern Turkey), into a family of saints. His grandmother Macrina the Elder was a disciple of St. Gregory the Wonderworker. His parents, Basil the Elder and Emmelia, his sister Macrina the Younger, and his brothers Gregory of Nyssa and Peter of Sebaste, are all venerated as saints.",
       
@@ -115,8 +98,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Catherine of Alexandria",
     title: "The Great Martyr",
     tradition: "Eastern",
-    iconUrl: catherineSilhouette,
-    cardImageUrl: catherineCard,
+    iconUrl: catherineIcon,
     content: [
       "Catherine was born around 287 AD in Alexandria, Egypt, to a noble pagan family of the highest social rank. Renowned for her exceptional beauty, she was even more celebrated for her brilliant intellect. By the age of eighteen, she had mastered philosophy, rhetoric, logic, mathematics, and multiple languages, surpassing the most learned scholars of her time.",
       
@@ -142,8 +124,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. George the Trophy-Bearer",
     title: "The Great Martyr",
     tradition: "Eastern/Oriental",
-    iconUrl: georgeSilhouette,
-    cardImageUrl: georgeCard,
+    iconUrl: georgeIcon,
     content: [
       "Saint George was born around 280 AD in Cappadocia (modern-day Turkey) to Christian parents of noble lineage. His father was a Roman military officer who was martyred for his faith when George was young. His mother took him to her homeland in Palestine, where he was raised in the Christian faith and received an excellent education.",
       
@@ -167,8 +148,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. John Chrysostom",
     title: "The Golden-Mouthed",
     tradition: "Eastern",
-    iconUrl: johnChrysostomSilhouette,
-    cardImageUrl: johnChrysostomCard,
+    iconUrl: johnChrysostomIcon,
     content: [
       "John was born around 347 AD in Antioch, Syria, to Christian parents. His father, a high-ranking military officer, died when John was young, and his mother Anthusa devoted herself entirely to his upbringing and education. She refused to remarry, dedicating her life to raising her son in Christian virtue and learning.",
       
@@ -192,8 +172,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Mark the Apostle",
     title: "Founder of the Coptic Church",
     tradition: "Oriental",
-    iconUrl: markSilhouette,
-    cardImageUrl: markCard,
+    iconUrl: markIcon,
     content: [
       "St. Mark, also known as John Mark, was born in Cyrene (modern Libya) to Jewish parents in the early first century. His family later moved to Jerusalem, where his mother Mary's house became a gathering place for early Christians. According to tradition, this was the house where the Last Supper took place and where the disciples gathered after the Resurrection.",
       
@@ -217,8 +196,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Mary of Egypt",
     title: "The Penitent",
     tradition: "Oriental",
-    iconUrl: maryEgyptSilhouette,
-    cardImageUrl: maryEgyptCard,
+    iconUrl: maryEgyptIcon,
     content: [
       "Mary was born in Egypt around 344 AD. At the age of twelve, she left her parents' home and went to Alexandria, where she lived a life of sin and debauchery for seventeen years. She supported herself through weaving and begging, but gave her body freely to countless men, driven by an insatiable passion rather than material need.",
       
@@ -248,8 +226,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Moses the Black",
     title: "The Ethiopian",
     tradition: "Oriental",
-    iconUrl: mosesBlackSilhouette,
-    cardImageUrl: mosesBlackCard,
+    iconUrl: mosesBlackIcon,
     content: [
       "Moses was born in Ethiopia in the fourth century AD, around 330 AD. Little is known about his early life, but he was sold into slavery in Egypt as a young man. He served in the household of an Egyptian government official, but his immense physical strength and violent temperament made him a difficult slave.",
       
@@ -273,8 +250,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Nicholas of Myra",
     title: "The Wonderworker",
     tradition: "Eastern",
-    iconUrl: nicholasSilhouette,
-    cardImageUrl: nicholasCard,
+    iconUrl: nicholasIcon,
     content: [
       "Saint Nicholas was born in the third century in Patara, Asia Minor (modern-day Turkey), to wealthy and devout Christian parents. From his youth, he was known for his piety and compassion. When his parents died during an epidemic, Nicholas inherited their considerable wealth, which he determined to use in service to God and the poor.",
       
@@ -298,8 +274,7 @@ export const saintsContent: SaintDetail[] = [
     name: "St. Severus of Antioch",
     title: "The Crown of the Syrians",
     tradition: "Oriental",
-    iconUrl: severusSilhouette,
-    cardImageUrl: severusCard,
+    iconUrl: severusIcon,
     content: [
       "Severus was born around 465 AD in Sozopolis, Pisidia (modern Turkey), to a wealthy pagan family. His grandfather had been a bishop, but his immediate family practiced paganism. He received an excellent classical education in Alexandria and later studied law in Berytus (Beirut), preparing for a distinguished career in Roman administration.",
       
@@ -327,8 +302,7 @@ export const saintsContent: SaintDetail[] = [
     name: "Theotokos (Virgin Mary)",
     title: "The Mother of God",
     tradition: "Eastern/Oriental",
-    iconUrl: theotokosSilhouette,
-    cardImageUrl: theotokosCard,
+    iconUrl: theotokosIcon,
     content: [
       "The Theotokos, meaning 'God-bearer' in Greek, holds the highest honor among all saints in Orthodox Christianity. Born to Joachim and Anna in their old age after years of prayer, Mary's birth was itself considered miraculous. From her earliest years, she was dedicated to God and raised in the Temple in Jerusalem.",
       
