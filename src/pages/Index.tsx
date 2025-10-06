@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Play, Download, AlertCircle } from "lucide-react";
+import { BookOpen, Play, Download, AlertCircle, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { BookSelector } from "@/components/BookSelector";
@@ -13,6 +13,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
+import { ChapterMarkingDialog } from "@/components/ChapterMarkingDialog";
 
 interface ReadingProgress {
   id: string;
@@ -36,6 +37,7 @@ const Index = () => {
   const [bookProgress, setBookProgress] = useState<Record<string, number>>({});
   const [hasScriptureData, setHasScriptureData] = useState(true);
   const [importing, setImporting] = useState(false);
+  const [showChapterMarking, setShowChapterMarking] = useState(false);
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
@@ -327,7 +329,17 @@ const Index = () => {
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
                           <span className="font-semibold">Overall Bible Completion</span>
-                          <span className="font-bold text-primary">{bibleCompletion.toFixed(1)}%</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-primary">{bibleCompletion.toFixed(1)}%</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => setShowChapterMarking(true)}
+                            >
+                              <Info className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                         <div className="w-full bg-muted rounded-full h-3">
                           <div
@@ -339,6 +351,15 @@ const Index = () => {
                     </CardContent>
                   </Card>
                 )}
+
+                <ChapterMarkingDialog
+                  open={showChapterMarking}
+                  onOpenChange={setShowChapterMarking}
+                  onChaptersUpdated={() => {
+                    loadBibleCompletion();
+                    loadBookProgress();
+                  }}
+                />
 
                 {/* OLD TESTAMENT */}
                 <Card className="border-orange-500/30 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20">
