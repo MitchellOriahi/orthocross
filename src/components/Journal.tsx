@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Menu } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 // Extended types that match the actual database schema
 interface JournalNote {
@@ -236,17 +237,38 @@ export const Journal = () => {
     setShowNotesList(true);
   };
 
+  const mostRecentNote = notes.length > 0 ? notes[0] : null;
+  const hasContent = mostRecentNote && (mostRecentNote.title || mostRecentNote.content);
+
   return (
     <>
       <Card 
         className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
         onClick={() => !isFullScreen && handleNoteCreate()}
       >
-        <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-          <div className="text-center">
-            <p className="text-lg font-medium mb-1">Journal</p>
-            <p className="text-sm">Click to start writing...</p>
-          </div>
+        <div className="h-[200px] p-4 flex flex-col">
+          {hasContent ? (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-semibold text-sm truncate flex-1">
+                  {mostRecentNote.title || "Untitled"}
+                </h3>
+                <span className="text-xs text-muted-foreground ml-2">
+                  {formatDistanceToNow(new Date(mostRecentNote.updated_at), { addSuffix: true })}
+                </span>
+              </div>
+              <div className="text-sm text-muted-foreground line-clamp-6 leading-relaxed">
+                {mostRecentNote.content || ""}
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground">
+              <div className="text-center">
+                <p className="text-lg font-medium mb-1">Journal</p>
+                <p className="text-sm">Click to start writing...</p>
+              </div>
+            </div>
+          )}
         </div>
       </Card>
 
