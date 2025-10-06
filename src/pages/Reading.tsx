@@ -52,6 +52,7 @@ const Reading = () => {
   const [bookmarks, setBookmarks] = useState<VerseBookmark[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState('yellow');
+  const [currentVerseIndex, setCurrentVerseIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [verses, setVerses] = useState<Array<{number: number; text: string}>>([]);
   const [loadingVerses, setLoadingVerses] = useState(false);
@@ -252,11 +253,30 @@ const Reading = () => {
   const handleChapterChange = async (newChapter: number) => {
     setChapter(newChapter);
     setSelectedVerse(null);
+    setCurrentVerseIndex(0);
     setProgress(0);
     
     // Save progress when changing chapters
     if (user) {
       await saveProgress(0);
+    }
+  };
+
+  const handleNextVerse = () => {
+    if (currentVerseIndex < verses.length - 1) {
+      setCurrentVerseIndex(currentVerseIndex + 1);
+      setSelectedVerse(null);
+    } else if (chapter < totalChapters) {
+      handleNextChapter();
+    }
+  };
+
+  const handlePrevVerse = () => {
+    if (currentVerseIndex > 0) {
+      setCurrentVerseIndex(currentVerseIndex - 1);
+      setSelectedVerse(null);
+    } else if (chapter > 1) {
+      handlePrevChapter();
     }
   };
 
@@ -547,10 +567,7 @@ const Reading = () => {
                   )}
                 </div>
               ) : (
-                <div 
-                  className="space-y-4"
-                  style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
-                >
+                <div className="min-h-[400px] flex flex-col justify-between">
                   {loadingVerses ? (
                     <div className="flex items-center justify-center py-12">
                       <div className="text-center">
@@ -559,48 +576,50 @@ const Reading = () => {
                       </div>
                     </div>
                   ) : verses.length > 0 ? (
-                    verses.map((verse) => {
-                      const highlightColor = getHighlightColor(verse.number);
-                      const bookmarked = isBookmarked(verse.number);
-                      return (
-                        <span
-                          key={verse.number}
-                          className={`
-                            relative inline-block p-1 rounded transition-all cursor-pointer
-                            ${highlightColor ? highlightColor.bg : 'hover:bg-muted/30'}
-                            ${selectedVerse === verse.number ? 'ring-2 ring-primary' : ''}
-                          `}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleVerseClick(verse.number);
-                          }}
-                        >
-                          <sup className="font-bold text-primary mr-1">{verse.number}</sup>
-                          {bookmarked && <Bookmark className="w-3 h-3 inline-block mr-1 fill-primary text-primary" />}
-                          {verse.text}{' '}
+                    <>
+                      <div
+                        className={`
+                          flex-1 p-6 rounded-lg transition-all cursor-pointer
+                          ${getHighlightColor(verses[currentVerseIndex].number) ? getHighlightColor(verses[currentVerseIndex].number)!.bg : 'hover:bg-muted/30'}
+                          ${selectedVerse === verses[currentVerseIndex].number ? 'ring-2 ring-primary' : ''}
+                        `}
+                        style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVerseClick(verses[currentVerseIndex].number);
+                        }}
+                      >
+                        <div className="text-center space-y-4">
+                          <div>
+                            <sup className="font-bold text-primary text-xl mr-2">{verses[currentVerseIndex].number}</sup>
+                            {isBookmarked(verses[currentVerseIndex].number) && (
+                              <Bookmark className="w-4 h-4 inline-block mr-2 fill-primary text-primary" />
+                            )}
+                          </div>
+                          <p className="leading-relaxed">{verses[currentVerseIndex].text}</p>
                           
-                          {selectedVerse === verse.number && (
-                            <span className="inline-flex gap-1 ml-2">
+                          {selectedVerse === verses[currentVerseIndex].number && (
+                            <div className="flex justify-center gap-2 mt-4">
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="h-6 px-2"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  toggleBookmark(verse.number);
+                                  toggleBookmark(verses[currentVerseIndex].number);
                                 }}
                               >
-                                <Bookmark className={`w-3 h-3 ${bookmarked ? 'fill-current' : ''}`} />
+                                <Bookmark className={`w-4 h-4 mr-2 ${isBookmarked(verses[currentVerseIndex].number) ? 'fill-current' : ''}`} />
+                                {isBookmarked(verses[currentVerseIndex].number) ? 'Remove Bookmark' : 'Bookmark'}
                               </Button>
                               <Popover>
                                 <PopoverTrigger asChild>
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="h-6 px-2"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Highlighter className="w-3 h-3" />
+                                    <Highlighter className="w-4 h-4 mr-2" />
+                                    Highlight
                                   </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-48 p-2" onClick={(e) => e.stopPropagation()}>
@@ -612,14 +631,14 @@ const Reading = () => {
                                         className="w-full justify-start"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          toggleHighlight(verse.number, color.value);
+                                          toggleHighlight(verses[currentVerseIndex].number, color.value);
                                         }}
                                       >
                                         <div className={`w-4 h-4 rounded mr-2 ${color.bg}`}></div>
                                         {color.name}
                                       </Button>
                                     ))}
-                                    {highlightColor && (
+                                    {getHighlightColor(verses[currentVerseIndex].number) && (
                                       <>
                                         <div className="border-t my-2"></div>
                                         <Button
@@ -627,7 +646,7 @@ const Reading = () => {
                                           className="w-full justify-start text-destructive"
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            toggleHighlight(verse.number, highlightColor.value);
+                                            toggleHighlight(verses[currentVerseIndex].number, getHighlightColor(verses[currentVerseIndex].number)!.value);
                                           }}
                                         >
                                           Remove Highlight
@@ -637,11 +656,38 @@ const Reading = () => {
                                   </div>
                                 </PopoverContent>
                               </Popover>
-                            </span>
+                            </div>
                           )}
+                        </div>
+                      </div>
+                      
+                      {/* Verse Navigation */}
+                      <div className="flex items-center justify-between pt-4 border-t">
+                        <Button
+                          variant="outline"
+                          onClick={handlePrevVerse}
+                          disabled={currentVerseIndex === 0 && chapter === 1}
+                          size="sm"
+                        >
+                          <ChevronLeft className="w-4 h-4 mr-2" />
+                          Previous
+                        </Button>
+                        
+                        <span className="text-sm text-muted-foreground">
+                          Verse {currentVerseIndex + 1} of {verses.length}
                         </span>
-                      );
-                    })
+                        
+                        <Button
+                          variant="outline"
+                          onClick={handleNextVerse}
+                          disabled={currentVerseIndex === verses.length - 1 && chapter === totalChapters}
+                          size="sm"
+                        >
+                          Next
+                          <ChevronRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </div>
+                    </>
                   ) : (
                     <div className="text-center py-12 text-muted-foreground">
                       <BookMarked className="w-12 h-12 mx-auto mb-4 opacity-50" />
