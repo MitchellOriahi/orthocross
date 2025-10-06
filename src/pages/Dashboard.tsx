@@ -9,6 +9,7 @@ import { Journal } from "@/components/Journal";
 import { VerseOfTheDay } from "@/components/VerseOfTheDay";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
+import { StreakMilestoneShare } from "@/components/StreakMilestoneShare";
 import { Settings as SettingsIcon, BookOpen, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,6 +27,8 @@ const Dashboard = () => {
   const [loadingReading, setLoadingReading] = useState(true);
   const [guardianAngelResult, setGuardianAngelResult] = useState<GuardianAngelResult | null>(null);
   const [showGuardianAngelDialog, setShowGuardianAngelDialog] = useState(false);
+  const [showMilestoneDialog, setShowMilestoneDialog] = useState(false);
+  const [milestoneStreak, setMilestoneStreak] = useState(0);
   const [lastReading, setLastReading] = useState<{
     title: string;
     passage: string;
@@ -82,6 +85,20 @@ const Dashboard = () => {
     
     if (data) {
       setStreakDays(data.current_streak);
+      
+      // Check if this is a milestone (every 25 days)
+      const currentStreak = data.current_streak;
+      if (currentStreak > 0 && currentStreak % 25 === 0) {
+        // Check if we've already shown this milestone
+        const lastShownMilestone = localStorage.getItem(`milestone_shown_${user.id}`);
+        const lastShown = lastShownMilestone ? parseInt(lastShownMilestone) : 0;
+        
+        if (currentStreak > lastShown) {
+          setMilestoneStreak(currentStreak);
+          setShowMilestoneDialog(true);
+          localStorage.setItem(`milestone_shown_${user.id}`, currentStreak.toString());
+        }
+      }
     }
   };
 
@@ -394,6 +411,13 @@ const Dashboard = () => {
           remainingPercentage={guardianAngelResult.remainingPercentage}
         />
       )}
+
+      {/* Streak Milestone Dialog */}
+      <StreakMilestoneShare
+        open={showMilestoneDialog}
+        onOpenChange={setShowMilestoneDialog}
+        streakDays={milestoneStreak}
+      />
     </div>
   );
 };
