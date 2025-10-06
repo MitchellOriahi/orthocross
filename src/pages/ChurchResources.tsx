@@ -375,7 +375,14 @@ const ChurchResources = () => {
                     {[...prayersContent]
                       .filter((prayer) => {
                         if (prayerFilter === "all") return true;
-                        return prayer.tradition.includes(prayerFilter);
+                        // For specific filters, only show exact matches or shared prayers
+                        if (prayerFilter === "Eastern") {
+                          return prayer.tradition === "Eastern" || prayer.tradition === "Eastern/Oriental";
+                        }
+                        if (prayerFilter === "Oriental") {
+                          return prayer.tradition === "Oriental" || prayer.tradition === "Eastern/Oriental";
+                        }
+                        return false;
                       })
                       .sort((a, b) => {
                         const aIsPinned = pinnedPrayerIds.has(a.id);
@@ -386,6 +393,12 @@ const ChurchResources = () => {
                       })
                       .map((prayer) => {
                         const isPinned = pinnedPrayerIds.has(prayer.id);
+                        // Adjust tradition display based on active filter
+                        const displayTradition = prayerFilter === "all" 
+                          ? prayer.tradition 
+                          : prayer.tradition === "Eastern/Oriental" 
+                            ? prayerFilter 
+                            : prayer.tradition;
                         return (
                           <div key={prayer.id} className="relative group">
                             <button
@@ -396,9 +409,9 @@ const ChurchResources = () => {
                             >
                               <div className="absolute top-2 right-2 flex items-center gap-2">
                                 <div className="text-xs px-2 py-1 rounded-md bg-primary/10 font-medium">
-                                  {prayer.tradition === "Oriental" && <span className="text-orange-500">Oriental</span>}
-                                  {prayer.tradition === "Eastern" && <span className="text-blue-500">Eastern</span>}
-                                  {prayer.tradition === "Eastern/Oriental" && (
+                                  {displayTradition === "Oriental" && <span className="text-orange-500">Oriental</span>}
+                                  {displayTradition === "Eastern" && <span className="text-blue-500">Eastern</span>}
+                                  {displayTradition === "Eastern/Oriental" && (
                                     <>
                                       <span className="text-blue-500">Eastern</span>
                                       <span className="text-primary">/</span>
