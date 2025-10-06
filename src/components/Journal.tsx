@@ -278,7 +278,13 @@ export const Journal = () => {
     <>
       <Card 
         className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
-        onClick={() => !isFullScreen && setIsFullScreen(true)}
+        onClick={() => {
+          if (!isFullScreen) {
+            setSelectedNoteId(null);
+            setShowNotesList(true);
+            setIsFullScreen(true);
+          }
+        }}
       >
         <div className="h-[200px] p-4 flex flex-col">
           {hasContent ? (
