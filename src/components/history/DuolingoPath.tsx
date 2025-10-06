@@ -1,4 +1,4 @@
-import { Shield, Flame, Circle } from "lucide-react";
+import { Flame, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -154,13 +154,8 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                         <div className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 whitespace-nowrap">
                           {extractTimeframe(island.title) || `Island ${index + 1}`}
                         </div>
-                        <h3 className="text-sm sm:text-base md:text-lg font-bold mb-3">{removeTimeframe(island.title)}</h3>
+                        <h3 className="text-base sm:text-lg md:text-xl font-bold">{removeTimeframe(island.title)}</h3>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                      <Shield className="w-4 h-4" />
-                      <span className="capitalize">{island.awardPiece.replace(/_/g, ' ')}</span>
                     </div>
 
                     <Button

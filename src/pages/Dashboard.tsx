@@ -84,15 +84,15 @@ const Dashboard = () => {
       .maybeSingle();
     
     if (data) {
-      setStreakDays(data.current_streak);
-      
-      // Check if this is a milestone (every 25 days)
       const currentStreak = data.current_streak;
+      setStreakDays(currentStreak);
+      
+      // Check if this is a milestone (increases by 25 days)
       if (currentStreak > 0 && currentStreak % 25 === 0) {
-        // Check if we've already shown this milestone
         const lastShownMilestone = localStorage.getItem(`milestone_shown_${user.id}`);
         const lastShown = lastShownMilestone ? parseInt(lastShownMilestone) : 0;
         
+        // Only show if this specific milestone hasn't been shown before
         if (currentStreak > lastShown) {
           setMilestoneStreak(currentStreak);
           setShowMilestoneDialog(true);
