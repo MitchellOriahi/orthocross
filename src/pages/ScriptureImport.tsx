@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowLeft, Download, BookOpen } from "lucide-react";
+import { ArrowLeft, Download, BookOpen, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -54,6 +54,68 @@ export default function ScriptureImport() {
     }
   };
 
+  const handleZipUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsImporting(true);
+    setProgress([`📦 Uploading and processing ${file.name}...`]);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-zip-upload`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.error) throw new Error(data.error);
+
+      if (data.success) {
+        setProgress(prev => [
+          ...prev,
+          `✅ Successfully imported ${data.totalVerses} verses`,
+          `📚 Processed books: ${data.processedBooks.join(', ')}`
+        ]);
+        toast({
+          title: "Import Successful",
+          description: `Imported ${data.totalVerses} verses from ${data.processedBooks.length} books!`,
+        });
+      } else {
+        setProgress(prev => [
+          ...prev,
+          `⚠️ Partial success: ${data.totalVerses} verses imported`,
+          ...data.errors.map((e: string) => `❌ ${e}`)
+        ]);
+        toast({
+          title: "Partial Import",
+          description: "Some books failed to import. Check the log.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      setProgress(prev => [...prev, `❌ Upload failed: ${message}`]);
+      toast({
+        title: "Upload Failed",
+        description: message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsImporting(false);
+      e.target.value = '';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
@@ -85,42 +147,59 @@ export default function ScriptureImport() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <h3 className="font-semibold">Books to be imported:</h3>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground grid grid-cols-2 gap-2">
-                  <li>Tobit</li>
-                  <li>Judith</li>
-                  <li>Wisdom of Solomon</li>
-                  <li>Sirach (Ecclesiasticus)</li>
-                  <li>Baruch</li>
-                  <li>1-4 Maccabees</li>
-                  <li>Prayer of Manasseh</li>
-                  <li>Psalm 151</li>
-                  <li>1 Esdras</li>
-                  <li>Prayer of Azariah</li>
-                  <li>Susanna</li>
-                  <li>Bel and the Dragon</li>
-                  <li>1 Enoch</li>
-                  <li>Jubilees</li>
-                  <li>4 Baruch</li>
-                </ul>
+              <div className="space-y-4">
+                <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
+                  <input
+                    type="file"
+                    accept=".zip"
+                    onChange={handleZipUpload}
+                    disabled={isImporting}
+                    className="hidden"
+                    id="zip-upload"
+                  />
+                  <label htmlFor="zip-upload" className="cursor-pointer">
+                    <div className="space-y-3">
+                      <Upload className="w-12 h-12 mx-auto text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">
+                          {isImporting ? 'Processing...' : 'Upload ZIP Bundle'}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Click to select Orthodox scripture bundle (ZIP format)
+                        </p>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or use API (placeholder)
+                    </span>
+                  </div>
+                </div>
+
+                <Button 
+                  onClick={handleImportAll} 
+                  disabled={isImporting}
+                  variant="outline"
+                  className="w-full"
+                  size="lg"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  {isImporting ? "Importing..." : "Import from API"}
+                </Button>
               </div>
 
               <Alert>
                 <AlertDescription>
-                  All texts are sourced from authenticated public domain translations.
+                  Upload a ZIP file containing JSON files with Orthodox scripture texts.
                 </AlertDescription>
               </Alert>
-
-              <Button 
-                onClick={handleImportAll} 
-                disabled={isImporting}
-                className="w-full"
-                size="lg"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                {isImporting ? "Importing..." : "Import All Orthodox Books"}
-              </Button>
 
               {progress.length > 0 && (
                 <div className="space-y-2">
