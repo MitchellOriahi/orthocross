@@ -58,8 +58,9 @@ serve(async (req) => {
         try {
           const result = await importOrthodoxBook(bookSlug, supabaseClient);
           totalVerses += result.versesImported;
-        } catch (error) {
-          errors.push(`${bookSlug}: ${error.message}`);
+        } catch (err) {
+          const errorMessage = err instanceof Error ? err.message : String(err);
+          errors.push(`${bookSlug}: ${errorMessage}`);
         }
       }
       
@@ -78,9 +79,10 @@ serve(async (req) => {
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
