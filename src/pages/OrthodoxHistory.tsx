@@ -14,6 +14,7 @@ import { IslandDetail } from "@/components/history/IslandDetail";
 import { AvatarCustomizer } from "@/components/history/AvatarCustomizer";
 import { DuolingoPath } from "@/components/history/DuolingoPath";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CampaignCompletionModal } from "@/components/history/CampaignCompletionModal";
 
 interface UserProgress {
   campaignId: string;
@@ -28,6 +29,8 @@ const OrthodoxHistory = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
   const [progress, setProgress] = useState<UserProgress[]>([]);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [completedCampaignType, setCompletedCampaignType] = useState<"eastern" | "oriental" | null>(null);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -75,6 +78,24 @@ const OrthodoxHistory = () => {
 
     await loadProgress();
     setSelectedIsland(null);
+
+    // Check if campaign is completed
+    const campaign = historyContent.campaigns.find(c => c.id === campaignId);
+    if (campaign) {
+      const updatedProgress = await supabase
+        .from('orthodox_history_progress')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('campaign_id', campaignId);
+
+      const completedInCampaign = updatedProgress.data?.filter(p => p.completed).length || 0;
+      
+      if (completedInCampaign === campaign.islands.length) {
+        const campaignType = campaignId === 'eastern-orthodoxy' ? 'eastern' : 'oriental';
+        setCompletedCampaignType(campaignType);
+        setShowCompletionModal(true);
+      }
+    }
   };
 
   const campaign = historyContent.campaigns.find(c => c.id === selectedCampaign);
@@ -152,6 +173,14 @@ const OrthodoxHistory = () => {
       </main>
 
       <BottomNavigation />
+
+      {completedCampaignType && (
+        <CampaignCompletionModal
+          isOpen={showCompletionModal}
+          onClose={() => setShowCompletionModal(false)}
+          campaignType={completedCampaignType}
+        />
+      )}
     </div>
   );
 };
