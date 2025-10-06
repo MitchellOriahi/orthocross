@@ -660,33 +660,6 @@ const Reading = () => {
                           )}
                         </div>
                       </div>
-                      
-                      {/* Verse Navigation */}
-                      <div className="flex items-center justify-between pt-4 border-t">
-                        <Button
-                          variant="outline"
-                          onClick={handlePrevVerse}
-                          disabled={currentVerseIndex === 0 && chapter === 1}
-                          size="sm"
-                        >
-                          <ChevronLeft className="w-4 h-4 mr-2" />
-                          Previous
-                        </Button>
-                        
-                        <span className="text-sm text-muted-foreground">
-                          Verse {currentVerseIndex + 1} of {verses.length}
-                        </span>
-                        
-                        <Button
-                          variant="outline"
-                          onClick={handleNextVerse}
-                          disabled={currentVerseIndex === verses.length - 1 && chapter === totalChapters}
-                          size="sm"
-                        >
-                          Next
-                          <ChevronRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      </div>
                     </>
                   ) : (
                     <div className="text-center py-12 text-muted-foreground">
