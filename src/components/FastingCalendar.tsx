@@ -286,7 +286,7 @@ export const FastingCalendar = () => {
           <RadioGroup
             value={selectedTradition}
             onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
-            className="flex flex-wrap gap-4 justify-center"
+            className="flex gap-2 justify-center"
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Eastern Orthodox" id="eastern" />
