@@ -295,7 +295,6 @@ export type Database = {
           fasting_notifications_enabled: boolean | null
           id: string
           journal_view_mode: string | null
-          phone_number: string | null
           streak_notifications_enabled: boolean | null
           updated_at: string
         }
@@ -304,7 +303,6 @@ export type Database = {
           fasting_notifications_enabled?: boolean | null
           id: string
           journal_view_mode?: string | null
-          phone_number?: string | null
           streak_notifications_enabled?: boolean | null
           updated_at?: string
         }
@@ -313,7 +311,6 @@ export type Database = {
           fasting_notifications_enabled?: boolean | null
           id?: string
           journal_view_mode?: string | null
-          phone_number?: string | null
           streak_notifications_enabled?: boolean | null
           updated_at?: string
         }
@@ -407,6 +404,30 @@ export type Database = {
           outfit_palette?: string
           skin_tone?: string
           total_xp?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_phone_numbers: {
+        Row: {
+          created_at: string
+          id: string
+          phone_number: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          phone_number: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          phone_number?: string
           updated_at?: string
           user_id?: string
         }

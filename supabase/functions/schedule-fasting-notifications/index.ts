@@ -25,10 +25,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Checking fasting reminders for date:', todayStr);
 
-    // Get all reminders for today
+    // Get all reminders for today with phone numbers from secure table
     const { data: reminders, error: remindersError } = await supabase
       .from("fasting_reminders")
-      .select("*, profiles!inner(phone_number)")
+      .select("*, user_phone_numbers!inner(phone_number)")
       .eq("event_date", todayStr);
 
     if (remindersError) {
@@ -49,9 +49,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Send SMS to all users with reminders
     const notifications = [];
     for (const reminder of reminders) {
-      const profile = reminder.profiles as any;
+      const phoneData = reminder.user_phone_numbers as any;
       
-      if (!profile?.phone_number) {
+      if (!phoneData?.phone_number) {
         console.log(`User ${reminder.user_id} has no phone number, skipping`);
         continue;
       }
@@ -60,13 +60,13 @@ const handler = async (req: Request): Promise<Response> => {
         ? `🕊️ ${reminder.event_name} begins today (${reminder.event_tradition}). Remember to observe the fast.`
         : `✨ Today is ${reminder.event_name} (${reminder.event_tradition}). May you have a blessed feast day!`;
 
-      console.log(`Sending SMS to ${profile.phone_number} for event: ${reminder.event_name}`);
+      console.log(`Sending SMS to ${phoneData.phone_number} for event: ${reminder.event_name}`);
 
       // Call the SMS function
       try {
         const smsResponse = await supabase.functions.invoke('send-sms-notification', {
           body: {
-            to: profile.phone_number,
+            to: phoneData.phone_number,
             message: message,
           },
         });

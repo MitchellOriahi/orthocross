@@ -91,7 +91,7 @@ const Auth = () => {
     }
 
     setLoading(true);
-    const { error } = await signUp(email, password, phoneNumber);
+    const { error } = await signUp(email, password);
     
     if (error) {
       toast({
@@ -100,15 +100,36 @@ const Auth = () => {
         description: error.message,
       });
       setLoading(false);
-    } else {
-      toast({
-        title: 'Account Created',
-        description: 'Welcome to OrthoCross App!',
-      });
-      setLoading(false);
-      // Show notification preference dialogs
-      setShowFastingDialog(true);
+      return;
     }
+
+    // Store phone number in secure table (only accessible by edge functions)
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { error: phoneError } = await supabase
+        .from('user_phone_numbers')
+        .insert({
+          user_id: user.id,
+          phone_number: phoneNumber
+        });
+
+      if (phoneError) {
+        console.error('Error storing phone number:', phoneError);
+        toast({
+          variant: 'destructive',
+          title: 'Warning',
+          description: 'Account created but phone number not saved. Please contact support.',
+        });
+      }
+    }
+
+    toast({
+      title: 'Account Created',
+      description: 'Welcome to OrthoCross App!',
+    });
+    setLoading(false);
+    // Show notification preference dialogs
+    setShowFastingDialog(true);
   };
 
   const handleFastingResponse = async (enabled: boolean) => {
