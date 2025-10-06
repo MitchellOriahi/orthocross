@@ -46,7 +46,6 @@ export const Journal = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [showNotesList, setShowNotesList] = useState(true);
-  const [viewMode, setViewMode] = useState<"list" | "pinned">("list");
   
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
@@ -227,12 +226,29 @@ export const Journal = () => {
     const note = notes.find(n => n.id === noteId);
     if (!note) return;
 
+    // If pinning, unpin all other notes first
+    if (!note.pinned) {
+      const currentlyPinnedNote = notes.find(n => n.pinned);
+      if (currentlyPinnedNote) {
+        await (supabase as any)
+          .from('journal_entries')
+          .update({ pinned: false })
+          .eq('id', currentlyPinnedNote.id);
+      }
+    }
+
     await (supabase as any)
       .from('journal_entries')
       .update({ pinned: !note.pinned })
       .eq('id', noteId);
 
-    setNotes(notes.map(n => n.id === noteId ? { ...n, pinned: !n.pinned } : n));
+    setNotes(notes.map(n => 
+      n.id === noteId ? { ...n, pinned: !n.pinned } : { ...n, pinned: false }
+    ));
+
+    toast({ 
+      title: !note.pinned ? "Note pinned as journal cover" : "Note unpinned"
+    });
   };
 
   const filteredNotes = notes.filter(note => {
@@ -261,7 +277,7 @@ export const Journal = () => {
     <>
       <Card 
         className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
-        onClick={() => !isFullScreen && handleNoteCreate()}
+        onClick={() => !isFullScreen && setIsFullScreen(true)}
       >
         <div className="h-[200px] p-4 flex flex-col">
           {hasContent ? (
@@ -363,8 +379,6 @@ export const Journal = () => {
                     onNotePin={handleNotePin}
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
-                    viewMode={viewMode}
-                    onViewModeChange={setViewMode}
                   />
                 </div>
               )}

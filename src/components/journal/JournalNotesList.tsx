@@ -2,8 +2,6 @@ import { Plus, Search, Trash2, Pin, PinOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -24,8 +22,6 @@ interface JournalNotesListProps {
   onNotePin: (noteId: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  viewMode: "list" | "pinned";
-  onViewModeChange: (mode: "list" | "pinned") => void;
 }
 
 export const JournalNotesList = ({
@@ -37,8 +33,6 @@ export const JournalNotesList = ({
   onNotePin,
   searchQuery,
   onSearchChange,
-  viewMode,
-  onViewModeChange,
 }: JournalNotesListProps) => {
   const getPreviewText = (note: JournalNote) => {
     const title = note.title || "Untitled";
@@ -50,7 +44,7 @@ export const JournalNotesList = ({
   const pinnedNotes = notes.filter(n => n.pinned);
   const unpinnedNotes = notes.filter(n => !n.pinned);
 
-  const renderNoteCard = (note: JournalNote, showTimestamp: boolean = true) => {
+  const renderNoteCard = (note: JournalNote) => {
     const { title, preview } = getPreviewText(note);
     return (
       <div
@@ -70,11 +64,9 @@ export const JournalNotesList = ({
           <div className="text-xs text-muted-foreground line-clamp-2 mb-1">
             {preview}
           </div>
-          {showTimestamp && (
-            <div className="text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(note.updated_at), { addSuffix: true })}
-            </div>
-          )}
+          <div className="text-xs text-muted-foreground">
+            {formatDistanceToNow(new Date(note.updated_at), { addSuffix: true })}
+          </div>
         </button>
         <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
@@ -131,43 +123,33 @@ export const JournalNotesList = ({
             className="pl-7 h-8 text-sm"
           />
         </div>
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="view-mode"
-            checked={viewMode === "pinned"}
-            onCheckedChange={(checked) => onViewModeChange(checked ? "pinned" : "list")}
-          />
-          <Label htmlFor="view-mode" className="text-xs">Show pinned section</Label>
-        </div>
       </div>
 
       <ScrollArea className="flex-1">
         <div className="p-2 space-y-1">
           {notes.length === 0 ? (
             <div className="text-center py-8 text-sm text-muted-foreground">
-              No notes yet
+              Click + to create your first note
             </div>
-          ) : viewMode === "pinned" ? (
+          ) : (
             <>
               {pinnedNotes.length > 0 && (
                 <div className="mb-4">
-                  <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">Pinned</h4>
+                  <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">Journal Cover</h4>
                   <div className="space-y-1">
-                    {pinnedNotes.map((note) => renderNoteCard(note, false))}
+                    {pinnedNotes.map((note) => renderNoteCard(note))}
                   </div>
                 </div>
               )}
               {unpinnedNotes.length > 0 && (
                 <div>
-                  <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">Notes</h4>
+                  <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">All Notes</h4>
                   <div className="space-y-1">
-                    {unpinnedNotes.map((note) => renderNoteCard(note, true))}
+                    {unpinnedNotes.map((note) => renderNoteCard(note))}
                   </div>
                 </div>
               )}
             </>
-          ) : (
-            notes.map((note) => renderNoteCard(note, true))
           )}
         </div>
       </ScrollArea>
