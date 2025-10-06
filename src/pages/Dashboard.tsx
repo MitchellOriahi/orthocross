@@ -52,110 +52,110 @@ const Dashboard = () => {
     };
     
     checkAndPopulate();
-    
-    const fetchStreak = async () => {
-      if (!user) return;
-      
-      const { data } = await supabase
-        .from('user_streaks')
-        .select('current_streak')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      
-      if (data) {
-        setStreakDays(data.current_streak);
-      }
-    };
-
-    const fetchLastReading = async () => {
-      if (!user) return;
-
-      setLoadingReading(true);
-      
-      // Check if user has any completed chapters
-      const { data: anyCompleted, count } = await supabase
-        .from('completed_chapters')
-        .select('*', { count: 'exact', head: false })
-        .eq('user_id', user.id)
-        .limit(1);
-      
-      setHasAnyProgress((count ?? 0) > 0);
-
-      // Get the most recent completed chapter
-      const { data: lastCompleted } = await supabase
-        .from('completed_chapters')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('completed_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (lastCompleted) {
-        const bookKey = lastCompleted.book_key;
-        const lastChapter = lastCompleted.chapter;
-        const nextChapter = lastChapter + 1;
-
-        // Import book info to get total chapters and book name
-        const { BIBLE_BOOKS } = await import('@/data/bibleContent');
-        const bookInfo = BIBLE_BOOKS.find(b => b.title === bookKey);
-        const totalChapters = bookInfo?.totalChapters || 1;
-        const bookName = bookInfo?.bookName || bookKey;
-
-        // Get all completed chapters for this book to calculate book progress
-        const { data: completedInBook } = await supabase
-          .from('completed_chapters')
-          .select('chapter')
-          .eq('user_id', user.id)
-          .eq('book_key', bookKey);
-
-        const completedChaptersCount = completedInBook?.length || 0;
-        const bookProgressPercentage = Math.round((completedChaptersCount / totalChapters) * 100);
-
-        // Get progress for the next chapter (current reading position)
-        const { data: chapterProgress } = await supabase
-          .from('reading_progress')
-          .select('progress')
-          .eq('user_id', user.id)
-          .eq('book_key', bookKey)
-          .eq('current_chapter', nextChapter)
-          .maybeSingle();
-
-        const currentProgress = chapterProgress?.progress || 0;
-
-        setLastReading({
-          title: bookName,
-          passage: `${bookName} ${nextChapter}`,
-          progress: currentProgress,
-          bookKey: bookKey,
-          chapter: nextChapter,
-          totalChapters: totalChapters,
-          bookProgress: bookProgressPercentage
-        });
-      } else {
-        // No completed chapters, set default
-        setLastReading({
-          title: "Gospel of John",
-          passage: "John 1",
-          progress: 0,
-          bookKey: "John",
-          chapter: 1,
-          totalChapters: 21,
-          bookProgress: 0
-        });
-      }
-      
-      setLoadingReading(false);
-    };
-
     fetchStreak();
     fetchLastReading();
   }, [user]);
+
+  const fetchStreak = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from('user_streaks')
+      .select('current_streak')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    
+    if (data) {
+      setStreakDays(data.current_streak);
+    }
+  };
+
+  const fetchLastReading = async () => {
+    if (!user) return;
+
+    setLoadingReading(true);
+    
+    // Check if user has any completed chapters
+    const { data: anyCompleted, count } = await supabase
+      .from('completed_chapters')
+      .select('*', { count: 'exact', head: false })
+      .eq('user_id', user.id)
+      .limit(1);
+    
+    setHasAnyProgress((count ?? 0) > 0);
+
+    // Get the most recent completed chapter
+    const { data: lastCompleted } = await supabase
+      .from('completed_chapters')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('completed_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (lastCompleted) {
+      const bookKey = lastCompleted.book_key;
+      const lastChapter = lastCompleted.chapter;
+      const nextChapter = lastChapter + 1;
+
+      // Import book info to get total chapters and book name
+      const { BIBLE_BOOKS } = await import('@/data/bibleContent');
+      const bookInfo = BIBLE_BOOKS.find(b => b.title === bookKey);
+      const totalChapters = bookInfo?.totalChapters || 1;
+      const bookName = bookInfo?.bookName || bookKey;
+
+      // Get all completed chapters for this book to calculate book progress
+      const { data: completedInBook } = await supabase
+        .from('completed_chapters')
+        .select('chapter')
+        .eq('user_id', user.id)
+        .eq('book_key', bookKey);
+
+      const completedChaptersCount = completedInBook?.length || 0;
+      const bookProgressPercentage = Math.round((completedChaptersCount / totalChapters) * 100);
+
+      // Get progress for the next chapter (current reading position)
+      const { data: chapterProgress } = await supabase
+        .from('reading_progress')
+        .select('progress')
+        .eq('user_id', user.id)
+        .eq('book_key', bookKey)
+        .eq('current_chapter', nextChapter)
+        .maybeSingle();
+
+      const currentProgress = chapterProgress?.progress || 0;
+
+      setLastReading({
+        title: bookName,
+        passage: `${bookName} ${nextChapter}`,
+        progress: currentProgress,
+        bookKey: bookKey,
+        chapter: nextChapter,
+        totalChapters: totalChapters,
+        bookProgress: bookProgressPercentage
+      });
+    } else {
+      // No completed chapters, set default
+      setLastReading({
+        title: "Gospel of John",
+        passage: "John 1",
+        progress: 0,
+        bookKey: "John",
+        chapter: 1,
+        totalChapters: 21,
+        bookProgress: 0
+      });
+    }
+    
+    setLoadingReading(false);
+  };
 
   // Reload data when page becomes visible
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden && user) {
-        const fetchLastReading = async () => {
+        fetchStreak();
+        const fetchLastReadingOnVisibility = async () => {
           // Check if user has any completed chapters
           const { data: anyCompleted, count } = await supabase
             .from('completed_chapters')
@@ -226,7 +226,7 @@ const Dashboard = () => {
           }
         };
 
-        fetchLastReading();
+        fetchLastReadingOnVisibility();
       }
     };
 
@@ -246,7 +246,7 @@ const Dashboard = () => {
               </div>
               <h1 className="text-2xl font-bold">Dashboard</h1>
             </div>
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-2 mr-2">
               <Button variant="ghost" size="icon" onClick={() => navigate('/home')}>
                 <Home className="w-5 h-5" />
               </Button>

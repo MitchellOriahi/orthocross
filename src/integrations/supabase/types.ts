@@ -360,6 +360,7 @@ export type Database = {
           created_at: string
           current_streak: number
           id: string
+          last_activity_date: string | null
           last_completion_date: string | null
           longest_streak: number
           updated_at: string
@@ -369,6 +370,7 @@ export type Database = {
           created_at?: string
           current_streak?: number
           id?: string
+          last_activity_date?: string | null
           last_completion_date?: string | null
           longest_streak?: number
           updated_at?: string
@@ -378,6 +380,7 @@ export type Database = {
           created_at?: string
           current_streak?: number
           id?: string
+          last_activity_date?: string | null
           last_completion_date?: string | null
           longest_streak?: number
           updated_at?: string

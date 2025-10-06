@@ -364,6 +364,10 @@ const Reading = () => {
           onConflict: 'user_id,book_key,chapter'
         });
       
+      // Update streak immediately after completing activity
+      const { updateUserStreak } = await import('@/utils/streakManager');
+      await updateUserStreak(user.id);
+      
       toast({
         description: "Chapter completed! 🎉",
         duration: 3000, // 3 seconds expiry

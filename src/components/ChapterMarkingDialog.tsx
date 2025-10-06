@@ -92,6 +92,10 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
 
         if (error) throw error;
 
+        // Update streak immediately after completing activity
+        const { updateUserStreak } = await import('@/utils/streakManager');
+        await updateUserStreak(user.id);
+
         setCompletedChapters(prev => {
           const newState = { ...prev };
           if (!newState[bookKey]) {

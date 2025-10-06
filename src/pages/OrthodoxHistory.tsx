@@ -69,6 +69,10 @@ const OrthodoxHistory = () => {
       completed_at: new Date().toISOString()
     });
 
+    // Update streak immediately after completing activity
+    const { updateUserStreak } = await import('@/utils/streakManager');
+    await updateUserStreak(user.id);
+
     await loadProgress();
     setSelectedIsland(null);
   };
@@ -103,7 +107,7 @@ const OrthodoxHistory = () => {
               </div>
               <h1 className="text-2xl font-bold">History</h1>
             </div>
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-2 mr-2">
               <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
                 <Home className="w-5 h-5" />
               </Button>
