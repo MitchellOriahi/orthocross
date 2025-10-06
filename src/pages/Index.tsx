@@ -14,6 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { ChapterMarkingDialog } from "@/components/ChapterMarkingDialog";
+import { BibleProgressTutorial } from "@/components/BibleProgressTutorial";
 
 interface ReadingProgress {
   id: string;
@@ -38,6 +39,7 @@ const Index = () => {
   const [hasScriptureData, setHasScriptureData] = useState(true);
   const [importing, setImporting] = useState(false);
   const [showChapterMarking, setShowChapterMarking] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
@@ -52,10 +54,21 @@ const Index = () => {
       loadBibleCompletion();
       loadBookProgress();
       checkScriptureData();
+      
+      // Check if user has seen the tutorial
+      const hasSeenTutorial = localStorage.getItem("hasSeenBibleProgressTutorial");
+      if (!hasSeenTutorial) {
+        setShowTutorial(true);
+      }
     } else {
       setLoading(false);
     }
   }, [user]);
+
+  const handleTutorialComplete = () => {
+    localStorage.setItem("hasSeenBibleProgressTutorial", "true");
+    setShowTutorial(false);
+  };
 
   const checkScriptureData = async () => {
     try {
@@ -360,6 +373,8 @@ const Index = () => {
                     loadBookProgress();
                   }}
                 />
+
+                {showTutorial && <BibleProgressTutorial onComplete={handleTutorialComplete} />}
 
                 {/* OLD TESTAMENT */}
                 <Card className="border-orange-500/30 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20">
