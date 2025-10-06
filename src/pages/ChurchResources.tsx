@@ -372,7 +372,7 @@ const ChurchResources = () => {
       <main className="container mx-auto px-4 py-2">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-0 mb-4">
-            <div className="w-32 h-32 mx-auto relative mb-0">
+            <div className="w-36 h-36 mx-auto relative mb-0">
               <img 
                 src={orthodoxCrossBlack} 
                 alt="Orthodox Cross" 
