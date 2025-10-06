@@ -319,6 +319,33 @@ export type Database = {
         }
         Relationships: []
       }
+      verse_bookmarks: {
+        Row: {
+          chapter: number
+          created_at: string
+          id: string
+          scripture_title: string
+          user_id: string
+          verse_number: number
+        }
+        Insert: {
+          chapter: number
+          created_at?: string
+          id?: string
+          scripture_title: string
+          user_id: string
+          verse_number: number
+        }
+        Update: {
+          chapter?: number
+          created_at?: string
+          id?: string
+          scripture_title?: string
+          user_id?: string
+          verse_number?: number
+        }
+        Relationships: []
+      }
       verse_highlights: {
         Row: {
           chapter: number

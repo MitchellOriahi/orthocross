@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Scroll, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter } from "lucide-react";
+import { ArrowLeft, Scroll, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter, BookOpen, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -17,6 +17,11 @@ interface VerseHighlight {
   id: string;
   verse_number: number;
   highlight_color: string;
+}
+
+interface VerseBookmark {
+  id: string;
+  verse_number: number;
 }
 
 const HIGHLIGHT_COLORS = [
@@ -44,6 +49,7 @@ const Reading = () => {
   const [chapter, setChapter] = useState(initialChapter);
   const [readingMode, setReadingMode] = useState<"scroll" | "page">("scroll");
   const [highlights, setHighlights] = useState<VerseHighlight[]>([]);
+  const [bookmarks, setBookmarks] = useState<VerseBookmark[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState('yellow');
   const [progress, setProgress] = useState(0);
@@ -90,6 +96,7 @@ const Reading = () => {
   useEffect(() => {
     if (user) {
       loadHighlights();
+      loadBookmarks();
       loadProgress();
     }
   }, [user, book, chapter]);
@@ -107,6 +114,22 @@ const Reading = () => {
       setHighlights(data || []);
     } catch (error) {
       console.error('Error loading highlights:', error);
+    }
+  };
+
+  const loadBookmarks = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('verse_bookmarks')
+        .select('*')
+        .eq('user_id', user?.id)
+        .eq('scripture_title', book)
+        .eq('chapter', chapter);
+
+      if (error) throw error;
+      setBookmarks(data || []);
+    } catch (error) {
+      console.error('Error loading bookmarks:', error);
     }
   };
 
@@ -281,9 +304,53 @@ const Reading = () => {
     }
   };
 
+  const toggleBookmark = async (verseNumber: number) => {
+    if (!user) return;
+
+    const existingBookmark = bookmarks.find(b => b.verse_number === verseNumber);
+
+    try {
+      if (existingBookmark) {
+        const { error } = await supabase
+          .from('verse_bookmarks')
+          .delete()
+          .eq('id', existingBookmark.id);
+
+        if (error) throw error;
+        setBookmarks(bookmarks.filter(b => b.verse_number !== verseNumber));
+        toast({ description: "Bookmark removed" });
+      } else {
+        const { data, error } = await supabase
+          .from('verse_bookmarks')
+          .insert({
+            user_id: user.id,
+            scripture_title: book,
+            chapter: chapter,
+            verse_number: verseNumber,
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        setBookmarks([...bookmarks, data]);
+        toast({ description: "Verse bookmarked" });
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      toast({ 
+        description: "Failed to update bookmark", 
+        variant: "destructive" 
+      });
+    }
+  };
+
   const getHighlightColor = (verseNumber: number) => {
     const highlight = highlights.find(h => h.verse_number === verseNumber);
     return highlight ? HIGHLIGHT_COLORS.find(c => c.value === highlight.highlight_color) : null;
+  };
+
+  const isBookmarked = (verseNumber: number) => {
+    return bookmarks.some(b => b.verse_number === verseNumber);
   };
 
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -357,7 +424,7 @@ const Reading = () => {
                 onClick={() => setReadingMode("page")}
                 className="text-xs sm:text-sm"
               >
-                <BookMarked className="w-4 h-4 sm:mr-2" />
+                <BookOpen className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">Page</span>
               </Button>
             </div>
@@ -392,6 +459,7 @@ const Reading = () => {
                   ) : verses.length > 0 ? (
                     verses.map((verse) => {
                       const highlightColor = getHighlightColor(verse.number);
+                      const bookmarked = isBookmarked(verse.number);
                       return (
                         <div
                           key={verse.number}
@@ -406,55 +474,66 @@ const Reading = () => {
                           }}
                         >
                           <span className="font-bold text-primary mr-2">{verse.number}</span>
+                          {bookmarked && <Bookmark className="w-3 h-3 inline-block mr-1 fill-primary text-primary" />}
                           <span>{verse.text}</span>
                           
                           {selectedVerse === verse.number && (
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="absolute right-2 top-2"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <Highlighter className="w-4 h-4 mr-2" />
-                                  Highlight
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-48 p-2" onClick={(e) => e.stopPropagation()}>
-                                <div className="space-y-2">
-                                  {HIGHLIGHT_COLORS.map((color) => (
-                                    <Button
-                                      key={color.value}
-                                      variant="ghost"
-                                      className="w-full justify-start"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleHighlight(verse.number, color.value);
-                                      }}
-                                    >
-                                      <div className={`w-4 h-4 rounded mr-2 ${color.bg}`}></div>
-                                      {color.name}
-                                    </Button>
-                                  ))}
-                                  {highlightColor && (
-                                    <>
-                                      <div className="border-t my-2"></div>
+                            <div className="absolute right-2 top-2 flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleBookmark(verse.number);
+                                }}
+                              >
+                                <Bookmark className={`w-4 h-4 ${bookmarked ? 'fill-current' : ''}`} />
+                              </Button>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <Highlighter className="w-4 h-4" />
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-48 p-2" onClick={(e) => e.stopPropagation()}>
+                                  <div className="space-y-2">
+                                    {HIGHLIGHT_COLORS.map((color) => (
                                       <Button
+                                        key={color.value}
                                         variant="ghost"
-                                        className="w-full justify-start text-destructive"
+                                        className="w-full justify-start"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          toggleHighlight(verse.number, highlightColor.value);
+                                          toggleHighlight(verse.number, color.value);
                                         }}
                                       >
-                                        Remove Highlight
+                                        <div className={`w-4 h-4 rounded mr-2 ${color.bg}`}></div>
+                                        {color.name}
                                       </Button>
-                                    </>
-                                  )}
-                                </div>
-                              </PopoverContent>
-                            </Popover>
+                                    ))}
+                                    {highlightColor && (
+                                      <>
+                                        <div className="border-t my-2"></div>
+                                        <Button
+                                          variant="ghost"
+                                          className="w-full justify-start text-destructive"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleHighlight(verse.number, highlightColor.value);
+                                          }}
+                                        >
+                                          Remove Highlight
+                                        </Button>
+                                      </>
+                                    )}
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
+                            </div>
                           )}
                         </div>
                       );
@@ -469,8 +548,8 @@ const Reading = () => {
                 </div>
               ) : (
                 <div 
+                  className="space-y-4"
                   style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
-                  onClick={handleContentClick}
                 >
                   {loadingVerses ? (
                     <div className="flex items-center justify-center py-12">
@@ -480,17 +559,89 @@ const Reading = () => {
                       </div>
                     </div>
                   ) : verses.length > 0 ? (
-                    <div className="prose prose-lg max-w-none">
-                      <p className="leading-relaxed">
-                        {verses.map((verse, idx) => (
-                          <span key={verse.number}>
-                            <sup className="font-bold text-primary">{verse.number}</sup>
-                            {verse.text}
-                            {idx < verses.length - 1 && ' '}
-                          </span>
-                        ))}
-                      </p>
-                    </div>
+                    verses.map((verse) => {
+                      const highlightColor = getHighlightColor(verse.number);
+                      const bookmarked = isBookmarked(verse.number);
+                      return (
+                        <span
+                          key={verse.number}
+                          className={`
+                            relative inline-block p-1 rounded transition-all cursor-pointer
+                            ${highlightColor ? highlightColor.bg : 'hover:bg-muted/30'}
+                            ${selectedVerse === verse.number ? 'ring-2 ring-primary' : ''}
+                          `}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleVerseClick(verse.number);
+                          }}
+                        >
+                          <sup className="font-bold text-primary mr-1">{verse.number}</sup>
+                          {bookmarked && <Bookmark className="w-3 h-3 inline-block mr-1 fill-primary text-primary" />}
+                          {verse.text}{' '}
+                          
+                          {selectedVerse === verse.number && (
+                            <span className="inline-flex gap-1 ml-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-6 px-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleBookmark(verse.number);
+                                }}
+                              >
+                                <Bookmark className={`w-3 h-3 ${bookmarked ? 'fill-current' : ''}`} />
+                              </Button>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-6 px-2"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <Highlighter className="w-3 h-3" />
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-48 p-2" onClick={(e) => e.stopPropagation()}>
+                                  <div className="space-y-2">
+                                    {HIGHLIGHT_COLORS.map((color) => (
+                                      <Button
+                                        key={color.value}
+                                        variant="ghost"
+                                        className="w-full justify-start"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          toggleHighlight(verse.number, color.value);
+                                        }}
+                                      >
+                                        <div className={`w-4 h-4 rounded mr-2 ${color.bg}`}></div>
+                                        {color.name}
+                                      </Button>
+                                    ))}
+                                    {highlightColor && (
+                                      <>
+                                        <div className="border-t my-2"></div>
+                                        <Button
+                                          variant="ghost"
+                                          className="w-full justify-start text-destructive"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleHighlight(verse.number, highlightColor.value);
+                                          }}
+                                        >
+                                          Remove Highlight
+                                        </Button>
+                                      </>
+                                    )}
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
+                            </span>
+                          )}
+                        </span>
+                      );
+                    })
                   ) : (
                     <div className="text-center py-12 text-muted-foreground">
                       <BookMarked className="w-12 h-12 mx-auto mb-4 opacity-50" />
