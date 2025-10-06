@@ -149,13 +149,11 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                   <div className={`absolute inset-0 bg-gradient-to-br ${themeColors} opacity-30`} />
                   
                   <div className="relative z-10 p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 whitespace-nowrap">
-                          {extractTimeframe(island.title) || `Island ${index + 1}`}
-                        </div>
-                        <h3 className="text-base sm:text-lg md:text-xl font-bold">{removeTimeframe(island.title)}</h3>
+                    <div className="text-center mb-4">
+                      <div className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2">
+                        {extractTimeframe(island.title) || `Island ${index + 1}`}
                       </div>
+                      <h3 className="text-base sm:text-lg md:text-xl font-bold">{removeTimeframe(island.title)}</h3>
                     </div>
 
                     <Button
