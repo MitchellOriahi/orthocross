@@ -323,11 +323,11 @@ const ChurchResources = () => {
                             className="w-full h-full object-cover scale-125"
                           />
                         </div>
-                        <div className="flex-1 min-w-0 pr-2 sm:pr-28">
+                        <div className="flex-1 min-w-0 pr-3 sm:pr-32">
                           <div className="font-semibold text-base truncate sm:whitespace-normal">{saint.name}</div>
                           <div className="text-sm text-muted-foreground mt-1 line-clamp-2">{saint.title}</div>
                         </div>
-                        <div className="absolute top-2 right-2 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-primary/10 text-primary font-medium whitespace-nowrap">
+                        <div className="absolute top-3 right-3 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-primary/10 text-primary font-medium whitespace-nowrap">
                           {saint.tradition === "Oriental" && "Oriental"}
                           {saint.tradition === "Eastern" && "Eastern"}
                           {saint.tradition === "Eastern/Oriental" && "E/O"}
