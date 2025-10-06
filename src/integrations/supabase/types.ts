@@ -238,20 +238,26 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          fasting_notifications_enabled: boolean | null
           id: string
           phone_number: string | null
+          streak_notifications_enabled: boolean | null
           updated_at: string
         }
         Insert: {
           created_at?: string
+          fasting_notifications_enabled?: boolean | null
           id: string
           phone_number?: string | null
+          streak_notifications_enabled?: boolean | null
           updated_at?: string
         }
         Update: {
           created_at?: string
+          fasting_notifications_enabled?: boolean | null
           id?: string
           phone_number?: string | null
+          streak_notifications_enabled?: boolean | null
           updated_at?: string
         }
         Relationships: []

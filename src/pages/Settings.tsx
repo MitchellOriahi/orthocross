@@ -1,24 +1,45 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { useMusic } from "@/contexts/MusicContext";
 import { useNotifications, ReminderTime } from "@/hooks/useNotifications";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 
 const Settings = () => {
   const navigate = useNavigate();
   const { isPlaying, toggleMusic, volume, setVolume } = useMusic();
-  const { updateStreakReminders, getStreakReminders } = useNotifications();
+  const { updateStreakReminders, getStreakReminders, scheduleStreakReminders } = useNotifications();
+  const { user } = useAuth();
   const [reminders, setReminders] = useState<ReminderTime[]>([]);
+  const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(false);
+  const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(false);
 
   useEffect(() => {
     setReminders(getStreakReminders());
+    loadNotificationPreferences();
   }, []);
+
+  const loadNotificationPreferences = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from('profiles')
+      .select('fasting_notifications_enabled, streak_notifications_enabled')
+      .eq('id', user.id)
+      .single();
+    
+    if (data) {
+      setFastingNotificationsEnabled(data.fasting_notifications_enabled || false);
+      setStreakNotificationsEnabled(data.streak_notifications_enabled || false);
+    }
+  };
 
   const handleToggleReminder = async (id: number) => {
     const updated = reminders.map(r => 
@@ -55,6 +76,35 @@ const Settings = () => {
     setReminders(updated);
     await updateStreakReminders(updated);
     toast.success("Reminder deleted");
+  };
+
+  const handleToggleFastingNotifications = async (enabled: boolean) => {
+    if (!user) return;
+    
+    setFastingNotificationsEnabled(enabled);
+    await supabase
+      .from('profiles')
+      .update({ fasting_notifications_enabled: enabled })
+      .eq('id', user.id);
+    
+    toast.success(enabled ? "Fasting notifications enabled" : "Fasting notifications disabled");
+  };
+
+  const handleToggleStreakNotifications = async (enabled: boolean) => {
+    if (!user) return;
+    
+    setStreakNotificationsEnabled(enabled);
+    await supabase
+      .from('profiles')
+      .update({ streak_notifications_enabled: enabled })
+      .eq('id', user.id);
+    
+    if (enabled) {
+      await scheduleStreakReminders();
+      toast.success("Streak notifications enabled");
+    } else {
+      toast.success("Streak notifications disabled");
+    }
   };
 
   return (
@@ -190,6 +240,46 @@ const Settings = () => {
                   Add Reminder
                 </Button>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Notifications Toggle */}
+          <Card className="shadow-elevated">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BellOff className="w-5 h-5 text-primary" />
+                Notification Settings
+              </CardTitle>
+              <CardDescription>
+                Manage all notification preferences
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="font-medium">Fasting Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Get notified about upcoming fasts and feasts
+                  </p>
+                </div>
+                <Switch
+                  checked={fastingNotificationsEnabled}
+                  onCheckedChange={handleToggleFastingNotifications}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1">
+                  <p className="font-medium">Streak Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Get reminders to maintain your reading streak
+                  </p>
+                </div>
+                <Switch
+                  checked={streakNotificationsEnabled}
+                  onCheckedChange={handleToggleStreakNotifications}
+                />
+              </div>
             </CardContent>
           </Card>
 

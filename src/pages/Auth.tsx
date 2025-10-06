@@ -6,7 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useNotifications } from '@/hooks/useNotifications';
+import { supabase } from '@/integrations/supabase/client';
 import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import { z } from 'zod';
 
@@ -18,8 +21,12 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showFastingDialog, setShowFastingDialog] = useState(false);
+  const [showStreakDialog, setShowStreakDialog] = useState(false);
+  const [fastingEnabled, setFastingEnabled] = useState(false);
   const { signIn, signUp, user } = useAuth();
   const { toast } = useToast();
+  const { scheduleStreakReminders } = useNotifications();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,13 +91,42 @@ const Auth = () => {
         title: 'Sign Up Failed',
         description: error.message,
       });
+      setLoading(false);
     } else {
       toast({
         title: 'Account Created',
         description: 'Welcome to OrthoCross App!',
       });
+      setLoading(false);
+      // Show notification preference dialogs
+      setShowFastingDialog(true);
     }
-    setLoading(false);
+  };
+
+  const handleFastingResponse = async (enabled: boolean) => {
+    setFastingEnabled(enabled);
+    setShowFastingDialog(false);
+    setShowStreakDialog(true);
+  };
+
+  const handleStreakResponse = async (enabled: boolean) => {
+    setShowStreakDialog(false);
+    
+    // Update preferences in database
+    if (user) {
+      await supabase
+        .from('profiles')
+        .update({
+          fasting_notifications_enabled: fastingEnabled,
+          streak_notifications_enabled: enabled,
+        })
+        .eq('id', user.id);
+
+      // Schedule streak reminders if enabled
+      if (enabled) {
+        await scheduleStreakReminders();
+      }
+    }
   };
 
   return (
@@ -184,6 +220,46 @@ const Auth = () => {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Fasting Notifications Dialog */}
+      <AlertDialog open={showFastingDialog} onOpenChange={setShowFastingDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Fasting Notifications</AlertDialogTitle>
+            <AlertDialogDescription>
+              Would you like to receive notifications for upcoming fasts and feasts?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={() => handleFastingResponse(false)}>
+              No, thanks
+            </Button>
+            <Button onClick={() => handleFastingResponse(true)}>
+              Yes, enable
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Streak Reminders Dialog */}
+      <AlertDialog open={showStreakDialog} onOpenChange={setShowStreakDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Streak Reminders</AlertDialogTitle>
+            <AlertDialogDescription>
+              Would you like daily reminders to maintain your Bible reading streak?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={() => handleStreakResponse(false)}>
+              No, thanks
+            </Button>
+            <Button onClick={() => handleStreakResponse(true)}>
+              Yes, enable
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
