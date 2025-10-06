@@ -288,15 +288,15 @@ export const FastingCalendar = () => {
             onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
             className="flex flex-col gap-2 items-center"
           >
-            <div className="flex items-center space-x-1.5 sm:space-x-2">
+            <div className="flex items-center space-x-2">
               <RadioGroupItem value="Eastern Orthodox" id="eastern" />
-              <Label htmlFor="eastern" className="cursor-pointer whitespace-nowrap text-xs sm:text-sm">
+              <Label htmlFor="eastern" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
                 ⛪ Eastern Orthodox
               </Label>
             </div>
-            <div className="flex items-center space-x-1.5 sm:space-x-2">
+            <div className="flex items-center space-x-2">
               <RadioGroupItem value="Oriental Orthodox" id="oriental" />
-              <Label htmlFor="oriental" className="cursor-pointer whitespace-nowrap text-xs sm:text-sm">
+              <Label htmlFor="oriental" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
                 ⛪ Oriental Orthodox
               </Label>
             </div>
