@@ -186,14 +186,6 @@ export const JournalNotesList = ({
             >
               <LayoutGrid className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7"
-              onClick={onNoteCreate}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
           </div>
         </div>
         <div className="relative">
@@ -209,9 +201,31 @@ export const JournalNotesList = ({
 
       <ScrollArea className="flex-1">
         <div className={cn("p-2", viewMode === 'gallery' && "grid grid-cols-2 gap-2")}>
+          {viewMode === 'list' ? (
+            <button
+              onClick={onNoteCreate}
+              className="w-full p-3 mb-2 rounded-lg border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-accent/50 transition-colors flex items-center justify-center gap-2 text-muted-foreground"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="text-sm">New Note</span>
+            </button>
+          ) : (
+            <button
+              onClick={onNoteCreate}
+              className="rounded-lg border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-accent/50 transition-colors"
+            >
+              <div className="aspect-square flex items-center justify-center">
+                <div className="text-center">
+                  <Plus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">New Note</span>
+                </div>
+              </div>
+            </button>
+          )}
+          
           {notes.length === 0 ? (
-            <div className="col-span-2 text-center py-8 text-sm text-muted-foreground">
-              Click + to create your first note
+            <div className={cn("text-center py-8 text-sm text-muted-foreground", viewMode === 'gallery' && "col-span-2")}>
+              Click above to create your first note
             </div>
           ) : (
             <>
