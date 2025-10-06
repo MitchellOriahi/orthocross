@@ -290,13 +290,13 @@ export const FastingCalendar = () => {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Eastern Orthodox" id="eastern" />
-              <Label htmlFor="eastern" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
+              <Label htmlFor="eastern" className="cursor-pointer whitespace-nowrap text-base sm:text-lg">
                 ⛪ Eastern Orthodox
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Oriental Orthodox" id="oriental" />
-              <Label htmlFor="oriental" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
+              <Label htmlFor="oriental" className="cursor-pointer whitespace-nowrap text-base sm:text-lg">
                 ⛪ Oriental Orthodox
               </Label>
             </div>
