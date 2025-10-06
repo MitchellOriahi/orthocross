@@ -282,11 +282,11 @@ export const FastingCalendar = () => {
         </CardHeader>
         
         {/* Centered Tradition Selector */}
-        <div className="flex items-center justify-center py-4 px-2">
+        <div className="flex items-center justify-start py-4 px-4">
           <RadioGroup
             value={selectedTradition}
             onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
-            className="flex flex-col gap-2 items-center"
+            className="flex flex-col gap-2 items-start"
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Eastern Orthodox" id="eastern" />
