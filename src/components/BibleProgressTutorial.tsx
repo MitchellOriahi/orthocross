@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Info } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface BibleProgressTutorialProps {
   onComplete: () => void;
@@ -13,7 +13,7 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
   useEffect(() => {
     const timer = setTimeout(() => {
       setCanDismiss(true);
-    }, 7000);
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -35,29 +35,30 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
         onClick={handleDismiss}
       />
       
-      {/* Spotlight effect on the i button area */}
-      <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 blur-xl animate-pulse" />
+      {/* Spotlight and arrow pointing to the i button */}
+      <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-white/20 blur-xl animate-pulse" />
+      <div className="absolute top-12 right-12 text-white animate-bounce">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M7 7l5-5 5 5M12 19V2" />
+        </svg>
+      </div>
       
-      {/* Tutorial card */}
-      <Card className="relative z-10 max-w-md mx-4 shadow-2xl border-2 border-primary/50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Info className="w-5 h-5 text-primary" />
-            Mark Chapters as Read
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <p className="text-center text-lg">
-            See the <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary mx-1">
-              <Info className="w-4 h-4" />
-            </span> button?
-          </p>
+      {/* Tutorial card - welcome slide style */}
+      <Card className="relative z-10 max-w-md mx-4 shadow-2xl border-none">
+        <CardContent className="pt-12 pb-8 space-y-8 text-center">
+          {/* Large centered icon */}
+          <div className="flex justify-center">
+            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+              <Info className="w-12 h-12 text-primary" />
+            </div>
+          </div>
           
-          <p className="text-center text-muted-foreground">
-            Tap it to quickly mark chapters you've already read
+          {/* Simple centered text */}
+          <p className="text-lg leading-relaxed px-4">
+            Use the <Info className="inline w-5 h-5 text-primary" /> button next to the Bible completion meter to mark chapters you've already read if you don't want to restart your Bible journey.
           </p>
 
-          <p className="text-xs text-center text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {canDismiss ? "Tap anywhere to continue" : "Please wait a moment..."}
           </p>
           
