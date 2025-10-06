@@ -9,7 +9,7 @@ import { Journal } from "@/components/Journal";
 import { VerseOfTheDay } from "@/components/VerseOfTheDay";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
-import { Home, Settings as SettingsIcon, LogOut, BookOpen, Play } from "lucide-react";
+import { Settings as SettingsIcon, BookOpen, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
@@ -262,16 +262,10 @@ const Dashboard = () => {
               <h1 className="text-2xl font-bold">Dashboard</h1>
             </div>
             <nav className="flex items-center gap-2 mr-2">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/home')}>
-                <Home className="w-5 h-5" />
-              </Button>
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
               </Button>
               <ThemeToggle />
-              <Button variant="ghost" size="icon" onClick={() => signOut()}>
-                <LogOut className="w-5 h-5" />
-              </Button>
             </nav>
           </div>
         </div>

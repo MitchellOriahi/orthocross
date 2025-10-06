@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Settings as SettingsIcon, LogOut, Trophy } from "lucide-react";
+import { Settings as SettingsIcon, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -108,16 +108,10 @@ const OrthodoxHistory = () => {
               <h1 className="text-2xl font-bold">History</h1>
             </div>
             <nav className="flex items-center gap-2 mr-2">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
-                <Home className="w-5 h-5" />
-              </Button>
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
               </Button>
               <ThemeToggle />
-              <Button variant="ghost" size="icon" onClick={() => signOut()}>
-                <LogOut className="w-5 h-5" />
-              </Button>
             </nav>
           </div>
         </div>

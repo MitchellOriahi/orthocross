@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -16,7 +16,7 @@ const Settings = () => {
   const navigate = useNavigate();
   const { isPlaying, toggleMusic, volume, setVolume } = useMusic();
   const { updateStreakReminders, getStreakReminders, scheduleStreakReminders } = useNotifications();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [reminders, setReminders] = useState<ReminderTime[]>([]);
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(false);
   const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(false);
@@ -296,6 +296,34 @@ const Settings = () => {
                 Build your daily spiritual practice with Bible reading streaks, 
                 fasting reminders, and Orthodox learning.
               </p>
+            </CardContent>
+          </Card>
+
+          {/* Home Button */}
+          <Card className="shadow-elevated">
+            <CardContent className="p-0">
+              <Button
+                variant="ghost"
+                className="w-full justify-start h-14 px-6 rounded-none"
+                onClick={() => navigate('/dashboard')}
+              >
+                <Home className="w-5 h-5 mr-3" />
+                <span className="text-base">Return to Dashboard</span>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Sign Out Button */}
+          <Card className="shadow-elevated">
+            <CardContent className="p-0">
+              <Button
+                variant="ghost"
+                className="w-full justify-start h-14 px-6 rounded-none text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={signOut}
+              >
+                <LogOut className="w-5 h-5 mr-3" />
+                <span className="text-base">Sign Out</span>
+              </Button>
             </CardContent>
           </Card>
         </div>
