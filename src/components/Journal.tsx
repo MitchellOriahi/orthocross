@@ -247,7 +247,8 @@ export const Journal = () => {
     ));
 
     toast({ 
-      title: !note.pinned ? "Note pinned as journal cover" : "Note unpinned"
+      title: !note.pinned ? "Note pinned as journal cover" : "Note unpinned",
+      duration: 3000,
     });
   };
 

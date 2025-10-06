@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Highlighter, Pencil, Image, Mic } from "lucide-react";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Highlighter, Pencil, Image as ImageIcon, Mic, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DrawingCanvas } from "./DrawingCanvas";
@@ -35,6 +35,9 @@ export const JournalEditor = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [showHighlighter, setShowHighlighter] = useState(false);
   const [selectedColor, setSelectedColor] = useState(HIGHLIGHT_COLORS[0]);
+  const [showDrawing, setShowDrawing] = useState(false);
+  const [showAttachments, setShowAttachments] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const isMobile = useIsMobile();
 
   const handleHighlight = () => {
@@ -61,98 +64,157 @@ export const JournalEditor = ({
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <Tabs defaultValue="write" className="h-full flex flex-col">
-        <div className="p-3 border-b border-border">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="p-4 border-b border-border">
           <Input
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
             placeholder="Title"
-            className={`font-bold border-none bg-transparent px-0 mb-2 focus-visible:ring-0 focus-visible:ring-offset-0 ${
+            className={`font-bold border-none bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${
               isMobile ? 'text-xl' : 'text-2xl'
             }`}
           />
-          <TabsList className="w-full grid grid-cols-4">
-            <TabsTrigger value="write">
-              <Highlighter className="h-4 w-4 md:mr-2" />
-              <span className="hidden md:inline">Write</span>
-            </TabsTrigger>
-            <TabsTrigger value="draw">
-              <Pencil className="h-4 w-4 md:mr-2" />
-              <span className="hidden md:inline">Draw</span>
-            </TabsTrigger>
-            <TabsTrigger value="attachments">
-              <Image className="h-4 w-4 md:mr-2" />
-              <span className="hidden md:inline">Attach</span>
-            </TabsTrigger>
-            <TabsTrigger value="voice">
-              <Mic className="h-4 w-4 md:mr-2" />
-              <span className="hidden md:inline">Voice</span>
-            </TabsTrigger>
-          </TabsList>
         </div>
 
-        <TabsContent value="write" className="flex-1 flex flex-col m-0 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={handleHighlight}
-              >
-                <Highlighter className="h-4 w-4" />
-              </Button>
-              
-              {showHighlighter && (
-                <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-lg shadow-lg z-10 flex gap-1">
-                  {HIGHLIGHT_COLORS.map((color) => (
-                    <button
-                      key={color.name}
-                      onClick={() => {
-                        setSelectedColor(color);
-                        setShowHighlighter(false);
-                      }}
-                      className={cn(
-                        "w-6 h-6 rounded border border-border",
-                        color.class
-                      )}
-                      title={color.name}
-                    />
-                  ))}
-                </div>
-              )}
+        <div className="flex-1 p-4 overflow-hidden">
+          {showHighlighter && (
+            <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex gap-1">
+              {HIGHLIGHT_COLORS.map((color) => (
+                <button
+                  key={color.name}
+                  onClick={() => {
+                    setSelectedColor(color);
+                    setShowHighlighter(false);
+                  }}
+                  className={cn(
+                    "w-8 h-8 rounded border border-border",
+                    color.class
+                  )}
+                  title={color.name}
+                />
+              ))}
             </div>
-            
-            {isSaving && (
-              <span className="text-xs text-muted-foreground ml-auto">
-                Saving...
-              </span>
-            )}
-          </div>
+          )}
 
           <Textarea
             ref={textareaRef}
             value={content}
             onChange={(e) => onContentChange(e.target.value)}
             placeholder="Start writing..."
-            className={`resize-none border-none bg-transparent px-0 flex-1 focus-visible:ring-0 focus-visible:ring-offset-0 leading-relaxed ${
+            className={`resize-none border-none bg-transparent px-0 h-full focus-visible:ring-0 focus-visible:ring-offset-0 leading-relaxed ${
               isMobile ? 'text-sm' : 'text-base'
             }`}
           />
-        </TabsContent>
+        </div>
 
-        <TabsContent value="draw" className="flex-1 p-4 m-0">
-          <DrawingCanvas />
-        </TabsContent>
+        {isSaving && (
+          <div className="px-4 py-1 text-xs text-muted-foreground">
+            Saving...
+          </div>
+        )}
 
-        <TabsContent value="attachments" className="flex-1 p-4 m-0">
-          <FileAttachments />
-        </TabsContent>
+        {/* Bottom Toolbar */}
+        <div className="border-t border-border p-2 flex items-center justify-around bg-card/50">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleHighlight}
+            className="h-10 w-10"
+          >
+            <Highlighter className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowDrawing(true)}
+            className="h-10 w-10"
+          >
+            <Pencil className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowAttachments(true)}
+            className="h-10 w-10"
+          >
+            <ImageIcon className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowVoiceRecorder(true)}
+            className="h-10 w-10"
+          >
+            <Mic className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
 
-        <TabsContent value="voice" className="flex-1 p-4 m-0">
-          <VoiceRecorder />
-        </TabsContent>
-      </Tabs>
+      {/* Full-screen Drawing Sheet */}
+      <Sheet open={showDrawing} onOpenChange={setShowDrawing}>
+        <SheetContent side="bottom" className="h-screen w-screen p-0 max-w-none">
+          <SheetTitle className="sr-only">Drawing Canvas</SheetTitle>
+          <div className="h-full flex flex-col">
+            <div className="p-3 border-b border-border flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Draw</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowDrawing(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="flex-1 p-4">
+              <DrawingCanvas />
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Attachments Sheet */}
+      <Sheet open={showAttachments} onOpenChange={setShowAttachments}>
+        <SheetContent side="bottom" className="h-[50vh] w-screen p-0 max-w-none">
+          <SheetTitle className="sr-only">Attachments</SheetTitle>
+          <div className="h-full flex flex-col">
+            <div className="p-3 border-b border-border flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Attachments</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowAttachments(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="flex-1 p-4 overflow-auto">
+              <FileAttachments />
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Voice Recorder Sheet */}
+      <Sheet open={showVoiceRecorder} onOpenChange={setShowVoiceRecorder}>
+        <SheetContent side="bottom" className="h-[40vh] w-screen p-0 max-w-none">
+          <SheetTitle className="sr-only">Voice Recorder</SheetTitle>
+          <div className="h-full flex flex-col">
+            <div className="p-3 border-b border-border flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Voice Recording</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowVoiceRecorder(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="flex-1 p-4 flex items-center justify-center">
+              <VoiceRecorder />
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
