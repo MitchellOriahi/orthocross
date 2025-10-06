@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { DetailedContentView } from "@/components/resources/DetailedContentView";
+import { PrayerDetailView } from "@/components/resources/PrayerDetailView";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
@@ -55,15 +56,14 @@ const ChurchResources = () => {
 
   if (selectedPrayer) {
     return (
-      <DetailedContentView
-        title={selectedPrayer.name}
-        subtitle={selectedPrayer.title}
+      <PrayerDetailView
+        name={selectedPrayer.name}
+        title={selectedPrayer.title}
         content={selectedPrayer.content}
         onClose={() => {
           setSelectedPrayer(null);
           setSelectedSection("prayers");
         }}
-        showProgress={false}
       />
     );
   }
