@@ -324,9 +324,9 @@ const ChurchResources = () => {
                           />
                         </div>
                         <div className="flex-1 min-w-0 pt-1">
-                          {saint.prefix && <div className="text-sm font-bold leading-tight">{saint.prefix}</div>}
+                          {saint.prefix && <div className="text-base font-bold leading-tight">{saint.prefix}</div>}
                           <div className="font-bold text-base leading-tight">{saint.name}</div>
-                          {saint.epithet && <div className="text-sm font-bold leading-tight mt-0.5">{saint.epithet}</div>}
+                          {saint.epithet && <div className="text-base font-bold leading-tight mt-0.5">{saint.epithet}</div>}
                           <div className="text-xs text-muted-foreground mt-1.5 leading-relaxed whitespace-pre-line">{saint.shortDescription}</div>
                         </div>
                         <div className="absolute top-3 right-3 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-primary/10 text-primary font-medium whitespace-nowrap">
