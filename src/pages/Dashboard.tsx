@@ -21,6 +21,7 @@ const Dashboard = () => {
   const { signOut, user } = useAuth();
   const [streakDays, setStreakDays] = useState(0);
   const [hasAnyProgress, setHasAnyProgress] = useState(false);
+  const [loadingReading, setLoadingReading] = useState(true);
   const [lastReading, setLastReading] = useState<{
     title: string;
     passage: string;
@@ -29,11 +30,7 @@ const Dashboard = () => {
     chapter?: number;
     totalChapters?: number;
     bookProgress?: number; // % of book completed
-  }>({
-    title: "Gospel of John",
-    passage: "John 1:1",
-    progress: 0
-  });
+  } | null>(null);
 
   useEffect(() => {
     // Populate initial verses on first load
@@ -73,6 +70,8 @@ const Dashboard = () => {
     const fetchLastReading = async () => {
       if (!user) return;
 
+      setLoadingReading(true);
+      
       // Check if user has any completed chapters
       const { data: anyCompleted, count } = await supabase
         .from('completed_chapters')
@@ -132,7 +131,20 @@ const Dashboard = () => {
           totalChapters: totalChapters,
           bookProgress: bookProgressPercentage
         });
+      } else {
+        // No completed chapters, set default
+        setLastReading({
+          title: "Gospel of John",
+          passage: "John 1",
+          progress: 0,
+          bookKey: "John",
+          chapter: 1,
+          totalChapters: 21,
+          bookProgress: 0
+        });
       }
+      
+      setLoadingReading(false);
     };
 
     fetchStreak();
@@ -249,81 +261,91 @@ const Dashboard = () => {
         {/* Continue Reading */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold">Continue Reading</h2>
-          <Card className="border-2 border-primary/20 shadow-lg">
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Continue Reading</p>
-                    <h3 className="text-2xl font-bold">
-                      {lastReading.title}
-                    </h3>
-                    <p className="text-lg text-muted-foreground mt-1">
-                      {lastReading.passage}
-                    </p>
-                  </div>
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                    <BookOpen className="w-8 h-8 text-primary" />
-                  </div>
+          {loadingReading ? (
+            <Card className="border-2 border-primary/20 shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
                 </div>
-                
-                {/* Book Progress Bar */}
-                {hasAnyProgress && lastReading.bookProgress !== undefined && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Book Progress</span>
-                      <span className="font-medium">{lastReading.bookProgress}%</span>
+              </CardContent>
+            </Card>
+          ) : lastReading ? (
+            <Card className="border-2 border-primary/20 shadow-lg">
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Continue Reading</p>
+                      <h3 className="text-2xl font-bold">
+                        {lastReading.title}
+                      </h3>
+                      <p className="text-lg text-muted-foreground mt-1">
+                        {lastReading.passage}
+                      </p>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div
-                        className="bg-primary rounded-full h-2 transition-all"
-                        style={{ width: `${lastReading.bookProgress}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Chapter Progress Bar */}
-                {hasAnyProgress && lastReading.progress > 0 && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Chapter Progress</span>
-                      <span className="font-medium">{lastReading.progress}%</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div
-                        className="bg-secondary rounded-full h-2 transition-all"
-                        style={{ width: `${lastReading.progress}%` }}
-                      />
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                      <BookOpen className="w-8 h-8 text-primary" />
                     </div>
                   </div>
-                )}
+                  
+                  {/* Book Progress Bar */}
+                  {hasAnyProgress && lastReading.bookProgress !== undefined && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Book Progress</span>
+                        <span className="font-medium">{lastReading.bookProgress}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div
+                          className="bg-primary rounded-full h-2 transition-all"
+                          style={{ width: `${lastReading.bookProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
 
-                <Button 
-                  onClick={() => {
-                    if (lastReading.bookKey && lastReading.chapter) {
-                      navigate('/reading', {
-                        state: {
-                          book: lastReading.bookKey,
-                          bookName: lastReading.title,
-                          chapter: lastReading.chapter,
-                          totalChapters: lastReading.totalChapters
-                        }
-                      });
-                    } else {
-                      navigate('/index');
-                    }
-                  }}
-                  className="w-full gap-2"
-                  size="lg"
-                  variant="sacred"
-                >
-                  <Play className="w-4 h-4" />
-                  Continue Reading
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                  {/* Chapter Progress Bar */}
+                  {hasAnyProgress && lastReading.progress > 0 && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Chapter Progress</span>
+                        <span className="font-medium">{lastReading.progress}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div
+                          className="bg-secondary rounded-full h-2 transition-all"
+                          style={{ width: `${lastReading.progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <Button 
+                    onClick={() => {
+                      if (lastReading.bookKey && lastReading.chapter) {
+                        navigate('/reading', {
+                          state: {
+                            book: lastReading.bookKey,
+                            bookName: lastReading.title,
+                            chapter: lastReading.chapter,
+                            totalChapters: lastReading.totalChapters
+                          }
+                        });
+                      } else {
+                        navigate('/index');
+                      }
+                    }}
+                    className="w-full gap-2"
+                    size="lg"
+                    variant="sacred"
+                  >
+                    <Play className="w-4 h-4" />
+                    Continue Reading
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : null}
         </section>
 
         {/* Additional Sections */}
