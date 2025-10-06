@@ -43,7 +43,22 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
     const match = title.match(/\(([^)]+)\)/);
     if (!match) return '';
     
-    return match[1];
+    const timeframe = match[1];
+    
+    // Handle "Present Day" or other non-date strings
+    if (!timeframe.includes('–') && !timeframe.includes('-')) {
+      return timeframe;
+    }
+    
+    // Split the range and format as "X AD - Y AD"
+    const parts = timeframe.split(/[–-]/);
+    if (parts.length === 2) {
+      const start = parts[0].trim();
+      const end = parts[1].trim();
+      return `${start} - ${end}`;
+    }
+    
+    return timeframe;
   };
 
   const removeTimeframe = (title: string) => {
