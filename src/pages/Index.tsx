@@ -177,6 +177,18 @@ const Index = () => {
 
   const lastReadScripture = getLastReadScripture();
 
+  // Calculate section completion percentage
+  const calculateSectionProgress = (books: BookInfo[]) => {
+    const totalChapters = books.reduce((sum, book) => sum + book.totalChapters, 0);
+    const completedChapters = books.reduce((sum, book) => {
+      const completed = Object.entries(bookProgress)
+        .filter(([key]) => key === book.title)
+        .reduce((acc, [_, progress]) => acc + (book.totalChapters * progress / 100), 0);
+      return sum + completed;
+    }, 0);
+    return totalChapters > 0 ? Math.round((completedChapters / totalChapters) * 100) : 0;
+  };
+
   return (
     <div className="min-h-screen gradient-peaceful pb-20">
 
@@ -297,14 +309,21 @@ const Index = () => {
                   <CardContent className="p-6">
                     <h3 className="text-2xl font-bold mb-4 text-orange-700 dark:text-orange-400">Old Testament</h3>
                     <Accordion type="multiple" className="space-y-2">
-                      {Object.entries(oldTestament).map(([category, books]) => (
-                        <AccordionItem key={category} value={category} className="border rounded-lg bg-background/50">
-                          <AccordionTrigger className="px-4 hover:no-underline">
-                            <div className="flex items-center gap-2">
-                              <div className="font-semibold text-lg">{category}</div>
-                              <div className="text-xs text-muted-foreground">({books.length} books)</div>
-                            </div>
-                          </AccordionTrigger>
+                      {Object.entries(oldTestament).map(([category, books]) => {
+                        const sectionProgress = calculateSectionProgress(books);
+                        return (
+                          <AccordionItem key={category} value={category} className="border rounded-lg bg-background/50">
+                            <AccordionTrigger className="px-4 hover:no-underline group">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className="font-semibold text-lg">{category}</div>
+                                  <div className="text-xs text-muted-foreground">({books.length} books)</div>
+                                </div>
+                                <div className="group-data-[state=open]:hidden">
+                                  <Progress value={sectionProgress} className="h-1.5" />
+                                </div>
+                              </div>
+                            </AccordionTrigger>
                           <AccordionContent className="px-4 pb-4">
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
                               {books.map((book) => (
@@ -332,7 +351,8 @@ const Index = () => {
                             </div>
                           </AccordionContent>
                         </AccordionItem>
-                      ))}
+                        );
+                      })}
                     </Accordion>
                   </CardContent>
                 </Card>
@@ -342,14 +362,21 @@ const Index = () => {
                   <CardContent className="p-6">
                     <h3 className="text-2xl font-bold mb-4 text-blue-700 dark:text-blue-400">New Testament</h3>
                     <Accordion type="multiple" className="space-y-2">
-                      {Object.entries(newTestament).map(([category, books]) => (
-                        <AccordionItem key={category} value={category} className="border rounded-lg bg-background/50">
-                          <AccordionTrigger className="px-4 hover:no-underline">
-                            <div className="flex items-center gap-2">
-                              <div className="font-semibold text-lg">{category}</div>
-                              <div className="text-xs text-muted-foreground">({books.length} books)</div>
-                            </div>
-                          </AccordionTrigger>
+                      {Object.entries(newTestament).map(([category, books]) => {
+                        const sectionProgress = calculateSectionProgress(books);
+                        return (
+                          <AccordionItem key={category} value={category} className="border rounded-lg bg-background/50">
+                            <AccordionTrigger className="px-4 hover:no-underline group">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className="font-semibold text-lg">{category}</div>
+                                  <div className="text-xs text-muted-foreground">({books.length} books)</div>
+                                </div>
+                                <div className="group-data-[state=open]:hidden">
+                                  <Progress value={sectionProgress} className="h-1.5" />
+                                </div>
+                              </div>
+                            </AccordionTrigger>
                           <AccordionContent className="px-4 pb-4">
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
                               {books.map((book) => (
@@ -377,7 +404,8 @@ const Index = () => {
                             </div>
                           </AccordionContent>
                         </AccordionItem>
-                      ))}
+                        );
+                      })}
                     </Accordion>
                   </CardContent>
                 </Card>
