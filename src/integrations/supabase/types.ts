@@ -104,6 +104,36 @@ export type Database = {
         }
         Relationships: []
       }
+      history_highlights: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          highlight_color: string | null
+          id: string
+          island_id: string
+          sentence_index: number
+          user_id: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          highlight_color?: string | null
+          id?: string
+          island_id: string
+          sentence_index: number
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          highlight_color?: string | null
+          id?: string
+          island_id?: string
+          sentence_index?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           content: string | null

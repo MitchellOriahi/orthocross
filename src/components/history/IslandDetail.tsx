@@ -113,6 +113,8 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             content={island.reading}
             onComplete={handleStartQuiz}
             iconUrl={island.iconUrl}
+            campaignId={campaignId}
+            islandId={island.id}
           />
         )}
 
