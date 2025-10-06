@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Church, BookOpen, UserRound } from "lucide-react";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import stBasilIcon from "@/assets/st-basil-icon.png";
+import orthodoxCrossBlack from "@/assets/orthodox-cross-black.png";
+import orthodoxCrossWhite from "@/assets/orthodox-cross-white-traced.png";
 import {
   Accordion,
   AccordionContent,
@@ -370,7 +372,18 @@ const ChurchResources = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-2 mb-8">
-            <Church className="w-12 h-12 mx-auto text-primary" />
+            <div className="w-12 h-12 mx-auto relative">
+              <img 
+                src={orthodoxCrossBlack} 
+                alt="Orthodox Cross" 
+                className="w-full h-full object-contain dark:hidden"
+              />
+              <img 
+                src={orthodoxCrossWhite} 
+                alt="Orthodox Cross" 
+                className="w-full h-full object-contain hidden dark:block"
+              />
+            </div>
             <h2 className="text-3xl font-bold">Orthodox Church Guide</h2>
             <p className="text-muted-foreground">Learn the traditions and proper conduct in Orthodox worship</p>
           </div>
