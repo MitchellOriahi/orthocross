@@ -47,16 +47,21 @@ const ChurchResources = () => {
     const loadPinnedPrayers = async () => {
       const { data } = await supabase
         .from('pinned_prayers')
-        .select('prayer_id')
+        .select('prayer_id, filter_context')
         .eq('user_id', user.id);
       
       if (data) {
-        setPinnedPrayerIds(new Set(data.map(p => p.prayer_id)));
+        // For the current filter, only show pins that match
+        const currentFilterPins = data
+          .filter(p => p.filter_context === prayerFilter)
+          .map(p => p.prayer_id);
+        
+        setPinnedPrayerIds(new Set(currentFilterPins));
       }
     };
     
     loadPinnedPrayers();
-  }, [user]);
+  }, [user, prayerFilter]);
 
   const handlePinPrayer = async (prayerId: string) => {
     if (!user) {
@@ -67,28 +72,35 @@ const ChurchResources = () => {
     const isPinned = pinnedPrayerIds.has(prayerId);
 
     if (isPinned) {
-      // Unpin
+      // Unpin for current filter context
       await supabase
         .from('pinned_prayers')
         .delete()
         .eq('user_id', user.id)
-        .eq('prayer_id', prayerId);
+        .eq('prayer_id', prayerId)
+        .eq('filter_context', prayerFilter);
       
       const newPinned = new Set(pinnedPrayerIds);
       newPinned.delete(prayerId);
       setPinnedPrayerIds(newPinned);
       toast({ description: "Prayer unpinned" });
     } else {
-      // Check limit
-      if (pinnedPrayerIds.size >= 3) {
-        toast({ description: "You can only pin up to 3 prayers", variant: "destructive" });
+      // Check limit for current filter context
+      const { count } = await supabase
+        .from('pinned_prayers')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('filter_context', prayerFilter);
+      
+      if (count && count >= 3) {
+        toast({ description: `You can only pin up to 3 prayers in the ${prayerFilter === "all" ? "All" : prayerFilter} section`, variant: "destructive" });
         return;
       }
 
-      // Pin
+      // Pin for current filter context
       await supabase
         .from('pinned_prayers')
-        .insert({ user_id: user.id, prayer_id: prayerId });
+        .insert({ user_id: user.id, prayer_id: prayerId, filter_context: prayerFilter });
       
       const newPinned = new Set(pinnedPrayerIds);
       newPinned.add(prayerId);

@@ -240,18 +240,21 @@ export type Database = {
       }
       pinned_prayers: {
         Row: {
+          filter_context: string
           id: string
           pinned_at: string
           prayer_id: string
           user_id: string
         }
         Insert: {
+          filter_context?: string
           id?: string
           pinned_at?: string
           prayer_id: string
           user_id: string
         }
         Update: {
+          filter_context?: string
           id?: string
           pinned_at?: string
           prayer_id?: string
