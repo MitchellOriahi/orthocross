@@ -3,10 +3,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Highlighter, Pencil } from "lucide-react";
+import { Highlighter, Pencil, Image, Mic } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DrawingCanvas } from "./DrawingCanvas";
+import { FileAttachments } from "./FileAttachments";
+import { VoiceRecorder } from "./VoiceRecorder";
 
 interface JournalEditorProps {
   title: string;
@@ -69,14 +71,22 @@ export const JournalEditor = ({
               isMobile ? 'text-xl' : 'text-2xl'
             }`}
           />
-          <TabsList className="w-full">
-            <TabsTrigger value="write" className="flex-1">
-              <Highlighter className="h-4 w-4 mr-2" />
-              Write
+          <TabsList className="w-full grid grid-cols-4">
+            <TabsTrigger value="write">
+              <Highlighter className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Write</span>
             </TabsTrigger>
-            <TabsTrigger value="draw" className="flex-1">
-              <Pencil className="h-4 w-4 mr-2" />
-              Draw
+            <TabsTrigger value="draw">
+              <Pencil className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Draw</span>
+            </TabsTrigger>
+            <TabsTrigger value="attachments">
+              <Image className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Attach</span>
+            </TabsTrigger>
+            <TabsTrigger value="voice">
+              <Mic className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Voice</span>
             </TabsTrigger>
           </TabsList>
         </div>
@@ -133,6 +143,14 @@ export const JournalEditor = ({
 
         <TabsContent value="draw" className="flex-1 p-4 m-0">
           <DrawingCanvas />
+        </TabsContent>
+
+        <TabsContent value="attachments" className="flex-1 p-4 m-0">
+          <FileAttachments />
+        </TabsContent>
+
+        <TabsContent value="voice" className="flex-1 p-4 m-0">
+          <VoiceRecorder />
         </TabsContent>
       </Tabs>
     </div>
