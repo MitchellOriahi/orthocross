@@ -8,7 +8,7 @@ import markIcon from "@/assets/saints/mark-icon.jpg";
 import maryEgyptIcon from "@/assets/saints/mary-egypt-icon.jpg";
 import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
 import nicholasIcon from "@/assets/saints/nicholas-icon.jpg";
-import severusIcon from "@/assets/saints/severus-icon.jpg";
+import ephremIcon from "@/assets/saints/ephrem-icon.jpg";
 import theotokosIcon from "@/assets/saints/theotokos-icon.jpg";
 
 export interface SaintDetail {
@@ -270,31 +270,27 @@ export const saintsContent: SaintDetail[] = [
     ]
   },
   {
-    id: "severus-antioch",
-    name: "St. Severus of Antioch",
-    title: "The Crown of the Syrians",
+    id: "ephrem-syrian",
+    name: "St. Ephrem the Syrian",
+    title: "Harp of the Holy Spirit",
     tradition: "Oriental",
-    iconUrl: severusIcon,
+    iconUrl: ephremIcon,
     content: [
-      "Severus was born around 465 AD in Sozopolis, Pisidia (modern Turkey), to a wealthy pagan family. His grandfather had been a bishop, but his immediate family practiced paganism. He received an excellent classical education in Alexandria and later studied law in Berytus (Beirut), preparing for a distinguished career in Roman administration.",
+      "Ephrem was born around 306 AD in Nisibis, Mesopotamia (modern-day Turkey), into a Christian family. Little is known about his early life, but according to tradition, he was baptized as a young man and immediately devoted himself to the study of Scripture and theology. He became a student of St. Jacob of Nisibis, the city's bishop and founder of its famous theological school.",
       
-      "While studying law, Severus was drawn to Christianity through the witness of Christian fellow students and the reading of Scripture. Around 488 AD, he was baptized and immediately felt called to the monastic life. He abandoned his legal career and joined a monastery in Palestine, shocking his family by renouncing wealth and prestige for ascetic poverty.",
+      "Ephrem was ordained a deacon and remained in that order throughout his life, never accepting priestly ordination despite his theological brilliance. He became a teacher at the School of Nisibis, where he trained generations of clergy and theologians. His teaching combined rigorous biblical exegesis with poetic expression, making complex theology accessible through hymns and verse.",
       
-      "For about ten years, Severus lived as a monk in Palestine, dedicating himself to prayer, study, and the defense of orthodoxy as understood by the Church of Alexandria. He became deeply versed in theology and Scripture. During this time, he witnessed and opposed the christological controversies following the Council of Chalcedon (451 AD).",
+      "In 363 AD, after the Roman Empire ceded Nisibis to the Persian Empire, Ephrem and most of the Christian population fled to Edessa (modern Urfa in Turkey). There he continued his theological work and established a school of theology. Edessa became a major center of Syriac Christianity, and Ephrem's influence shaped the entire Syriac theological and liturgical tradition.",
       
-      "Severus and his fellow monks traveled to Constantinople in 508 AD to petition Emperor Anastasius I regarding the Chalcedonian controversy. The emperor was impressed by Severus's theological knowledge and eloquence. Severus argued that Chalcedon's definition compromised the unity of Christ's person and leaned toward Nestorianism by emphasizing two natures too distinctly.",
+      "Ephrem is best known as a hymnographer and poet. He composed thousands of hymns (madrāšē) and metrical homilies (mēmrē) in Syriac. His works addressed theological controversies, biblical interpretation, ascetic practices, and liturgical themes. He used poetry not merely for aesthetic purposes but as a teaching tool, knowing that people would remember theological truths better when sung.",
       
-      "In 512 AD, Severus was appointed Patriarch of Antioch, one of the most important sees in Christianity. As patriarch, he worked tirelessly to promote what he saw as authentic Cyrillian christology - emphasizing the unity of Christ's person, 'one incarnate nature of God the Word.' He wrote extensively, producing theological treatises, letters, and hymns.",
+      "His hymns were often written to combat heresies. He composed beautiful Syriac hymns to counter the spread of Gnostic and Arian teachings, which were being disseminated through popular songs. His orthodox hymns, set to pleasing melodies and taught to choirs of women, successfully competed with heretical compositions and preserved orthodoxy among the common people.",
       
-      "Severus's theology emphasized that after the Incarnation, Christ had one nature (mia physis) - divine and human united inseparably. This position, later characteristic of Oriental Orthodoxy, differed from the Chalcedonian emphasis on two distinct natures. Severus insisted he was not a Monophysite (believing in only a divine nature), but rather affirmed both Christ's full divinity and full humanity united in one incarnate nature.",
+      "Ephrem's theology emphasized the mystery of the Incarnation, the role of the Theotokos, and the importance of asceticism. His Marian hymns are among the earliest and most beautiful in Christian literature, celebrating Mary as the New Eve and the God-bearer. His symbolic and poetic approach to theology influenced both Eastern and Western Christianity.",
       
-      "His patriarchate was marked by theological disputes with Chalcedonian bishops and philosophers. When Emperor Justin I, a supporter of Chalcedon, came to power in 518 AD, Severus was forced to flee Antioch. He spent the remaining twenty years of his life in exile in Alexandria, under the protection of the Egyptian church and sympathetic civil authorities.",
+      "During a famine in Edessa, Ephrem emerged from his scholarly seclusion to organize relief efforts. He accused the wealthy of hoarding grain and convinced them to distribute food to the poor. He personally cared for the sick and dying, demonstrating that theological learning must be united with active charity.",
       
-      "During his exile, Severus continued his theological work, writing prolifically and corresponding with churches throughout the East. He composed numerous homilies, letters, and treatises defending his christological position. His liturgical compositions, particularly hymns, enriched the worship of the Syriac and Coptic Orthodox Churches. He ordained bishops, maintained ecclesiastical authority, and guided his spiritual children through correspondence.",
-      
-      "Severus died in exile in Alexandria on February 8, 538 AD, at about 73 years of age. Though condemned by the Council of Constantinople in 553 AD, he is venerated as a saint and Church Father by the Oriental Orthodox Churches - Coptic, Syriac, Armenian, Ethiopian, and Eritrean. His feast day is celebrated on February 8th.",
-      
-      "The Oriental Orthodox Churches honor Severus as a champion of orthodox christology and defender of the faith against what they perceived as Nestorian tendencies. His voluminous theological works, though many survive only in fragments or translations, profoundly influenced Oriental Orthodox theology. He is remembered for his holiness, asceticism, brilliant theological mind, and unwavering commitment to what he believed was the true faith handed down from the Apostles and articulated by St. Cyril of Alexandria."
+      "Ephrem died in Edessa on June 9, 373 AD, probably a victim of the plague he contracted while caring for others during the epidemic. His literary legacy is immense—hundreds of his hymns survive, and his theological works influenced Syrian, Armenian, Byzantine, and Latin Christianity. He was declared a Doctor of the Church by Pope Benedict XV in 1920. His feast day is celebrated on January 28th, and he remains one of the most beloved saints in the Oriental Orthodox Churches."
     ]
   },
   {
