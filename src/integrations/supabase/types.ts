@@ -140,6 +140,7 @@ export type Database = {
           created_at: string
           folder_id: string | null
           id: string
+          pinned: boolean
           title: string | null
           updated_at: string
           user_id: string
@@ -149,6 +150,7 @@ export type Database = {
           created_at?: string
           folder_id?: string | null
           id?: string
+          pinned?: boolean
           title?: string | null
           updated_at?: string
           user_id: string
@@ -158,6 +160,7 @@ export type Database = {
           created_at?: string
           folder_id?: string | null
           id?: string
+          pinned?: boolean
           title?: string | null
           updated_at?: string
           user_id?: string

@@ -21,6 +21,7 @@ interface JournalNote {
   user_id: string;
   created_at: string;
   updated_at: string;
+  pinned: boolean;
 }
 
 interface JournalFolder {
@@ -45,6 +46,7 @@ export const Journal = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [showNotesList, setShowNotesList] = useState(true);
+  const [viewMode, setViewMode] = useState<"list" | "pinned">("list");
   
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
@@ -221,6 +223,18 @@ export const Journal = () => {
     }
   };
 
+  const handleNotePin = async (noteId: string) => {
+    const note = notes.find(n => n.id === noteId);
+    if (!note) return;
+
+    await (supabase as any)
+      .from('journal_entries')
+      .update({ pinned: !note.pinned })
+      .eq('id', noteId);
+
+    setNotes(notes.map(n => n.id === noteId ? { ...n, pinned: !n.pinned } : n));
+  };
+
   const filteredNotes = notes.filter(note => {
     if (!searchQuery) return true;
     const searchLower = searchQuery.toLowerCase();
@@ -237,8 +251,11 @@ export const Journal = () => {
     setShowNotesList(true);
   };
 
+  const pinnedNote = notes.find(n => n.pinned);
   const mostRecentNote = notes.length > 0 ? notes[0] : null;
-  const hasContent = mostRecentNote && (mostRecentNote.title || mostRecentNote.content);
+  const displayNote = pinnedNote || mostRecentNote;
+  const hasContent = displayNote && (displayNote.title || displayNote.content);
+  const isPinned = displayNote?.pinned || false;
 
   return (
     <>
@@ -251,14 +268,16 @@ export const Journal = () => {
             <>
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-semibold text-sm truncate flex-1">
-                  {mostRecentNote.title || "Untitled"}
+                  {displayNote.title || "Untitled"}
                 </h3>
-                <span className="text-xs text-muted-foreground ml-2">
-                  {formatDistanceToNow(new Date(mostRecentNote.updated_at), { addSuffix: true })}
-                </span>
+                {!isPinned && (
+                  <span className="text-xs text-muted-foreground ml-2">
+                    {formatDistanceToNow(new Date(displayNote.updated_at), { addSuffix: true })}
+                  </span>
+                )}
               </div>
               <div className="text-sm text-muted-foreground line-clamp-6 leading-relaxed">
-                {mostRecentNote.content || ""}
+                {displayNote.content || ""}
               </div>
             </>
           ) : (
@@ -341,8 +360,11 @@ export const Journal = () => {
                     onNoteSelect={handleNoteSelect}
                     onNoteCreate={handleNoteCreate}
                     onNoteDelete={handleNoteDelete}
+                    onNotePin={handleNotePin}
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
                   />
                 </div>
               )}

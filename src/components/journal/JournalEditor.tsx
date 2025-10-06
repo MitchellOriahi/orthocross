@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Highlighter } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Highlighter, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DrawingCanvas } from "./DrawingCanvas";
 
 interface JournalEditorProps {
   title: string;
@@ -57,66 +59,82 @@ export const JournalEditor = ({
 
   return (
     <div className="flex flex-col h-full bg-background">
-      {/* Toolbar */}
-      <div className="p-3 border-b border-border flex items-center gap-2">
-        <div className="relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={handleHighlight}
-          >
-            <Highlighter className="h-4 w-4" />
-          </Button>
-          
-          {showHighlighter && (
-            <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-lg shadow-lg z-10 flex gap-1">
-              {HIGHLIGHT_COLORS.map((color) => (
-                <button
-                  key={color.name}
-                  onClick={() => {
-                    setSelectedColor(color);
-                    setShowHighlighter(false);
-                  }}
-                  className={cn(
-                    "w-6 h-6 rounded border border-border",
-                    color.class
-                  )}
-                  title={color.name}
-                />
-              ))}
-            </div>
-          )}
+      <Tabs defaultValue="write" className="h-full flex flex-col">
+        <div className="p-3 border-b border-border">
+          <Input
+            value={title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            placeholder="Title"
+            className={`font-bold border-none bg-transparent px-0 mb-2 focus-visible:ring-0 focus-visible:ring-offset-0 ${
+              isMobile ? 'text-xl' : 'text-2xl'
+            }`}
+          />
+          <TabsList className="w-full">
+            <TabsTrigger value="write" className="flex-1">
+              <Highlighter className="h-4 w-4 mr-2" />
+              Write
+            </TabsTrigger>
+            <TabsTrigger value="draw" className="flex-1">
+              <Pencil className="h-4 w-4 mr-2" />
+              Draw
+            </TabsTrigger>
+          </TabsList>
         </div>
-        
-        {isSaving && (
-          <span className="text-xs text-muted-foreground ml-auto">
-            Saving...
-          </span>
-        )}
-      </div>
 
-      {/* Editor */}
-      <div className={`flex-1 overflow-auto ${isMobile ? 'p-4' : 'p-6'}`}>
-        <Input
-          value={title}
-          onChange={(e) => onTitleChange(e.target.value)}
-          placeholder="Title"
-          className={`font-bold border-none bg-transparent px-0 mb-4 focus-visible:ring-0 focus-visible:ring-offset-0 ${
-            isMobile ? 'text-xl' : 'text-2xl'
-          }`}
-        />
-        
-        <Textarea
-          ref={textareaRef}
-          value={content}
-          onChange={(e) => onContentChange(e.target.value)}
-          placeholder="Start writing..."
-          className={`resize-none border-none bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 leading-relaxed ${
-            isMobile ? 'min-h-[calc(100vh-200px)] text-sm' : 'min-h-[calc(100vh-300px)] text-base'
-          }`}
-        />
-      </div>
+        <TabsContent value="write" className="flex-1 flex flex-col m-0 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={handleHighlight}
+              >
+                <Highlighter className="h-4 w-4" />
+              </Button>
+              
+              {showHighlighter && (
+                <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-lg shadow-lg z-10 flex gap-1">
+                  {HIGHLIGHT_COLORS.map((color) => (
+                    <button
+                      key={color.name}
+                      onClick={() => {
+                        setSelectedColor(color);
+                        setShowHighlighter(false);
+                      }}
+                      className={cn(
+                        "w-6 h-6 rounded border border-border",
+                        color.class
+                      )}
+                      title={color.name}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {isSaving && (
+              <span className="text-xs text-muted-foreground ml-auto">
+                Saving...
+              </span>
+            )}
+          </div>
+
+          <Textarea
+            ref={textareaRef}
+            value={content}
+            onChange={(e) => onContentChange(e.target.value)}
+            placeholder="Start writing..."
+            className={`resize-none border-none bg-transparent px-0 flex-1 focus-visible:ring-0 focus-visible:ring-offset-0 leading-relaxed ${
+              isMobile ? 'text-sm' : 'text-base'
+            }`}
+          />
+        </TabsContent>
+
+        <TabsContent value="draw" className="flex-1 p-4 m-0">
+          <DrawingCanvas />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
