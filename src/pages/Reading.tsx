@@ -366,6 +366,7 @@ const Reading = () => {
       
       toast({
         description: "Chapter completed! 🎉",
+        duration: 3000, // 3 seconds expiry
       });
       
       // Navigate to next chapter if available

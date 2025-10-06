@@ -28,6 +28,7 @@ const Dashboard = () => {
     bookKey?: string;
     chapter?: number;
     totalChapters?: number;
+    bookProgress?: number; // % of book completed
   }>({
     title: "Gospel of John",
     passage: "John 1:1",
@@ -101,6 +102,16 @@ const Dashboard = () => {
         const totalChapters = bookInfo?.totalChapters || 1;
         const bookName = bookInfo?.bookName || bookKey;
 
+        // Get all completed chapters for this book to calculate book progress
+        const { data: completedInBook } = await supabase
+          .from('completed_chapters')
+          .select('chapter')
+          .eq('user_id', user.id)
+          .eq('book_key', bookKey);
+
+        const completedChaptersCount = completedInBook?.length || 0;
+        const bookProgressPercentage = Math.round((completedChaptersCount / totalChapters) * 100);
+
         // Get progress for the next chapter (current reading position)
         const { data: chapterProgress } = await supabase
           .from('reading_progress')
@@ -118,7 +129,8 @@ const Dashboard = () => {
           progress: currentProgress,
           bookKey: bookKey,
           chapter: nextChapter,
-          totalChapters: totalChapters
+          totalChapters: totalChapters,
+          bookProgress: bookProgressPercentage
         });
       }
     };
@@ -159,6 +171,16 @@ const Dashboard = () => {
             const totalChapters = bookInfo?.totalChapters || 1;
             const bookName = bookInfo?.bookName || bookKey;
 
+            // Get all completed chapters for this book
+            const { data: completedInBook } = await supabase
+              .from('completed_chapters')
+              .select('chapter')
+              .eq('user_id', user.id)
+              .eq('book_key', bookKey);
+
+            const completedChaptersCount = completedInBook?.length || 0;
+            const bookProgressPercentage = Math.round((completedChaptersCount / totalChapters) * 100);
+
             const { data: chapterProgress } = await supabase
               .from('reading_progress')
               .select('progress')
@@ -175,7 +197,8 @@ const Dashboard = () => {
               progress: currentProgress,
               bookKey: bookKey,
               chapter: nextChapter,
-              totalChapters: totalChapters
+              totalChapters: totalChapters,
+              bookProgress: bookProgressPercentage
             });
           }
         };
@@ -244,15 +267,32 @@ const Dashboard = () => {
                   </div>
                 </div>
                 
-                {hasAnyProgress && lastReading.progress > 0 && (
+                {/* Book Progress Bar */}
+                {hasAnyProgress && lastReading.bookProgress !== undefined && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Progress</span>
-                      <span className="font-medium">{lastReading.progress}%</span>
+                      <span className="text-muted-foreground">Book Progress</span>
+                      <span className="font-medium">{lastReading.bookProgress}%</span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-2">
                       <div
                         className="bg-primary rounded-full h-2 transition-all"
+                        style={{ width: `${lastReading.bookProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Chapter Progress Bar */}
+                {hasAnyProgress && lastReading.progress > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Chapter Progress</span>
+                      <span className="font-medium">{lastReading.progress}%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div
+                        className="bg-secondary rounded-full h-2 transition-all"
                         style={{ width: `${lastReading.progress}%` }}
                       />
                     </div>
