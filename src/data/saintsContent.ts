@@ -322,7 +322,7 @@ export const saintsContent: SaintDetail[] = [
     prefix: "",
     name: "Theotokos",
     epithet: "(The Virgin Mary)",
-    shortDescription: "The Mother of God",
+    shortDescription: "Holy Mother of God",
     tradition: "Eastern/Oriental",
     iconUrl: theotokosIcon,
     content: [
