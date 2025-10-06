@@ -14,7 +14,10 @@ import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import { z } from 'zod';
 
 const emailSchema = z.string().email('Invalid email address');
-const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
+const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
+const phoneSchema = z.string()
+  .regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number format. Use international format (e.g., +1234567890)')
+  .min(10, 'Phone number must be at least 10 digits');
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -73,13 +76,18 @@ const Auth = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    if (!phoneNumber || phoneNumber.length < 10) {
-      toast({
-        variant: 'destructive',
-        title: 'Invalid Phone Number',
-        description: 'Please enter a valid phone number',
-      });
-      return;
+    // Validate phone number with stricter rules
+    try {
+      phoneSchema.parse(phoneNumber);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          variant: 'destructive',
+          title: 'Invalid Phone Number',
+          description: error.errors[0].message,
+        });
+        return;
+      }
     }
 
     setLoading(true);
@@ -198,8 +206,11 @@ const Auth = () => {
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     required
+                    autoComplete="tel"
                   />
-                  <p className="text-xs text-muted-foreground">For fast and feast notifications</p>
+                  <p className="text-xs text-muted-foreground">
+                    For fast and feast notifications. Securely stored and only accessible to you.
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Password</Label>
