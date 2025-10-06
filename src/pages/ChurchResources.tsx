@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Church, BookOpen, UserRound, Pin } from "lucide-react";
+import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
@@ -162,9 +163,12 @@ const ChurchResources = () => {
                   {selectedSection === "saints" && "Saints"}
                 </h1>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setSelectedSection(null)}>
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
+              <nav className="flex items-center gap-2">
+                <ThemeToggle />
+                <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+                  <SettingsIcon className="w-5 h-5" />
+                </Button>
+              </nav>
             </div>
           </div>
         </header>
@@ -544,9 +548,12 @@ const ChurchResources = () => {
                 </div>
                 <h1 className="text-2xl font-bold">Resources</h1>
               </div>
-            <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
+            <nav className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+                <SettingsIcon className="w-5 h-5" />
+              </Button>
+            </nav>
           </div>
         </div>
       </header>

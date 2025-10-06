@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Scroll, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter, BookOpen, Bookmark } from "lucide-react";
+import { Settings as SettingsIcon, Scroll, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter, BookOpen, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -466,13 +466,13 @@ const Reading = () => {
       <header className="sticky top-0 z-50 border-b border-border/50 bg-card/95 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <Button variant="ghost" onClick={() => navigate('/index')}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-            <div className="flex items-center gap-2">
+            <div></div>
+            <nav className="flex items-center gap-2">
               <ThemeToggle />
-            </div>
+              <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+                <SettingsIcon className="w-5 h-5" />
+              </Button>
+            </nav>
           </div>
 
           <ChapterSelector
