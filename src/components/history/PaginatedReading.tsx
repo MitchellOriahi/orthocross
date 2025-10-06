@@ -22,6 +22,7 @@ const HIGHLIGHT_COLORS = [
 ];
 
 const CHARS_PER_PAGE = 1200; // Approximately 200-250 words per page
+const WORDS_PER_SLIDE = 120; // Target words per slide for consistent sizing
 
 export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, islandId }: PaginatedReadingProps) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -31,16 +32,34 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
   const contentRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
-  // Split content by paragraphs (each paragraph becomes a page)
-  const pages = content.split('\n\n').filter(p => p.trim().length > 0);
-  
-  // Split all content into sentences for highlighting
+  // Split content into sentences first
   const allSentences = content.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
   
-  // Map sentences to pages
-  const pageSentences = pages.map(page => {
-    return page.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+  // Group sentences into pages based on word count
+  const pages: string[][] = [];
+  let currentPageSentences: string[] = [];
+  let currentWordCount = 0;
+  
+  allSentences.forEach(sentence => {
+    const sentenceWordCount = sentence.split(/\s+/).length;
+    
+    if (currentWordCount + sentenceWordCount > WORDS_PER_SLIDE && currentPageSentences.length > 0) {
+      pages.push([...currentPageSentences]);
+      currentPageSentences = [sentence];
+      currentWordCount = sentenceWordCount;
+    } else {
+      currentPageSentences.push(sentence);
+      currentWordCount += sentenceWordCount;
+    }
   });
+  
+  // Add the last page if it has content
+  if (currentPageSentences.length > 0) {
+    pages.push(currentPageSentences);
+  }
+  
+  // Create sentence index mapping
+  const pageSentences = pages;
 
   const totalPages = pages.length;
 
@@ -182,9 +201,9 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
       
       <div 
         ref={contentRef}
-        className="prose dark:prose-invert max-w-none mb-8 min-h-[400px]"
+        className="prose dark:prose-invert max-w-none mb-8 min-h-[300px]"
       >
-        <p className="text-lg leading-relaxed">
+        <div className="text-base sm:text-lg leading-relaxed space-y-3">
           {pageSentences[currentPage].map((sentence, idx) => {
             const globalIndex = getSentenceIndex(currentPage, idx);
             const highlight = highlights[globalIndex];
@@ -194,7 +213,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
                 key={idx}
                 onClick={() => handleSentenceClick(globalIndex)}
                 className={cn(
-                  "cursor-pointer transition-all",
+                  "cursor-pointer transition-all inline",
                   highlight && getHighlightClass(highlight)
                 )}
               >
@@ -202,7 +221,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
               </span>
             );
           })}
-        </p>
+        </div>
       </div>
 
       <div className="flex items-center justify-between gap-4">
