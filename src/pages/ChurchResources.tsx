@@ -324,8 +324,8 @@ const ChurchResources = () => {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-base pr-20 sm:pr-28">{saint.name}</div>
-                          <div className="text-sm text-muted-foreground mt-1 pr-16 sm:pr-24 line-clamp-2">{saint.title}</div>
+                          <div className="font-semibold text-base pr-20 sm:pr-28 break-words">{saint.name}</div>
+                          <div className="text-sm text-muted-foreground mt-1 pr-16 sm:pr-24 break-words line-clamp-2">{saint.title}</div>
                         </div>
                         <div className="absolute top-3 right-3 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-primary/10 text-primary font-medium whitespace-nowrap">
                           {saint.tradition === "Oriental" && "Oriental"}
