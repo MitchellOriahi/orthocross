@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -104,6 +104,31 @@ const Settings = () => {
       toast.success("Streak notifications enabled");
     } else {
       toast.success("Streak notifications disabled");
+    }
+  };
+
+  const handleReferFriend = async (method: 'native' | 'email' | 'sms') => {
+    const appUrl = window.location.origin;
+    const message = `Check out OrthoCross - a daily spiritual practice app with Bible reading streaks, fasting reminders, and Orthodox learning! ${appUrl}`;
+    
+    if (method === 'native' && navigator.share) {
+      try {
+        await navigator.share({
+          title: 'OrthoCross - Orthodox Daily Practice',
+          text: message,
+          url: appUrl
+        });
+        toast.success("Shared successfully!");
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else if (method === 'email') {
+      const subject = encodeURIComponent('Try OrthoCross App!');
+      const body = encodeURIComponent(message);
+      window.open(`mailto:?subject=${subject}&body=${body}`);
+    } else if (method === 'sms') {
+      const body = encodeURIComponent(message);
+      window.open(`sms:?body=${body}`);
     }
   };
 
@@ -279,6 +304,52 @@ const Settings = () => {
                   checked={streakNotificationsEnabled}
                   onCheckedChange={handleToggleStreakNotifications}
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Refer a Friend */}
+          <Card className="shadow-elevated">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Share2 className="w-5 h-5 text-primary" />
+                Refer a Friend
+              </CardTitle>
+              <CardDescription>
+                Share OrthoCross with friends and support us!
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground mb-4">
+                Help others build their spiritual practice by sharing OrthoCross
+              </p>
+              <div className="grid grid-cols-1 gap-2">
+                {navigator.share && (
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={() => handleReferFriend('native')}
+                  >
+                    <Share2 className="w-4 h-4 mr-3" />
+                    Share via...
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => handleReferFriend('email')}
+                >
+                  <Mail className="w-4 h-4 mr-3" />
+                  Share via Email
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => handleReferFriend('sms')}
+                >
+                  <MessageSquare className="w-4 h-4 mr-3" />
+                  Share via SMS
+                </Button>
               </div>
             </CardContent>
           </Card>
