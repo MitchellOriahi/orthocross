@@ -261,7 +261,7 @@ const Dashboard = () => {
               </div>
               <h1 className="text-2xl font-bold">Dashboard</h1>
             </div>
-            <nav className="flex items-center gap-2 mr-6">
+            <nav className="flex items-center gap-2 ml-auto mr-4">
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
