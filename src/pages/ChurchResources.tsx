@@ -314,15 +314,24 @@ const ChurchResources = () => {
                       <button
                         key={saint.id}
                         onClick={() => setSelectedSaint(saint)}
-                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative"
+                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative flex items-center gap-4"
                       >
+                        <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary/20">
+                          <img 
+                            src={saint.cardImageUrl} 
+                            alt={saint.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 pr-24">
+                          <div className="font-semibold text-base">{saint.name}</div>
+                          <div className="text-sm text-muted-foreground mt-1">{saint.title}</div>
+                        </div>
                         <div className="absolute top-2 right-2 text-xs px-2 py-1 rounded-md bg-primary/10 text-primary font-medium">
                           {saint.tradition === "Oriental" && "Oriental"}
                           {saint.tradition === "Eastern" && "Eastern"}
                           {saint.tradition === "Eastern/Oriental" && "Eastern/Oriental"}
                         </div>
-                        <div className="font-semibold text-base pr-32">{saint.name}</div>
-                        <div className="text-sm text-muted-foreground mt-1">{saint.title}</div>
                       </button>
                     ))}
                   </div>
