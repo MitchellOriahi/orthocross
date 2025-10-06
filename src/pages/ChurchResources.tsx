@@ -384,29 +384,83 @@ const ChurchResources = () => {
                         }
                         return false;
                       })
-                      .sort((a, b) => {
-                        const aIsPinned = pinnedPrayerIds.has(a.id);
-                        const bIsPinned = pinnedPrayerIds.has(b.id);
-                        
-                        // First sort by pinned status
-                        if (aIsPinned && !bIsPinned) return -1;
-                        if (!aIsPinned && bIsPinned) return 1;
-                        
-                        // If both have same pinned status and we're on "all" filter, sort by tradition
-                        if (prayerFilter === "all") {
-                          const getTraditionOrder = (tradition: string) => {
-                            if (tradition === "Eastern/Oriental") return 0;
-                            if (tradition === "Eastern") return 1;
-                            if (tradition === "Oriental") return 2;
-                            return 3;
-                          };
-                          const aOrder = getTraditionOrder(a.tradition);
-                          const bOrder = getTraditionOrder(b.tradition);
-                          return aOrder - bOrder;
-                        }
-                        
-                        return 0;
-                      })
+                       .sort((a, b) => {
+                         const aIsPinned = pinnedPrayerIds.has(a.id);
+                         const bIsPinned = pinnedPrayerIds.has(b.id);
+                         
+                         // First sort by pinned status
+                         if (aIsPinned && !bIsPinned) return -1;
+                         if (!aIsPinned && bIsPinned) return 1;
+                         
+                         // If both have same pinned status and we're on "all" filter, sort by tradition
+                         if (prayerFilter === "all") {
+                           const getTraditionOrder = (tradition: string) => {
+                             if (tradition === "Eastern/Oriental") return 0;
+                             // For Eastern and Oriental, we'll interleave them manually after
+                             if (tradition === "Eastern") return 1;
+                             if (tradition === "Oriental") return 1;
+                             return 3;
+                           };
+                           const aOrder = getTraditionOrder(a.tradition);
+                           const bOrder = getTraditionOrder(b.tradition);
+                           if (aOrder !== bOrder) return aOrder - bOrder;
+                         }
+                         
+                         return 0;
+                       })
+                       // Interleave Eastern and Oriental prayers when on "all" filter
+                       .reduce((acc: typeof prayersContent, prayer, index, array) => {
+                         if (prayerFilter !== "all") {
+                           acc.push(prayer);
+                           return acc;
+                         }
+                         
+                         const isPinned = pinnedPrayerIds.has(prayer.id);
+                         
+                         // Add Eastern/Oriental prayers as we encounter them
+                         if (prayer.tradition === "Eastern/Oriental") {
+                           acc.push(prayer);
+                         } else {
+                           // For Eastern and Oriental, we'll add them in interleaved fashion later
+                           // Store them separately first
+                         }
+                         
+                         return acc;
+                       }, [])
+                       // Now add interleaved Eastern/Oriental prayers
+                       .concat(
+                         prayerFilter === "all"
+                           ? (() => {
+                               const eastern = [...prayersContent]
+                                 .filter(p => p.tradition === "Eastern" && (prayerFilter === "all" || p.tradition.includes(prayerFilter)))
+                                 .sort((a, b) => {
+                                   const aIsPinned = pinnedPrayerIds.has(a.id);
+                                   const bIsPinned = pinnedPrayerIds.has(b.id);
+                                   if (aIsPinned && !bIsPinned) return -1;
+                                   if (!aIsPinned && bIsPinned) return 1;
+                                   return 0;
+                                 });
+                               const oriental = [...prayersContent]
+                                 .filter(p => p.tradition === "Oriental" && (prayerFilter === "all" || p.tradition.includes(prayerFilter)))
+                                 .sort((a, b) => {
+                                   const aIsPinned = pinnedPrayerIds.has(a.id);
+                                   const bIsPinned = pinnedPrayerIds.has(b.id);
+                                   if (aIsPinned && !bIsPinned) return -1;
+                                   if (!aIsPinned && bIsPinned) return 1;
+                                   return 0;
+                                 });
+                               
+                               // Interleave them
+                               const interleaved: typeof prayersContent = [];
+                               const maxLength = Math.max(eastern.length, oriental.length);
+                               for (let i = 0; i < maxLength; i++) {
+                                 if (i < eastern.length) interleaved.push(eastern[i]);
+                                 if (i < oriental.length) interleaved.push(oriental[i]);
+                               }
+                               return interleaved;
+                             })()
+                           : []
+                       )
                       .map((prayer) => {
                         const isPinned = pinnedPrayerIds.has(prayer.id);
                         // Adjust tradition display based on active filter
