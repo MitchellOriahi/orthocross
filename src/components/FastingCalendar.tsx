@@ -264,7 +264,7 @@ export const FastingCalendar = () => {
   return (
     <div className="space-y-4">
       <Card className="shadow-elevated border-border/50">
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-0">
           <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-primary" />
@@ -279,12 +279,14 @@ export const FastingCalendar = () => {
               </Button>
             </div>
           </CardTitle>
-          
-          {/* Tradition Selector */}
+        </CardHeader>
+        
+        {/* Centered Tradition Selector */}
+        <div className="flex items-center justify-center py-4">
           <RadioGroup
             value={selectedTradition}
             onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
-            className="flex gap-4 mt-6"
+            className="flex gap-4"
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Eastern Orthodox" id="eastern" />
@@ -299,7 +301,7 @@ export const FastingCalendar = () => {
               </Label>
             </div>
           </RadioGroup>
-        </CardHeader>
+        </div>
         <CardContent className="space-y-3 pt-4">
           {monthEvents.length > 0 ? (
             monthEvents.map((event, index) => {
