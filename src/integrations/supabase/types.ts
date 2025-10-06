@@ -359,6 +359,8 @@ export type Database = {
         Row: {
           created_at: string
           current_streak: number
+          guardian_angel_percentage: number | null
+          guardian_angel_saves: number | null
           id: string
           last_activity_date: string | null
           last_completion_date: string | null
@@ -369,6 +371,8 @@ export type Database = {
         Insert: {
           created_at?: string
           current_streak?: number
+          guardian_angel_percentage?: number | null
+          guardian_angel_saves?: number | null
           id?: string
           last_activity_date?: string | null
           last_completion_date?: string | null
@@ -379,6 +383,8 @@ export type Database = {
         Update: {
           created_at?: string
           current_streak?: number
+          guardian_angel_percentage?: number | null
+          guardian_angel_saves?: number | null
           id?: string
           last_activity_date?: string | null
           last_completion_date?: string | null

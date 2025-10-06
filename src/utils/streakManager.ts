@@ -1,5 +1,104 @@
 import { supabase } from "@/integrations/supabase/client";
 
+export interface GuardianAngelResult {
+  saved: boolean;
+  newStreak: number;
+  savesCount: number;
+  remainingPercentage: number;
+}
+
+/**
+ * Checks if guardian angel should intervene to save a lost streak.
+ * Returns true if the streak is saved, false otherwise.
+ */
+const checkGuardianAngelIntervention = (
+  guardianAngelPercentage: number
+): boolean => {
+  const randomRoll = Math.random() * 100;
+  return randomRoll < guardianAngelPercentage;
+};
+
+/**
+ * Checks the user's streak on app open.
+ * If more than 1 day has passed, may trigger guardian angel intervention.
+ * Returns guardian angel result if intervention happened, null otherwise.
+ */
+export const checkStreakOnAppOpen = async (
+  userId: string
+): Promise<GuardianAngelResult | null> => {
+  try {
+    const { data: streakData, error } = await supabase
+      .from('user_streaks')
+      .select('current_streak, last_activity_date, guardian_angel_percentage, guardian_angel_saves')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!streakData || !streakData.last_activity_date) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const lastActivityDate = new Date(streakData.last_activity_date + 'T00:00:00');
+    lastActivityDate.setHours(0, 0, 0, 0);
+    
+    const daysDifference = Math.floor(
+      (today.getTime() - lastActivityDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    // Only check if more than 1 day has passed (streak would be lost)
+    if (daysDifference > 1) {
+      const guardianAngelSaves = checkGuardianAngelIntervention(
+        streakData.guardian_angel_percentage
+      );
+
+      if (guardianAngelSaves) {
+        // Guardian angel saves the streak
+        const newSavesCount = streakData.guardian_angel_saves + 1;
+        const newPercentage = Math.max(0, streakData.guardian_angel_percentage - 5);
+
+        await supabase
+          .from('user_streaks')
+          .update({
+            guardian_angel_saves: newSavesCount,
+            guardian_angel_percentage: newPercentage,
+            last_activity_date: today.toISOString().split('T')[0],
+            updated_at: new Date().toISOString(),
+          })
+          .eq('user_id', userId);
+
+        return {
+          saved: true,
+          newStreak: streakData.current_streak,
+          savesCount: newSavesCount,
+          remainingPercentage: newPercentage,
+        };
+      } else {
+        // Guardian angel doesn't save - streak is lost
+        await supabase
+          .from('user_streaks')
+          .update({
+            current_streak: 0,
+            last_activity_date: null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('user_id', userId);
+
+        return {
+          saved: false,
+          newStreak: 0,
+          savesCount: streakData.guardian_angel_saves,
+          remainingPercentage: streakData.guardian_angel_percentage,
+        };
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error checking guardian angel:', error);
+    return null;
+  }
+};
+
 /**
  * Updates the user's streak based on daily activity completion.
  * Increments streak by 1 if activity is completed on a new day.

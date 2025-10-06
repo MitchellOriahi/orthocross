@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDay } from "@/components/VerseOfTheDay";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
 import { Home, Settings as SettingsIcon, LogOut, BookOpen, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { populateInitialVerses } from "@/scripts/populateInitialVerses";
+import { checkStreakOnAppOpen, GuardianAngelResult } from "@/utils/streakManager";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -22,6 +24,8 @@ const Dashboard = () => {
   const [streakDays, setStreakDays] = useState(0);
   const [hasAnyProgress, setHasAnyProgress] = useState(false);
   const [loadingReading, setLoadingReading] = useState(true);
+  const [guardianAngelResult, setGuardianAngelResult] = useState<GuardianAngelResult | null>(null);
+  const [showGuardianAngelDialog, setShowGuardianAngelDialog] = useState(false);
   const [lastReading, setLastReading] = useState<{
     title: string;
     passage: string;
@@ -59,6 +63,17 @@ const Dashboard = () => {
   const fetchStreak = async () => {
     if (!user) return;
     
+    // First check if guardian angel needs to intervene
+    const angelResult = await checkStreakOnAppOpen(user.id);
+    
+    if (angelResult) {
+      setGuardianAngelResult(angelResult);
+      setShowGuardianAngelDialog(true);
+      setStreakDays(angelResult.newStreak);
+      return;
+    }
+    
+    // Otherwise just fetch current streak
     const { data } = await supabase
       .from('user_streaks')
       .select('current_streak')
@@ -373,6 +388,18 @@ const Dashboard = () => {
       </main>
 
       <BottomNavigation />
+
+      {/* Guardian Angel Dialog */}
+      {guardianAngelResult && (
+        <GuardianAngelDialog
+          open={showGuardianAngelDialog}
+          onOpenChange={setShowGuardianAngelDialog}
+          saved={guardianAngelResult.saved}
+          streakDays={guardianAngelResult.newStreak}
+          savesCount={guardianAngelResult.savesCount}
+          remainingPercentage={guardianAngelResult.remainingPercentage}
+        />
+      )}
     </div>
   );
 };
