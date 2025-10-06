@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Cross, Church, BookOpen, UserRound } from "lucide-react";
+import { ArrowLeft, Church, BookOpen, UserRound } from "lucide-react";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import stBasilIcon from "@/assets/st-basil-icon.png";
 import {
@@ -97,7 +97,7 @@ const ChurchResources = () => {
               <Card className="shadow-elevated border-border/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Cross className="w-5 h-5 text-primary" />
+                    <Church className="w-5 h-5 text-primary" />
                     Eastern Orthodox Church Etiquette
                   </CardTitle>
                 </CardHeader>
@@ -180,7 +180,7 @@ const ChurchResources = () => {
               <Card className="shadow-elevated border-border/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Cross className="w-5 h-5 text-primary" />
+                    <Church className="w-5 h-5 text-primary" />
                     Oriental Orthodox Church Etiquette
                   </CardTitle>
                 </CardHeader>
@@ -370,7 +370,7 @@ const ChurchResources = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-2 mb-8">
-            <Church className="w-20 h-20 mx-auto text-primary" />
+            <Church className="w-12 h-12 mx-auto text-primary" />
             <h2 className="text-3xl font-bold">Orthodox Church Guide</h2>
             <p className="text-muted-foreground">Learn the traditions and proper conduct in Orthodox worship</p>
           </div>

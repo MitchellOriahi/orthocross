@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Flame, Book, Hand, Move, Settings, Cross } from "lucide-react";
+import { ChevronLeft, ChevronRight, Flame, Book, Hand, Move, Settings } from "lucide-react";
 
 const slides = [
   {
     title: "Welcome to OrthoCross",
     description: "Let's take a quick tour of the app's features",
-    icon: () => (
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M10.5 2a1.5 1.5 0 0 1 3 0v5.5H19a1.5 1.5 0 0 1 0 3h-5.5V22a1.5 1.5 0 0 1-3 0v-11.5H5a1.5 1.5 0 0 1 0-3h5.5V2z" />
-      </svg>
-    ),
+    icon: Book,
     animation: "animate-fade-in"
   },
   {
@@ -35,11 +31,7 @@ const slides = [
   {
     title: "Ready to Begin",
     description: "Explore the app and start your Orthodox journey today",
-    icon: () => (
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M10.5 2a1.5 1.5 0 0 1 3 0v5.5H19a1.5 1.5 0 0 1 0 3h-5.5V22a1.5 1.5 0 0 1-3 0v-11.5H5a1.5 1.5 0 0 1 0-3h5.5V2z" />
-      </svg>
-    ),
+    icon: Book,
     animation: "animate-scale-in"
   }
 ];
