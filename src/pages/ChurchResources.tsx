@@ -83,7 +83,7 @@ const ChurchResources = () => {
       const newPinned = new Set(pinnedPrayerIds);
       newPinned.delete(prayerId);
       setPinnedPrayerIds(newPinned);
-      toast({ description: "Prayer unpinned!", duration: 3000 });
+      toast({ description: "Prayer unpinned!", duration: 1500 });
     } else {
       // Check limit for current filter context
       const { count } = await supabase
@@ -105,7 +105,7 @@ const ChurchResources = () => {
       const newPinned = new Set(pinnedPrayerIds);
       newPinned.add(prayerId);
       setPinnedPrayerIds(newPinned);
-      toast({ description: "Prayer pinned to top!", duration: 3000 });
+      toast({ description: "Prayer pinned to top!", duration: 1500 });
     }
   };
 
