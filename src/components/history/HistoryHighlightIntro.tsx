@@ -36,7 +36,7 @@ export const HistoryHighlightIntro = () => {
               {isMobile ? "Tap" : "Click"} to Highlight Sentences
             </h2>
             <p className="text-muted-foreground max-w-xs mx-auto">
-              {isMobile ? "Tap" : "Click"} on any sentence to highlight it. Your highlights are saved automatically.
+              {isMobile ? "Tap" : "Click"} on any sentence to highlight it. Your highlights will be saved.
             </p>
           </div>
 
