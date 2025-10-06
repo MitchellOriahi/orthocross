@@ -186,7 +186,7 @@ export const saintsContent: SaintDetail[] = [
     prefix: "St.",
     name: "Mark",
     epithet: "the Apostle",
-    shortDescription: "Founder of the Coptic Church",
+    shortDescription: "Founder of the\nCoptic Church",
     tradition: "Oriental",
     iconUrl: markIcon,
     content: [
