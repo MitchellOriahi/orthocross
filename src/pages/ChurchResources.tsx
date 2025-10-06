@@ -384,10 +384,10 @@ const ChurchResources = () => {
                 <CardContent>
                   <div className="space-y-2">
                     {/* Sort prayers: pinned first, then others, then filter */}
-                    {[...prayersContent]
-                      .filter((prayer) => {
+                    {(() => {
+                      // Filter prayers based on current filter
+                      const filteredPrayers = [...prayersContent].filter((prayer) => {
                         if (prayerFilter === "all") return true;
-                        // For specific filters, only show exact matches or shared prayers
                         if (prayerFilter === "Eastern") {
                           return prayer.tradition === "Eastern" || prayer.tradition === "Eastern/Oriental";
                         }
@@ -395,84 +395,33 @@ const ChurchResources = () => {
                           return prayer.tradition === "Oriental" || prayer.tradition === "Eastern/Oriental";
                         }
                         return false;
-                      })
-                       .sort((a, b) => {
-                         const aIsPinned = pinnedPrayerIds.has(a.id);
-                         const bIsPinned = pinnedPrayerIds.has(b.id);
-                         
-                         // First sort by pinned status
-                         if (aIsPinned && !bIsPinned) return -1;
-                         if (!aIsPinned && bIsPinned) return 1;
-                         
-                         // If both have same pinned status and we're on "all" filter, sort by tradition
-                         if (prayerFilter === "all") {
-                           const getTraditionOrder = (tradition: string) => {
-                             if (tradition === "Eastern/Oriental") return 0;
-                             // For Eastern and Oriental, we'll interleave them manually after
-                             if (tradition === "Eastern") return 1;
-                             if (tradition === "Oriental") return 1;
-                             return 3;
-                           };
-                           const aOrder = getTraditionOrder(a.tradition);
-                           const bOrder = getTraditionOrder(b.tradition);
-                           if (aOrder !== bOrder) return aOrder - bOrder;
-                         }
-                         
-                         return 0;
-                       })
-                       // Interleave Eastern and Oriental prayers when on "all" filter
-                       .reduce((acc: typeof prayersContent, prayer, index, array) => {
-                         if (prayerFilter !== "all") {
-                           acc.push(prayer);
-                           return acc;
-                         }
-                         
-                         const isPinned = pinnedPrayerIds.has(prayer.id);
-                         
-                         // Add Eastern/Oriental prayers as we encounter them
-                         if (prayer.tradition === "Eastern/Oriental") {
-                           acc.push(prayer);
-                         } else {
-                           // For Eastern and Oriental, we'll add them in interleaved fashion later
-                           // Store them separately first
-                         }
-                         
-                         return acc;
-                       }, [])
-                       // Now add interleaved Eastern/Oriental prayers
-                       .concat(
-                         prayerFilter === "all"
-                           ? (() => {
-                               const eastern = [...prayersContent]
-                                 .filter(p => p.tradition === "Eastern" && (prayerFilter === "all" || p.tradition.includes(prayerFilter)))
-                                 .sort((a, b) => {
-                                   const aIsPinned = pinnedPrayerIds.has(a.id);
-                                   const bIsPinned = pinnedPrayerIds.has(b.id);
-                                   if (aIsPinned && !bIsPinned) return -1;
-                                   if (!aIsPinned && bIsPinned) return 1;
-                                   return 0;
-                                 });
-                               const oriental = [...prayersContent]
-                                 .filter(p => p.tradition === "Oriental" && (prayerFilter === "all" || p.tradition.includes(prayerFilter)))
-                                 .sort((a, b) => {
-                                   const aIsPinned = pinnedPrayerIds.has(a.id);
-                                   const bIsPinned = pinnedPrayerIds.has(b.id);
-                                   if (aIsPinned && !bIsPinned) return -1;
-                                   if (!aIsPinned && bIsPinned) return 1;
-                                   return 0;
-                                 });
-                               
-                               // Interleave them
-                               const interleaved: typeof prayersContent = [];
-                               const maxLength = Math.max(eastern.length, oriental.length);
-                               for (let i = 0; i < maxLength; i++) {
-                                 if (i < eastern.length) interleaved.push(eastern[i]);
-                                 if (i < oriental.length) interleaved.push(oriental[i]);
-                               }
-                               return interleaved;
-                             })()
-                           : []
-                       )
+                      });
+
+                      // Separate pinned and unpinned prayers
+                      const pinnedPrayers = filteredPrayers.filter(p => pinnedPrayerIds.has(p.id));
+                      const unpinnedPrayers = filteredPrayers.filter(p => !pinnedPrayerIds.has(p.id));
+
+                      // For "all" filter, interleave unpinned Eastern and Oriental
+                      let sortedUnpinned = unpinnedPrayers;
+                      if (prayerFilter === "all") {
+                        const easternOrthodox = unpinnedPrayers.filter(p => p.tradition === "Eastern/Oriental");
+                        const eastern = unpinnedPrayers.filter(p => p.tradition === "Eastern");
+                        const oriental = unpinnedPrayers.filter(p => p.tradition === "Oriental");
+                        
+                        // Start with Eastern/Oriental prayers
+                        sortedUnpinned = [...easternOrthodox];
+                        
+                        // Interleave Eastern and Oriental
+                        const maxLength = Math.max(eastern.length, oriental.length);
+                        for (let i = 0; i < maxLength; i++) {
+                          if (i < eastern.length) sortedUnpinned.push(eastern[i]);
+                          if (i < oriental.length) sortedUnpinned.push(oriental[i]);
+                        }
+                      }
+
+                      // Combine: all pinned prayers first, then unpinned
+                      return [...pinnedPrayers, ...sortedUnpinned];
+                    })()
                       .map((prayer) => {
                         const isPinned = pinnedPrayerIds.has(prayer.id);
                         // Adjust tradition display based on active filter
