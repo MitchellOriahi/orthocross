@@ -21,8 +21,7 @@ const HIGHLIGHT_COLORS = [
   { name: "Pink", class: "bg-pink-200 dark:bg-pink-900/50", value: "pink" },
 ];
 
-const CHARS_PER_PAGE = 1200; // Approximately 200-250 words per page
-const WORDS_PER_SLIDE = 120; // Target words per slide for consistent sizing
+const WORDS_PER_SLIDE = 80; // Target words per slide for consistent sizing
 
 export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, islandId }: PaginatedReadingProps) => {
   const [currentPage, setCurrentPage] = useState(0);
