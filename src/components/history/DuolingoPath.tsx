@@ -43,11 +43,7 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
     const match = title.match(/\(([^)]+)\)/);
     if (!match) return '';
     
-    // Add AD to dates
-    const timeframe = match[1];
-    // Handle ranges like "33–313" or single dates like "1054"
-    const withAD = timeframe.replace(/(\d+)/g, '$1 AD');
-    return withAD;
+    return match[1];
   };
 
   const removeTimeframe = (title: string) => {
