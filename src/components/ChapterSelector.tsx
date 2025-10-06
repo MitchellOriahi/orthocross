@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -16,8 +17,15 @@ export const ChapterSelector = ({
   currentChapter, 
   onChapterChange 
 }: ChapterSelectorProps) => {
+  const [open, setOpen] = useState(false);
+
+  const handleChapterSelect = (chapter: number) => {
+    onChapterChange(chapter);
+    setOpen(false);
+  };
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <div className="flex items-center gap-3 p-4 bg-card rounded-lg border-2 cursor-pointer hover:bg-accent hover:border-primary transition-all shadow-sm hover:shadow-md active:scale-[0.98]">
           <Book className="w-5 h-5 text-primary flex-shrink-0" />
@@ -42,7 +50,7 @@ export const ChapterSelector = ({
               <Button
                 key={chapter}
                 variant={chapter === currentChapter ? "default" : "outline"}
-                onClick={() => onChapterChange(chapter)}
+                onClick={() => handleChapterSelect(chapter)}
                 className={`aspect-square p-0 text-base font-semibold ${
                   chapter === currentChapter 
                     ? 'bg-primary text-primary-foreground' 
