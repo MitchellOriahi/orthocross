@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Play, Download, AlertCircle, Info } from "lucide-react";
+import { BookOpen, Play, Download, AlertCircle, Info, Settings as SettingsIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { BookSelector } from "@/components/BookSelector";
@@ -15,6 +15,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { ChapterMarkingDialog } from "@/components/ChapterMarkingDialog";
 import { BibleProgressTutorial } from "@/components/BibleProgressTutorial";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface ReadingProgress {
   id: string;
@@ -287,9 +288,12 @@ const Index = () => {
             </div>
             <h1 className="text-2xl font-bold">Scripture</h1>
           </div>
-          <Button variant="outline" onClick={() => navigate('/dashboard')}>
-            Back to Dashboard
-          </Button>
+          <nav className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+              <SettingsIcon className="w-5 h-5" />
+            </Button>
+          </nav>
         </div>
       </header>
 
