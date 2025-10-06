@@ -8,13 +8,19 @@ export function Toaster() {
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
-          <Toast key={id} {...props}>
-            <div className="grid gap-1">
+          <Toast 
+            key={id} 
+            {...props}
+            className="pointer-events-none"
+          >
+            <div className="grid gap-1 pointer-events-auto">
               {title && <ToastTitle>{title}</ToastTitle>}
               {description && <ToastDescription>{description}</ToastDescription>}
             </div>
-            {action}
-            <ToastClose />
+            {action && <div className="pointer-events-auto">{action}</div>}
+            <div className="pointer-events-auto">
+              <ToastClose />
+            </div>
           </Toast>
         );
       })}
