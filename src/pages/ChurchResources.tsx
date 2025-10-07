@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, X } from "lucide-react";
+import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -174,9 +174,6 @@ const ChurchResources = () => {
                 <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                   <SettingsIcon className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => setSelectedSection(null)}>
-                  <X className="w-5 h-5" />
-                </Button>
               </nav>
             </div>
           </div>
@@ -185,7 +182,15 @@ const ChurchResources = () => {
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             {selectedSection === "eastern" && (
-              <Card className="shadow-elevated border-border/50">
+              <Card className="shadow-elevated border-border/50 relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedSection(null)}
+                  className="absolute top-4 right-4 z-10"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Church className="w-5 h-5 text-primary" />
@@ -268,7 +273,15 @@ const ChurchResources = () => {
             )}
 
             {selectedSection === "oriental" && (
-              <Card className="shadow-elevated border-border/50">
+              <Card className="shadow-elevated border-border/50 relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedSection(null)}
+                  className="absolute top-4 right-4 z-10"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Church className="w-5 h-5 text-primary" />
@@ -362,7 +375,15 @@ const ChurchResources = () => {
             )}
 
             {selectedSection === "prayers" && (
-              <Card className="shadow-elevated border-border/50">
+              <Card className="shadow-elevated border-border/50 relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedSection(null)}
+                  className="absolute top-4 right-4 z-10"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BookOpen className="w-5 h-5 text-primary" />
@@ -499,7 +520,15 @@ const ChurchResources = () => {
             )}
 
             {selectedSection === "saints" && (
-              <Card className="shadow-elevated border-border/50">
+              <Card className="shadow-elevated border-border/50 relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedSection(null)}
+                  className="absolute top-4 right-4 z-10"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <UserRound className="w-5 h-5 text-primary" />
