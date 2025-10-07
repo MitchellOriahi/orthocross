@@ -15,11 +15,17 @@ export const VerseOfTheDay = () => {
       setVerse(todaysVerse);
       setLoading(false);
       
-      // Schedule notification for the verse
-      scheduleNotification(
-        "Verse of the Day",
-        `${todaysVerse.text} — ${todaysVerse.reference}`
-      );
+      // Schedule notification for the verse only once per day
+      const lastNotificationDate = localStorage.getItem('verse_notification_date');
+      const today = new Date().toISOString().split('T')[0];
+      
+      if (lastNotificationDate !== today) {
+        scheduleNotification(
+          "Verse of the Day",
+          `${todaysVerse.text} — ${todaysVerse.reference}`
+        );
+        localStorage.setItem('verse_notification_date', today);
+      }
     };
 
     loadVerseOfTheDay();

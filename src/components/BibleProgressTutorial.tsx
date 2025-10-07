@@ -55,7 +55,7 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
           
           {/* Simple centered text */}
           <p className="text-lg leading-relaxed px-4">
-            Use the <Info className="inline w-5 h-5 text-primary" /> button next to the Bible completion meter to mark chapters you've already read if you don't want to restart your Bible journey.
+            Mark chapters you've already read using the <Info className="inline w-5 h-5 text-primary" /> button next to the Bible completion meter from scratch.
           </p>
 
           <p className="text-xs text-muted-foreground">
