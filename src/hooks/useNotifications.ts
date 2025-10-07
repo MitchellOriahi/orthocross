@@ -21,8 +21,6 @@ export const useNotifications = () => {
         const permission = await LocalNotifications.requestPermissions();
         if (permission.display === 'granted') {
           console.log('Notification permissions granted');
-          // Schedule default reminders on first load
-          scheduleStreakReminders();
         }
       } catch (error) {
         console.log('Notifications not available on this platform');
