@@ -193,7 +193,10 @@ const ChurchResources = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Church className="w-5 h-5 text-primary" />
-                    Eastern Orthodox Church Etiquette
+                    <div>
+                      <div>Eastern Orthodox</div>
+                      <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -284,7 +287,10 @@ const ChurchResources = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Church className="w-5 h-5 text-primary" />
-                    Oriental Orthodox Church Etiquette
+                    <div>
+                      <div>Oriental Orthodox</div>
+                      <div className="text-sm text-muted-foreground font-normal">Church Etiquette</div>
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
