@@ -9,13 +9,25 @@ interface BibleProgressTutorialProps {
 export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps) => {
   const [canDismiss, setCanDismiss] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [timeProgress, setTimeProgress] = useState(0);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setCanDismiss(true);
-    }, 10000);
+    const totalTime = 7000; // 7 seconds
+    const intervalTime = 50; // Update every 50ms for smooth animation
+    const steps = totalTime / intervalTime;
+    let currentStep = 0;
 
-    return () => clearTimeout(timer);
+    const progressInterval = setInterval(() => {
+      currentStep++;
+      setTimeProgress((currentStep / steps) * 100);
+      
+      if (currentStep >= steps) {
+        clearInterval(progressInterval);
+        setCanDismiss(true);
+      }
+    }, intervalTime);
+
+    return () => clearInterval(progressInterval);
   }, []);
 
   const handleDismiss = () => {
@@ -59,12 +71,15 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
           </p>
 
           <p className="text-xs text-muted-foreground">
-            {canDismiss ? "Tap anywhere to continue" : "Please wait a moment..."}
+            {canDismiss ? "Tap anywhere to continue" : `Please wait ${Math.ceil((100 - timeProgress) / 100 * 7)} seconds...`}
           </p>
           
           {!canDismiss && (
-            <div className="w-full bg-accent rounded-full h-1 overflow-hidden">
-              <div className="h-full bg-primary animate-progress-bar" />
+            <div className="w-full bg-accent rounded-full h-2 overflow-hidden">
+              <div 
+                className="h-full bg-primary transition-all duration-75 ease-linear" 
+                style={{ width: `${timeProgress}%` }}
+              />
             </div>
           )}
         </CardContent>
