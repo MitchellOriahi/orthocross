@@ -156,18 +156,13 @@ const ChurchResources = () => {
     return (
       <div className="min-h-screen gradient-peaceful pb-20">
         <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-          <div className="container mx-auto px-4 py-4">
+          <div className="container mx-auto px-4 lg:px-2 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
                   <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                 </div>
-                <h1 className="text-2xl font-bold">
-                  {selectedSection === "eastern" && "Eastern Etiquette"}
-                  {selectedSection === "oriental" && "Oriental Etiquette"}
-                  {selectedSection === "prayers" && "Prayers"}
-                  {selectedSection === "saints" && "Saints"}
-                </h1>
+                <h1 className="text-2xl font-bold">Resources</h1>
               </div>
               <nav className="flex items-center gap-2">
                 <ThemeToggle />
@@ -182,15 +177,15 @@ const ChurchResources = () => {
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             {selectedSection === "eastern" && (
-              <Card className="shadow-elevated border-border/50 relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSelectedSection(null)}
-                  className="absolute top-4 right-4 z-10"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </Button>
+              <Card className="shadow-elevated border-border/50">
+                <div className="flex items-center justify-between p-4 border-b border-border/50">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setSelectedSection(null)}
+                  >
+                    ← Back
+                  </Button>
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Church className="w-5 h-5 text-primary" />
@@ -273,15 +268,15 @@ const ChurchResources = () => {
             )}
 
             {selectedSection === "oriental" && (
-              <Card className="shadow-elevated border-border/50 relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSelectedSection(null)}
-                  className="absolute top-4 right-4 z-10"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </Button>
+              <Card className="shadow-elevated border-border/50">
+                <div className="flex items-center justify-between p-4 border-b border-border/50">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setSelectedSection(null)}
+                  >
+                    ← Back
+                  </Button>
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Church className="w-5 h-5 text-primary" />
@@ -375,15 +370,15 @@ const ChurchResources = () => {
             )}
 
             {selectedSection === "prayers" && (
-              <Card className="shadow-elevated border-border/50 relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSelectedSection(null)}
-                  className="absolute top-4 right-4 z-10"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </Button>
+              <Card className="shadow-elevated border-border/50">
+                <div className="flex items-center justify-between p-4 border-b border-border/50">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setSelectedSection(null)}
+                  >
+                    ← Back
+                  </Button>
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BookOpen className="w-5 h-5 text-primary" />
@@ -520,15 +515,15 @@ const ChurchResources = () => {
             )}
 
             {selectedSection === "saints" && (
-              <Card className="shadow-elevated border-border/50 relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSelectedSection(null)}
-                  className="absolute top-4 right-4 z-10"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </Button>
+              <Card className="shadow-elevated border-border/50">
+                <div className="flex items-center justify-between p-4 border-b border-border/50">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setSelectedSection(null)}
+                  >
+                    ← Back
+                  </Button>
+                </div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <UserRound className="w-5 h-5 text-primary" />

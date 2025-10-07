@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { ArrowLeft, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Shield, Settings as SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
 interface Quiz {
   question: string;
@@ -32,6 +35,7 @@ interface IslandDetailProps {
 }
 
 export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandDetailProps) => {
+  const navigate = useNavigate();
   const [stage, setStage] = useState<'reading' | 'quiz' | 'complete'>('reading');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
@@ -91,23 +95,38 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const progress = ((currentQuestion + 1) / island.quiz.length) * 100;
 
   return (
-    <div className="min-h-screen gradient-peaceful">
-      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <Button variant="ghost" onClick={onBack} className="flex-shrink-0">
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              <span className="hidden sm:inline">Back to Path</span>
-              <span className="sm:hidden">Back</span>
-            </Button>
-            <h2 className="text-base sm:text-lg font-semibold truncate">{island.title}</h2>
-            <div className="w-20 sm:w-32 flex-shrink-0" />
+    <div className="min-h-screen gradient-peaceful pb-20">
+      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 lg:px-2 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
+                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
+              </div>
+              <h1 className="text-2xl font-bold">History</h1>
+            </div>
+            <nav className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+                <SettingsIcon className="w-5 h-5" />
+              </Button>
+            </nav>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-3xl">
-        <h1 className="text-3xl font-bold mb-6">{island.title}</h1>
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <Card className="shadow-elevated border-border/50 mb-6">
+          <div className="flex items-center justify-between p-4 border-b border-border/50">
+            <Button
+              variant="ghost"
+              onClick={onBack}
+            >
+              ← Back
+            </Button>
+          </div>
+          <div className="p-6">
+            <h1 className="text-3xl font-bold mb-6">{island.title}</h1>
 
         {stage === 'reading' && (
           <>
@@ -187,6 +206,8 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             </Button>
           </Card>
         )}
+          </div>
+        </Card>
       </main>
     </div>
   );
