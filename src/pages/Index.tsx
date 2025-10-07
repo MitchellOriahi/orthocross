@@ -9,7 +9,9 @@ import { BookSelector } from "@/components/BookSelector";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { BIBLE_BOOKS, getCategorizedBooks, BookInfo } from "@/data/bibleContent";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useTheme } from "next-themes";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
@@ -33,6 +35,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { theme } = useTheme();
   const [lastRead, setLastRead] = useState<ReadingProgress | null>(null);
   const [loading, setLoading] = useState(true);
   const [bibleCompletion, setBibleCompletion] = useState(0);
@@ -283,8 +286,8 @@ const Index = () => {
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
-                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black' : 'bg-white'}`}>
+                <img src={theme === 'light' ? orthodoxCrossLight : orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-2xl font-bold">Scripture</h1>
           </div>

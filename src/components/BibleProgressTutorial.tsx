@@ -35,11 +35,11 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
         onClick={handleDismiss}
       />
       
-      {/* Spotlight and arrow pointing to the i button */}
-      <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-white/20 blur-xl animate-pulse" />
-      <div className="absolute top-12 right-12 text-white animate-bounce">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M7 7l5-5 5 5M12 19V2" />
+      {/* Spotlight and arrow pointing to the i button in Bible completion meter */}
+      <div className="absolute top-1/3 right-8 w-20 h-20 rounded-full bg-white/20 blur-xl animate-pulse" />
+      <div className="absolute top-1/3 right-16 -translate-y-8 text-white animate-bounce">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M7 17l10-10M17 17V7h-10" />
         </svg>
       </div>
       
@@ -55,7 +55,7 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
           
           {/* Simple centered text */}
           <p className="text-lg leading-relaxed px-4">
-            Mark chapters you've already read using the <Info className="inline w-5 h-5 text-primary" /> button next to the Bible completion meter from scratch.
+            Mark chapters you've already read using the <Info className="inline w-5 h-5 text-primary" /> button next to the Bible completion meter.
           </p>
 
           <p className="text-xs text-muted-foreground">
