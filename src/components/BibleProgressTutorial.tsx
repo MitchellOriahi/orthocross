@@ -44,7 +44,7 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
       </div>
       
       {/* Tutorial card - welcome slide style */}
-      <Card className="relative z-10 max-w-md mx-4 shadow-2xl border-none">
+      <Card className="relative z-10 max-w-md mx-4 shadow-2xl border-none cursor-pointer" onClick={handleDismiss}>
         <CardContent className="pt-12 pb-8 space-y-8 text-center">
           {/* Large centered icon */}
           <div className="flex justify-center">
