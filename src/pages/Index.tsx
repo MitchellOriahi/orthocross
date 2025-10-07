@@ -287,7 +287,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
-                <img src={theme === 'light' ? orthodoxCrossLight : orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
+                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-2xl font-bold">Scripture</h1>
           </div>
