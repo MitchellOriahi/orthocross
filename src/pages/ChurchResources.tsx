@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin } from "lucide-react";
+import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, X } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -173,6 +173,9 @@ const ChurchResources = () => {
                 <ThemeToggle />
                 <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                   <SettingsIcon className="w-5 h-5" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => setSelectedSection(null)}>
+                  <X className="w-5 h-5" />
                 </Button>
               </nav>
             </div>
