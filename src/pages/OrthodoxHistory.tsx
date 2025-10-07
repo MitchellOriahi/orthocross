@@ -6,7 +6,9 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BottomNavigation } from "@/components/BottomNavigation";
-import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import orthodoxCrossDark from "@/assets/orthodox-cross.jpg";
+import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
+import { useTheme } from "next-themes";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { historyContent } from "@/data/historyContent";
@@ -26,6 +28,8 @@ interface UserProgress {
 const OrthodoxHistory = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
+  const { theme } = useTheme();
+  const orthodoxCross = theme === 'light' ? orthodoxCrossLight : orthodoxCrossDark;
   const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
   const [progress, setProgress] = useState<UserProgress[]>([]);

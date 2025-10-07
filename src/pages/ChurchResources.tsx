@@ -6,7 +6,9 @@ import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft }
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import orthodoxCrossDark from "@/assets/orthodox-cross.jpg";
+import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
+import { useTheme } from "next-themes";
 import stBasilIcon from "@/assets/st-basil-icon.png";
 import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
 import orthodoxCrossWhite from "@/assets/orthodox-cross-white-new.png";
@@ -30,6 +32,8 @@ const ChurchResources = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { theme } = useTheme();
+  const orthodoxCross = theme === 'light' ? orthodoxCrossLight : orthodoxCrossDark;
   const [selectedSection, setSelectedSection] = useState<SectionType>(null);
   const [selectedSaint, setSelectedSaint] = useState<SaintDetail | null>(null);
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);

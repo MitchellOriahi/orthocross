@@ -15,13 +15,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import orthodoxCrossDark from "@/assets/orthodox-cross.jpg";
+import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
+import { useTheme } from "next-themes";
 import { populateInitialVerses } from "@/scripts/populateInitialVerses";
 import { checkStreakOnAppOpen, GuardianAngelResult } from "@/utils/streakManager";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
+  const { theme } = useTheme();
+  const orthodoxCross = theme === 'light' ? orthodoxCrossLight : orthodoxCrossDark;
   const [streakDays, setStreakDays] = useState(0);
   const [hasAnyProgress, setHasAnyProgress] = useState(false);
   const [loadingReading, setLoadingReading] = useState(true);

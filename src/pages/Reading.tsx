@@ -12,7 +12,9 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChapterSelector } from "@/components/ChapterSelector";
 import { bibleContent } from "@/data/bibleContent";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import orthodoxCrossDark from "@/assets/orthodox-cross.jpg";
+import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
+import { useTheme } from "next-themes";
 
 interface VerseHighlight {
   id: string;
@@ -38,6 +40,8 @@ const Reading = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { theme } = useTheme();
+  const orthodoxCross = theme === 'light' ? orthodoxCrossLight : orthodoxCrossDark;
   const contentRef = useRef<HTMLDivElement>(null);
   
   const state = location.state || {};
