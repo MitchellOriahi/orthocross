@@ -112,43 +112,49 @@ const ChurchResources = () => {
 
   if (selectedSaint) {
     return (
-      <DetailedContentView
-        title={`${selectedSaint.prefix} ${selectedSaint.name}${selectedSaint.epithet ? ` ${selectedSaint.epithet}` : ''}`}
-        subtitle={selectedSaint.shortDescription}
-        content={selectedSaint.content}
-        onClose={() => {
-          setSelectedSaint(null);
-          setSelectedSection("saints");
-        }}
-        showProgress={true}
-        onComplete={() => {
-          toast({ description: `Completed reading about ${selectedSaint.prefix} ${selectedSaint.name}! 🙏` });
-          setSelectedSaint(null);
-          setSelectedSection("saints");
-        }}
-      />
+      <div className="pb-20">
+        <DetailedContentView
+          title={`${selectedSaint.prefix} ${selectedSaint.name}${selectedSaint.epithet ? ` ${selectedSaint.epithet}` : ''}`}
+          subtitle={selectedSaint.shortDescription}
+          content={selectedSaint.content}
+          onClose={() => {
+            setSelectedSaint(null);
+            setSelectedSection("saints");
+          }}
+          showProgress={true}
+          onComplete={() => {
+            toast({ description: `Completed reading about ${selectedSaint.prefix} ${selectedSaint.name}! 🙏` });
+            setSelectedSaint(null);
+            setSelectedSection("saints");
+          }}
+        />
+        <BottomNavigation />
+      </div>
     );
   }
 
   if (selectedPrayer) {
     return (
-      <PrayerDetailView
-        name={selectedPrayer.name}
-        title={selectedPrayer.title}
-        content={selectedPrayer.content}
-        prayerId={selectedPrayer.id}
-        onClose={() => {
-          setSelectedPrayer(null);
-          setSelectedSection("prayers");
-        }}
-      />
+      <div className="pb-20">
+        <PrayerDetailView
+          name={selectedPrayer.name}
+          title={selectedPrayer.title}
+          content={selectedPrayer.content}
+          prayerId={selectedPrayer.id}
+          onClose={() => {
+            setSelectedPrayer(null);
+            setSelectedSection("prayers");
+          }}
+        />
+        <BottomNavigation />
+      </div>
     );
   }
 
   // Fullscreen expanded view for a selected section
   if (selectedSection) {
     return (
-      <div className="min-h-screen gradient-peaceful">
+      <div className="min-h-screen gradient-peaceful pb-20">
         <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
@@ -531,6 +537,7 @@ const ChurchResources = () => {
             )}
           </div>
         </main>
+        <BottomNavigation />
       </div>
     );
   }
