@@ -12,9 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChapterSelector } from "@/components/ChapterSelector";
 import { bibleContent } from "@/data/bibleContent";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import orthodoxCrossDark from "@/assets/orthodox-cross.jpg";
-import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
-import { useTheme } from "next-themes";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
 interface VerseHighlight {
   id: string;
@@ -40,8 +38,6 @@ const Reading = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
-  const { theme } = useTheme();
-  const orthodoxCross = theme === 'light' ? orthodoxCrossLight : orthodoxCrossDark;
   const contentRef = useRef<HTMLDivElement>(null);
   
   const state = location.state || {};
@@ -473,7 +469,7 @@ const Reading = () => {
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black' : 'bg-white'}`}>
+              <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-2xl font-bold">Scripture</h1>

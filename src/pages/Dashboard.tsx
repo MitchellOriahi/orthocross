@@ -15,17 +15,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import orthodoxCrossDark from "@/assets/orthodox-cross.jpg";
-import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
-import { useTheme } from "next-themes";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { populateInitialVerses } from "@/scripts/populateInitialVerses";
 import { checkStreakOnAppOpen, GuardianAngelResult } from "@/utils/streakManager";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
-  const { theme } = useTheme();
-  const orthodoxCross = theme === 'light' ? orthodoxCrossLight : orthodoxCrossDark;
   const [streakDays, setStreakDays] = useState(0);
   const [hasAnyProgress, setHasAnyProgress] = useState(false);
   const [loadingReading, setLoadingReading] = useState(true);
@@ -277,7 +273,7 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black' : 'bg-white'}`}>
+              <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-2xl font-bold">Dashboard</h1>

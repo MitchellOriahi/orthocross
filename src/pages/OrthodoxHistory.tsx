@@ -6,9 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BottomNavigation } from "@/components/BottomNavigation";
-import orthodoxCrossDark from "@/assets/orthodox-cross.jpg";
-import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
-import { useTheme } from "next-themes";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { historyContent } from "@/data/historyContent";
@@ -28,8 +26,6 @@ interface UserProgress {
 const OrthodoxHistory = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
-  const { theme } = useTheme();
-  const orthodoxCross = theme === 'light' ? orthodoxCrossLight : orthodoxCrossDark;
   const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
   const [progress, setProgress] = useState<UserProgress[]>([]);
@@ -128,7 +124,7 @@ const OrthodoxHistory = () => {
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black' : 'bg-white'}`}>
+              <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-2xl font-bold">History</h1>

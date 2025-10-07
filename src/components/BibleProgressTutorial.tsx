@@ -36,8 +36,8 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
       />
       
       {/* Spotlight and arrow pointing to the i button */}
-      <div className="absolute top-32 right-8 w-16 h-16 rounded-full bg-white/20 blur-xl animate-pulse" />
-      <div className="absolute top-28 right-6 text-white animate-bounce">
+      <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-white/20 blur-xl animate-pulse" />
+      <div className="absolute top-12 right-12 text-white animate-bounce">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M7 7l5-5 5 5M12 19V2" />
         </svg>
