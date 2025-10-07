@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChapterSelector } from "@/components/ChapterSelector";
 import { bibleContent } from "@/data/bibleContent";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
 interface VerseHighlight {
   id: string;
@@ -463,10 +464,15 @@ const Reading = () => {
   return (
     <div className="min-h-screen gradient-peaceful">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border/50 bg-card/95 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
+      <header className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-md shadow-sm">
+        <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between mb-4">
-            <div></div>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
+                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
+              </div>
+              <h1 className="text-2xl font-bold">Scripture</h1>
+            </div>
             <nav className="flex items-center gap-2">
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
