@@ -1,31 +1,17 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNotifications } from "@/hooks/useNotifications";
 import { getVerseOfTheDay } from "@/lib/verseOfTheDay";
 
 export const VerseOfTheDay = () => {
   const [verse, setVerse] = useState<{ reference: string; text: string } | null>(null);
   const [loading, setLoading] = useState(true);
-  const { scheduleNotification } = useNotifications();
 
   useEffect(() => {
     const loadVerseOfTheDay = () => {
       const todaysVerse = getVerseOfTheDay();
       setVerse(todaysVerse);
       setLoading(false);
-      
-      // Schedule notification for the verse only once per day
-      const lastNotificationDate = localStorage.getItem('verse_notification_date');
-      const today = new Date().toISOString().split('T')[0];
-      
-      if (lastNotificationDate !== today) {
-        scheduleNotification(
-          "Verse of the Day",
-          `${todaysVerse.text} — ${todaysVerse.reference}`
-        );
-        localStorage.setItem('verse_notification_date', today);
-      }
     };
 
     loadVerseOfTheDay();
@@ -49,7 +35,7 @@ export const VerseOfTheDay = () => {
     return () => {
       clearTimeout(midnightTimer);
     };
-  }, [scheduleNotification]);
+  }, []);
 
   if (loading) {
     return (
