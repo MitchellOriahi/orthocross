@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getAllFastingEvents, formatEventDate } from "@/data/fastingEvents";
 
 interface FastingEvent {
   name: string;
@@ -32,36 +33,6 @@ interface FastingEvent {
   type: "fast" | "feast";
   isMajor: boolean;
 }
-
-const fastingEvents: FastingEvent[] = [
-  // Eastern Orthodox Fasts
-  { name: "Nativity Fast", startDate: "November 15", endDate: "December 24", tradition: "Eastern Orthodox", type: "fast", isMajor: true },
-  { name: "Great Lent", startDate: "March 3", endDate: "April 19", tradition: "Eastern Orthodox", type: "fast", isMajor: true },
-  { name: "Apostles' Fast", startDate: "June 15", endDate: "June 28", tradition: "Eastern Orthodox", type: "fast", isMajor: true },
-  { name: "Dormition Fast", startDate: "August 1", endDate: "August 14", tradition: "Eastern Orthodox", type: "fast", isMajor: true },
-  
-  // Oriental Orthodox Fasts
-  { name: "Nativity Fast", startDate: "November 25", endDate: "January 6", tradition: "Oriental Orthodox", type: "fast", isMajor: true },
-  { name: "Nineveh Fast", startDate: "February 3", endDate: "February 5", tradition: "Oriental Orthodox", type: "fast", isMajor: true },
-  { name: "Great Lent", startDate: "February 10", endDate: "April 5", tradition: "Oriental Orthodox", type: "fast", isMajor: true },
-  { name: "Apostles' Fast", startDate: "June 16", endDate: "July 11", tradition: "Oriental Orthodox", type: "fast", isMajor: true },
-  { name: "Dormition Fast", startDate: "August 7", endDate: "August 21", tradition: "Oriental Orthodox", type: "fast", isMajor: true },
-  
-  // Major Feasts (Eastern & Oriental)
-  { name: "Nativity of Christ", startDate: "December 25", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Theophany (Epiphany)", startDate: "January 6", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Nativity of Christ", startDate: "January 7", tradition: "Oriental Orthodox", type: "feast", isMajor: true },
-  { name: "Presentation of Christ", startDate: "February 2", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Annunciation", startDate: "March 25", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Palm Sunday", startDate: "April 13", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Pascha (Easter)", startDate: "April 20", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Ascension", startDate: "May 29", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Pentecost", startDate: "June 8", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Transfiguration", startDate: "August 6", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Dormition of Theotokos", startDate: "August 15", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Nativity of Theotokos", startDate: "September 8", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-  { name: "Elevation of the Cross", startDate: "September 14", tradition: "Eastern Orthodox", type: "feast", isMajor: true },
-];
 
 export const FastingCalendar = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
@@ -116,24 +87,47 @@ export const FastingCalendar = () => {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  const getMonthEvents = (month: number) => {
-    const events = fastingEvents.filter(event => {
-      const eventDates = event.endDate ? [event.startDate, event.endDate] : [event.startDate];
-      const eventMonths = eventDates.map(date => {
-        const monthStr = date.split(' ')[0];
-        return monthNames.indexOf(monthStr);
-      });
-      
-      return eventMonths.some(m => m === month) && event.tradition === selectedTradition;
-    });
+  const getMonthEvents = (month: number): FastingEvent[] => {
+    const allEvents = getAllFastingEvents(selectedYear);
+    const traditionFilter = selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental";
     
-    // Sort by type (feasts then fasts), then by date
-    return events.sort((a, b) => {
-      if (a.type !== b.type) {
-        return a.type === "feast" ? -1 : 1;
-      }
-      return 0;
-    });
+    const events = allEvents
+      .filter(event => event.tradition === traditionFilter)
+      .filter(event => {
+        // Check if event falls in the selected month
+        const isInMonth = event.month === month;
+        const endsInMonth = event.endMonth !== undefined && event.endMonth === month;
+        
+        // For multi-day events, check if month is in range
+        if (event.endMonth !== undefined) {
+          // Handle year boundary (e.g., Nov to Jan)
+          if (event.endMonth < event.month) {
+            return month >= event.month || month <= event.endMonth;
+          }
+          return month >= event.month && month <= event.endMonth;
+        }
+        
+        return isInMonth;
+      })
+      .map(event => ({
+        name: event.name,
+        startDate: formatEventDate(event.month, event.day),
+        endDate: event.endMonth !== undefined && event.endDay !== undefined 
+          ? formatEventDate(event.endMonth, event.endDay) 
+          : undefined,
+        tradition: selectedTradition,
+        type: event.type,
+        isMajor: event.isMajor
+      }))
+      .sort((a, b) => {
+        // Sort by type (feasts first, then fasts)
+        if (a.type !== b.type) {
+          return a.type === "feast" ? -1 : 1;
+        }
+        return 0;
+      });
+    
+    return events;
   };
 
   const handleReminderClick = (event: FastingEvent) => {
