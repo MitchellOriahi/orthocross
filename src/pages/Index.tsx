@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ChapterMarkingDialog } from "@/components/ChapterMarkingDialog";
 import { BibleProgressTutorial } from "@/components/BibleProgressTutorial";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { DonateButton } from "@/components/DonateButton";
 
 interface ReadingProgress {
   id: string;
@@ -292,6 +293,7 @@ const Index = () => {
             <h1 className="text-2xl font-bold">Scripture</h1>
           </div>
           <nav className="flex items-center gap-2">
+            <DonateButton />
             <ThemeToggle />
             <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
               <SettingsIcon className="w-5 h-5" />

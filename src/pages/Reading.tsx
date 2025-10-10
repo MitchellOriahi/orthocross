@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { DonateButton } from "@/components/DonateButton";
 import { ChapterSelector } from "@/components/ChapterSelector";
 import { bibleContent } from "@/data/bibleContent";
 import { useTheme } from "next-themes";
@@ -478,6 +479,7 @@ const Reading = () => {
               <h1 className="text-2xl font-bold">Scripture</h1>
             </div>
             <nav className="flex items-center gap-2">
+              <DonateButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
