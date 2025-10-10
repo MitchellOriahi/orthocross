@@ -79,7 +79,7 @@ export const DonationPromptDialog = () => {
               Maybe Later
             </Button>
             <Button variant="sacred" onClick={handleDonate} className="flex-1">
-              Donate Now
+              Donate
             </Button>
           </div>
         </DialogContent>
