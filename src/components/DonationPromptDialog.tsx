@@ -69,7 +69,7 @@ export const DonationPromptDialog = () => {
               <Heart className="w-8 h-8 text-primary" />
             </div>
             <DialogTitle className="text-2xl">Support OrthoCross</DialogTitle>
-            <DialogDescription className="text-base px-2">
+            <DialogDescription className="text-base">
               Help an independent developer spread the Gospel to as many people as possible. Your donation keeps this app free for everyone.
             </DialogDescription>
           </DialogHeader>
