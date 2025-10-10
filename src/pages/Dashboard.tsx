@@ -12,6 +12,7 @@ import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
 import { StreakMilestoneShare } from "@/components/StreakMilestoneShare";
 import { DonateButton } from "@/components/DonateButton";
 import { DonationPromptDialog } from "@/components/DonationPromptDialog";
+import { DonationThankYouDialog } from "@/components/DonationThankYouDialog";
 import { Settings as SettingsIcon, BookOpen, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -408,6 +409,9 @@ const Dashboard = () => {
 
       {/* Donation Prompt */}
       <DonationPromptDialog />
+      
+      {/* Donation Thank You */}
+      <DonationThankYouDialog />
 
       {/* Guardian Angel Dialog */}
       {guardianAngelResult && (

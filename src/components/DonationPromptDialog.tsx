@@ -63,16 +63,7 @@ export const DonationPromptDialog = () => {
   return (
     <>
       <Dialog open={showPrompt} onOpenChange={(open) => !open && handleDismiss()}>
-        <DialogContent className="sm:max-w-md">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-4 top-4"
-            onClick={handleDismiss}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-          
+        <DialogContent className="sm:max-w-md" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
           <DialogHeader className="text-center items-center space-y-4 pt-6">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
               <Heart className="w-8 h-8 text-primary" />
