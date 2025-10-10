@@ -1,5 +1,8 @@
 project_id = "atjpjmhumzfpotrkefaz"
 
+[functions.create-donation]
+verify_jwt = false
+
 [functions.fetch-bible-chapter]
 verify_jwt = false
 
