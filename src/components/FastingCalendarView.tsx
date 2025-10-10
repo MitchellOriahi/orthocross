@@ -25,7 +25,7 @@ const getFixedFastingEvents = (year: number): FastingEvent[] => [
   { name: "Elevation of Cross", date: new Date(year, 8, 14), tradition: "Eastern", type: "feast" },
   
   // Oriental Orthodox
-  { name: "Nativity Fast", date: new Date(year, 10, 25), endDate: new Date(year, 0, 6), tradition: "Oriental", type: "fast" },
+  { name: "Nativity Fast", date: new Date(year, 10, 25), endDate: new Date(year + 1, 0, 6), tradition: "Oriental", type: "fast" },
   { name: "Nativity", date: new Date(year, 0, 7), tradition: "Oriental", type: "feast" },
   { name: "Nineveh Fast", date: new Date(year, 1, 3), endDate: new Date(year, 1, 5), tradition: "Oriental", type: "fast" },
   { name: "Great Lent", date: new Date(year, 1, 10), endDate: new Date(year, 3, 19), tradition: "Oriental", type: "fast" },
