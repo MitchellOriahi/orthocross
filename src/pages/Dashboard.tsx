@@ -10,6 +10,8 @@ import { VerseOfTheDay } from "@/components/VerseOfTheDay";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
 import { StreakMilestoneShare } from "@/components/StreakMilestoneShare";
+import { DonateButton } from "@/components/DonateButton";
+import { DonationPromptDialog } from "@/components/DonationPromptDialog";
 import { Settings as SettingsIcon, BookOpen, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -282,6 +284,7 @@ const Dashboard = () => {
               <h1 className="text-2xl font-bold">Dashboard</h1>
             </div>
             <nav className="flex items-center gap-2">
+              <DonateButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
@@ -402,6 +405,9 @@ const Dashboard = () => {
       </main>
 
       <BottomNavigation />
+
+      {/* Donation Prompt */}
+      <DonationPromptDialog />
 
       {/* Guardian Angel Dialog */}
       {guardianAngelResult && (
