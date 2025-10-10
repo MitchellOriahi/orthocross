@@ -9,28 +9,33 @@ interface FastingEvent {
   type: "fast" | "feast";
 }
 
-const fastingEvents: FastingEvent[] = [
+// Fixed date events (month, day) - will work for any year
+const getFixedFastingEvents = (year: number): FastingEvent[] => [
   // Eastern Orthodox Fasts & Feasts
-  { name: "Nativity Fast", date: new Date(2025, 10, 15), tradition: "Eastern", type: "fast" },
-  { name: "Nativity", date: new Date(2025, 11, 25), tradition: "Eastern", type: "feast" },
-  { name: "Theophany", date: new Date(2026, 0, 6), tradition: "Eastern", type: "feast" },
-  { name: "Presentation", date: new Date(2025, 1, 2), tradition: "Eastern", type: "feast" },
-  { name: "Annunciation", date: new Date(2025, 2, 25), tradition: "Eastern", type: "feast" },
-  { name: "Palm Sunday", date: new Date(2025, 3, 13), tradition: "Eastern", type: "feast" },
-  { name: "Pascha", date: new Date(2025, 3, 20), tradition: "Eastern", type: "feast" },
-  { name: "Ascension", date: new Date(2025, 4, 29), tradition: "Eastern", type: "feast" },
-  { name: "Pentecost", date: new Date(2025, 5, 8), tradition: "Eastern", type: "feast" },
-  { name: "Transfiguration", date: new Date(2025, 7, 6), tradition: "Eastern", type: "feast" },
-  { name: "Dormition Fast", date: new Date(2025, 7, 1), tradition: "Eastern", type: "fast" },
-  { name: "Dormition", date: new Date(2025, 7, 15), tradition: "Eastern", type: "feast" },
-  { name: "Nativity of Theotokos", date: new Date(2025, 8, 8), tradition: "Eastern", type: "feast" },
-  { name: "Elevation of Cross", date: new Date(2025, 8, 14), tradition: "Eastern", type: "feast" },
+  { name: "Nativity Fast", date: new Date(year, 10, 15), tradition: "Eastern", type: "fast" },
+  { name: "Nativity", date: new Date(year, 11, 25), tradition: "Eastern", type: "feast" },
+  { name: "Theophany", date: new Date(year, 0, 6), tradition: "Eastern", type: "feast" },
+  { name: "Presentation", date: new Date(year, 1, 2), tradition: "Eastern", type: "feast" },
+  { name: "Annunciation", date: new Date(year, 2, 25), tradition: "Eastern", type: "feast" },
+  { name: "Transfiguration", date: new Date(year, 7, 6), tradition: "Eastern", type: "feast" },
+  { name: "Dormition Fast", date: new Date(year, 7, 1), tradition: "Eastern", type: "fast" },
+  { name: "Dormition", date: new Date(year, 7, 15), tradition: "Eastern", type: "feast" },
+  { name: "Nativity of Theotokos", date: new Date(year, 8, 8), tradition: "Eastern", type: "feast" },
+  { name: "Elevation of Cross", date: new Date(year, 8, 14), tradition: "Eastern", type: "feast" },
   
   // Oriental Orthodox
-  { name: "Nativity Fast", date: new Date(2025, 10, 25), tradition: "Oriental", type: "fast" },
-  { name: "Nativity", date: new Date(2026, 0, 7), tradition: "Oriental", type: "feast" },
-  { name: "Nineveh Fast", date: new Date(2025, 1, 3), tradition: "Oriental", type: "fast" },
-  { name: "Great Lent", date: new Date(2025, 1, 10), tradition: "Oriental", type: "fast" },
+  { name: "Nativity Fast", date: new Date(year, 10, 25), tradition: "Oriental", type: "fast" },
+  { name: "Nativity", date: new Date(year, 0, 7), tradition: "Oriental", type: "feast" },
+  { name: "Nineveh Fast", date: new Date(year, 1, 3), tradition: "Oriental", type: "fast" },
+  { name: "Great Lent", date: new Date(year, 1, 10), tradition: "Oriental", type: "fast" },
+  
+  // Moveable feasts approximations for Eastern (2025 values, would need calculation for other years)
+  ...(year === 2025 ? [
+    { name: "Palm Sunday", date: new Date(2025, 3, 13), tradition: "Eastern", type: "feast" as const },
+    { name: "Pascha", date: new Date(2025, 3, 20), tradition: "Eastern", type: "feast" as const },
+    { name: "Ascension", date: new Date(2025, 4, 29), tradition: "Eastern", type: "feast" as const },
+    { name: "Pentecost", date: new Date(2025, 5, 8), tradition: "Eastern", type: "feast" as const },
+  ] : []),
 ];
 
 // Add weekly fasting days
@@ -70,6 +75,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   
   const weeklyFasts = getWeeklyFastDays(currentMonth, currentYear);
+  const fastingEvents = getFixedFastingEvents(currentYear);
 
   const getEventsForDay = (day: number) => {
     return fastingEvents.filter(event => {
