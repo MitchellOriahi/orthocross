@@ -52,26 +52,25 @@ export const DonationThankYouDialog = () => {
 
   return (
     <Dialog open={showThankYou} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="text-center items-center space-y-4 pt-6">
+      <DialogContent className="sm:max-w-md border-0 bg-gradient-to-b from-primary/5 to-background">
+        <DialogHeader className="text-center items-center space-y-6 pt-8 pb-6">
           <div className="relative">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center animate-pulse">
-              <Heart className="w-10 h-10 text-primary fill-primary" />
+            <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center animate-scale-in">
+              <Heart className="w-16 h-16 text-primary fill-primary animate-pulse" />
             </div>
-            <Sparkles className="w-6 h-6 text-primary absolute -top-1 -right-1 animate-bounce" />
+            <Sparkles className="w-8 h-8 text-primary absolute -top-2 -right-2 animate-bounce" />
+            <Sparkles className="w-6 h-6 text-primary absolute -bottom-1 -left-1 animate-bounce delay-150" />
           </div>
-          <DialogTitle className="text-3xl">Thank You!</DialogTitle>
-          <DialogDescription className="text-base space-y-3">
-            <p className="font-semibold text-foreground">Your donation means the world to us.</p>
-            <p>
-              You're helping us spread the Gospel and keep OrthoCross free for everyone. 
-              Your generosity is making a real difference in people's spiritual lives.
-            </p>
-            <p className="text-primary font-medium">May God bless you abundantly! 🙏</p>
+          <DialogTitle className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            Thank You!
+          </DialogTitle>
+          <DialogDescription className="text-lg text-center">
+            <p className="font-semibold text-foreground">Your generosity helps spread the Gospel.</p>
+            <p className="text-primary font-medium mt-2">May God bless you abundantly! 🙏</p>
           </DialogDescription>
         </DialogHeader>
 
-        <div className="pt-4">
+        <div className="pt-2 pb-4">
           <Button variant="sacred" onClick={handleClose} className="w-full">
             Continue
           </Button>
