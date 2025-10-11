@@ -29,10 +29,10 @@ export const DonationPromptDialog = () => {
 
       if (promptDismissed) {
         const dismissedDate = new Date(promptDismissed);
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        const fiveDaysAgo = new Date();
+        fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
 
-        if (dismissedDate > sevenDaysAgo) {
+        if (dismissedDate > fiveDaysAgo) {
           return false;
         }
       }
@@ -70,7 +70,7 @@ export const DonationPromptDialog = () => {
             </div>
             <DialogTitle className="text-2xl">Support OrthoCross</DialogTitle>
             <DialogDescription className="text-base">
-              Help an independent developer spread the Gospel to as many people as possible. Your donation keeps this app free for everyone.
+              Help an independent developer spread the Gospel to as many people as possible. Every contribution brings us closer to reaching more souls.
             </DialogDescription>
           </DialogHeader>
 
