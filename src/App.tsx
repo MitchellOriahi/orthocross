@@ -21,6 +21,7 @@ import OrthodoxHistory from "./pages/OrthodoxHistory";
 import CropIcons from "./pages/CropIcons";
 import AdminImport from "./pages/AdminImport";
 import ScriptureImport from "./pages/ScriptureImport";
+import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="/admin/import" element={<ProtectedRoute><AdminRoute><AdminImport /></AdminRoute></ProtectedRoute>} />
               <Route path="/admin/scripture-import" element={<ProtectedRoute><AdminRoute><ScriptureImport /></AdminRoute></ProtectedRoute>} />
               <Route path="/crop-icons" element={<CropIcons />} />
+              <Route path="/support" element={<Support />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
               </Routes>
