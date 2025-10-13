@@ -555,15 +555,8 @@ export const JournalEditor = ({
         <SheetContent side="bottom" className="h-[40vh] w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
           <SheetTitle className="sr-only">Voice Recorder</SheetTitle>
           <div className="h-full flex flex-col">
-            <div className="p-3 border-b border-border flex items-center justify-between">
+            <div className="p-3 border-b border-border">
               <h3 className="text-lg font-semibold">Voice Recording</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowVoiceRecorder(false)}
-              >
-                <X className="h-5 w-5" />
-              </Button>
             </div>
             <div className="flex-1 p-4 flex items-center justify-center">
               <VoiceRecorder onRecordingComplete={handleVoiceRecording} />
