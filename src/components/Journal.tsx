@@ -207,7 +207,7 @@ export const Journal = () => {
       .insert({
         user_id: user.id,
         folder_id: selectedFolderId,
-        title: "New Note",
+        title: "",
         content: ""
       })
       .select()

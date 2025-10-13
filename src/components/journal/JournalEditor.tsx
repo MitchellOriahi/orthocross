@@ -415,7 +415,7 @@ export const JournalEditor = ({
           <Input
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
-            placeholder="Title"
+            placeholder="New Note"
             className={`font-bold border-none bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${
               isMobile ? 'text-xl' : 'text-2xl'
             }`}
