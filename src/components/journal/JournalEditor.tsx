@@ -103,7 +103,7 @@ export const JournalEditor = ({
     element.remove();
     if (contentDivRef.current) {
       onContentChange(contentDivRef.current.innerHTML);
-      toast.success("Item deleted");
+      toast.success("Item deleted", { duration: 2000 });
     }
   };
 
