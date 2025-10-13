@@ -41,8 +41,23 @@ export const JournalNotesList = ({
   const getPreviewText = (note: JournalNote) => {
     const title = note.title || "Untitled";
     const content = note.content || "";
-    const preview = content.substring(0, 100);
-    return { title, preview };
+    
+    // Extract first image from content if exists
+    const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
+    const hasImage = !!imgMatch;
+    const imageSrc = imgMatch ? imgMatch[1] : null;
+    
+    // Strip HTML tags for text preview, but don't show URLs
+    const textContent = content
+      .replace(/<img[^>]*>/g, '')
+      .replace(/<audio[^>]*>.*?<\/audio>/g, '')
+      .replace(/<video[^>]*>.*?<\/video>/g, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/https?:\/\/[^\s]+/g, '') // Remove URLs
+      .trim();
+    
+    const preview = textContent.substring(0, 100);
+    return { title, preview, hasImage, imageSrc };
   };
 
   const pinnedNotes = notes.filter(n => n.pinned);
@@ -105,7 +120,7 @@ export const JournalNotesList = ({
   };
 
   const renderGalleryNote = (note: JournalNote) => {
-    const { title, preview } = getPreviewText(note);
+    const { title, preview, hasImage, imageSrc } = getPreviewText(note);
     return (
       <div
         key={note.id}
@@ -118,10 +133,18 @@ export const JournalNotesList = ({
           onClick={() => onNoteSelect(note.id)}
           className="w-full text-left bg-card"
         >
-          <div className="aspect-square bg-gradient-to-br from-accent/20 to-accent/5 p-4 flex items-center justify-center">
-            <div className="text-sm text-muted-foreground line-clamp-6 text-center">
-              {preview || "Empty note"}
-            </div>
+          <div className="aspect-square bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center overflow-hidden">
+            {hasImage && imageSrc ? (
+              <img 
+                src={imageSrc} 
+                alt="Note preview" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="p-4 text-sm text-muted-foreground line-clamp-6 text-center">
+                {preview || "Empty note"}
+              </div>
+            )}
           </div>
           <div className="p-3">
             <div className="font-medium text-sm truncate mb-1">

@@ -168,6 +168,7 @@ All colors MUST be HSL.
   border: 1px solid hsl(var(--border));
   display: block;
   margin: 1rem 0;
+  cursor: pointer;
 }
 
 [contenteditable] video {
@@ -177,6 +178,7 @@ All colors MUST be HSL.
   border: 1px solid hsl(var(--border));
   display: block;
   margin: 1rem 0;
+  cursor: pointer;
 }
 
 [contenteditable] audio {
@@ -191,4 +193,23 @@ All colors MUST be HSL.
 [contenteditable] mark {
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
+}
+
+/* Media delete button styling */
+.media-delete-btn {
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.2s;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-delete-btn:hover {
+  opacity: 1 !important;
+}
+
+/* Show delete button on hover */
+[contenteditable] .group:hover .media-delete-btn {
+  display: flex !important;
 }

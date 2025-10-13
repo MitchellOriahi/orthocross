@@ -50,7 +50,6 @@ export const JournalEditor = ({
   const [showAttachments, setShowAttachments] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState<number>(0);
   const isMobile = useIsMobile();
 
   const handleHighlight = () => {
@@ -80,19 +79,65 @@ export const JournalEditor = ({
   const insertIntoContent = (html: string) => {
     if (!contentDivRef.current) return;
     
-    // Get current content
     const currentContent = contentDivRef.current.innerHTML || content;
-    
-    // Append new content
     const newContent = currentContent + html;
     
-    // Update the ref and trigger change
     contentDivRef.current.innerHTML = newContent;
     onContentChange(newContent);
     
-    // Scroll to bottom to show new content
-    contentDivRef.current.scrollTop = contentDivRef.current.scrollHeight;
+    // Scroll to bottom and focus
+    setTimeout(() => {
+      if (contentDivRef.current) {
+        contentDivRef.current.scrollTop = contentDivRef.current.scrollHeight;
+        contentDivRef.current.focus();
+      }
+    }, 100);
   };
+
+  const handleDeleteMedia = (element: HTMLElement) => {
+    if (!confirm("Are you sure you want to delete this item?")) return;
+    
+    element.remove();
+    if (contentDivRef.current) {
+      onContentChange(contentDivRef.current.innerHTML);
+      toast.success("Item deleted");
+    }
+  };
+
+  // Add click handlers to media elements for deletion
+  useEffect(() => {
+    if (!contentDivRef.current) return;
+
+    const handleMediaClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      
+      // Check if clicked element is a media element
+      if (target.tagName === 'IMG' || target.tagName === 'VIDEO' || target.tagName === 'AUDIO') {
+        const deleteBtn = target.nextElementSibling as HTMLElement;
+        if (deleteBtn && deleteBtn.classList.contains('media-delete-btn')) {
+          deleteBtn.style.display = deleteBtn.style.display === 'none' ? 'flex' : 'none';
+        }
+      }
+      
+      // Handle delete button click
+      if (target.classList.contains('media-delete-btn') || target.closest('.media-delete-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = target.classList.contains('media-delete-btn') ? target : target.closest('.media-delete-btn') as HTMLElement;
+        const mediaContainer = btn?.previousElementSibling as HTMLElement;
+        if (mediaContainer) {
+          handleDeleteMedia(btn.parentElement!);
+        }
+      }
+    };
+
+    const contentDiv = contentDivRef.current;
+    contentDiv.addEventListener('click', handleMediaClick);
+
+    return () => {
+      contentDiv.removeEventListener('click', handleMediaClick);
+    };
+  }, [content]);
 
   const handleDrawingSave = async (dataUrl: string) => {
     if (!user) return;
@@ -115,8 +160,8 @@ export const JournalEditor = ({
       
       if (!signedUrlData) throw new Error('Failed to create signed URL');
       
-      // Insert drawing into content
-      const imgHtml = `<div class="my-4"><img src="${signedUrlData.signedUrl}" alt="Drawing" class="max-w-full rounded-lg border border-border" /></div>`;
+      // Insert drawing into content with delete button
+      const imgHtml = `<div class="my-4 relative inline-block group"><img src="${signedUrlData.signedUrl}" alt="Drawing" class="max-w-full rounded-lg border border-border" /><button class="media-delete-btn absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`;
       insertIntoContent(imgHtml);
       
       toast.success("Drawing inserted!");
@@ -147,8 +192,8 @@ export const JournalEditor = ({
       
       if (!signedUrlData) throw new Error('Failed to create signed URL');
       
-      // Insert audio into content
-      const audioHtml = `<div class="my-4 p-3 bg-muted rounded-lg"><audio src="${signedUrlData.signedUrl}" controls class="w-full"></audio></div>`;
+      // Insert audio into content with delete button
+      const audioHtml = `<div class="my-4 relative group"><div class="p-3 bg-muted rounded-lg"><audio src="${signedUrlData.signedUrl}" controls class="w-full"></audio></div><button class="media-delete-btn absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`;
       insertIntoContent(audioHtml);
       
       toast.success("Voice note inserted!");
@@ -181,12 +226,12 @@ export const JournalEditor = ({
         
         if (!signedUrlData) throw new Error('Failed to create signed URL');
         
-        // Insert image or video into content
+        // Insert image or video into content with delete button
         if (file.type.startsWith('image/')) {
-          const imgHtml = `<div class="my-4"><img src="${signedUrlData.signedUrl}" alt="${file.name}" class="max-w-full rounded-lg border border-border" /></div>`;
+          const imgHtml = `<div class="my-4 relative inline-block group"><img src="${signedUrlData.signedUrl}" alt="${file.name}" class="max-w-full rounded-lg border border-border" /><button class="media-delete-btn absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`;
           insertIntoContent(imgHtml);
         } else if (file.type.startsWith('video/')) {
-          const videoHtml = `<div class="my-4"><video src="${signedUrlData.signedUrl}" controls class="max-w-full rounded-lg border border-border"></video></div>`;
+          const videoHtml = `<div class="my-4 relative group"><video src="${signedUrlData.signedUrl}" controls class="max-w-full rounded-lg border border-border"></video><button class="media-delete-btn absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`;
           insertIntoContent(videoHtml);
         }
       }
@@ -216,39 +261,41 @@ export const JournalEditor = ({
           />
         </div>
 
-        <div className="flex-1 p-4 overflow-hidden relative">
-          {showHighlighter && (
-            <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex gap-1">
-              {HIGHLIGHT_COLORS.map((color) => (
-                <button
-                  key={color.name}
-                  onClick={() => {
-                    setSelectedColor(color);
-                    setShowHighlighter(false);
-                  }}
-                  className={cn(
-                    "w-8 h-8 rounded border border-border",
-                    color.class
-                  )}
-                  title={color.name}
-                />
-              ))}
-            </div>
-          )}
+        <div className="flex-1 overflow-auto">
+          <div className="p-4 min-h-full">
+            {showHighlighter && (
+              <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex gap-1">
+                {HIGHLIGHT_COLORS.map((color) => (
+                  <button
+                    key={color.name}
+                    onClick={() => {
+                      setSelectedColor(color);
+                      setShowHighlighter(false);
+                    }}
+                    className={cn(
+                      "w-8 h-8 rounded border border-border",
+                      color.class
+                    )}
+                    title={color.name}
+                  />
+                ))}
+              </div>
+            )}
 
-          <div
-            ref={contentDivRef}
-            contentEditable
-            suppressContentEditableWarning
-            onInput={(e) => onContentChange(e.currentTarget.innerHTML)}
-            onBlur={(e) => onContentChange(e.currentTarget.innerHTML)}
-            dangerouslySetInnerHTML={{ __html: content }}
-            className={`resize-none border-none bg-transparent px-0 h-full focus:outline-none leading-relaxed prose dark:prose-invert max-w-none overflow-auto ${
-              isMobile ? 'text-sm' : 'text-base'
-            }`}
-            style={{ minHeight: '400px', maxHeight: 'calc(100vh - 300px)' }}
-            data-placeholder="Start writing..."
-          />
+            <div
+              ref={contentDivRef}
+              contentEditable
+              suppressContentEditableWarning
+              onInput={(e) => onContentChange(e.currentTarget.innerHTML)}
+              onBlur={(e) => onContentChange(e.currentTarget.innerHTML)}
+              dangerouslySetInnerHTML={{ __html: content }}
+              className={`resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none ${
+                isMobile ? 'text-sm' : 'text-base'
+              }`}
+              style={{ minHeight: 'calc(100vh - 400px)' }}
+              data-placeholder="Start writing..."
+            />
+          </div>
         </div>
 
         {(isSaving || isUploading) && (
@@ -295,26 +342,23 @@ export const JournalEditor = ({
       </div>
 
       {/* Full-screen Drawing Sheet */}
-      <Sheet open={showDrawing} onOpenChange={setShowDrawing}>
-        <SheetContent side="bottom" className="h-screen w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
-          <SheetTitle className="sr-only">Drawing Canvas</SheetTitle>
-          <div className="h-full flex flex-col">
-            <div className="p-3 border-b border-border flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Draw</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowDrawing(false)}
-              >
-                <X className="h-5 w-5" />
-              </Button>
-            </div>
-            <div className="flex-1 p-4">
-              <DrawingCanvas onSave={handleDrawingSave} />
-            </div>
+      {showDrawing && (
+        <div className="fixed inset-0 z-50 bg-background flex flex-col">
+          <div className="p-3 border-b border-border flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Draw</h3>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowDrawing(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
           </div>
-        </SheetContent>
-      </Sheet>
+          <div className="flex-1 p-4 overflow-hidden">
+            <DrawingCanvas onSave={handleDrawingSave} />
+          </div>
+        </div>
+      )}
 
       {/* Image/Video Upload Sheet */}
       <Sheet open={showAttachments} onOpenChange={setShowAttachments}>
