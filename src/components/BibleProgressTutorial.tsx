@@ -47,14 +47,6 @@ export const BibleProgressTutorial = ({ onComplete }: BibleProgressTutorialProps
         onClick={handleDismiss}
       />
       
-      {/* Spotlight and arrow pointing to the i button in Bible completion meter */}
-      <div className="absolute top-1/3 right-4 w-20 h-20 rounded-full bg-white/20 blur-xl animate-pulse" />
-      <div className="absolute top-1/3 right-12 -translate-y-12 text-white animate-bounce">
-        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M7 17l10-10M17 17V7h-10" />
-        </svg>
-      </div>
-      
       {/* Tutorial card - welcome slide style */}
       <Card className="relative z-10 max-w-md mx-4 shadow-2xl border-none cursor-pointer" onClick={handleDismiss}>
         <CardContent className="pt-12 pb-8 space-y-8 text-center">
