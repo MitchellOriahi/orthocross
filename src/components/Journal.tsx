@@ -427,6 +427,7 @@ export const Journal = () => {
                       onTitleChange={setCurrentTitle}
                       onContentChange={setCurrentContent}
                       isSaving={isSaving}
+                      noteId={selectedNoteId}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-muted-foreground">

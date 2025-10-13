@@ -166,6 +166,7 @@ export type Database = {
       }
       journal_entries: {
         Row: {
+          attachments: Json | null
           content: string | null
           created_at: string
           folder_id: string | null
@@ -176,6 +177,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          attachments?: Json | null
           content?: string | null
           created_at?: string
           folder_id?: string | null
@@ -186,6 +188,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          attachments?: Json | null
           content?: string | null
           created_at?: string
           folder_id?: string | null
