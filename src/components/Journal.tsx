@@ -333,7 +333,7 @@ export const Journal = () => {
   };
   
   const contentPreview = displayNote ? getContentPreview(displayNote) : { text: '', imageUrl: null, hasAudio: false };
-  const hasContent = displayNote && (displayNote.title || contentPreview.text || contentPreview.imageUrl);
+  const hasContent = displayNote && (displayNote.title || contentPreview.text || contentPreview.imageUrl || pinnedMediaUrl);
 
   return (
     <>
