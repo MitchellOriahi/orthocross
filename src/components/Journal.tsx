@@ -162,6 +162,15 @@ export const Journal = () => {
     if (note) {
       setCurrentTitle(note.title || "");
       setCurrentContent(note.content || "");
+      
+      // If note already has content or media, clear the new/unmodified flag
+      const hasContent = note.content && note.content.trim() !== "";
+      const hasAttachments = note.attachments && Array.isArray(note.attachments) && (note.attachments as any[]).length > 0;
+      const hasPinnedMedia = note.pinned_media_url;
+      
+      if (hasContent || hasAttachments || hasPinnedMedia) {
+        setIsNewUnmodifiedNote(false);
+      }
     }
   }, [selectedNoteId, notes]);
 
