@@ -409,19 +409,18 @@ export const Journal = () => {
                         onPlay={() => setPlayingMediaId(displayNote.id)}
                         onPause={() => setPlayingMediaId(null)}
                         onEnded={() => setPlayingMediaId(null)}
+                        id="journal-video"
                       />
                       <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            const mediaElement = e.currentTarget.closest('div').querySelector('video') as HTMLVideoElement;
+                            const mediaElement = document.getElementById('journal-video') as HTMLVideoElement;
                             if (mediaElement) {
                               if (mediaElement.paused) {
-                                mediaElement.play();
-                                setPlayingMediaId(displayNote.id);
+                                mediaElement.play().catch(err => console.error('Video play failed:', err));
                               } else {
                                 mediaElement.pause();
-                                setPlayingMediaId(null);
                               }
                             }
                           }}
@@ -446,19 +445,18 @@ export const Journal = () => {
                         onPlay={() => setPlayingMediaId(displayNote.id)}
                         onPause={() => setPlayingMediaId(null)}
                         onEnded={() => setPlayingMediaId(null)}
+                        id="journal-audio"
                       />
                       <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            const mediaElement = e.currentTarget.closest('div').querySelector('audio') as HTMLAudioElement;
+                            const mediaElement = document.getElementById('journal-audio') as HTMLAudioElement;
                             if (mediaElement) {
                               if (mediaElement.paused) {
-                                mediaElement.play();
-                                setPlayingMediaId(displayNote.id);
+                                mediaElement.play().catch(err => console.error('Audio play failed:', err));
                               } else {
                                 mediaElement.pause();
-                                setPlayingMediaId(null);
                               }
                             }
                           }}
