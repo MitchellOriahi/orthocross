@@ -54,6 +54,40 @@ export const JournalEditor = ({
   const [editingDrawingElement, setEditingDrawingElement] = useState<HTMLElement | null>(null);
   const [pinnedMediaUrl, setPinnedMediaUrl] = useState<string | null>(null);
   const isMobile = useIsMobile();
+  const isUpdatingContent = useRef(false);
+
+  // Save cursor position
+  const saveCursorPosition = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return null;
+    const range = selection.getRangeAt(0);
+    return range.cloneRange();
+  };
+
+  // Restore cursor position
+  const restoreCursorPosition = (range: Range | null) => {
+    if (!range) return;
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  };
+
+  // Update content only when noteId changes (loading a different note)
+  useEffect(() => {
+    if (contentDivRef.current && !isUpdatingContent.current) {
+      contentDivRef.current.innerHTML = content;
+    }
+  }, [noteId]);
+
+  const handleContentInput = (e: React.FormEvent<HTMLDivElement>) => {
+    isUpdatingContent.current = true;
+    onContentChange(e.currentTarget.innerHTML);
+    setTimeout(() => {
+      isUpdatingContent.current = false;
+    }, 0);
+  };
 
   const handleHighlight = () => {
     if (!contentDivRef.current) return;
@@ -448,9 +482,7 @@ export const JournalEditor = ({
               ref={contentDivRef}
               contentEditable
               suppressContentEditableWarning
-              onInput={(e) => onContentChange(e.currentTarget.innerHTML)}
-              onBlur={(e) => onContentChange(e.currentTarget.innerHTML)}
-              dangerouslySetInnerHTML={{ __html: content }}
+              onInput={handleContentInput}
               dir="ltr"
               className={`resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none ${
                 isMobile ? 'text-sm' : 'text-base'
