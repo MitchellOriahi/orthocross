@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Settings as SettingsIcon, Scroll, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter, BookOpen, Bookmark } from "lucide-react";
+import { Settings as SettingsIcon, Scroll, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter, BookOpen, Bookmark, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -473,10 +473,10 @@ const Reading = () => {
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
-                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
-              </div>
-              <h1 className="text-2xl font-bold">Scripture</h1>
+              <Button variant="ghost" onClick={() => navigate(-1)}>
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Back
+              </Button>
             </div>
             <nav className="flex items-center gap-2">
               <DonateButton />
