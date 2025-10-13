@@ -172,6 +172,8 @@ export type Database = {
           folder_id: string | null
           id: string
           pinned: boolean
+          pinned_media_type: string | null
+          pinned_media_url: string | null
           title: string | null
           updated_at: string
           user_id: string
@@ -183,6 +185,8 @@ export type Database = {
           folder_id?: string | null
           id?: string
           pinned?: boolean
+          pinned_media_type?: string | null
+          pinned_media_url?: string | null
           title?: string | null
           updated_at?: string
           user_id: string
@@ -194,6 +198,8 @@ export type Database = {
           folder_id?: string | null
           id?: string
           pinned?: boolean
+          pinned_media_type?: string | null
+          pinned_media_url?: string | null
           title?: string | null
           updated_at?: string
           user_id?: string

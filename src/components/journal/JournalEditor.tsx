@@ -50,6 +50,8 @@ export const JournalEditor = ({
   const [showAttachments, setShowAttachments] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [editingDrawingUrl, setEditingDrawingUrl] = useState<string | null>(null);
+  const [editingDrawingElement, setEditingDrawingElement] = useState<HTMLElement | null>(null);
   const isMobile = useIsMobile();
 
   const handleHighlight = () => {
@@ -104,6 +106,31 @@ export const JournalEditor = ({
     }
   };
 
+  const handlePinMedia = async (mediaUrl: string, mediaType: string) => {
+    if (!user) return;
+    
+    try {
+      await (supabase as any)
+        .from('journal_entries')
+        .update({ 
+          pinned_media_url: mediaUrl,
+          pinned_media_type: mediaType 
+        })
+        .eq('id', noteId);
+      
+      toast.success("Media pinned to dashboard!");
+    } catch (error) {
+      console.error('Error pinning media:', error);
+      toast.error("Failed to pin media");
+    }
+  };
+
+  const handleEditDrawing = (imgElement: HTMLImageElement) => {
+    setEditingDrawingUrl(imgElement.src);
+    setEditingDrawingElement(imgElement.parentElement as HTMLElement);
+    setShowDrawing(true);
+  };
+
   // Add click handlers to media elements for deletion
   useEffect(() => {
     if (!contentDivRef.current) return;
@@ -113,9 +140,43 @@ export const JournalEditor = ({
       
       // Check if clicked element is a media element
       if (target.tagName === 'IMG' || target.tagName === 'VIDEO' || target.tagName === 'AUDIO') {
-        const deleteBtn = target.nextElementSibling as HTMLElement;
-        if (deleteBtn && deleteBtn.classList.contains('media-delete-btn')) {
-          deleteBtn.style.display = deleteBtn.style.display === 'none' ? 'flex' : 'none';
+        const actionBtns = target.parentElement?.querySelector('.media-action-btns') as HTMLElement;
+        if (actionBtns) {
+          actionBtns.style.display = actionBtns.style.display === 'none' ? 'flex' : 'none';
+        }
+      }
+      
+      // Handle pin button click
+      if (target.classList.contains('media-pin-btn') || target.closest('.media-pin-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = target.classList.contains('media-pin-btn') ? target : target.closest('.media-pin-btn') as HTMLElement;
+        const mediaElement = btn.parentElement?.previousElementSibling as HTMLElement;
+        if (mediaElement) {
+          let mediaUrl = '';
+          let mediaType = '';
+          if (mediaElement.tagName === 'IMG') {
+            mediaUrl = (mediaElement as HTMLImageElement).src;
+            mediaType = 'image';
+          } else if (mediaElement.tagName === 'VIDEO') {
+            mediaUrl = (mediaElement as HTMLVideoElement).src;
+            mediaType = 'video';
+          } else if (mediaElement.tagName === 'AUDIO') {
+            mediaUrl = (mediaElement as HTMLAudioElement).src;
+            mediaType = 'audio';
+          }
+          handlePinMedia(mediaUrl, mediaType);
+        }
+      }
+      
+      // Handle edit drawing button click
+      if (target.classList.contains('media-edit-btn') || target.closest('.media-edit-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = target.classList.contains('media-edit-btn') ? target : target.closest('.media-edit-btn') as HTMLElement;
+        const imgElement = btn.parentElement?.previousElementSibling as HTMLImageElement;
+        if (imgElement && imgElement.tagName === 'IMG') {
+          handleEditDrawing(imgElement);
         }
       }
       
@@ -124,9 +185,8 @@ export const JournalEditor = ({
         e.preventDefault();
         e.stopPropagation();
         const btn = target.classList.contains('media-delete-btn') ? target : target.closest('.media-delete-btn') as HTMLElement;
-        const mediaContainer = btn?.previousElementSibling as HTMLElement;
-        if (mediaContainer) {
-          handleDeleteMedia(btn.parentElement!);
+        if (btn.parentElement?.parentElement) {
+          handleDeleteMedia(btn.parentElement.parentElement);
         }
       }
     };
@@ -160,11 +220,23 @@ export const JournalEditor = ({
       
       if (!signedUrlData) throw new Error('Failed to create signed URL');
       
-      // Insert drawing into content with delete button
-      const imgHtml = `<div class="my-4 relative inline-block group"><img src="${signedUrlData.signedUrl}" alt="Drawing" class="max-w-full rounded-lg border border-border" /><button class="media-delete-btn absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`;
-      insertIntoContent(imgHtml);
+      // If editing existing drawing, replace it
+      if (editingDrawingElement) {
+        const imgElement = editingDrawingElement.querySelector('img') as HTMLImageElement;
+        if (imgElement) {
+          imgElement.src = signedUrlData.signedUrl;
+        }
+        onContentChange(contentDivRef.current?.innerHTML || '');
+        setEditingDrawingUrl(null);
+        setEditingDrawingElement(null);
+        toast.success("Drawing updated!");
+      } else {
+        // Insert new drawing with action buttons
+        const imgHtml = `<div class="my-4 relative inline-block group"><img src="${signedUrlData.signedUrl}" alt="Drawing" class="max-w-full rounded-lg border border-border" /><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1 hover:bg-primary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-edit-btn bg-secondary text-secondary-foreground rounded-full p-1 hover:bg-secondary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
+        insertIntoContent(imgHtml);
+        toast.success("Drawing inserted!");
+      }
       
-      toast.success("Drawing inserted!");
       setShowDrawing(false);
     } catch (error) {
       console.error('Error saving drawing:', error);
@@ -192,8 +264,8 @@ export const JournalEditor = ({
       
       if (!signedUrlData) throw new Error('Failed to create signed URL');
       
-      // Insert audio into content with delete button
-      const audioHtml = `<div class="my-4 relative group"><div class="p-3 bg-muted rounded-lg"><audio src="${signedUrlData.signedUrl}" controls class="w-full"></audio></div><button class="media-delete-btn absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`;
+      // Insert audio into content with pin and delete buttons
+      const audioHtml = `<div class="my-4 relative group"><div class="p-3 bg-muted rounded-lg"><audio src="${signedUrlData.signedUrl}" controls class="w-full"></audio></div><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1 hover:bg-primary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
       insertIntoContent(audioHtml);
       
       toast.success("Voice note inserted!");
@@ -226,12 +298,12 @@ export const JournalEditor = ({
         
         if (!signedUrlData) throw new Error('Failed to create signed URL');
         
-        // Insert image or video into content with delete button
+        // Insert image or video into content with pin and delete buttons
         if (file.type.startsWith('image/')) {
-          const imgHtml = `<div class="my-4 relative inline-block group"><img src="${signedUrlData.signedUrl}" alt="${file.name}" class="max-w-full rounded-lg border border-border" /><button class="media-delete-btn absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`;
+          const imgHtml = `<div class="my-4 relative inline-block group"><img src="${signedUrlData.signedUrl}" alt="${file.name}" class="max-w-full rounded-lg border border-border" /><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1 hover:bg-primary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
           insertIntoContent(imgHtml);
         } else if (file.type.startsWith('video/')) {
-          const videoHtml = `<div class="my-4 relative group"><video src="${signedUrlData.signedUrl}" controls class="max-w-full rounded-lg border border-border"></video><button class="media-delete-btn absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`;
+          const videoHtml = `<div class="my-4 relative group"><video src="${signedUrlData.signedUrl}" controls class="max-w-full rounded-lg border border-border"></video><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1 hover:bg-primary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
           insertIntoContent(videoHtml);
         }
       }
@@ -345,17 +417,21 @@ export const JournalEditor = ({
       {showDrawing && (
         <div className="fixed inset-0 z-50 bg-background flex flex-col">
           <div className="p-3 border-b border-border flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Draw</h3>
+            <h3 className="text-lg font-semibold">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</h3>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setShowDrawing(false)}
+              onClick={() => {
+                setShowDrawing(false);
+                setEditingDrawingUrl(null);
+                setEditingDrawingElement(null);
+              }}
             >
               <X className="h-5 w-5" />
             </Button>
           </div>
           <div className="flex-1 p-4 overflow-hidden">
-            <DrawingCanvas onSave={handleDrawingSave} />
+            <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
           </div>
         </div>
       )}

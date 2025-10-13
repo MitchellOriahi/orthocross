@@ -6,6 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DrawingCanvasProps {
   onSave?: (dataUrl: string) => void;
+  initialImageUrl?: string | null;
 }
 
 const BRUSH_COLORS = [
@@ -19,7 +20,7 @@ const BRUSH_COLORS = [
   { name: "Pink", value: "#ec4899" },
 ];
 
-export const DrawingCanvas = ({ onSave }: DrawingCanvasProps) => {
+export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
@@ -50,6 +51,19 @@ export const DrawingCanvas = ({ onSave }: DrawingCanvasProps) => {
       brush.width = 2;
       canvas.freeDrawingBrush = brush;
 
+      // Load initial image if provided
+      if (initialImageUrl) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const fabricImg = new (window as any).fabric.Image(img);
+          fabricImg.scaleToWidth(canvasWidth);
+          canvas.add(fabricImg);
+          canvas.renderAll();
+        };
+        img.src = initialImageUrl;
+      }
+
       setFabricCanvas(canvas);
       setIsReady(true);
 
@@ -61,7 +75,7 @@ export const DrawingCanvas = ({ onSave }: DrawingCanvasProps) => {
     return () => {
       canvas?.dispose();
     };
-  }, [isMobile]);
+  }, [isMobile, initialImageUrl]);
 
   useEffect(() => {
     if (!fabricCanvas) return;

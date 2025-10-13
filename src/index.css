@@ -195,7 +195,35 @@ All colors MUST be HSL.
   border-radius: 0.25rem;
 }
 
-/* Media delete button styling */
+/* Media action buttons styling */
+.media-action-btns {
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.2s;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.media-action-btns button {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.media-action-btns:hover,
+.media-action-btns button:hover {
+  opacity: 1 !important;
+}
+
+/* Show action buttons on hover */
+[contenteditable] .group:hover .media-action-btns {
+  display: flex !important;
+}
+
+/* Legacy support for standalone delete button */
 .media-delete-btn {
   cursor: pointer;
   z-index: 10;
