@@ -393,24 +393,7 @@ export const Journal = () => {
             <>
               {/* Show pinned media if available, taking full height */}
               {pinnedMediaUrl && pinnedMediaType ? (
-                <div 
-                  className="h-full w-full overflow-hidden bg-muted flex items-center justify-center relative group"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (pinnedMediaType === 'video' || pinnedMediaType === 'audio') {
-                      const mediaElement = e.currentTarget.querySelector('video, audio') as HTMLMediaElement;
-                      if (mediaElement) {
-                        if (mediaElement.paused) {
-                          mediaElement.play();
-                          setPlayingMediaId(displayNote.id);
-                        } else {
-                          mediaElement.pause();
-                          setPlayingMediaId(null);
-                        }
-                      }
-                    }
-                  }}
-                >
+                <div className="h-full w-full overflow-hidden bg-muted flex items-center justify-center relative group">
                   {pinnedMediaType === 'image' || pinnedMediaType === 'drawing' ? (
                     <img 
                       src={pinnedMediaUrl} 
@@ -427,14 +410,29 @@ export const Journal = () => {
                         onPause={() => setPlayingMediaId(null)}
                         onEnded={() => setPlayingMediaId(null)}
                       />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors pointer-events-none">
-                        <div className="w-16 h-16 rounded-full bg-background/90 flex items-center justify-center">
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const mediaElement = e.currentTarget.closest('div').querySelector('video') as HTMLVideoElement;
+                            if (mediaElement) {
+                              if (mediaElement.paused) {
+                                mediaElement.play();
+                                setPlayingMediaId(displayNote.id);
+                              } else {
+                                mediaElement.pause();
+                                setPlayingMediaId(null);
+                              }
+                            }
+                          }}
+                          className="w-16 h-16 rounded-full bg-background/90 flex items-center justify-center hover:bg-background transition-colors"
+                        >
                           {playingMediaId === displayNote.id ? (
                             <Pause className="h-8 w-8 text-primary" />
                           ) : (
                             <Play className="h-8 w-8 text-primary ml-1" />
                           )}
-                        </div>
+                        </button>
                       </div>
                     </>
                   ) : pinnedMediaType === 'audio' ? (
@@ -449,14 +447,29 @@ export const Journal = () => {
                         onPause={() => setPlayingMediaId(null)}
                         onEnded={() => setPlayingMediaId(null)}
                       />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors pointer-events-none">
-                        <div className="w-16 h-16 rounded-full bg-background/90 flex items-center justify-center">
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const mediaElement = e.currentTarget.closest('div').querySelector('audio') as HTMLAudioElement;
+                            if (mediaElement) {
+                              if (mediaElement.paused) {
+                                mediaElement.play();
+                                setPlayingMediaId(displayNote.id);
+                              } else {
+                                mediaElement.pause();
+                                setPlayingMediaId(null);
+                              }
+                            }
+                          }}
+                          className="w-16 h-16 rounded-full bg-background/90 flex items-center justify-center hover:bg-background transition-colors"
+                        >
                           {playingMediaId === displayNote.id ? (
                             <Pause className="h-8 w-8 text-primary" />
                           ) : (
                             <Play className="h-8 w-8 text-primary ml-1" />
                           )}
-                        </div>
+                        </button>
                       </div>
                     </>
                   ) : null}
