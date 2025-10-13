@@ -392,17 +392,20 @@ const Dashboard = () => {
           ) : null}
         </section>
 
+        {/* Journal */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold">Journal</h2>
+          <Journal />
+        </section>
+
         {/* Additional Sections */}
         <div className="grid md:grid-cols-2 gap-6">
           {/* Verse of the Day */}
           <VerseOfTheDay />
 
-          {/* Journal */}
-          <Journal />
+          {/* Fasting Calendar */}
+          <FastingCalendar />
         </div>
-
-        {/* Fasting Calendar */}
-        <FastingCalendar />
       </main>
 
       <BottomNavigation />
