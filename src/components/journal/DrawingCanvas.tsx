@@ -27,7 +27,6 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
   const [isDrawing, setIsDrawing] = useState(true);
   const [selectedColor, setSelectedColor] = useState(BRUSH_COLORS[0].value);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [isReady, setIsReady] = useState(false);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -65,7 +64,6 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
       }
 
       setFabricCanvas(canvas);
-      setIsReady(true);
 
       return canvas;
     };
@@ -110,14 +108,6 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
 
   return (
     <div ref={containerRef} className="flex flex-col gap-4 h-full">
-      {!isReady && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-50">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto mb-2"></div>
-            <p className="text-sm text-muted-foreground">Preparing canvas...</p>
-          </div>
-        </div>
-      )}
       <div className="flex gap-2 items-center flex-wrap">
         <Button
           variant={isDrawing ? "default" : "outline"}

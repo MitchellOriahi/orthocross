@@ -52,6 +52,7 @@ export const JournalEditor = ({
   const [isUploading, setIsUploading] = useState(false);
   const [editingDrawingUrl, setEditingDrawingUrl] = useState<string | null>(null);
   const [editingDrawingElement, setEditingDrawingElement] = useState<HTMLElement | null>(null);
+  const [pinnedMediaUrl, setPinnedMediaUrl] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
   const handleHighlight = () => {
@@ -106,19 +107,43 @@ export const JournalEditor = ({
     }
   };
 
-  const handlePinMedia = async (mediaUrl: string, mediaType: string) => {
+  const handlePinMedia = async (mediaUrl: string, mediaType: string, isPinned: boolean) => {
     if (!user) return;
     
     try {
-      await (supabase as any)
-        .from('journal_entries')
-        .update({ 
-          pinned_media_url: mediaUrl,
-          pinned_media_type: mediaType 
-        })
-        .eq('id', noteId);
+      if (isPinned) {
+        // Unpin
+        await (supabase as any)
+          .from('journal_entries')
+          .update({ 
+            pinned_media_url: null,
+            pinned_media_type: null 
+          })
+          .eq('id', noteId);
+        
+        toast.success("Media unpinned from dashboard");
+      } else {
+        // Pin
+        await (supabase as any)
+          .from('journal_entries')
+          .update({ 
+            pinned_media_url: mediaUrl,
+            pinned_media_type: mediaType 
+          })
+          .eq('id', noteId);
+        
+        toast.success("Media pinned to dashboard!");
+      }
       
-      toast.success("Media pinned to dashboard!");
+      // Force re-render by updating content
+      onContentChange(contentDivRef.current?.innerHTML || '');
+      
+      // Update local state
+      if (!isPinned) {
+        setPinnedMediaUrl(mediaUrl);
+      } else {
+        setPinnedMediaUrl(null);
+      }
     } catch (error) {
       console.error('Error pinning media:', error);
       toast.error("Failed to pin media");
@@ -151,13 +176,19 @@ export const JournalEditor = ({
         e.preventDefault();
         e.stopPropagation();
         const btn = target.classList.contains('media-pin-btn') ? target : target.closest('.media-pin-btn') as HTMLElement;
-        const mediaElement = btn.parentElement?.previousElementSibling as HTMLElement;
+        const container = btn.closest('.media-container') || btn.parentElement?.parentElement;
+        const mediaElement = container?.querySelector('img, video, audio') as HTMLElement;
+        
         if (mediaElement) {
           let mediaUrl = '';
           let mediaType = '';
+          const isPinned = btn.getAttribute('data-pinned') === 'true';
+          
           if (mediaElement.tagName === 'IMG') {
             mediaUrl = (mediaElement as HTMLImageElement).src;
-            mediaType = 'image';
+            // Check if it's a drawing by looking at alt text or src
+            const altText = (mediaElement as HTMLImageElement).alt;
+            mediaType = altText === 'Drawing' ? 'drawing' : 'image';
           } else if (mediaElement.tagName === 'VIDEO') {
             mediaUrl = (mediaElement as HTMLVideoElement).src;
             mediaType = 'video';
@@ -165,7 +196,7 @@ export const JournalEditor = ({
             mediaUrl = (mediaElement as HTMLAudioElement).src;
             mediaType = 'audio';
           }
-          handlePinMedia(mediaUrl, mediaType);
+          handlePinMedia(mediaUrl, mediaType, isPinned);
         }
       }
       
@@ -198,6 +229,60 @@ export const JournalEditor = ({
       contentDiv.removeEventListener('click', handleMediaClick);
     };
   }, [content]);
+
+  // Fetch and update pinned media state
+  useEffect(() => {
+    const fetchPinnedMedia = async () => {
+      if (!user) return;
+      
+      const { data } = await (supabase as any)
+        .from('journal_entries')
+        .select('pinned_media_url')
+        .eq('id', noteId)
+        .single();
+      
+      if (data?.pinned_media_url) {
+        setPinnedMediaUrl(data.pinned_media_url);
+      }
+    };
+    
+    fetchPinnedMedia();
+  }, [user, noteId]);
+
+  // Update pin button states when pinned media changes
+  useEffect(() => {
+    if (!contentDivRef.current) return;
+    
+    const pinButtons = contentDivRef.current.querySelectorAll('.media-pin-btn');
+    pinButtons.forEach((btn) => {
+      const container = btn.closest('.media-container');
+      const mediaElement = container?.querySelector('img, video, audio') as HTMLElement;
+      
+      if (mediaElement) {
+        let mediaUrl = '';
+        if (mediaElement.tagName === 'IMG') {
+          mediaUrl = (mediaElement as HTMLImageElement).src;
+        } else if (mediaElement.tagName === 'VIDEO') {
+          mediaUrl = (mediaElement as HTMLVideoElement).src;
+        } else if (mediaElement.tagName === 'AUDIO') {
+          mediaUrl = (mediaElement as HTMLAudioElement).src;
+        }
+        
+        const isPinned = pinnedMediaUrl === mediaUrl;
+        btn.setAttribute('data-pinned', isPinned.toString());
+        btn.setAttribute('title', isPinned ? 'Unpin from dashboard' : 'Pin to dashboard');
+        
+        // Update visual state
+        if (isPinned) {
+          btn.classList.add('bg-secondary', 'text-secondary-foreground');
+          btn.classList.remove('bg-primary', 'text-primary-foreground');
+        } else {
+          btn.classList.add('bg-primary', 'text-primary-foreground');
+          btn.classList.remove('bg-secondary', 'text-secondary-foreground');
+        }
+      }
+    });
+  }, [pinnedMediaUrl, content]);
 
   const handleDrawingSave = async (dataUrl: string) => {
     if (!user) return;
@@ -232,7 +317,7 @@ export const JournalEditor = ({
         toast.success("Drawing updated!");
       } else {
         // Insert new drawing with action buttons
-        const imgHtml = `<div class="my-4 relative inline-block group"><img src="${signedUrlData.signedUrl}" alt="Drawing" class="max-w-full rounded-lg border border-border" /><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1 hover:bg-primary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-edit-btn bg-secondary text-secondary-foreground rounded-full p-1 hover:bg-secondary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
+        const imgHtml = `<div class="my-4 relative inline-block group media-container"><img src="${signedUrlData.signedUrl}" alt="Drawing" class="max-w-full rounded-lg border border-border" /><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-edit-btn bg-secondary text-secondary-foreground rounded-full p-1.5 hover:bg-secondary/90" title="Edit drawing"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
         insertIntoContent(imgHtml);
         toast.success("Drawing inserted!");
       }
@@ -265,7 +350,7 @@ export const JournalEditor = ({
       if (!signedUrlData) throw new Error('Failed to create signed URL');
       
       // Insert audio into content with pin and delete buttons
-      const audioHtml = `<div class="my-4 relative group"><div class="p-3 bg-muted rounded-lg"><audio src="${signedUrlData.signedUrl}" controls class="w-full"></audio></div><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1 hover:bg-primary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
+      const audioHtml = `<div class="my-4 relative group media-container"><div class="p-3 bg-muted rounded-lg"><audio src="${signedUrlData.signedUrl}" controls class="w-full"></audio></div><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
       insertIntoContent(audioHtml);
       
       toast.success("Voice note inserted!");
@@ -300,10 +385,10 @@ export const JournalEditor = ({
         
         // Insert image or video into content with pin and delete buttons
         if (file.type.startsWith('image/')) {
-          const imgHtml = `<div class="my-4 relative inline-block group"><img src="${signedUrlData.signedUrl}" alt="${file.name}" class="max-w-full rounded-lg border border-border" /><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1 hover:bg-primary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
+          const imgHtml = `<div class="my-4 relative inline-block group media-container"><img src="${signedUrlData.signedUrl}" alt="${file.name}" class="max-w-full rounded-lg border border-border" /><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
           insertIntoContent(imgHtml);
         } else if (file.type.startsWith('video/')) {
-          const videoHtml = `<div class="my-4 relative group"><video src="${signedUrlData.signedUrl}" controls class="max-w-full rounded-lg border border-border"></video><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1 hover:bg-primary/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
+          const videoHtml = `<div class="my-4 relative group media-container"><video src="${signedUrlData.signedUrl}" controls class="max-w-full rounded-lg border border-border"></video><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
           insertIntoContent(videoHtml);
         }
       }
