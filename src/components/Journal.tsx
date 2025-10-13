@@ -451,7 +451,11 @@ export const Journal = () => {
                       />
                       <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors pointer-events-none">
                         <div className="w-16 h-16 rounded-full bg-background/90 flex items-center justify-center">
-                          <Volume2 className="h-8 w-8 text-primary" />
+                          {playingMediaId === displayNote.id ? (
+                            <Pause className="h-8 w-8 text-primary" />
+                          ) : (
+                            <Play className="h-8 w-8 text-primary ml-1" />
+                          )}
                         </div>
                       </div>
                     </>
