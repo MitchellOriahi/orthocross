@@ -75,12 +75,20 @@ export const Journal = () => {
     loadViewPreference();
   }, [user]);
 
-  // Clear new note flag when user makes any edits
+  // Clear new note flag when user makes any meaningful edits (not just title change)
   useEffect(() => {
-    if (isNewUnmodifiedNote && (currentTitle !== "New Note" || currentContent !== "")) {
-      setIsNewUnmodifiedNote(false);
+    if (isNewUnmodifiedNote && selectedNoteId) {
+      const note = notes.find(n => n.id === selectedNoteId);
+      const hasContent = currentContent && currentContent.trim() !== "";
+      const hasAttachments = note?.attachments && Array.isArray(note.attachments) && (note.attachments as any[]).length > 0;
+      const hasPinnedMedia = note?.pinned_media_url;
+      
+      // Only clear the flag if actual content/media was added
+      if (hasContent || hasAttachments || hasPinnedMedia) {
+        setIsNewUnmodifiedNote(false);
+      }
     }
-  }, [currentTitle, currentContent, isNewUnmodifiedNote]);
+  }, [currentContent, isNewUnmodifiedNote, selectedNoteId, notes]);
 
   // Delete unmodified notes when closing the sheet
   useEffect(() => {
