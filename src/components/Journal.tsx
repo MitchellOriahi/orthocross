@@ -52,6 +52,7 @@ export const Journal = () => {
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
   const [viewMode, setViewMode] = useState<'list' | 'gallery'>('list');
+  const [isNewUnmodifiedNote, setIsNewUnmodifiedNote] = useState(false);
 
   // Load view preference
   useEffect(() => {
@@ -71,6 +72,30 @@ export const Journal = () => {
 
     loadViewPreference();
   }, [user]);
+
+  // Clear new note flag when user makes any edits
+  useEffect(() => {
+    if (isNewUnmodifiedNote && (currentTitle !== "New Note" || currentContent !== "")) {
+      setIsNewUnmodifiedNote(false);
+    }
+  }, [currentTitle, currentContent, isNewUnmodifiedNote]);
+
+  // Delete unmodified notes when closing the sheet
+  useEffect(() => {
+    const deleteUnmodifiedNote = async () => {
+      if (!isFullScreen && isNewUnmodifiedNote && selectedNoteId) {
+        const note = notes.find(n => n.id === selectedNoteId);
+        if (note && (note.title === "New Note" || !note.title) && (!note.content || note.content === "")) {
+          await (supabase as any).from('journal_entries').delete().eq('id', selectedNoteId);
+          setNotes(notes.filter(n => n.id !== selectedNoteId));
+          setSelectedNoteId(null);
+          setIsNewUnmodifiedNote(false);
+        }
+      }
+    };
+
+    deleteUnmodifiedNote();
+  }, [isFullScreen]);
 
   // Load folders and notes
   useEffect(() => {
@@ -173,15 +198,26 @@ export const Journal = () => {
       setNotes([data, ...notes]);
       setSelectedNoteId(data.id);
       setIsFullScreen(true);
+      setIsNewUnmodifiedNote(true);
       if (isMobile) {
         setShowNotesList(false);
       }
     }
   };
 
-  const handleNoteSelect = (noteId: string) => {
+  const handleNoteSelect = async (noteId: string) => {
+    // Check if we need to delete the current unmodified note before switching
+    if (isNewUnmodifiedNote && selectedNoteId && selectedNoteId !== noteId) {
+      const note = notes.find(n => n.id === selectedNoteId);
+      if (note && (note.title === "New Note" || !note.title) && (!note.content || note.content === "")) {
+        await (supabase as any).from('journal_entries').delete().eq('id', selectedNoteId);
+        setNotes(notes.filter(n => n.id !== selectedNoteId));
+      }
+    }
+    
     setSelectedNoteId(noteId);
     setIsFullScreen(true);
+    setIsNewUnmodifiedNote(false);
     if (isMobile) {
       setShowNotesList(false);
     }
