@@ -301,8 +301,35 @@ export const Journal = () => {
   const pinnedNote = notes.find(n => n.pinned);
   const mostRecentNote = notes.length > 0 ? notes[0] : null;
   const displayNote = pinnedNote || mostRecentNote;
-  const hasContent = displayNote && (displayNote.title || displayNote.content);
   const isPinned = displayNote?.pinned || false;
+  
+  // Extract media and text from note content
+  const getContentPreview = (note: typeof displayNote) => {
+    if (!note || !note.content) return { text: '', imageUrl: null, hasAudio: false };
+    
+    const content = note.content;
+    
+    // Extract first image URL
+    const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
+    const imageUrl = imgMatch ? imgMatch[1] : null;
+    
+    // Check for audio
+    const hasAudio = content.includes('<audio');
+    
+    // Strip all HTML and URLs to get clean text
+    const textContent = content
+      .replace(/<img[^>]*>/g, '')
+      .replace(/<audio[^>]*>.*?<\/audio>/g, '')
+      .replace(/<video[^>]*>.*?<\/video>/g, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/https?:\/\/[^\s]+/g, '')
+      .trim();
+    
+    return { text: textContent, imageUrl, hasAudio };
+  };
+  
+  const contentPreview = displayNote ? getContentPreview(displayNote) : { text: '', imageUrl: null, hasAudio: false };
+  const hasContent = displayNote && (displayNote.title || contentPreview.text || contentPreview.imageUrl);
 
   return (
     <>
@@ -310,26 +337,55 @@ export const Journal = () => {
         className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
         onClick={() => !isFullScreen && setIsFullScreen(true)}
       >
-        <div className="h-[200px] p-4 flex flex-col">
+        <div className="h-[200px] overflow-hidden">
           {hasContent ? (
             <>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-semibold text-sm truncate flex-1">
-                  {displayNote.title || "Untitled"}
-                </h3>
-                {!isPinned && (
-                  <span className="text-xs text-muted-foreground ml-2">
-                    {formatDistanceToNow(new Date(displayNote.updated_at), { addSuffix: true })}
-                  </span>
-                )}
-              </div>
-              <div className="text-sm text-muted-foreground line-clamp-6 leading-relaxed">
-                {displayNote.content || ""}
-              </div>
+              {/* If pinned, show only text. If not pinned, show media if available */}
+              {!isPinned && contentPreview.imageUrl ? (
+                <div className="h-full flex flex-col">
+                  <div className="flex-shrink-0 h-[120px] overflow-hidden">
+                    <img 
+                      src={contentPreview.imageUrl} 
+                      alt="Note preview" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4 flex-1">
+                    <h3 className="font-semibold text-sm truncate mb-1">
+                      {displayNote.title || "Untitled"}
+                    </h3>
+                    <div className="text-xs text-muted-foreground line-clamp-2">
+                      {contentPreview.text || ""}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 h-full flex flex-col">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold text-sm truncate flex-1">
+                      {displayNote.title || "Untitled"}
+                    </h3>
+                    {!isPinned && (
+                      <span className="text-xs text-muted-foreground ml-2">
+                        {formatDistanceToNow(new Date(displayNote.updated_at), { addSuffix: true })}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm text-muted-foreground line-clamp-6 leading-relaxed">
+                    {contentPreview.text || ""}
+                  </div>
+                  {!isPinned && contentPreview.hasAudio && (
+                    <div className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                      Voice note included
+                    </div>
+                  )}
+                </div>
+              )}
             </>
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground">
-              <div className="text-center">
+              <div className="text-center p-4">
                 <p className="text-lg font-medium mb-1">Journal</p>
                 <p className="text-sm">Click to start writing...</p>
               </div>
