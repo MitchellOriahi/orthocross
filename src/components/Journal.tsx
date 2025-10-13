@@ -341,7 +341,7 @@ export const Journal = () => {
         className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
         onClick={() => !isFullScreen && setIsFullScreen(true)}
       >
-        <div className="h-[200px] overflow-hidden">
+        <div className={pinnedMediaUrl && pinnedMediaType ? "h-[300px] overflow-hidden" : "h-[200px] overflow-hidden"}>
           {hasContent ? (
             <>
               {/* Show pinned media if available, taking full height */}
