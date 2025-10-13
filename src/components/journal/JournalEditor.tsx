@@ -450,6 +450,7 @@ export const JournalEditor = ({
               onInput={(e) => onContentChange(e.currentTarget.innerHTML)}
               onBlur={(e) => onContentChange(e.currentTarget.innerHTML)}
               dangerouslySetInnerHTML={{ __html: content }}
+              dir="ltr"
               className={`resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none ${
                 isMobile ? 'text-sm' : 'text-base'
               }`}
