@@ -239,7 +239,7 @@ export const JournalNotesList = ({
                   onClick={onNoteCreate}
                   className="rounded-lg border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-accent/50 transition-colors"
                 >
-                  <div className="aspect-square flex items-center justify-center">
+                  <div className="aspect-[4/3] flex items-center justify-center">
                     <div className="text-center">
                       <Plus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                       <span className="text-[10px] text-muted-foreground">New Note</span>
@@ -277,7 +277,7 @@ export const JournalNotesList = ({
                     onClick={onNoteCreate}
                     className="rounded-lg border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-accent/50 transition-colors"
                   >
-                    <div className="aspect-square flex items-center justify-center">
+                    <div className="aspect-[4/3] flex items-center justify-center">
                       <div className="text-center">
                         <Plus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                         <span className="text-[10px] text-muted-foreground">New Note</span>
