@@ -274,11 +274,11 @@ export const JournalEditor = ({
         
         // Update visual state
         if (isPinned) {
-          btn.classList.add('bg-secondary', 'text-secondary-foreground');
+          btn.classList.add('bg-secondary', 'text-secondary-foreground', 'line-through');
           btn.classList.remove('bg-primary', 'text-primary-foreground');
         } else {
           btn.classList.add('bg-primary', 'text-primary-foreground');
-          btn.classList.remove('bg-secondary', 'text-secondary-foreground');
+          btn.classList.remove('bg-secondary', 'text-secondary-foreground', 'line-through');
         }
       }
     });
