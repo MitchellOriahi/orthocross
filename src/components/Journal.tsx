@@ -83,19 +83,26 @@ export const Journal = () => {
   // Delete unmodified notes when closing the sheet
   useEffect(() => {
     const deleteUnmodifiedNote = async () => {
+      console.log('Delete check triggered', { isFullScreen, isNewUnmodifiedNote, selectedNoteId });
+      
       if (!isFullScreen && isNewUnmodifiedNote && selectedNoteId) {
         const note = notes.find(n => n.id === selectedNoteId);
+        console.log('Found note to potentially delete:', note);
+        
         if (note && (note.title === "New Note" || !note.title) && (!note.content || note.content === "")) {
+          console.log('Deleting unmodified note:', note.id);
           await (supabase as any).from('journal_entries').delete().eq('id', selectedNoteId);
           setNotes(notes.filter(n => n.id !== selectedNoteId));
           setSelectedNoteId(null);
           setIsNewUnmodifiedNote(false);
+        } else {
+          console.log('Note was modified, not deleting');
         }
       }
     };
 
     deleteUnmodifiedNote();
-  }, [isFullScreen]);
+  }, [isFullScreen, isNewUnmodifiedNote, selectedNoteId, notes]);
 
   // Load folders and notes
   useEffect(() => {
