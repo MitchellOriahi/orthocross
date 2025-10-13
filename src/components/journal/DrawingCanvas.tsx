@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Canvas as FabricCanvas, PencilBrush } from "fabric";
+import { Canvas as FabricCanvas, PencilBrush, FabricImage } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Eraser, Pencil, Trash2, Palette } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -52,15 +52,15 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
 
       // Load initial image if provided
       if (initialImageUrl) {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-          const fabricImg = new (window as any).fabric.Image(img);
-          fabricImg.scaleToWidth(canvasWidth);
-          canvas.add(fabricImg);
-          canvas.renderAll();
-        };
-        img.src = initialImageUrl;
+        FabricImage.fromURL(initialImageUrl, { crossOrigin: 'anonymous' })
+          .then((fabricImg) => {
+            fabricImg.scaleToWidth(canvasWidth);
+            canvas.add(fabricImg);
+            canvas.renderAll();
+          })
+          .catch((error) => {
+            console.error('Error loading image:', error);
+          });
       }
 
       setFabricCanvas(canvas);

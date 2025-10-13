@@ -344,8 +344,8 @@ export const Journal = () => {
         <div className="h-[200px] overflow-hidden">
           {hasContent ? (
             <>
-              {/* Show pinned media if available and note is pinned */}
-              {isPinned && pinnedMediaUrl && pinnedMediaType ? (
+              {/* Show pinned media if available, regardless of note pinned status */}
+              {pinnedMediaUrl && pinnedMediaType ? (
                 <div className="h-full flex flex-col">
                   <div className="flex-shrink-0 h-[120px] overflow-hidden bg-muted flex items-center justify-center">
                     {pinnedMediaType === 'image' || pinnedMediaType === 'drawing' ? (
@@ -375,7 +375,7 @@ export const Journal = () => {
                     </div>
                   </div>
                 </div>
-              ) : !isPinned && contentPreview.imageUrl ? (
+              ) : contentPreview.imageUrl ? (
                 <div className="h-full flex flex-col">
                   <div className="flex-shrink-0 h-[120px] overflow-hidden">
                     <img 
