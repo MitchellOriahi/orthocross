@@ -99,22 +99,21 @@ export const Journal = () => {
         const note = notes.find(n => n.id === selectedNoteId);
         console.log('Found note to potentially delete:', note);
         
-        // Check if note is truly empty (no title, content, attachments, or pinned media)
-        const hasTitle = note?.title && note.title !== "New Note";
+        // Check if note has any actual content or media (title changes don't count)
         const hasContent = note?.content && note.content.trim() !== "";
         const hasAttachments = note?.attachments && Array.isArray(note.attachments) && (note.attachments as any[]).length > 0;
         const hasPinnedMedia = note?.pinned_media_url;
         
-        const isEmpty = !hasTitle && !hasContent && !hasAttachments && !hasPinnedMedia;
+        const isEmpty = !hasContent && !hasAttachments && !hasPinnedMedia;
         
         if (note && isEmpty) {
-          console.log('Deleting unmodified note:', note.id);
+          console.log('Deleting note with no content/media:', note.id);
           await (supabase as any).from('journal_entries').delete().eq('id', selectedNoteId);
           setNotes(notes.filter(n => n.id !== selectedNoteId));
           setSelectedNoteId(null);
           setIsNewUnmodifiedNote(false);
         } else {
-          console.log('Note was modified, not deleting', { hasTitle, hasContent, hasAttachments, hasPinnedMedia });
+          console.log('Note has content/media, keeping it', { hasContent, hasAttachments, hasPinnedMedia });
         }
       }
     };
@@ -235,12 +234,11 @@ export const Journal = () => {
     if (isNewUnmodifiedNote && selectedNoteId && selectedNoteId !== noteId) {
       const note = notes.find(n => n.id === selectedNoteId);
       
-      // Check if note is truly empty
-      const hasTitle = note?.title && note.title !== "New Note";
+      // Check if note has any actual content or media (title changes don't count)
       const hasContent = note?.content && note.content.trim() !== "";
       const hasAttachments = note?.attachments && Array.isArray(note.attachments) && (note.attachments as any[]).length > 0;
       const hasPinnedMedia = note?.pinned_media_url;
-      const isEmpty = !hasTitle && !hasContent && !hasAttachments && !hasPinnedMedia;
+      const isEmpty = !hasContent && !hasAttachments && !hasPinnedMedia;
       
       if (note && isEmpty) {
         await (supabase as any).from('journal_entries').delete().eq('id', selectedNoteId);
