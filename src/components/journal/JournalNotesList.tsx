@@ -242,7 +242,7 @@ export const JournalNotesList = ({
                   <div className="aspect-square flex items-center justify-center">
                     <div className="text-center">
                       <Plus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">New Note</span>
+                      <span className="text-xs text-muted-foreground">New Note</span>
                     </div>
                   </div>
                 </button>
@@ -280,7 +280,7 @@ export const JournalNotesList = ({
                     <div className="aspect-square flex items-center justify-center">
                       <div className="text-center">
                         <Plus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">New Note</span>
+                        <span className="text-xs text-muted-foreground">New Note</span>
                       </div>
                     </div>
                   </button>
