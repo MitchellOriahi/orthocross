@@ -173,6 +173,9 @@ export const Journal = () => {
       setNotes([data, ...notes]);
       setSelectedNoteId(data.id);
       setIsFullScreen(true);
+      if (isMobile) {
+        setShowNotesList(false);
+      }
     }
   };
 
