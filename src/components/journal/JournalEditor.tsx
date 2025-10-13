@@ -420,7 +420,6 @@ export const JournalEditor = ({
             className={`font-bold border-none bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${
               isMobile ? 'text-xl' : 'text-2xl'
             }`}
-            style={{ direction: 'ltr', unicodeBidi: 'bidi-override' }}
           />
         </div>
 
@@ -456,7 +455,7 @@ export const JournalEditor = ({
               className={`resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none ${
                 isMobile ? 'text-sm' : 'text-base'
               }`}
-              style={{ minHeight: 'calc(100vh - 400px)', direction: 'ltr', unicodeBidi: 'bidi-override' }}
+              style={{ minHeight: 'calc(100vh - 400px)' }}
               data-placeholder="Start writing..."
             />
           </div>
