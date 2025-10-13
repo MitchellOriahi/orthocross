@@ -9,7 +9,7 @@ import { JournalEditor } from "./journal/JournalEditor";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Menu } from "lucide-react";
+import { ChevronLeft, Menu, Play } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 // Extended types that match the actual database schema
@@ -392,7 +392,22 @@ export const Journal = () => {
             <>
               {/* Show pinned media if available, taking full height */}
               {pinnedMediaUrl && pinnedMediaType ? (
-                <div className="h-full w-full overflow-hidden bg-muted flex items-center justify-center">
+                <div 
+                  className="h-full w-full overflow-hidden bg-muted flex items-center justify-center relative group"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (pinnedMediaType === 'video' || pinnedMediaType === 'audio') {
+                      const mediaElement = e.currentTarget.querySelector('video, audio') as HTMLMediaElement;
+                      if (mediaElement) {
+                        if (mediaElement.paused) {
+                          mediaElement.play();
+                        } else {
+                          mediaElement.pause();
+                        }
+                      }
+                    }
+                  }}
+                >
                   {pinnedMediaType === 'image' || pinnedMediaType === 'drawing' ? (
                     <img 
                       src={pinnedMediaUrl} 
@@ -400,15 +415,30 @@ export const Journal = () => {
                       className="max-w-full max-h-full object-contain"
                     />
                   ) : pinnedMediaType === 'video' ? (
-                    <video 
-                      src={pinnedMediaUrl} 
-                      className="max-w-full max-h-full object-contain"
-                      muted
-                    />
+                    <>
+                      <video 
+                        src={pinnedMediaUrl} 
+                        className="max-w-full max-h-full object-contain"
+                        muted
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors pointer-events-none">
+                        <div className="w-16 h-16 rounded-full bg-background/90 flex items-center justify-center">
+                          <Play className="h-8 w-8 text-primary ml-1" />
+                        </div>
+                      </div>
+                    </>
                   ) : pinnedMediaType === 'audio' ? (
-                    <div className="flex items-center justify-center w-full h-full">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
-                    </div>
+                    <>
+                      <div className="flex items-center justify-center w-full h-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                      </div>
+                      <audio src={pinnedMediaUrl} className="hidden" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors pointer-events-none">
+                        <div className="w-16 h-16 rounded-full bg-background/90 flex items-center justify-center">
+                          <Play className="h-8 w-8 text-primary ml-1" />
+                        </div>
+                      </div>
+                    </>
                   ) : null}
                 </div>
               ) : contentPreview.imageUrl ? (
