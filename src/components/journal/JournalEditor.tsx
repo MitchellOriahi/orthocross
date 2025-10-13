@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { Highlighter, Pencil, Image as ImageIcon, Mic, X, Download, Trash2 } from "lucide-react";
+import { Highlighter, Pencil, Image as ImageIcon, Mic, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DrawingCanvas } from "./DrawingCanvas";
-import { FileAttachments } from "./FileAttachments";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -45,64 +43,60 @@ export const JournalEditor = ({
   noteId,
 }: JournalEditorProps) => {
   const { user } = useAuth();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const contentDivRef = useRef<HTMLDivElement>(null);
   const [showHighlighter, setShowHighlighter] = useState(false);
   const [selectedColor, setSelectedColor] = useState(HIGHLIGHT_COLORS[0]);
   const [showDrawing, setShowDrawing] = useState(false);
   const [showAttachments, setShowAttachments] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState<number>(0);
   const isMobile = useIsMobile();
 
-  // Load existing attachments
-  useEffect(() => {
-    if (!noteId || !user) return;
-    
-    const loadAttachments = async () => {
-      const { data } = await supabase
-        .from('journal_entries')
-        .select('attachments')
-        .eq('id', noteId)
-        .single();
-      
-      if (data?.attachments) {
-        setAttachments(data.attachments as unknown as Attachment[]);
-      }
-    };
-    
-    loadAttachments();
-  }, [noteId, user]);
-
   const handleHighlight = () => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
+    if (!contentDivRef.current) return;
     
-    if (start === end) {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
       setShowHighlighter(!showHighlighter);
       return;
     }
 
-    const selectedText = content.substring(start, end);
-    const highlightedText = `<mark class="${selectedColor.class}">${selectedText}</mark>`;
+    const range = selection.getRangeAt(0);
+    if (range.collapsed) {
+      setShowHighlighter(!showHighlighter);
+      return;
+    }
+
+    const mark = document.createElement('mark');
+    mark.className = selectedColor.class;
+    range.surroundContents(mark);
     
-    const newContent =
-      content.substring(0, start) + highlightedText + content.substring(end);
-    
-    onContentChange(newContent);
+    onContentChange(contentDivRef.current.innerHTML);
     setShowHighlighter(false);
+    selection.removeAllRanges();
   };
 
-  const saveAttachmentsToDB = async (newAttachments: Attachment[]) => {
-    if (!noteId || !user) return;
+  const insertIntoContent = (html: string) => {
+    if (!contentDivRef.current) return;
     
-    await supabase
-      .from('journal_entries')
-      .update({ attachments: newAttachments as unknown as any })
-      .eq('id', noteId);
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      const fragment = document.createDocumentFragment();
+      let node;
+      while ((node = div.firstChild)) {
+        fragment.appendChild(node);
+      }
+      range.insertNode(fragment);
+    } else {
+      contentDivRef.current.innerHTML += html;
+    }
+    
+    onContentChange(contentDivRef.current.innerHTML);
   };
 
   const handleDrawingSave = async (dataUrl: string) => {
@@ -110,11 +104,9 @@ export const JournalEditor = ({
     
     setIsUploading(true);
     try {
-      // Convert data URL to blob
       const response = await fetch(dataUrl);
       const blob = await response.blob();
       
-      // Upload to storage
       const fileName = `${user.id}/${noteId}/drawing-${Date.now()}.png`;
       const { error: uploadError } = await supabase.storage
         .from('journal-attachments')
@@ -122,26 +114,17 @@ export const JournalEditor = ({
       
       if (uploadError) throw uploadError;
       
-      // Get signed URL (valid for 1 year)
       const { data: signedUrlData } = await supabase.storage
         .from('journal-attachments')
         .createSignedUrl(fileName, 31536000);
       
       if (!signedUrlData) throw new Error('Failed to create signed URL');
       
-      // Add to attachments
-      const newAttachment: Attachment = {
-        type: 'drawing',
-        url: signedUrlData.signedUrl,
-        name: `Drawing ${new Date().toLocaleString()}`,
-        timestamp: new Date().toISOString()
-      };
+      // Insert drawing into content
+      const imgHtml = `<div class="my-4"><img src="${signedUrlData.signedUrl}" alt="Drawing" class="max-w-full rounded-lg border border-border" /></div>`;
+      insertIntoContent(imgHtml);
       
-      const newAttachments = [...attachments, newAttachment];
-      setAttachments(newAttachments);
-      await saveAttachmentsToDB(newAttachments);
-      
-      toast.success("Drawing saved!");
+      toast.success("Drawing inserted!");
       setShowDrawing(false);
     } catch (error) {
       console.error('Error saving drawing:', error);
@@ -169,18 +152,11 @@ export const JournalEditor = ({
       
       if (!signedUrlData) throw new Error('Failed to create signed URL');
       
-      const newAttachment: Attachment = {
-        type: 'voice',
-        url: signedUrlData.signedUrl,
-        name: `Voice Note ${new Date().toLocaleString()}`,
-        timestamp: new Date().toISOString()
-      };
+      // Insert audio into content
+      const audioHtml = `<div class="my-4 p-3 bg-muted rounded-lg"><audio src="${signedUrlData.signedUrl}" controls class="w-full"></audio></div>`;
+      insertIntoContent(audioHtml);
       
-      const newAttachments = [...attachments, newAttachment];
-      setAttachments(newAttachments);
-      await saveAttachmentsToDB(newAttachments);
-      
-      toast.success("Voice note saved!");
+      toast.success("Voice note inserted!");
       setShowVoiceRecorder(false);
     } catch (error) {
       console.error('Error saving voice note:', error);
@@ -190,14 +166,13 @@ export const JournalEditor = ({
     }
   };
 
-  const handleFilesUpload = async (files: File[]) => {
-    if (!user || files.length === 0) return;
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!user || !files || files.length === 0) return;
     
     setIsUploading(true);
     try {
-      const newAttachments = [...attachments];
-      
-      for (const file of files) {
+      for (const file of Array.from(files)) {
         const fileName = `${user.id}/${noteId}/${Date.now()}-${file.name}`;
         const { error: uploadError } = await supabase.storage
           .from('journal-attachments')
@@ -211,50 +186,24 @@ export const JournalEditor = ({
         
         if (!signedUrlData) throw new Error('Failed to create signed URL');
         
-        newAttachments.push({
-          type: 'image',
-          url: signedUrlData.signedUrl,
-          name: file.name,
-          timestamp: new Date().toISOString()
-        });
+        // Insert image or video into content
+        if (file.type.startsWith('image/')) {
+          const imgHtml = `<div class="my-4"><img src="${signedUrlData.signedUrl}" alt="${file.name}" class="max-w-full rounded-lg border border-border" /></div>`;
+          insertIntoContent(imgHtml);
+        } else if (file.type.startsWith('video/')) {
+          const videoHtml = `<div class="my-4"><video src="${signedUrlData.signedUrl}" controls class="max-w-full rounded-lg border border-border"></video></div>`;
+          insertIntoContent(videoHtml);
+        }
       }
       
-      setAttachments(newAttachments);
-      await saveAttachmentsToDB(newAttachments);
-      
-      toast.success(`${files.length} file(s) saved!`);
+      toast.success(`${files.length} file(s) inserted!`);
+      setShowAttachments(false);
     } catch (error) {
       console.error('Error uploading files:', error);
       toast.error("Failed to upload files");
     } finally {
       setIsUploading(false);
-    }
-  };
-
-  const handleDeleteAttachment = async (index: number) => {
-    if (!user) return;
-    
-    try {
-      const attachment = attachments[index];
-      
-      // Extract file path from URL
-      const urlParts = attachment.url.split('/');
-      const filePath = `${user.id}/${noteId}/${urlParts[urlParts.length - 1]}`;
-      
-      // Delete from storage
-      await supabase.storage
-        .from('journal-attachments')
-        .remove([filePath]);
-      
-      // Remove from state and DB
-      const newAttachments = attachments.filter((_, i) => i !== index);
-      setAttachments(newAttachments);
-      await saveAttachmentsToDB(newAttachments);
-      
-      toast.success("Attachment deleted");
-    } catch (error) {
-      console.error('Error deleting attachment:', error);
-      toast.error("Failed to delete attachment");
+      e.target.value = '';
     }
   };
 
@@ -272,7 +221,7 @@ export const JournalEditor = ({
           />
         </div>
 
-        <div className="flex-1 p-4 overflow-hidden">
+        <div className="flex-1 p-4 overflow-hidden relative">
           {showHighlighter && (
             <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex gap-1">
               {HIGHLIGHT_COLORS.map((color) => (
@@ -292,56 +241,20 @@ export const JournalEditor = ({
             </div>
           )}
 
-          <Textarea
-            ref={textareaRef}
-            value={content}
-            onChange={(e) => onContentChange(e.target.value)}
-            placeholder="Start writing..."
-            className={`resize-none border-none bg-transparent px-0 h-full focus-visible:ring-0 focus-visible:ring-offset-0 leading-relaxed ${
+          <div
+            ref={contentDivRef}
+            contentEditable
+            suppressContentEditableWarning
+            onInput={(e) => onContentChange(e.currentTarget.innerHTML)}
+            onBlur={(e) => onContentChange(e.currentTarget.innerHTML)}
+            dangerouslySetInnerHTML={{ __html: content }}
+            className={`resize-none border-none bg-transparent px-0 h-full focus:outline-none leading-relaxed prose dark:prose-invert max-w-none ${
               isMobile ? 'text-sm' : 'text-base'
             }`}
+            style={{ minHeight: '400px' }}
+            data-placeholder="Start writing..."
           />
         </div>
-
-        {/* Attachments Display */}
-        {attachments.length > 0 && (
-          <div className="px-4 pb-4 space-y-2">
-            <h4 className="text-xs font-semibold text-muted-foreground">Attachments</h4>
-            <div className="flex flex-wrap gap-2">
-              {attachments.map((attachment, index) => (
-                <div key={index} className="relative group">
-                  {attachment.type === 'drawing' || attachment.type === 'image' ? (
-                    <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-border">
-                      <img src={attachment.url} alt={attachment.name} className="w-full h-full object-cover" />
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-1 right-1 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => handleDeleteAttachment(index)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 bg-muted px-3 py-2 rounded-lg">
-                      <Mic className="h-4 w-4" />
-                      <span className="text-xs truncate max-w-[100px]">{attachment.name}</span>
-                      <audio src={attachment.url} controls className="h-6" />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-5 w-5"
-                        onClick={() => handleDeleteAttachment(index)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {(isSaving || isUploading) && (
           <div className="px-4 py-1 text-xs text-muted-foreground">
@@ -408,13 +321,13 @@ export const JournalEditor = ({
         </SheetContent>
       </Sheet>
 
-      {/* Attachments Sheet */}
+      {/* Image/Video Upload Sheet */}
       <Sheet open={showAttachments} onOpenChange={setShowAttachments}>
-        <SheetContent side="bottom" className="h-[50vh] w-screen p-0 max-w-none">
-          <SheetTitle className="sr-only">Attachments</SheetTitle>
+        <SheetContent side="bottom" className="h-[30vh] w-screen p-0 max-w-none">
+          <SheetTitle className="sr-only">Insert Media</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="p-3 border-b border-border flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Attachments</h3>
+              <h3 className="text-lg font-semibold">Insert Image/Video</h3>
               <Button
                 variant="ghost"
                 size="icon"
@@ -423,8 +336,23 @@ export const JournalEditor = ({
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            <div className="flex-1 p-4 overflow-auto">
-              <FileAttachments onFilesChange={handleFilesUpload} />
+            <div className="flex-1 p-4 flex items-center justify-center">
+              <input
+                type="file"
+                id="media-upload"
+                accept="image/*,video/*"
+                multiple
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <label htmlFor="media-upload">
+                <Button variant="default" size="lg" asChild>
+                  <span className="cursor-pointer">
+                    <ImageIcon className="h-5 w-5 mr-2" />
+                    Choose Images/Videos
+                  </span>
+                </Button>
+              </label>
             </div>
           </div>
         </SheetContent>

@@ -150,3 +150,12 @@ All colors MUST be HSL.
 .animate-progress-bar {
   animation: progress-bar 7s linear forwards;
 }
+
+/* Placeholder for contentEditable divs */
+[contenteditable][data-placeholder]:empty:before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground));
+  opacity: 0.5;
+  pointer-events: none;
+  position: absolute;
+}
