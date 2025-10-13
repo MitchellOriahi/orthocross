@@ -80,23 +80,18 @@ export const JournalEditor = ({
   const insertIntoContent = (html: string) => {
     if (!contentDivRef.current) return;
     
-    const selection = window.getSelection();
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      range.deleteContents();
-      const div = document.createElement('div');
-      div.innerHTML = html;
-      const fragment = document.createDocumentFragment();
-      let node;
-      while ((node = div.firstChild)) {
-        fragment.appendChild(node);
-      }
-      range.insertNode(fragment);
-    } else {
-      contentDivRef.current.innerHTML += html;
-    }
+    // Get current content
+    const currentContent = contentDivRef.current.innerHTML || content;
     
-    onContentChange(contentDivRef.current.innerHTML);
+    // Append new content
+    const newContent = currentContent + html;
+    
+    // Update the ref and trigger change
+    contentDivRef.current.innerHTML = newContent;
+    onContentChange(newContent);
+    
+    // Scroll to bottom to show new content
+    contentDivRef.current.scrollTop = contentDivRef.current.scrollHeight;
   };
 
   const handleDrawingSave = async (dataUrl: string) => {
@@ -248,10 +243,10 @@ export const JournalEditor = ({
             onInput={(e) => onContentChange(e.currentTarget.innerHTML)}
             onBlur={(e) => onContentChange(e.currentTarget.innerHTML)}
             dangerouslySetInnerHTML={{ __html: content }}
-            className={`resize-none border-none bg-transparent px-0 h-full focus:outline-none leading-relaxed prose dark:prose-invert max-w-none ${
+            className={`resize-none border-none bg-transparent px-0 h-full focus:outline-none leading-relaxed prose dark:prose-invert max-w-none overflow-auto ${
               isMobile ? 'text-sm' : 'text-base'
             }`}
-            style={{ minHeight: '400px' }}
+            style={{ minHeight: '400px', maxHeight: 'calc(100vh - 300px)' }}
             data-placeholder="Start writing..."
           />
         </div>
@@ -301,7 +296,7 @@ export const JournalEditor = ({
 
       {/* Full-screen Drawing Sheet */}
       <Sheet open={showDrawing} onOpenChange={setShowDrawing}>
-        <SheetContent side="bottom" className="h-screen w-screen p-0 max-w-none">
+        <SheetContent side="bottom" className="h-screen w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
           <SheetTitle className="sr-only">Drawing Canvas</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="p-3 border-b border-border flex items-center justify-between">
@@ -323,44 +318,32 @@ export const JournalEditor = ({
 
       {/* Image/Video Upload Sheet */}
       <Sheet open={showAttachments} onOpenChange={setShowAttachments}>
-        <SheetContent side="bottom" className="h-[30vh] w-screen p-0 max-w-none">
+        <SheetContent side="bottom" className="h-[30vh] w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
           <SheetTitle className="sr-only">Insert Media</SheetTitle>
-          <div className="h-full flex flex-col">
-            <div className="p-3 border-b border-border flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Insert Image/Video</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowAttachments(false)}
-              >
-                <X className="h-5 w-5" />
+          <div className="h-full flex flex-col items-center justify-center p-4">
+            <input
+              type="file"
+              id="media-upload"
+              accept="image/*,video/*"
+              multiple
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+            <label htmlFor="media-upload">
+              <Button variant="default" size="lg" asChild>
+                <span className="cursor-pointer">
+                  <ImageIcon className="h-5 w-5 mr-2" />
+                  Choose Images/Videos
+                </span>
               </Button>
-            </div>
-            <div className="flex-1 p-4 flex items-center justify-center">
-              <input
-                type="file"
-                id="media-upload"
-                accept="image/*,video/*"
-                multiple
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-              <label htmlFor="media-upload">
-                <Button variant="default" size="lg" asChild>
-                  <span className="cursor-pointer">
-                    <ImageIcon className="h-5 w-5 mr-2" />
-                    Choose Images/Videos
-                  </span>
-                </Button>
-              </label>
-            </div>
+            </label>
           </div>
         </SheetContent>
       </Sheet>
 
       {/* Voice Recorder Sheet */}
       <Sheet open={showVoiceRecorder} onOpenChange={setShowVoiceRecorder}>
-        <SheetContent side="bottom" className="h-[40vh] w-screen p-0 max-w-none">
+        <SheetContent side="bottom" className="h-[40vh] w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
           <SheetTitle className="sr-only">Voice Recorder</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="p-3 border-b border-border flex items-center justify-between">

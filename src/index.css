@@ -159,3 +159,36 @@ All colors MUST be HSL.
   pointer-events: none;
   position: absolute;
 }
+
+/* Journal content media styling */
+[contenteditable] img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  display: block;
+  margin: 1rem 0;
+}
+
+[contenteditable] video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  display: block;
+  margin: 1rem 0;
+}
+
+[contenteditable] audio {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+[contenteditable] div {
+  margin: 0.5rem 0;
+}
+
+[contenteditable] mark {
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
