@@ -344,36 +344,26 @@ export const Journal = () => {
         <div className="h-[200px] overflow-hidden">
           {hasContent ? (
             <>
-              {/* Show pinned media if available, regardless of note pinned status */}
+              {/* Show pinned media if available, taking full height */}
               {pinnedMediaUrl && pinnedMediaType ? (
-                <div className="h-full flex flex-col">
-                  <div className="flex-shrink-0 h-[120px] overflow-hidden bg-muted flex items-center justify-center">
-                    {pinnedMediaType === 'image' || pinnedMediaType === 'drawing' ? (
-                      <img 
-                        src={pinnedMediaUrl} 
-                        alt="Pinned media" 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : pinnedMediaType === 'video' ? (
-                      <video 
-                        src={pinnedMediaUrl} 
-                        className="w-full h-full object-cover"
-                        muted
-                      />
-                    ) : pinnedMediaType === 'audio' ? (
-                      <div className="flex items-center justify-center w-full h-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className="p-4 flex-1">
-                    <h3 className="font-semibold text-sm truncate mb-1">
-                      {displayNote.title || "Untitled"}
-                    </h3>
-                    <div className="text-xs text-muted-foreground line-clamp-2">
-                      {contentPreview.text || ""}
+                <div className="h-full flex items-center justify-center bg-muted overflow-hidden">
+                  {pinnedMediaType === 'image' || pinnedMediaType === 'drawing' ? (
+                    <img 
+                      src={pinnedMediaUrl} 
+                      alt="Pinned media" 
+                      className="w-full h-full object-contain"
+                    />
+                  ) : pinnedMediaType === 'video' ? (
+                    <video 
+                      src={pinnedMediaUrl} 
+                      className="w-full h-full object-contain"
+                      muted
+                    />
+                  ) : pinnedMediaType === 'audio' ? (
+                    <div className="flex items-center justify-center w-full h-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
                     </div>
-                  </div>
+                  ) : null}
                 </div>
               ) : contentPreview.imageUrl ? (
                 <div className="h-full flex flex-col">
