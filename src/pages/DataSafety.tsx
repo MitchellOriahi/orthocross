@@ -1,9 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Trash2, Shield, Mail } from 'lucide-react';
+import { Trash2, Shield, AlertTriangle } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const DataSafety = () => {
+  const { user, signOut } = useAuth();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    if (!user) {
+      toast.error("No user logged in");
+      return;
+    }
+
+    setIsDeleting(true);
+    
+    try {
+      // Delete user account (this will cascade delete all related data due to foreign keys)
+      const { error } = await supabase.rpc('delete_user_account');
+      
+      if (error) throw error;
+      
+      toast.success("Account deleted successfully");
+      await signOut();
+    } catch (error: any) {
+      console.error('Error deleting account:', error);
+      toast.error("Failed to delete account. Please try again or contact support.");
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteDialog(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
@@ -39,17 +81,16 @@ const DataSafety = () => {
             </ul>
             <div className="pt-4">
               <Button 
-                asChild
+                variant="destructive"
                 className="gap-2"
+                onClick={() => setShowDeleteDialog(true)}
               >
-                <a href="mailto:orthocrossfoundation@gmail.com?subject=Data%20Deletion%20Request">
-                  <Mail className="h-4 w-4" />
-                  Request Data Deletion
-                </a>
+                <Trash2 className="h-4 w-4" />
+                Delete Account
               </Button>
             </div>
             <p className="text-sm text-muted-foreground">
-              Please include your account email address in your deletion request.
+              This action is permanent and cannot be undone.
             </p>
           </div>
         </Card>
@@ -96,6 +137,39 @@ const DataSafety = () => {
           </p>
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              Delete Account Permanently?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p>This action cannot be undone. This will permanently delete your account and remove all your data including:</p>
+              <ul className="list-disc list-inside ml-4 space-y-1">
+                <li>Profile information</li>
+                <li>Reading progress and history</li>
+                <li>Bookmarks and highlights</li>
+                <li>Journal entries</li>
+                <li>Streak data</li>
+                <li>All other personal data</li>
+              </ul>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Deleting..." : "Yes, Delete My Account"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
