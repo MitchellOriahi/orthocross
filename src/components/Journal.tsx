@@ -93,33 +93,34 @@ export const Journal = () => {
   // Delete unmodified notes when closing the sheet
   useEffect(() => {
     const deleteUnmodifiedNote = async () => {
-      console.log('Delete check triggered', { isFullScreen, isNewUnmodifiedNote, selectedNoteId });
-      
       if (!isFullScreen && isNewUnmodifiedNote && selectedNoteId) {
-        const note = notes.find(n => n.id === selectedNoteId);
-        console.log('Found note to potentially delete:', note);
+        // Fetch fresh note data from database to avoid stale state issues
+        const { data: note } = await (supabase as any)
+          .from('journal_entries')
+          .select('*')
+          .eq('id', selectedNoteId)
+          .single();
+        
+        if (!note) return;
         
         // Check if note has any actual content or media (title changes don't count)
-        const hasContent = note?.content && note.content.trim() !== "";
-        const hasAttachments = note?.attachments && Array.isArray(note.attachments) && (note.attachments as any[]).length > 0;
-        const hasPinnedMedia = note?.pinned_media_url;
+        const hasContent = note.content && note.content.trim() !== "";
+        const hasAttachments = note.attachments && Array.isArray(note.attachments) && note.attachments.length > 0;
+        const hasPinnedMedia = note.pinned_media_url;
         
         const isEmpty = !hasContent && !hasAttachments && !hasPinnedMedia;
         
-        if (note && isEmpty) {
-          console.log('Deleting note with no content/media:', note.id);
+        if (isEmpty) {
           await (supabase as any).from('journal_entries').delete().eq('id', selectedNoteId);
-          setNotes(notes.filter(n => n.id !== selectedNoteId));
+          setNotes(prevNotes => prevNotes.filter(n => n.id !== selectedNoteId));
           setSelectedNoteId(null);
           setIsNewUnmodifiedNote(false);
-        } else {
-          console.log('Note has content/media, keeping it', { hasContent, hasAttachments, hasPinnedMedia });
         }
       }
     };
 
     deleteUnmodifiedNote();
-  }, [isFullScreen, isNewUnmodifiedNote, selectedNoteId, notes]);
+  }, [isFullScreen, isNewUnmodifiedNote, selectedNoteId]);
 
   // Load folders and notes
   useEffect(() => {
