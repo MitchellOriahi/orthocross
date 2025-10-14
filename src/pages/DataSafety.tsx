@@ -30,8 +30,8 @@ const DataSafety = () => {
     setIsDeleting(true);
     
     try {
-      // Delete user account (this will cascade delete all related data due to foreign keys)
-      const { error } = await supabase.rpc('delete_user_account');
+      // Call the delete account function
+      const { error } = await supabase.rpc('delete_user_account' as any);
       
       if (error) throw error;
       
@@ -63,10 +63,10 @@ const DataSafety = () => {
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2">
               <Trash2 className="h-6 w-6 text-destructive" />
-              Request Account Deletion
+              Delete Account
             </h2>
             <p className="text-muted-foreground">
-              If you would like to delete your account and all associated data, please contact us. We will process your request and permanently remove all your personal information from our systems within 30 days.
+              Permanently delete your account and all associated data. This action cannot be undone and will immediately remove all your personal information from our systems.
             </p>
             <p className="text-muted-foreground">
               This includes:
