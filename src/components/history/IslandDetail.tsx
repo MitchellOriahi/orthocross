@@ -196,7 +196,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             <div className="mb-6">
               <Trophy className="w-24 h-24 mx-auto mb-4 text-primary animate-bounce" />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
-                🎉 Congratulations! 🎉
+                Congratulations!
               </h2>
               <p className="text-xl text-muted-foreground">Island Complete!</p>
             </div>
