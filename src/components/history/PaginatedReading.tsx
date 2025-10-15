@@ -31,10 +31,10 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
   const contentRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
-  // Split content into sentences first
+  // Split content into sentences first - sentences are never split across pages
   const allSentences = content.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
   
-  // Group sentences into pages based on word count
+  // Group sentences into pages - each page ends with a complete sentence
   const pages: string[][] = [];
   let currentPageSentences: string[] = [];
   let currentWordCount = 0;
@@ -42,11 +42,16 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
   allSentences.forEach(sentence => {
     const sentenceWordCount = sentence.split(/\s+/).length;
     
+    // If adding this sentence would exceed the limit AND we already have sentences on this page,
+    // start a new page with this sentence instead
     if (currentWordCount + sentenceWordCount > WORDS_PER_SLIDE && currentPageSentences.length > 0) {
+      // Complete current page with the sentences we have
       pages.push([...currentPageSentences]);
+      // Start new page with the current sentence
       currentPageSentences = [sentence];
       currentWordCount = sentenceWordCount;
     } else {
+      // Add sentence to current page
       currentPageSentences.push(sentence);
       currentWordCount += sentenceWordCount;
     }
