@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Trash2, Shield, AlertTriangle } from 'lucide-react';
+import { Trash2, Shield, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +19,7 @@ import {
 
 const DataSafety = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -49,6 +51,14 @@ const DataSafety = () => {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/settings')}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Settings
+        </Button>
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <Shield className="h-16 w-16 text-primary" />
