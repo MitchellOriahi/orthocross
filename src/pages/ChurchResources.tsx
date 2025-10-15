@@ -24,6 +24,7 @@ import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
+import { CongratulationsModal } from "@/components/CongratulationsModal";
 
 type SectionType = "eastern" | "oriental" | "prayers" | "saints" | null;
 type PrayerFilterType = "all" | "Eastern" | "Oriental";
@@ -38,6 +39,7 @@ const ChurchResources = () => {
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
+  const [showCongratulations, setShowCongratulations] = useState(false);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -126,10 +128,18 @@ const ChurchResources = () => {
           }}
           showProgress={true}
           onComplete={() => {
-            toast({ description: `Completed reading about ${selectedSaint.prefix} ${selectedSaint.name}! 🙏` });
+            setShowCongratulations(true);
+          }}
+        />
+        <CongratulationsModal
+          isOpen={showCongratulations}
+          onClose={() => {
+            setShowCongratulations(false);
             setSelectedSaint(null);
             setSelectedSection("saints");
           }}
+          streakDays={0}
+          isNewStreak={false}
         />
         <BottomNavigation />
       </div>
