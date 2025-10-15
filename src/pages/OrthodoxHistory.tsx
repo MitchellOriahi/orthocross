@@ -80,7 +80,7 @@ const OrthodoxHistory = () => {
     await updateUserStreak(user.id);
 
     await loadProgress();
-    setSelectedIsland(null);
+    // Don't set selectedIsland to null here - let the modal show and user dismiss it manually
 
     // Check if campaign is completed
     const campaign = historyContent.campaigns.find(c => c.id === campaignId);
