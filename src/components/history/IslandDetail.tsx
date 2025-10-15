@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaginatedReading } from "./PaginatedReading";
@@ -36,7 +37,8 @@ interface IslandDetailProps {
 
 export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandDetailProps) => {
   const navigate = useNavigate();
-  const [stage, setStage] = useState<'reading' | 'quiz' | 'complete'>('reading');
+  const [stage, setStage] = useState<'reading' | 'quiz'>('reading');
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
@@ -87,7 +89,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
       const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
       const score = (correctCount / island.quiz.length) * 100;
       
-      setStage('complete');
+      setShowCompletionModal(true);
       onComplete(campaignId, island.id, score);
     }
   };
@@ -180,8 +182,13 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
           </div>
         )}
 
-        {stage === 'complete' && (
-          <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5">
+          </div>
+        </Card>
+      </main>
+
+      <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>
+        <DialogContent className="sm:max-w-md">
+          <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
               <Trophy className="w-24 h-24 mx-auto mb-4 text-primary animate-bounce" />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
@@ -201,14 +208,19 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
               <p className="text-sm text-muted-foreground mt-4">A piece of the Armor of God</p>
             </div>
             
-            <Button onClick={onBack} size="lg" className="w-full">
+            <Button 
+              onClick={() => {
+                setShowCompletionModal(false);
+                onBack();
+              }} 
+              size="lg" 
+              className="w-full"
+            >
               Continue Your Journey
             </Button>
           </Card>
-        )}
-          </div>
-        </Card>
-      </main>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
