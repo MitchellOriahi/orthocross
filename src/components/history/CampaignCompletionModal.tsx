@@ -35,8 +35,12 @@ export const CampaignCompletionModal = ({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-md">
+      <Dialog open={isOpen}>
+        <DialogContent 
+          className="max-w-md [&>button]:hidden"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
           <div className="flex flex-col items-center justify-center py-8 px-4 space-y-6">
             {/* Animated Dove */}
             <div className="relative">

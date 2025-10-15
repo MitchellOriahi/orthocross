@@ -186,8 +186,12 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         </Card>
       </main>
 
-      <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>
-        <DialogContent className="sm:max-w-md">
+      <Dialog open={showCompletionModal}>
+        <DialogContent 
+          className="sm:max-w-md [&>button]:hidden"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
               <Trophy className="w-24 h-24 mx-auto mb-4 text-primary animate-bounce" />
