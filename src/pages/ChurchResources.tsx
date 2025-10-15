@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { DonateButton } from "@/components/DonateButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
@@ -170,7 +169,6 @@ const ChurchResources = () => {
                 <h1 className="text-2xl font-bold">Resources</h1>
               </div>
               <nav className="flex items-center gap-2">
-                <DonateButton />
                 <ThemeToggle />
                 <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                   <SettingsIcon className="w-5 h-5" />
@@ -595,7 +593,6 @@ const ChurchResources = () => {
                 <h1 className="text-2xl font-bold">Resources</h1>
               </div>
             <nav className="flex items-center gap-2">
-              <DonateButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
