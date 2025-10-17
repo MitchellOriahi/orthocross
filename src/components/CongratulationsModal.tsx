@@ -4,9 +4,7 @@ import { DoveMascot } from "./DoveMascot";
 import { StreakFlame } from "./StreakFlame";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
-import { useTheme } from "next-themes";
-import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
-import orthodoxCrossWhite from "@/assets/orthodox-cross-white-new.png";
+import jesusMascot from "@/assets/jesus-mascot.png";
 
 interface CongratulationsModalProps {
   isOpen: boolean;
@@ -28,9 +26,6 @@ export const CongratulationsModal = ({
   saintPrefix
 }: CongratulationsModalProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
-  const { theme } = useTheme();
-  
-  const crossLogo = theme === 'dark' ? orthodoxCrossWhite : orthodoxCrossBlack;
 
   useEffect(() => {
     if (isOpen) {
@@ -58,8 +53,8 @@ export const CongratulationsModal = ({
               />
             ) : (
               <img 
-                src={crossLogo} 
-                alt="Orthodox Cross"
+                src={jesusMascot} 
+                alt="Jesus Mascot"
                 className="w-32 h-32 object-contain animate-bounce"
               />
             )}
