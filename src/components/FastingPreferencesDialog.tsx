@@ -77,11 +77,22 @@ const FastingPreferencesDialog = ({
                 1 day before
               </Label>
             </div>
+
+            <div className="flex items-center space-x-3">
+              <Checkbox
+                id="day-0"
+                checked={selectedDays.includes(0)}
+                onCheckedChange={() => toggleDay(0)}
+              />
+              <Label htmlFor="day-0" className="cursor-pointer">
+                Same day
+              </Label>
+            </div>
           </div>
 
           <div className="p-3 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">
-              💡 Monday and Wednesday fasts will only receive day-of notifications
+              💡 Monday and Wednesday fasts will only receive same-day notifications
             </p>
           </div>
         </div>
