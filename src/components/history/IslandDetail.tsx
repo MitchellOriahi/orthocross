@@ -11,8 +11,10 @@ import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
+import jesusCongrats from "@/assets/jesus-congratulations.png";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
+// ... Rest of code is same as original
 interface Quiz {
   question: string;
   options: string[];
@@ -28,14 +30,14 @@ interface Island {
   iconUrl?: string;
 }
 
-interface IslandDetailProps {
+interface IslandDetailsProps {
   island: Island;
   campaignId: string;
   onComplete: (campaignId: string, islandId: string, score: number) => void;
   onBack: () => void;
 }
 
-export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandDetailProps) => {
+export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandDetailsProps) => {
   const navigate = useNavigate();
   const [stage, setStage] = useState<'reading' | 'quiz'>('reading');
   const [showCompletionModal, setShowCompletionModal] = useState(false);
@@ -91,7 +93,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         description: "Try again!",
         variant: "destructive"
       });
-      // Don't proceed to next question - user must get it right
+      // Don't proceed to next - user must get it right
       setSelectedAnswer('');
     }
   };
@@ -121,7 +123,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <Card className="shadow-elevated border-border/50 mb-6">
-          <div className="flex items-center justify-between p-4 border-b border-border/50">
+          <div className="flex items-center justify-between p-4 border-border/50">
             <Button
               variant="ghost"
               onClick={onBack}
@@ -132,58 +134,57 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
           <div className="p-6">
             <h1 className="text-3xl font-bold mb-6">{island.title}</h1>
 
-        {stage === 'reading' && (
-          <>
-            <HistoryHighlightIntro />
-            <PaginatedReading
-              content={island.reading}
-              onComplete={handleStartQuiz}
-              iconUrl={island.iconUrl}
-              campaignId={campaignId}
-              islandId={island.id}
-            />
-          </>
-        )}
+            {stage === 'reading' && (
+              <>
+                <HistoryHighlightIntro />
+                <PaginatedReading
+                  content={island.reading}
+                  onComplete={handleStartQuiz}
+                  iconUrl={island.iconUrl}
+                  campaignId={campaignId}
+                  islandId={island.id}
+                />
+              </>
+            )}
 
-        {stage === 'quiz' && (
-          <div className="space-y-6">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Question {currentQuestion + 1} of {island.quiz.length}</span>
-                <span className="text-sm text-muted-foreground">{progress.toFixed(0)}%</span>
-              </div>
-              <Progress value={progress} />
-            </div>
-
-            <Card className="p-8">
-              <h2 className="text-xl font-bold mb-6">{island.quiz[currentQuestion].question}</h2>
-              
-              <RadioGroup value={selectedAnswer} onValueChange={handleAnswerSelect}>
-                <div className="space-y-4">
-                  {shuffledOptions[currentQuestion]?.map((option, index) => (
-                    <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-accent cursor-pointer"
-                         onClick={() => handleAnswerSelect(index.toString())}>
-                      <RadioGroupItem value={index.toString()} id={`option-${index}`} />
-                      <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                        {option.text}
-                      </Label>
-                    </div>
-                  ))}
+            {stage === 'quiz' && (
+              <div className="space-y-6">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium">Question {currentQuestion + 1} of {island.quiz.length}</span>
+                    <span className="text-sm text-muted-foreground">{progress.toFixed(0)}%</span>
+                  </div>
+                  <Progress value={progress} />
                 </div>
-              </RadioGroup>
 
-              <Button 
-                onClick={handleSubmitAnswer} 
-                disabled={!selectedAnswer}
-                size="lg" 
-                className="w-full mt-8"
-              >
-                Submit Answer
-              </Button>
-            </Card>
-          </div>
-        )}
+                <Card className="p-8">
+                  <h2 className="text-xl font-bold mb-6">{island.quiz[currentQuestion].question}</h2>
+                  
+                  <RadioGroup value={selectedAnswer} onValueChange={handleAnswerSelect}>
+                    <div className="space-y-4">
+                      {shuffledOptions[currentQuestion]?.map((option, index) => (
+                        <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-accent cursor-pointer"
+                             onClick={() => handleAnswerSelect(index.toString())}>
+                          <RadioGroupItem value={index.toString()} id={`option-${index}`} />
+                          <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
+                            {option.text}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </RadioGroup>
 
+                  <Button 
+                    onClick={handleSubmitAnswer} 
+                    disabled={!selectedAnswer}
+                    size="lg" 
+                    className="w-full mt-8"
+                  >
+                    Submit Answer
+                  </Button>
+                </Card>
+              </div>
+            )}
           </div>
         </Card>
       </main>
@@ -192,11 +193,14 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         <DialogContent 
           className="sm:max-w-md [&>button]:hidden"
           onInteractOutside={(e) => e.preventDefault()}
-          onEscapeKeyDown={(e) => e.preventDefault()}
-        >
-          <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
+          onEscapeKeyDown={(e) => e.preventDefault()}>
+          <Card className="p-8 text-center border-0 shadow-none">
             <div className="mb-6">
-              <Trophy className="w-24 h-24 mx-auto mb-4 text-primary animate-bounce" />
+              <img 
+                src={jesusCongrats} 
+                alt="Jesus" 
+                className="w-36 h-36 mx-auto -mb-8"
+              />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
                 🎉 Congratulations!
               </h2>
@@ -204,7 +208,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             </div>
             
             <div className="bg-card border-2 border-primary rounded-xl p-8 mb-6 shadow-lg">
-              <p className="text-sm uppercase tracking-wider text-muted-foreground mb-2">You've Earned</p>
+              <p className="text-sm text-600 text-muted-foreground mb-2">You've Earned</p>
               <div className="relative">
                 <Shield className="w-32 h-32 mx-auto mb-4 text-primary" />
                 <p className="text-3xl font-bold capitalize text-foreground">
@@ -230,9 +234,3 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
     </div>
   );
 };
-
-const Trophy = ({ className }: { className?: string }) => (
-  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-    <path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v3c0 2.21 1.79 4 4 4h.19l1.55 6.21c.16.65.76 1.09 1.43 1.09h5.66c.67 0 1.27-.44 1.43-1.09L18.81 16H19c2.21 0 4-1.79 4-4v-3c0-1.1-.9-2-2-2zM6 14c-1.1 0-2-.9-2-2v-2h2v4zm4 4l-1.5-6H10V6h4v6h1.5l-1.5 6h-4zm8-6c0 1.1-.9 2-2 2v-4h2v2z"/>
-  </svg>
-);
