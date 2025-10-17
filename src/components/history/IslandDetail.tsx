@@ -200,7 +200,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
               <img 
                 src={jesusMascot} 
                 alt="Jesus Mascot" 
-                className="w-64 h-64 mx-auto mb-0 object-contain animate-bounce" 
+                className="w-80 h-80 mx-auto -mb-4 object-contain animate-bounce" 
               />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
                 🎉 Congratulations!
