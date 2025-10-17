@@ -22,12 +22,32 @@ const Settings = () => {
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(false);
   const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(false);
   const [showFastingPreferencesDialog, setShowFastingPreferencesDialog] = useState(false);
-  const [fastingReminderDays, setFastingReminderDays] = useState<number[]>([3]);
+  const [fastingReminderDays, setFastingReminderDays] = useState<number[]>([3, 0]);
 
   useEffect(() => {
-    setReminders(getStreakReminders());
     loadNotificationPreferences();
+    loadStreakReminders();
   }, []);
+
+  const loadStreakReminders = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from('user_streak_reminders')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('hour', { ascending: true });
+    
+    if (data) {
+      const formattedReminders: ReminderTime[] = data.map(r => ({
+        id: parseInt(r.id.split('-')[0], 16), // Convert uuid to number for local id
+        hour: r.hour,
+        minute: r.minute,
+        enabled: r.enabled
+      }));
+      setReminders(formattedReminders);
+    }
+  };
 
   const loadNotificationPreferences = async () => {
     if (!user) return;
@@ -41,45 +61,118 @@ const Settings = () => {
     if (data) {
       setFastingNotificationsEnabled(data.fasting_notifications_enabled || false);
       setStreakNotificationsEnabled(data.streak_notifications_enabled || false);
-      setFastingReminderDays(data.fasting_reminder_days || [3]);
+      setFastingReminderDays(data.fasting_reminder_days || [3, 0]);
     }
   };
 
   const handleToggleReminder = async (id: number) => {
-    const updated = reminders.map(r => 
-      r.id === id ? { ...r, enabled: !r.enabled } : r
-    );
-    setReminders(updated);
-    await updateStreakReminders(updated);
-    toast.success("Reminder updated");
+    if (!user) return;
+    
+    const reminder = reminders.find(r => r.id === id);
+    if (!reminder) return;
+    
+    // Find the database record by matching hour and minute
+    const { data: dbReminders } = await supabase
+      .from('user_streak_reminders')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('hour', reminder.hour)
+      .eq('minute', reminder.minute)
+      .single();
+    
+    if (dbReminders) {
+      await supabase
+        .from('user_streak_reminders')
+        .update({ enabled: !reminder.enabled })
+        .eq('id', dbReminders.id);
+      
+      const updated = reminders.map(r => 
+        r.id === id ? { ...r, enabled: !r.enabled } : r
+      );
+      setReminders(updated);
+      toast.success("Reminder updated");
+    }
   };
 
   const handleTimeChange = async (id: number, hour: number, minute: number) => {
-    const updated = reminders.map(r => 
-      r.id === id ? { ...r, hour, minute } : r
-    );
-    setReminders(updated);
-    await updateStreakReminders(updated);
-    toast.success("Reminder time updated");
+    if (!user) return;
+    
+    const reminder = reminders.find(r => r.id === id);
+    if (!reminder) return;
+    
+    // Find the database record
+    const { data: dbReminders } = await supabase
+      .from('user_streak_reminders')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('hour', reminder.hour)
+      .eq('minute', reminder.minute)
+      .single();
+    
+    if (dbReminders) {
+      await supabase
+        .from('user_streak_reminders')
+        .update({ hour, minute })
+        .eq('id', dbReminders.id);
+      
+      const updated = reminders.map(r => 
+        r.id === id ? { ...r, hour, minute } : r
+      );
+      setReminders(updated);
+      toast.success("Reminder time updated");
+    }
   };
 
   const handleAddReminder = async () => {
+    if (!user) return;
+    
     if (reminders.length >= 3) {
       toast.error("Maximum 3 reminders allowed");
       return;
     }
-    const newId = Math.max(...reminders.map(r => r.id), 0) + 1;
-    const updated = [...reminders, { id: newId, hour: 9, minute: 0, enabled: true }];
-    setReminders(updated);
-    await updateStreakReminders(updated);
-    toast.success("Reminder added");
+    
+    const { data, error } = await supabase
+      .from('user_streak_reminders')
+      .insert({ 
+        user_id: user.id, 
+        hour: 9, 
+        minute: 0, 
+        enabled: true 
+      })
+      .select()
+      .single();
+    
+    if (data && !error) {
+      await loadStreakReminders();
+      toast.success("Reminder added");
+    }
   };
 
   const handleDeleteReminder = async (id: number) => {
-    const updated = reminders.filter(r => r.id !== id);
-    setReminders(updated);
-    await updateStreakReminders(updated);
-    toast.success("Reminder deleted");
+    if (!user) return;
+    
+    const reminder = reminders.find(r => r.id === id);
+    if (!reminder) return;
+    
+    // Find and delete the database record
+    const { data: dbReminders } = await supabase
+      .from('user_streak_reminders')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('hour', reminder.hour)
+      .eq('minute', reminder.minute)
+      .single();
+    
+    if (dbReminders) {
+      await supabase
+        .from('user_streak_reminders')
+        .delete()
+        .eq('id', dbReminders.id);
+      
+      const updated = reminders.filter(r => r.id !== id);
+      setReminders(updated);
+      toast.success("Reminder deleted");
+    }
   };
 
   const handleToggleFastingNotifications = async (enabled: boolean) => {

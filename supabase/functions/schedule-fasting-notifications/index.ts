@@ -76,9 +76,9 @@ const handler = async (req: Request): Promise<Response> => {
       
       // Get user's fasting reminder preferences
       const profileData = reminder.profiles as any;
-      const userReminderDays: number[] = profileData?.fasting_reminder_days || [3];
+      const userReminderDays: number[] = profileData?.fasting_reminder_days || [3, 0];
       
-      // Skip Monday/Wednesday fasts for advance notifications (only send day-of)
+      // Skip Monday/Wednesday fasts for advance notifications (only send same day)
       const dayOfWeek = eventDate.getDay(); // 0 = Sunday, 1 = Monday, 3 = Wednesday
       const isMondayOrWednesdayFast = (dayOfWeek === 1 || dayOfWeek === 3) && reminder.event_type === "fast";
       
@@ -88,7 +88,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
       
       // Check if user wants notifications for this number of days before
-      if (daysUntil > 0 && !userReminderDays.includes(daysUntil)) {
+      if (!userReminderDays.includes(daysUntil)) {
         console.log(`User doesn't want ${daysUntil}-day advance notification for: ${reminder.event_name}`);
         continue;
       }

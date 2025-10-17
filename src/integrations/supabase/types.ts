@@ -496,6 +496,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_streak_reminders: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          hour: number
+          id: string
+          minute: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          hour: number
+          id?: string
+          minute: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          hour?: number
+          id?: string
+          minute?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_streaks: {
         Row: {
           created_at: string
