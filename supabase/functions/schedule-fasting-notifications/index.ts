@@ -18,18 +18,23 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get today's date (midnight)
+    // Get today's date and 3 days from now
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayStr = today.toISOString().split('T')[0];
+    
+    const threeDaysFromNow = new Date(today);
+    threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
+    const threeDaysStr = threeDaysFromNow.toISOString().split('T')[0];
 
-    console.log('Checking fasting reminders for date:', todayStr);
+    console.log('Checking fasting reminders for today:', todayStr, 'and 3 days from now:', threeDaysStr);
 
-    // Get all reminders for today with phone numbers from secure table
+    // Get all reminders for today OR 3 days from now with phone numbers from secure table
     const { data: reminders, error: remindersError } = await supabase
       .from("fasting_reminders")
-      .select("*, user_phone_numbers!inner(phone_number)")
-      .eq("event_date", todayStr);
+      .select("*, user_phone_numbers!inner(phone_number), profiles!inner(fasting_notifications_enabled)")
+      .or(`event_date.eq.${todayStr},event_date.eq.${threeDaysStr}`)
+      .eq("profiles.fasting_notifications_enabled", true);
 
     if (remindersError) {
       console.error('Error fetching reminders:', remindersError);
@@ -56,9 +61,31 @@ const handler = async (req: Request): Promise<Response> => {
         continue;
       }
 
-      const message = reminder.event_type === "fast" 
-        ? `🕊️ ${reminder.event_name} begins today (${reminder.event_tradition}). Remember to observe the fast.`
-        : `✨ Today is ${reminder.event_name} (${reminder.event_tradition}). May you have a blessed feast day!`;
+      // Check if event is today or in 3 days
+      const isToday = reminder.event_date === todayStr;
+      const isInThreeDays = reminder.event_date === threeDaysStr;
+      
+      // Skip Monday/Wednesday fasts for 3-day advance notifications
+      const eventDate = new Date(reminder.event_date);
+      const dayOfWeek = eventDate.getDay(); // 0 = Sunday, 1 = Monday, 3 = Wednesday
+      const isMondayOrWednesdayFast = (dayOfWeek === 1 || dayOfWeek === 3) && reminder.event_type === "fast";
+      
+      // If it's a Monday/Wednesday fast and it's the 3-day advance notification, skip it
+      if (isInThreeDays && isMondayOrWednesdayFast) {
+        console.log(`Skipping 3-day advance notification for Monday/Wednesday fast: ${reminder.event_name}`);
+        continue;
+      }
+
+      let message: string;
+      if (isToday) {
+        message = reminder.event_type === "fast" 
+          ? `🕊️ ${reminder.event_name} begins today (${reminder.event_tradition}). Remember to observe the fast.`
+          : `✨ Today is ${reminder.event_name} (${reminder.event_tradition}). May you have a blessed feast day!`;
+      } else {
+        message = reminder.event_type === "fast"
+          ? `🕊️ ${reminder.event_name} begins in 3 days (${reminder.event_tradition}). Prepare to observe the fast.`
+          : `✨ ${reminder.event_name} is in 3 days (${reminder.event_tradition}). Prepare for the feast!`;
+      }
 
       console.log(`Sending SMS to ${phoneData.phone_number} for event: ${reminder.event_name}`);
 
