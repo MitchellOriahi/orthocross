@@ -332,6 +332,7 @@ export type Database = {
         Row: {
           created_at: string
           fasting_notifications_enabled: boolean | null
+          fasting_reminder_days: number[] | null
           id: string
           journal_view_mode: string | null
           streak_notifications_enabled: boolean | null
@@ -340,6 +341,7 @@ export type Database = {
         Insert: {
           created_at?: string
           fasting_notifications_enabled?: boolean | null
+          fasting_reminder_days?: number[] | null
           id: string
           journal_view_mode?: string | null
           streak_notifications_enabled?: boolean | null
@@ -348,6 +350,7 @@ export type Database = {
         Update: {
           created_at?: string
           fasting_notifications_enabled?: boolean | null
+          fasting_reminder_days?: number[] | null
           id?: string
           journal_view_mode?: string | null
           streak_notifications_enabled?: boolean | null

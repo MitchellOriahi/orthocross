@@ -18,22 +18,31 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get today's date and 3 days from now
+    // Get today's date
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayStr = today.toISOString().split('T')[0];
+    
+    // Calculate dates for 1, 2, and 3 days from now
+    const oneDayFromNow = new Date(today);
+    oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+    const oneDayStr = oneDayFromNow.toISOString().split('T')[0];
+    
+    const twoDaysFromNow = new Date(today);
+    twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
+    const twoDaysStr = twoDaysFromNow.toISOString().split('T')[0];
     
     const threeDaysFromNow = new Date(today);
     threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
     const threeDaysStr = threeDaysFromNow.toISOString().split('T')[0];
 
-    console.log('Checking fasting reminders for today:', todayStr, 'and 3 days from now:', threeDaysStr);
+    console.log('Checking fasting reminders for:', todayStr, oneDayStr, twoDaysStr, threeDaysStr);
 
-    // Get all reminders for today OR 3 days from now with phone numbers from secure table
+    // Get all reminders for today and next 3 days with phone numbers and user preferences
     const { data: reminders, error: remindersError } = await supabase
       .from("fasting_reminders")
-      .select("*, user_phone_numbers!inner(phone_number), profiles!inner(fasting_notifications_enabled)")
-      .or(`event_date.eq.${todayStr},event_date.eq.${threeDaysStr}`)
+      .select("*, user_phone_numbers!inner(phone_number), profiles!inner(fasting_notifications_enabled, fasting_reminder_days)")
+      .or(`event_date.eq.${todayStr},event_date.eq.${oneDayStr},event_date.eq.${twoDaysStr},event_date.eq.${threeDaysStr}`)
       .eq("profiles.fasting_notifications_enabled", true);
 
     if (remindersError) {
@@ -61,30 +70,40 @@ const handler = async (req: Request): Promise<Response> => {
         continue;
       }
 
-      // Check if event is today or in 3 days
-      const isToday = reminder.event_date === todayStr;
-      const isInThreeDays = reminder.event_date === threeDaysStr;
-      
-      // Skip Monday/Wednesday fasts for 3-day advance notifications
+      // Calculate days until event
       const eventDate = new Date(reminder.event_date);
+      const daysUntil = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      
+      // Get user's fasting reminder preferences
+      const profileData = reminder.profiles as any;
+      const userReminderDays: number[] = profileData?.fasting_reminder_days || [3];
+      
+      // Skip Monday/Wednesday fasts for advance notifications (only send day-of)
       const dayOfWeek = eventDate.getDay(); // 0 = Sunday, 1 = Monday, 3 = Wednesday
       const isMondayOrWednesdayFast = (dayOfWeek === 1 || dayOfWeek === 3) && reminder.event_type === "fast";
       
-      // If it's a Monday/Wednesday fast and it's the 3-day advance notification, skip it
-      if (isInThreeDays && isMondayOrWednesdayFast) {
-        console.log(`Skipping 3-day advance notification for Monday/Wednesday fast: ${reminder.event_name}`);
+      if (daysUntil > 0 && isMondayOrWednesdayFast) {
+        console.log(`Skipping advance notification for Monday/Wednesday fast: ${reminder.event_name}`);
+        continue;
+      }
+      
+      // Check if user wants notifications for this number of days before
+      if (daysUntil > 0 && !userReminderDays.includes(daysUntil)) {
+        console.log(`User doesn't want ${daysUntil}-day advance notification for: ${reminder.event_name}`);
         continue;
       }
 
+      // Generate appropriate message
       let message: string;
-      if (isToday) {
+      if (daysUntil === 0) {
         message = reminder.event_type === "fast" 
           ? `🕊️ ${reminder.event_name} begins today (${reminder.event_tradition}). Remember to observe the fast.`
           : `✨ Today is ${reminder.event_name} (${reminder.event_tradition}). May you have a blessed feast day!`;
       } else {
+        const daysText = daysUntil === 1 ? "tomorrow" : `in ${daysUntil} days`;
         message = reminder.event_type === "fast"
-          ? `🕊️ ${reminder.event_name} begins in 3 days (${reminder.event_tradition}). Prepare to observe the fast.`
-          : `✨ ${reminder.event_name} is in 3 days (${reminder.event_tradition}). Prepare for the feast!`;
+          ? `🕊️ ${reminder.event_name} begins ${daysText} (${reminder.event_tradition}). Prepare to observe the fast.`
+          : `✨ ${reminder.event_name} is ${daysText} (${reminder.event_tradition}). Prepare for the feast!`;
       }
 
       console.log(`Sending SMS to ${phoneData.phone_number} for event: ${reminder.event_name}`);

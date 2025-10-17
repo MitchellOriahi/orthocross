@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
+import FastingPreferencesDialog from "@/components/FastingPreferencesDialog";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ const Settings = () => {
   const [reminders, setReminders] = useState<ReminderTime[]>([]);
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(false);
   const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(false);
+  const [showFastingPreferencesDialog, setShowFastingPreferencesDialog] = useState(false);
+  const [fastingReminderDays, setFastingReminderDays] = useState<number[]>([3]);
 
   useEffect(() => {
     setReminders(getStreakReminders());
@@ -31,13 +34,14 @@ const Settings = () => {
     
     const { data } = await supabase
       .from('profiles')
-      .select('fasting_notifications_enabled, streak_notifications_enabled')
+      .select('fasting_notifications_enabled, streak_notifications_enabled, fasting_reminder_days')
       .eq('id', user.id)
       .single();
     
     if (data) {
       setFastingNotificationsEnabled(data.fasting_notifications_enabled || false);
       setStreakNotificationsEnabled(data.streak_notifications_enabled || false);
+      setFastingReminderDays(data.fasting_reminder_days || [3]);
     }
   };
 
@@ -81,13 +85,34 @@ const Settings = () => {
   const handleToggleFastingNotifications = async (enabled: boolean) => {
     if (!user) return;
     
-    setFastingNotificationsEnabled(enabled);
+    if (enabled) {
+      // Show preferences dialog when enabling
+      setShowFastingPreferencesDialog(true);
+      setFastingNotificationsEnabled(true);
+    } else {
+      // Disable without showing dialog
+      setFastingNotificationsEnabled(false);
+      await supabase
+        .from('profiles')
+        .update({ fasting_notifications_enabled: false })
+        .eq('id', user.id);
+      toast.success("Fasting notifications disabled");
+    }
+  };
+
+  const handleSaveFastingPreferences = async (selectedDays: number[]) => {
+    if (!user) return;
+    
+    setFastingReminderDays(selectedDays);
     await supabase
       .from('profiles')
-      .update({ fasting_notifications_enabled: enabled })
+      .update({ 
+        fasting_notifications_enabled: true,
+        fasting_reminder_days: selectedDays 
+      })
       .eq('id', user.id);
     
-    toast.success(enabled ? "Fasting notifications enabled" : "Fasting notifications disabled");
+    toast.success("Fasting notification preferences saved");
   };
 
   const handleToggleStreakNotifications = async (enabled: boolean) => {
@@ -207,66 +232,68 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-          {/* Streak Reminders */}
-          <Card className="shadow-elevated">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-primary" />
-                Streak Reminders
-              </CardTitle>
-              <CardDescription>
-                Get notified to maintain your daily reading streak
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {reminders.map((reminder) => (
-                <div key={reminder.id} className="flex items-center gap-4 p-4 border border-border/50 rounded-lg">
-                  <Switch
-                    checked={reminder.enabled}
-                    onCheckedChange={() => handleToggleReminder(reminder.id)}
-                  />
-                  <div className="flex-1 flex items-center gap-2">
-                    <input
-                      type="number"
-                      min="0"
-                      max="23"
-                      value={reminder.hour}
-                      onChange={(e) => handleTimeChange(reminder.id, parseInt(e.target.value), reminder.minute)}
-                      className="w-16 px-2 py-1 border border-border rounded text-center bg-background"
-                      disabled={!reminder.enabled}
+          {/* Streak Reminders - Only shown when enabled */}
+          {streakNotificationsEnabled && (
+            <Card className="shadow-elevated">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5 text-primary" />
+                  Streak Reminders
+                </CardTitle>
+                <CardDescription>
+                  Get notified to maintain your daily reading streak
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {reminders.map((reminder) => (
+                  <div key={reminder.id} className="flex items-center gap-4 p-4 border border-border/50 rounded-lg">
+                    <Switch
+                      checked={reminder.enabled}
+                      onCheckedChange={() => handleToggleReminder(reminder.id)}
                     />
-                    <span>:</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="59"
-                      value={reminder.minute.toString().padStart(2, '0')}
-                      onChange={(e) => handleTimeChange(reminder.id, reminder.hour, parseInt(e.target.value))}
-                      className="w-16 px-2 py-1 border border-border rounded text-center bg-background"
-                      disabled={!reminder.enabled}
-                    />
+                    <div className="flex-1 flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="0"
+                        max="23"
+                        value={reminder.hour}
+                        onChange={(e) => handleTimeChange(reminder.id, parseInt(e.target.value), reminder.minute)}
+                        className="w-16 px-2 py-1 border border-border rounded text-center bg-background"
+                        disabled={!reminder.enabled}
+                      />
+                      <span>:</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="59"
+                        value={reminder.minute.toString().padStart(2, '0')}
+                        onChange={(e) => handleTimeChange(reminder.id, reminder.hour, parseInt(e.target.value))}
+                        className="w-16 px-2 py-1 border border-border rounded text-center bg-background"
+                        disabled={!reminder.enabled}
+                      />
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteReminder(reminder.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
+                ))}
+                {reminders.length < 3 && (
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteReminder(reminder.id)}
+                    variant="outline"
+                    onClick={handleAddReminder}
+                    className="w-full"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Reminder
                   </Button>
-                </div>
-              ))}
-              {reminders.length < 3 && (
-                <Button
-                  variant="outline"
-                  onClick={handleAddReminder}
-                  className="w-full"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Reminder
-                </Button>
-              )}
-            </CardContent>
-          </Card>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Notifications Toggle */}
           <Card className="shadow-elevated">
@@ -413,6 +440,14 @@ const Settings = () => {
           </Card>
         </div>
       </main>
+
+      {/* Fasting Preferences Dialog */}
+      <FastingPreferencesDialog
+        open={showFastingPreferencesDialog}
+        onOpenChange={setShowFastingPreferencesDialog}
+        onSave={handleSaveFastingPreferences}
+        currentPreferences={fastingReminderDays}
+      />
     </div>
   );
 };
