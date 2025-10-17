@@ -12,7 +12,6 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
-import jesusMascot from "@/assets/jesus-mascot-2.png";
 
 interface Quiz {
   question: string;
@@ -197,11 +196,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         >
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
-              <img 
-                src={jesusMascot} 
-                alt="Jesus Mascot" 
-                className="w-80 h-80 mx-auto -mb-8 object-contain animate-bounce" 
-              />
+              <Trophy className="w-24 h-24 mx-auto mb-4 text-primary animate-bounce" />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
                 🎉 Congratulations!
               </h2>
