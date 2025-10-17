@@ -70,27 +70,29 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         title: "Correct! ✓",
         description: "Great job!",
       });
+
+      const newAnswers = [...answers, originalIndex];
+      setAnswers(newAnswers);
+
+      if (currentQuestion < island.quiz.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+        setSelectedAnswer('');
+      } else {
+        // Calculate score
+        const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
+        const score = (correctCount / island.quiz.length) * 100;
+        
+        setShowCompletionModal(true);
+        onComplete(campaignId, island.id, score);
+      }
     } else {
       toast({
         title: "Incorrect",
-        description: "Keep trying!",
+        description: "Try again!",
         variant: "destructive"
       });
-    }
-
-    const newAnswers = [...answers, originalIndex];
-    setAnswers(newAnswers);
-
-    if (currentQuestion < island.quiz.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+      // Don't proceed to next question - user must get it right
       setSelectedAnswer('');
-    } else {
-      // Calculate score
-      const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
-      const score = (correctCount / island.quiz.length) * 100;
-      
-      setShowCompletionModal(true);
-      onComplete(campaignId, island.id, score);
     }
   };
 
