@@ -12,7 +12,7 @@ const MusicContext = createContext<MusicContextType | undefined>(undefined);
 export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   const [isPlaying, setIsPlaying] = useState(() => {
     const saved = localStorage.getItem('musicEnabled');
-    return saved ? JSON.parse(saved) : false;
+    return saved ? JSON.parse(saved) : true;
   });
   
   const [volume, setVolumeState] = useState(() => {
