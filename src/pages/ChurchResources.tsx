@@ -140,6 +140,9 @@ const ChurchResources = () => {
           }}
           streakDays={0}
           isNewStreak={false}
+          saintName={selectedSaint?.name}
+          saintIcon={selectedSaint?.iconUrl}
+          saintPrefix={selectedSaint?.prefix}
         />
         <BottomNavigation />
       </div>

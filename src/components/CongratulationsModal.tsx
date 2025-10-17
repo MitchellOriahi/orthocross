@@ -10,13 +10,19 @@ interface CongratulationsModalProps {
   onClose: () => void;
   streakDays: number;
   isNewStreak: boolean;
+  saintName?: string;
+  saintIcon?: string;
+  saintPrefix?: string;
 }
 
 export const CongratulationsModal = ({
   isOpen,
   onClose,
   streakDays,
-  isNewStreak
+  isNewStreak,
+  saintName,
+  saintIcon,
+  saintPrefix
 }: CongratulationsModalProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -36,9 +42,17 @@ export const CongratulationsModal = ({
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <div className="flex flex-col items-center justify-center py-8 px-4 space-y-6">
-          {/* Animated Dove */}
+          {/* Animated Mascot or Saint Icon */}
           <div className="relative">
-            <DoveMascot size="lg" animated />
+            {saintIcon ? (
+              <img 
+                src={saintIcon} 
+                alt={`${saintPrefix} ${saintName}`}
+                className="w-32 h-32 rounded-full object-cover shadow-lg"
+              />
+            ) : (
+              <DoveMascot size="lg" animated />
+            )}
             {showConfetti && (
               <div className="absolute inset-0 pointer-events-none">
                 {[...Array(12)].map((_, i) => (
@@ -63,9 +77,11 @@ export const CongratulationsModal = ({
               Congratulations!
             </h2>
             <p className="text-lg text-muted-foreground">
-              {isNewStreak 
-                ? "You've completed today's reading!"
-                : "Reading completed!"}
+              {saintName 
+                ? `You've learned about ${saintPrefix} ${saintName}!`
+                : isNewStreak 
+                  ? "You've completed today's reading!"
+                  : "Reading completed!"}
             </p>
           </div>
 
