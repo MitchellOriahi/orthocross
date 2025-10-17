@@ -11,3 +11,12 @@ verify_jwt = true
 
 [functions.process-zip-upload]
 verify_jwt = true
+
+[functions.schedule-fasting-notifications]
+verify_jwt = false
+
+[functions.send-sms-notification]
+verify_jwt = false
+
+[functions.send-streak-reminders]
+verify_jwt = false
