@@ -16,6 +16,27 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useTheme } from "next-themes";
 
+interface Friend {
+  id: string;
+  username: string;
+  profile_picture_url: string | null;
+}
+
+interface FriendActivity {
+  id: string;
+  username: string;
+  activity_type: string;
+  activity_data: any;
+  created_at: string;
+}
+
+interface LeaderboardEntry {
+  id: string;
+  username: string;
+  books_completed: number;
+  profile_picture_url: string | null;
+}
+
 export default function Friends() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -25,6 +46,9 @@ export default function Friends() {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [username, setUsername] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [activities, setActivities] = useState<FriendActivity[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -43,7 +67,111 @@ export default function Friends() {
     };
 
     loadProfile();
+    loadFriends();
+    loadActivities();
+    loadLeaderboard();
   }, [user]);
+
+  const loadFriends = async () => {
+    if (!user) return;
+
+    const { data: friendsData } = await supabase
+      .from('friends')
+      .select('user_id, friend_id')
+      .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+
+    if (friendsData) {
+      const friendIds = friendsData.map(f => 
+        f.user_id === user.id ? f.friend_id : f.user_id
+      );
+
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('id, username, profile_picture_url')
+        .in('id', friendIds);
+
+      if (profilesData) {
+        setFriends(profilesData as Friend[]);
+      }
+    }
+  };
+
+  const loadActivities = async () => {
+    if (!user) return;
+
+    const { data: friendsData } = await supabase
+      .from('friends')
+      .select('user_id, friend_id')
+      .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+
+    if (friendsData) {
+      const friendIds = friendsData.map(f => 
+        f.user_id === user.id ? f.friend_id : f.user_id
+      );
+
+      const { data: activitiesData } = await supabase
+        .from('friend_activities')
+        .select('id, user_id, activity_type, activity_data, created_at')
+        .in('user_id', friendIds)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (activitiesData) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, username')
+          .in('id', activitiesData.map(a => a.user_id));
+
+        const activitiesWithUsernames = activitiesData.map(activity => ({
+          ...activity,
+          username: profilesData?.find(p => p.id === activity.user_id)?.username || 'Unknown User'
+        }));
+
+        setActivities(activitiesWithUsernames as FriendActivity[]);
+      }
+    }
+  };
+
+  const loadLeaderboard = async () => {
+    if (!user) return;
+
+    const currentMonth = new Date().toISOString().slice(0, 7);
+
+    const { data: friendsData } = await supabase
+      .from('friends')
+      .select('user_id, friend_id')
+      .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+
+    if (friendsData) {
+      const friendIds = friendsData.map(f => 
+        f.user_id === user.id ? f.friend_id : f.user_id
+      );
+      friendIds.push(user.id); // Include current user
+
+      const { data: leaderboardData } = await supabase
+        .from('monthly_leaderboard')
+        .select('user_id, books_completed')
+        .eq('month_date', currentMonth)
+        .in('user_id', friendIds)
+        .order('books_completed', { ascending: false });
+
+      if (leaderboardData) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, username, profile_picture_url')
+          .in('id', leaderboardData.map(l => l.user_id));
+
+        const leaderboardWithUsernames = leaderboardData.map(entry => ({
+          id: entry.user_id,
+          username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
+          profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
+          books_completed: entry.books_completed
+        }));
+
+        setLeaderboard(leaderboardWithUsernames);
+      }
+    }
+  };
 
   const handleAddFriend = async () => {
     if (!searchQuery.trim()) {
@@ -263,9 +391,23 @@ export default function Friends() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center text-muted-foreground py-8">
-                No friends yet. Add someone to get started!
-              </div>
+              {friends.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  No friends yet. Add someone to get started!
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {friends.map(friend => (
+                    <div key={friend.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                      <Avatar>
+                        <AvatarImage src={friend.profile_picture_url || undefined} />
+                        <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                      </Avatar>
+                      <span className="font-medium">{friend.username}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -279,9 +421,28 @@ export default function Friends() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center text-muted-foreground py-8">
-                No activity yet. Connect with friends to see their progress!
-              </div>
+              {activities.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  No activity yet. Connect with friends to see their progress!
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {activities.map(activity => (
+                    <div key={activity.id} className="p-3 rounded-lg bg-muted/50">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium">{activity.username}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(activity.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {activity.activity_type === 'chapter_completed' && 'Completed a chapter'}
+                        {activity.activity_type === 'streak_milestone' && `Reached ${activity.activity_data?.streak} day streak!`}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -295,9 +456,29 @@ export default function Friends() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center text-muted-foreground py-8">
-                No stats yet. Complete some Bible readings to appear on the leaderboard!
-              </div>
+              {leaderboard.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  No stats yet. Complete some Bible readings to appear on the leaderboard!
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {leaderboard.map((entry, index) => (
+                    <div key={entry.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                      <div className="w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
+                        {index + 1}
+                      </div>
+                      <Avatar>
+                        <AvatarImage src={entry.profile_picture_url || undefined} />
+                        <AvatarFallback>{entry.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                      </Avatar>
+                      <span className="font-medium flex-1">{entry.username}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {entry.books_completed} {entry.books_completed === 1 ? 'book' : 'books'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
