@@ -134,6 +134,78 @@ export type Database = {
         }
         Relationships: []
       }
+      friend_activities: {
+        Row: {
+          activity_data: Json
+          activity_type: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          activity_data?: Json
+          activity_type: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          activity_data?: Json
+          activity_type?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      friend_requests: {
+        Row: {
+          created_at: string
+          id: string
+          receiver_id: string
+          sender_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          receiver_id: string
+          sender_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          receiver_id?: string
+          sender_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      friends: {
+        Row: {
+          created_at: string
+          friend_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          friend_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          friend_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       history_highlights: {
         Row: {
           campaign_id: string
@@ -238,6 +310,33 @@ export type Database = {
         }
         Relationships: []
       }
+      monthly_leaderboard: {
+        Row: {
+          books_completed: number
+          created_at: string
+          id: string
+          month_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          books_completed?: number
+          created_at?: string
+          id?: string
+          month_date: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          books_completed?: number
+          created_at?: string
+          id?: string
+          month_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       orthodox_history_progress: {
         Row: {
           campaign_id: string
@@ -331,6 +430,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          display_name: string | null
           fasting_notifications_enabled: boolean | null
           fasting_reminder_days: number[] | null
           id: string
@@ -341,6 +441,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          display_name?: string | null
           fasting_notifications_enabled?: boolean | null
           fasting_reminder_days?: number[] | null
           id: string
@@ -351,6 +452,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          display_name?: string | null
           fasting_notifications_enabled?: boolean | null
           fasting_reminder_days?: number[] | null
           id?: string

@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Flame, Book, Church, ScrollText } from "lucide-react";
+import { Flame, Book, Church, ScrollText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const BottomNavigation = () => {
@@ -25,7 +25,12 @@ export const BottomNavigation = () => {
     {
       icon: Church,
       path: "/church-resources",
-      label: "Resources"
+      label: "Res"
+    },
+    {
+      icon: Users,
+      path: "/friends",
+      label: "Friends"
     }
   ];
 
