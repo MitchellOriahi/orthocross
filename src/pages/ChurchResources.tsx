@@ -658,6 +658,22 @@ const ChurchResources = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
               </Button>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
+                    <Avatar className="h-12 w-12 cursor-pointer">
+                      <AvatarImage src={profilePicture || undefined} />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Profile Picture</DialogTitle>
+                  </DialogHeader>
+                  <ProfilePictureUpload />
+                </DialogContent>
+              </Dialog>
             </nav>
           </div>
         </div>
