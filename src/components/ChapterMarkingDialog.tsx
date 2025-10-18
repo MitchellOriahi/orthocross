@@ -107,10 +107,22 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
           return newState;
         });
 
+        // Create friend activity for chapter completion
+        await supabase
+          .from('friend_activities')
+          .insert({
+            user_id: user.id,
+            activity_type: 'chapter_completed',
+            activity_data: {
+              book_key: selectedBook?.title || bookKey,
+              chapter: chapter
+            }
+          });
+
         // Check if this completes the book
-        const bookInfo = BIBLE_BOOKS.find(b => b.title === selectedBook.title);
+        const bookInfo = BIBLE_BOOKS.find(b => b.title === (selectedBook?.title || bookKey));
         if (bookInfo) {
-          const updatedChapters = new Set(completedChapters[selectedBook.title] || []);
+          const updatedChapters = new Set(completedChapters[bookInfo.title] || []);
           updatedChapters.add(chapter);
           
           const isBookCompleted = updatedChapters.size === bookInfo.totalChapters;
@@ -123,7 +135,7 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
                 user_id: user.id,
                 activity_type: 'book_completed',
                 activity_data: {
-                  book_key: selectedBook.title,
+                  book_key: bookInfo.title,
                   book_name: bookInfo.bookName,
                   chapters: bookInfo.totalChapters
                 }

@@ -371,10 +371,53 @@ const Reading = () => {
       // Update streak immediately after completing activity
       const { updateUserStreak } = await import('@/utils/streakManager');
       await updateUserStreak(user.id);
+
+      // Create friend activity for chapter completion
+      await supabase
+        .from('friend_activities')
+        .insert({
+          user_id: user.id,
+          activity_type: 'chapter_completed',
+          activity_data: {
+            book_key: book,
+            chapter: chapter
+          }
+        });
+
+      // Add point to monthly leaderboard for chapter completion
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const { data: leaderboard } = await supabase
+        .from('monthly_leaderboard')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('month_date', currentMonth)
+        .maybeSingle();
+
+      if (leaderboard) {
+        await supabase
+          .from('monthly_leaderboard')
+          .update({
+            chapters_completed: (leaderboard.chapters_completed || 0) + 1,
+            total_points: (leaderboard.total_points || 0) + 1,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', leaderboard.id);
+      } else {
+        await supabase
+          .from('monthly_leaderboard')
+          .insert({
+            user_id: user.id,
+            month_date: currentMonth,
+            history_islands_completed: 0,
+            chapters_completed: 1,
+            saints_read_count: 0,
+            total_points: 1
+          });
+      }
       
       toast({
         description: "Chapter completed! 🎉",
-        duration: 3000, // 3 seconds expiry
+        duration: 3000,
       });
       
       // Navigate to next chapter if available

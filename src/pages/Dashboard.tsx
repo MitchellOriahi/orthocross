@@ -10,11 +10,14 @@ import { VerseOfTheDay } from "@/components/VerseOfTheDay";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
 import { StreakMilestoneShare } from "@/components/StreakMilestoneShare";
+import { CompletionCongratulationsModal } from "@/components/CompletionCongratulationsModal";
+import { useCompletionTracking } from "@/hooks/useCompletionTracking";
 import { Settings as SettingsIcon, BookOpen, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { useTheme } from "next-themes";
@@ -25,12 +28,15 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
   const { theme } = useTheme();
+  const { toast } = useToast();
+  const { completionStatus, checkCompletion, resetAllProgress } = useCompletionTracking();
   const [streakDays, setStreakDays] = useState(0);
   const [hasAnyProgress, setHasAnyProgress] = useState(false);
   const [loadingReading, setLoadingReading] = useState(true);
   const [guardianAngelResult, setGuardianAngelResult] = useState<GuardianAngelResult | null>(null);
   const [showGuardianAngelDialog, setShowGuardianAngelDialog] = useState(false);
   const [showMilestoneDialog, setShowMilestoneDialog] = useState(false);
+  const [showCompletionDialog, setShowCompletionDialog] = useState(false);
   const [milestoneStreak, setMilestoneStreak] = useState(0);
   const [lastReading, setLastReading] = useState<{
     title: string;
@@ -39,7 +45,7 @@ const Dashboard = () => {
     bookKey?: string;
     chapter?: number;
     totalChapters?: number;
-    bookProgress?: number; // % of book completed
+    bookProgress?: number;
   } | null>(null);
 
   useEffect(() => {
@@ -65,6 +71,17 @@ const Dashboard = () => {
     fetchStreak();
     fetchLastReading();
   }, [user]);
+
+  // Check for 100% completion
+  useEffect(() => {
+    if (completionStatus.allComplete && user) {
+      const hasShownCompletion = localStorage.getItem(`completion_shown_${user.id}`);
+      if (!hasShownCompletion) {
+        setShowCompletionDialog(true);
+        localStorage.setItem(`completion_shown_${user.id}`, 'true');
+      }
+    }
+  }, [completionStatus.allComplete, user]);
 
   const fetchStreak = async () => {
     if (!user) return;
@@ -423,6 +440,35 @@ const Dashboard = () => {
         open={showMilestoneDialog}
         onOpenChange={setShowMilestoneDialog}
         streakDays={milestoneStreak}
+      />
+
+      {/* 100% Completion Congratulations Dialog */}
+      <CompletionCongratulationsModal
+        open={showCompletionDialog}
+        onOpenChange={setShowCompletionDialog}
+        onReset={async () => {
+          const success = await resetAllProgress();
+          if (success) {
+            toast({
+              title: "Progress Reset",
+              description: "All your progress has been reset. Start your journey anew!",
+            });
+            // Refresh the page data
+            fetchStreak();
+            fetchLastReading();
+            checkCompletion();
+            // Clear the completion shown flag
+            if (user) {
+              localStorage.removeItem(`completion_shown_${user.id}`);
+            }
+          } else {
+            toast({
+              title: "Error",
+              description: "Failed to reset progress. Please try again.",
+              variant: "destructive",
+            });
+          }
+        }}
       />
     </div>
   );
