@@ -179,7 +179,7 @@ const ChurchResources = () => {
                 <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
                   <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                 </div>
-                <h1 className="text-2xl font-bold">Church</h1>
+                <h1 className="text-2xl font-bold">Church Resources</h1>
               </div>
               <nav className="flex items-center gap-2">
                 <ThemeToggle />
@@ -603,7 +603,7 @@ const ChurchResources = () => {
                 <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
                   <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                 </div>
-                <h1 className="text-2xl font-bold">Church</h1>
+                <h1 className="text-2xl font-bold">Church Resources</h1>
               </div>
             <nav className="flex items-center gap-2">
               <ThemeToggle />
