@@ -13,7 +13,6 @@ import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import FastingPreferencesDialog from "@/components/FastingPreferencesDialog";
 import StreakReminderDialog from "@/components/StreakReminderDialog";
-import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -282,9 +281,6 @@ const Settings = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="space-y-6">
-          {/* Profile Picture */}
-          <ProfilePictureUpload />
-
           {/* Music Settings */}
           <Card className="shadow-elevated">
             <CardHeader>

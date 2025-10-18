@@ -1,19 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Users, UserPlus, Trophy, Activity, ArrowLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 
 export default function Friends() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('profile_picture_url, username')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setProfilePicture(data.profile_picture_url);
+        setUsername(data.username || "");
+      }
+    };
+
+    loadProfile();
+  }, [user]);
 
   const handleAddFriend = async () => {
     if (!searchQuery.trim()) {
@@ -136,18 +161,44 @@ export default function Friends() {
     }
   };
 
+  const getUserInitials = () => {
+    if (username) {
+      return username.substring(0, 2).toUpperCase();
+    }
+    return user?.email?.substring(0, 2).toUpperCase() || "U";
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 pb-20">
-      <div className="flex items-center gap-4 mb-6">
-        <Button 
-          variant="ghost" 
-          size="icon"
-          onClick={() => navigate('/dashboard')}
-          className="shrink-0"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-3xl font-bold">Friends</h1>
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => navigate('/dashboard')}
+            className="shrink-0"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-3xl font-bold">Friends</h1>
+        </div>
+        
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
+              <Avatar className="h-12 w-12 cursor-pointer">
+                <AvatarImage src={profilePicture || undefined} />
+                <AvatarFallback>{getUserInitials()}</AvatarFallback>
+              </Avatar>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Profile Picture</DialogTitle>
+            </DialogHeader>
+            <ProfilePictureUpload />
+          </DialogContent>
+        </Dialog>
       </div>
       
       <Tabs defaultValue="friends" className="w-full">

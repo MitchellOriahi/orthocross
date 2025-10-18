@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -99,65 +98,54 @@ export default function ProfilePictureUpload() {
   };
 
   return (
-    <Card className="shadow-elevated">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Camera className="w-5 h-5 text-primary" />
-          Profile Picture
-        </CardTitle>
-        <CardDescription>
-          Upload a profile picture for the friends section
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center gap-4">
-          <Avatar className="w-20 h-20">
-            <AvatarImage src={profilePicture || undefined} />
-            <AvatarFallback className="text-lg">{getUserInitials()}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
-            <input
-              type="file"
-              id="profile-picture-upload"
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileUpload}
+    <div className="space-y-4">
+      <div className="flex items-center gap-4">
+        <Avatar className="w-20 h-20">
+          <AvatarImage src={profilePicture || undefined} />
+          <AvatarFallback className="text-lg">{getUserInitials()}</AvatarFallback>
+        </Avatar>
+        <div className="flex-1">
+          <input
+            type="file"
+            id="profile-picture-upload"
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileUpload}
+            disabled={uploading}
+          />
+          <label htmlFor="profile-picture-upload">
+            <Button
+              variant="outline"
               disabled={uploading}
-            />
-            <label htmlFor="profile-picture-upload">
-              <Button
-                variant="outline"
-                disabled={uploading}
-                asChild
-              >
-                <span className="cursor-pointer">
-                  {uploading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Uploading...
-                    </>
-                  ) : (
-                    <>
-                      <Camera className="w-4 h-4 mr-2" />
-                      {profilePicture ? 'Change Picture' : 'Upload Picture'}
-                    </>
-                  )}
-                </span>
-              </Button>
-            </label>
-            <p className="text-xs text-muted-foreground mt-2">
-              Max 2MB. JPG, PNG, or GIF
-            </p>
-          </div>
+              asChild
+            >
+              <span className="cursor-pointer">
+                {uploading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Camera className="w-4 h-4 mr-2" />
+                    {profilePicture ? 'Change Picture' : 'Upload Picture'}
+                  </>
+                )}
+              </span>
+            </Button>
+          </label>
+          <p className="text-xs text-muted-foreground mt-2">
+            Max 2MB. JPG, PNG, or GIF
+          </p>
         </div>
-        {username && (
-          <div className="pt-2 border-t border-border/50">
-            <p className="text-sm text-muted-foreground">
-              Username: <span className="font-medium text-foreground">@{username}</span>
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      </div>
+      {username && (
+        <div className="pt-2 border-t border-border/50">
+          <p className="text-sm text-muted-foreground">
+            Username: <span className="font-medium text-foreground">@{username}</span>
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
