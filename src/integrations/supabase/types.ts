@@ -337,6 +337,7 @@ export type Database = {
           journal_view_mode: string | null
           streak_notifications_enabled: boolean | null
           updated_at: string
+          wednesday_notifications_enabled: boolean | null
         }
         Insert: {
           created_at?: string
@@ -346,6 +347,7 @@ export type Database = {
           journal_view_mode?: string | null
           streak_notifications_enabled?: boolean | null
           updated_at?: string
+          wednesday_notifications_enabled?: boolean | null
         }
         Update: {
           created_at?: string
@@ -355,6 +357,7 @@ export type Database = {
           journal_view_mode?: string | null
           streak_notifications_enabled?: boolean | null
           updated_at?: string
+          wednesday_notifications_enabled?: boolean | null
         }
         Relationships: []
       }

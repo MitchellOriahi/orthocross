@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import FastingPreferencesDialog from "@/components/FastingPreferencesDialog";
+import StreakReminderDialog from "@/components/StreakReminderDialog";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ const Settings = () => {
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(false);
   const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(false);
   const [showFastingPreferencesDialog, setShowFastingPreferencesDialog] = useState(false);
+  const [showStreakReminderDialog, setShowStreakReminderDialog] = useState(false);
   const [fastingReminderDays, setFastingReminderDays] = useState<number[]>([3, 0]);
+  const [wednesdayNotificationsEnabled, setWednesdayNotificationsEnabled] = useState(false);
 
   useEffect(() => {
     loadNotificationPreferences();
@@ -54,7 +57,7 @@ const Settings = () => {
     
     const { data } = await supabase
       .from('profiles')
-      .select('fasting_notifications_enabled, streak_notifications_enabled, fasting_reminder_days')
+      .select('fasting_notifications_enabled, streak_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled')
       .eq('id', user.id)
       .single();
     
@@ -62,6 +65,7 @@ const Settings = () => {
       setFastingNotificationsEnabled(data.fasting_notifications_enabled || false);
       setStreakNotificationsEnabled(data.streak_notifications_enabled || false);
       setFastingReminderDays(data.fasting_reminder_days || [3, 0]);
+      setWednesdayNotificationsEnabled(data.wednesday_notifications_enabled || false);
     }
   };
 
@@ -193,15 +197,17 @@ const Settings = () => {
     }
   };
 
-  const handleSaveFastingPreferences = async (selectedDays: number[]) => {
+  const handleSaveFastingPreferences = async (selectedDays: number[], wednesdayEnabled: boolean) => {
     if (!user) return;
     
     setFastingReminderDays(selectedDays);
+    setWednesdayNotificationsEnabled(wednesdayEnabled);
     await supabase
       .from('profiles')
       .update({ 
         fasting_notifications_enabled: true,
-        fasting_reminder_days: selectedDays 
+        fasting_reminder_days: selectedDays,
+        wednesday_notifications_enabled: wednesdayEnabled
       })
       .eq('id', user.id);
     
@@ -211,16 +217,17 @@ const Settings = () => {
   const handleToggleStreakNotifications = async (enabled: boolean) => {
     if (!user) return;
     
-    setStreakNotificationsEnabled(enabled);
-    await supabase
-      .from('profiles')
-      .update({ streak_notifications_enabled: enabled })
-      .eq('id', user.id);
-    
     if (enabled) {
-      await scheduleStreakReminders();
-      toast.success("Streak notifications enabled");
+      // Show streak reminder dialog when enabling
+      setShowStreakReminderDialog(true);
+      setStreakNotificationsEnabled(true);
     } else {
+      // Disable without showing dialog
+      setStreakNotificationsEnabled(false);
+      await supabase
+        .from('profiles')
+        .update({ streak_notifications_enabled: false })
+        .eq('id', user.id);
       toast.success("Streak notifications disabled");
     }
   };
@@ -337,53 +344,14 @@ const Settings = () => {
                   Get notified to maintain your daily reading streak
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {reminders.map((reminder) => (
-                  <div key={reminder.id} className="flex items-center gap-4 p-4 border border-border/50 rounded-lg">
-                    <Switch
-                      checked={reminder.enabled}
-                      onCheckedChange={() => handleToggleReminder(reminder.id)}
-                    />
-                    <div className="flex-1 flex items-center gap-2">
-                      <input
-                        type="number"
-                        min="0"
-                        max="23"
-                        value={reminder.hour}
-                        onChange={(e) => handleTimeChange(reminder.id, parseInt(e.target.value), reminder.minute)}
-                        className="w-16 px-2 py-1 border border-border rounded text-center bg-background"
-                        disabled={!reminder.enabled}
-                      />
-                      <span>:</span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="59"
-                        value={reminder.minute.toString().padStart(2, '0')}
-                        onChange={(e) => handleTimeChange(reminder.id, reminder.hour, parseInt(e.target.value))}
-                        className="w-16 px-2 py-1 border border-border rounded text-center bg-background"
-                        disabled={!reminder.enabled}
-                      />
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDeleteReminder(reminder.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))}
-                {reminders.length < 3 && (
-                  <Button
-                    variant="outline"
-                    onClick={handleAddReminder}
-                    className="w-full"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Reminder
-                  </Button>
-                )}
+              <CardContent>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowStreakReminderDialog(true)}
+                  className="w-full"
+                >
+                  Configure Reminders
+                </Button>
               </CardContent>
             </Card>
           )}
@@ -540,6 +508,18 @@ const Settings = () => {
         onOpenChange={setShowFastingPreferencesDialog}
         onSave={handleSaveFastingPreferences}
         currentPreferences={fastingReminderDays}
+        wednesdayNotificationsEnabled={wednesdayNotificationsEnabled}
+      />
+
+      {/* Streak Reminder Dialog */}
+      <StreakReminderDialog
+        open={showStreakReminderDialog}
+        onOpenChange={setShowStreakReminderDialog}
+        reminders={reminders}
+        onAddReminder={handleAddReminder}
+        onDeleteReminder={handleDeleteReminder}
+        onToggleReminder={handleToggleReminder}
+        onTimeChange={handleTimeChange}
       />
     </div>
   );

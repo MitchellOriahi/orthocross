@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Get all reminders for today and next 3 days with phone numbers and user preferences
     const { data: reminders, error: remindersError } = await supabase
       .from("fasting_reminders")
-      .select("*, user_phone_numbers!inner(phone_number), profiles!inner(fasting_notifications_enabled, fasting_reminder_days)")
+      .select("*, user_phone_numbers!inner(phone_number), profiles!inner(fasting_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled)")
       .or(`event_date.eq.${todayStr},event_date.eq.${oneDayStr},event_date.eq.${twoDaysStr},event_date.eq.${threeDaysStr}`)
       .eq("profiles.fasting_notifications_enabled", true);
 
@@ -72,14 +72,24 @@ const handler = async (req: Request): Promise<Response> => {
 
       // Calculate days until event
       const eventDate = new Date(reminder.event_date);
+      const dayOfWeek = eventDate.getDay(); // 0 = Sunday, 1 = Monday, 3 = Wednesday
       const daysUntil = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
       
       // Get user's fasting reminder preferences
       const profileData = reminder.profiles as any;
       const userReminderDays: number[] = profileData?.fasting_reminder_days || [3, 0];
+      const wednesdayNotificationsEnabled: boolean = profileData?.wednesday_notifications_enabled || false;
+      
+      // Check if event is on a Wednesday
+      const isWednesdayEvent = dayOfWeek === 3;
+      
+      // Skip Wednesday fasts/feasts if user hasn't opted in
+      if (isWednesdayEvent && !wednesdayNotificationsEnabled) {
+        console.log(`User hasn't opted in for Wednesday notifications, skipping: ${reminder.event_name}`);
+        continue;
+      }
       
       // Skip Monday/Wednesday fasts for advance notifications (only send same day)
-      const dayOfWeek = eventDate.getDay(); // 0 = Sunday, 1 = Monday, 3 = Wednesday
       const isMondayOrWednesdayFast = (dayOfWeek === 1 || dayOfWeek === 3) && reminder.event_type === "fast";
       
       if (daysUntil > 0 && isMondayOrWednesdayFast) {

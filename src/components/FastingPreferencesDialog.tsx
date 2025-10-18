@@ -3,21 +3,25 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 interface FastingPreferencesDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (selectedDays: number[]) => void;
+  onSave: (selectedDays: number[], wednesdayEnabled: boolean) => void;
   currentPreferences: number[];
+  wednesdayNotificationsEnabled: boolean;
 }
 
 const FastingPreferencesDialog = ({ 
   open, 
   onOpenChange, 
   onSave,
-  currentPreferences 
+  currentPreferences,
+  wednesdayNotificationsEnabled
 }: FastingPreferencesDialogProps) => {
   const [selectedDays, setSelectedDays] = useState<number[]>(currentPreferences);
+  const [wednesdayEnabled, setWednesdayEnabled] = useState<boolean>(wednesdayNotificationsEnabled);
 
   const toggleDay = (day: number) => {
     setSelectedDays(prev => 
@@ -28,7 +32,7 @@ const FastingPreferencesDialog = ({
   };
 
   const handleSave = () => {
-    onSave(selectedDays);
+    onSave(selectedDays, wednesdayEnabled);
     onOpenChange(false);
   };
 
@@ -90,10 +94,17 @@ const FastingPreferencesDialog = ({
             </div>
           </div>
 
-          <div className="p-3 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground">
-              💡 Monday and Wednesday fasts will only receive same-day notifications
-            </p>
+          <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+            <div className="flex-1">
+              <p className="text-sm font-medium">Wednesday Fasts & Feasts</p>
+              <p className="text-xs text-muted-foreground">
+                Receive notifications for Wednesday fasting days and feasts
+              </p>
+            </div>
+            <Switch
+              checked={wednesdayEnabled}
+              onCheckedChange={setWednesdayEnabled}
+            />
           </div>
         </div>
 
