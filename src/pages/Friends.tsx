@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Users, UserPlus, Trophy, Activity } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../contexts/AuthContext";
@@ -28,9 +28,8 @@ export default function Friends() {
             <Trophy className="h-4 w-4 mr-2" />
             Leaderboard
           </TabsTrigger>
-        </TabsTrigger>
+        </TabsList>
 
-        {/* Friends List */}
         <TabsContent value="friends" className="space-y-4">
           <Card>
             <CardHeader>
@@ -70,7 +69,6 @@ export default function Friends() {
           </Card>
         </TabsContent>
 
-        {/* Activity Feed */}
         <TabsContent value="activity" className="space-y-4">
           <Card>
             <CardHeader>
@@ -87,7 +85,6 @@ export default function Friends() {
           </Card>
         </TabsContent>
 
-        {/* Leaderboard */}
         <TabsContent value="leaderboard" className="space-y-4">
           <Card>
             <CardHeader>
