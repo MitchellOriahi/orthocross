@@ -74,6 +74,27 @@ export const checkStreakOnAppOpen = async (
         };
       } else {
         // Guardian angel doesn't save - streak is lost
+        // Apply 50% point penalty to current month's leaderboard
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        const { data: leaderboard } = await supabase
+          .from('monthly_leaderboard')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('month_date', currentMonth)
+          .maybeSingle();
+
+        if (leaderboard && !leaderboard.streak_penalty_applied) {
+          const penaltyPoints = Math.floor(leaderboard.total_points / 2);
+          await supabase
+            .from('monthly_leaderboard')
+            .update({
+              total_points: leaderboard.total_points - penaltyPoints,
+              streak_penalty_applied: true,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', leaderboard.id);
+        }
+
         await supabase
           .from('user_streaks')
           .update({

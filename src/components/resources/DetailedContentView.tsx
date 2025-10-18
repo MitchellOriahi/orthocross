@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface DetailedContentViewProps {
   title: string;
@@ -15,6 +18,8 @@ interface DetailedContentViewProps {
 }
 
 export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete, iconUrl }: DetailedContentViewProps) => {
+  const { user } = useAuth();
+  const { toast } = useToast();
   // If iconUrl exists, we'll show it on page 0, content starts from page 1
   const contentPages = iconUrl ? ['__ICON_PAGE__', ...content] : content;
   const [currentPage, setCurrentPage] = useState(0);
@@ -49,6 +54,82 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
     } else {
       // Clicked on right side - go to next page
       handleNext();
+    }
+  };
+
+  const handleComplete = async () => {
+    if (!user) {
+      toast({ description: "Please sign in to track progress", variant: "destructive" });
+      return;
+    }
+
+    // Extract saint ID from title if this is a saint reading
+    const titleLower = title.toLowerCase();
+    const saintMatch = titleLower.match(/st\.\s+(\w+)|saint\s+(\w+)/);
+    
+    if (saintMatch) {
+      const saintName = (saintMatch[1] || saintMatch[2]).toLowerCase();
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      
+      // Check if already read this saint this month
+      const { data: existingRead } = await supabase
+        .from('saints_read')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('saint_id', saintName)
+        .gte('read_at', `${currentMonth}-01`)
+        .maybeSingle();
+
+      const isFirstTimeThisMonth = !existingRead;
+
+      // Record the reading
+      await supabase
+        .from('saints_read')
+        .insert({
+          user_id: user.id,
+          saint_id: saintName,
+          read_at: new Date().toISOString()
+        });
+
+      // Add point to leaderboard only if first time this month
+      if (isFirstTimeThisMonth) {
+        const { data: leaderboard } = await supabase
+          .from('monthly_leaderboard')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('month_date', currentMonth)
+          .maybeSingle();
+
+        if (leaderboard) {
+          await supabase
+            .from('monthly_leaderboard')
+            .update({
+              saints_read_count: (leaderboard.saints_read_count || 0) + 1,
+              total_points: (leaderboard.total_points || 0) + 1,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', leaderboard.id);
+        } else {
+          await supabase
+            .from('monthly_leaderboard')
+            .insert({
+              user_id: user.id,
+              month_date: currentMonth,
+              history_islands_completed: 0,
+              chapters_completed: 0,
+              saints_read_count: 1,
+              total_points: 1
+            });
+        }
+      }
+    }
+
+    // Update streak immediately after completing activity
+    const { updateUserStreak } = await import('@/utils/streakManager');
+    await updateUserStreak(user.id);
+
+    if (onComplete) {
+      onComplete();
     }
   };
 

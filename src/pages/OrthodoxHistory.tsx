@@ -66,6 +66,20 @@ const OrthodoxHistory = () => {
   const handleIslandComplete = async (campaignId: string, islandId: string, score: number) => {
     if (!user) return;
 
+    const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
+    
+    // Check if this island was already completed this month
+    const { data: existingProgress } = await supabase
+      .from('orthodox_history_progress')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('campaign_id', campaignId)
+      .eq('island_id', islandId)
+      .gte('completed_at', `${currentMonth}-01`)
+      .single();
+
+    const isFirstTimeThisMonth = !existingProgress;
+
     await supabase.from('orthodox_history_progress').upsert({
       user_id: user.id,
       campaign_id: campaignId,
@@ -74,6 +88,38 @@ const OrthodoxHistory = () => {
       quiz_score: score,
       completed_at: new Date().toISOString()
     });
+
+    // Add point to leaderboard only if first time this month
+    if (isFirstTimeThisMonth) {
+      const { data: leaderboard } = await supabase
+        .from('monthly_leaderboard')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('month_date', currentMonth)
+        .single();
+
+      if (leaderboard) {
+        await supabase
+          .from('monthly_leaderboard')
+          .update({
+            history_islands_completed: (leaderboard.history_islands_completed || 0) + 1,
+            total_points: (leaderboard.total_points || 0) + 1,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', leaderboard.id);
+      } else {
+        await supabase
+          .from('monthly_leaderboard')
+          .insert({
+            user_id: user.id,
+            month_date: currentMonth,
+            history_islands_completed: 1,
+            chapters_completed: 0,
+            saints_read_count: 0,
+            total_points: 1
+          });
+      }
+    }
 
     // Update streak immediately after completing activity
     const { updateUserStreak } = await import('@/utils/streakManager');

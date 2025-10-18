@@ -312,26 +312,38 @@ export type Database = {
       }
       monthly_leaderboard: {
         Row: {
-          books_completed: number
+          chapters_completed: number | null
           created_at: string
+          history_islands_completed: number | null
           id: string
           month_date: string
+          saints_read_count: number | null
+          streak_penalty_applied: boolean | null
+          total_points: number
           updated_at: string
           user_id: string
         }
         Insert: {
-          books_completed?: number
+          chapters_completed?: number | null
           created_at?: string
+          history_islands_completed?: number | null
           id?: string
           month_date: string
+          saints_read_count?: number | null
+          streak_penalty_applied?: boolean | null
+          total_points?: number
           updated_at?: string
           user_id: string
         }
         Update: {
-          books_completed?: number
+          chapters_completed?: number | null
           created_at?: string
+          history_islands_completed?: number | null
           id?: string
           month_date?: string
+          saints_read_count?: number | null
+          streak_penalty_applied?: boolean | null
+          total_points?: number
           updated_at?: string
           user_id?: string
         }
@@ -513,6 +525,30 @@ export type Database = {
           scripture_passage?: string
           scripture_title?: string
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      saints_read: {
+        Row: {
+          created_at: string
+          id: string
+          read_at: string
+          saint_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          read_at?: string
+          saint_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          read_at?: string
+          saint_id?: string
           user_id?: string
         }
         Relationships: []

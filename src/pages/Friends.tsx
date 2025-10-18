@@ -150,10 +150,10 @@ export default function Friends() {
 
       const { data: leaderboardData } = await supabase
         .from('monthly_leaderboard')
-        .select('user_id, books_completed')
+        .select('user_id, total_points')
         .eq('month_date', currentMonth)
         .in('user_id', friendIds)
-        .order('books_completed', { ascending: false });
+        .order('total_points', { ascending: false });
 
       if (leaderboardData) {
         const { data: profilesData } = await supabase
@@ -165,7 +165,7 @@ export default function Friends() {
           id: entry.user_id,
           username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
           profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
-          books_completed: entry.books_completed
+          books_completed: entry.total_points || 0
         }));
 
         setLeaderboard(leaderboardWithUsernames);
@@ -463,7 +463,7 @@ export default function Friends() {
             <CardContent>
               {leaderboard.length === 0 ? (
                 <div className="text-center text-muted-foreground py-8">
-                  No stats yet. Complete some Bible readings to appear on the leaderboard!
+                  No stats yet. Complete islands, chapters, or read about saints to appear on the leaderboard!
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -478,7 +478,7 @@ export default function Friends() {
                       </Avatar>
                       <span className="font-medium flex-1">{entry.username}</span>
                       <span className="text-sm text-muted-foreground">
-                        {entry.books_completed} {entry.books_completed === 1 ? 'book' : 'books'}
+                        {entry.books_completed} {entry.books_completed === 1 ? 'point' : 'points'}
                       </span>
                     </div>
                   ))}
