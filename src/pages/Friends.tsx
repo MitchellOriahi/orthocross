@@ -18,7 +18,7 @@ export default function Friends() {
         <Button 
           variant="ghost" 
           size="icon"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/dashboard')}
           className="shrink-0"
         >
           <ArrowLeft className="h-5 w-5" />
@@ -54,7 +54,7 @@ export default function Friends() {
               <div className="flex gap-2">
                 <Input
                   type="text"
-                  placeholder="username or phone number"
+                  placeholder="username/phone"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
