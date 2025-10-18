@@ -6,11 +6,135 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 export default function Friends() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleAddFriend = async () => {
+    if (!searchQuery.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a username or phone number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to add friends",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Search for user by username
+      let { data: profileData } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("username", searchQuery.trim())
+        .maybeSingle();
+
+      // If not found by username, try phone number
+      if (!profileData) {
+        const { data: phoneData } = await supabase
+          .from("user_phone_numbers")
+          .select("user_id")
+          .eq("phone_number", searchQuery.trim())
+          .maybeSingle();
+
+        if (phoneData) {
+          profileData = { id: phoneData.user_id };
+        }
+      }
+
+      if (!profileData) {
+        toast({
+          title: "User not found",
+          description: "No user found with that username or phone number",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (profileData.id === user.id) {
+        toast({
+          title: "Error",
+          description: "You cannot add yourself as a friend",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check if already friends
+      const { data: existingFriendship } = await supabase
+        .from("friends")
+        .select("id")
+        .or(`and(user_id.eq.${user.id},friend_id.eq.${profileData.id}),and(user_id.eq.${profileData.id},friend_id.eq.${user.id})`)
+        .maybeSingle();
+
+      if (existingFriendship) {
+        toast({
+          title: "Already friends",
+          description: "You are already friends with this user",
+        });
+        return;
+      }
+
+      // Check if friend request already exists
+      const { data: existingRequest } = await supabase
+        .from("friend_requests")
+        .select("id, status")
+        .or(`and(sender_id.eq.${user.id},receiver_id.eq.${profileData.id}),and(sender_id.eq.${profileData.id},receiver_id.eq.${user.id})`)
+        .maybeSingle();
+
+      if (existingRequest) {
+        toast({
+          title: "Request already exists",
+          description: existingRequest.status === "pending" 
+            ? "A friend request is already pending with this user"
+            : "You already have a friend request with this user",
+        });
+        return;
+      }
+
+      // Send friend request
+      const { error } = await supabase
+        .from("friend_requests")
+        .insert({
+          sender_id: user.id,
+          receiver_id: profileData.id,
+          status: "pending",
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Friend request sent!",
+        description: "Your friend request has been sent successfully",
+      });
+
+      setSearchQuery("");
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send friend request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 pb-20">
@@ -57,10 +181,11 @@ export default function Friends() {
                   placeholder="username/phone #"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddFriend()}
                 />
-                <Button>
+                <Button onClick={handleAddFriend} disabled={isLoading}>
                   <UserPlus className="h-4 w-4 mr-2" />
-                  Add
+                  {isLoading ? "Adding..." : "Add"}
                 </Button>
               </div>
             </CardContent>
