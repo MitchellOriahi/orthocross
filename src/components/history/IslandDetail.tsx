@@ -11,10 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
-import { useTheme } from "next-themes";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
-import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
-import orthodoxCrossWhite from "@/assets/orthodox-cross-white-new.png";
 
 interface Quiz {
   question: string;
@@ -40,7 +37,6 @@ interface IslandDetailProps {
 
 export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandDetailProps) => {
   const navigate = useNavigate();
-  const { theme } = useTheme();
   const [stage, setStage] = useState<'reading' | 'quiz'>('reading');
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -48,8 +44,6 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const [shuffledOptions, setShuffledOptions] = useState<{text: string, originalIndex: number}[][]>([]);
   const { toast } = useToast();
-  
-  const crossLogo = theme === 'dark' ? orthodoxCrossWhite : orthodoxCrossBlack;
 
   const handleStartQuiz = () => {
     const shuffled = island.quiz.map(q => {
@@ -202,11 +196,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         >
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
-              <img 
-                src={crossLogo} 
-                alt="Orthodox Cross"
-                className="w-32 h-32 mx-auto mb-2 object-contain animate-bounce"
-              />
+              <Trophy className="w-24 h-24 mx-auto mb-4 text-primary animate-bounce" />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
                 🎉 Congratulations!
               </h2>
@@ -241,3 +231,8 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   );
 };
 
+const Trophy = ({ className }: { className?: string }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+    <path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v3c0 2.21 1.79 4 4 4h.19l1.55 6.21c.16.65.76 1.09 1.43 1.09h5.66c.67 0 1.27-.44 1.43-1.09L18.81 16H19c2.21 0 4-1.79 4-4v-3c0-1.1-.9-2-2-2zM6 14c-1.1 0-2-.9-2-2v-2h2v4zm4 4l-1.5-6H10V6h4v6h1.5l-1.5 6h-4zm8-6c0 1.1-.9 2-2 2v-4h2v2z"/>
+  </svg>
+);
