@@ -1,18 +1,30 @@
 import { useState } from "react";
-import { Users, UserPlus, Trophy, Activity } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity, ArrowLeft } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Friends() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchEmail, setSearchEmail] = useState("");
 
   return (
     <div className="container mx-auto px-4 py-8 pb-20">
-      <h1 className="text-3xl font-bold mb-6">Friends</h1>
+      <div className="flex items-center gap-4 mb-6">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => navigate(-1)}
+          className="shrink-0"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-3xl font-bold">Friends</h1>
+      </div>
       
       <Tabs defaultValue="friends" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
