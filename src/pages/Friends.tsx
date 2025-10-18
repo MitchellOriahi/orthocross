@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 export default function Friends() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [searchEmail, setSearchEmail] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <div className="container mx-auto px-4 py-8 pb-20">
@@ -47,16 +47,16 @@ export default function Friends() {
             <CardHeader>
               <CardTitle>Add a Friend</CardTitle>
               <CardDescription>
-                Connect with other users by their email
+                Connect with other users by their username or phone number
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex gap-2">
                 <Input
-                  type="email"
-                  placeholder="friend@example.com"
-                  value={searchEmail}
-                  onChange={(e) => setSearchEmail(e.target.value)}
+                  type="text"
+                  placeholder="username or phone number"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <Button>
                   <UserPlus className="h-4 w-4 mr-2" />

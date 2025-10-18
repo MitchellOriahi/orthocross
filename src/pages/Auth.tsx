@@ -19,11 +19,16 @@ const passwordSchema = z.string().min(8, 'Password must be at least 8 characters
 const phoneSchema = z.string()
   .regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number format. Use international format (e.g., +1234567890)')
   .min(10, 'Phone number must be at least 10 digits');
+const usernameSchema = z.string()
+  .min(3, 'Username must be at least 3 characters')
+  .max(20, 'Username must be at most 20 characters')
+  .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens');
 
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [showFastingDialog, setShowFastingDialog] = useState(false);
   const [showStreakDialog, setShowStreakDialog] = useState(false);
@@ -92,6 +97,20 @@ const Auth = () => {
       }
     }
 
+    // Validate username
+    try {
+      usernameSchema.parse(username);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          variant: 'destructive',
+          title: 'Invalid Username',
+          description: error.errors[0].message,
+        });
+        return;
+      }
+    }
+
     setLoading(true);
     const { error } = await signUp(email, password);
     
@@ -105,9 +124,10 @@ const Auth = () => {
       return;
     }
 
-    // Store phone number in secure table (only accessible by edge functions)
+    // Store phone number and username
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
+      // Store phone number in secure table
       const { error: phoneError } = await supabase
         .from('user_phone_numbers')
         .insert({
@@ -121,6 +141,30 @@ const Auth = () => {
           variant: 'destructive',
           title: 'Warning',
           description: 'Account created but phone number not saved. Please contact support.',
+        });
+      }
+
+      // Store username in profile
+      const { error: usernameError } = await supabase
+        .from('profiles')
+        .update({ username: username.toLowerCase() })
+        .eq('id', user.id);
+
+      if (usernameError) {
+        console.error('Error storing username:', usernameError);
+        if (usernameError.code === '23505') {
+          toast({
+            variant: 'destructive',
+            title: 'Username Taken',
+            description: 'This username is already taken. Please try another.',
+          });
+          setLoading(false);
+          return;
+        }
+        toast({
+          variant: 'destructive',
+          title: 'Warning',
+          description: 'Account created but username not saved. Please update in settings.',
         });
       }
     }
@@ -235,6 +279,21 @@ const Auth = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-username">Username</Label>
+                  <Input
+                    id="signup-username"
+                    type="text"
+                    placeholder="john_doe"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    autoComplete="username"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    3-20 characters, letters, numbers, underscores, and hyphens only
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-phone">Phone Number</Label>

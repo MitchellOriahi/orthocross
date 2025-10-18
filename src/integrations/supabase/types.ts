@@ -435,8 +435,10 @@ export type Database = {
           fasting_reminder_days: number[] | null
           id: string
           journal_view_mode: string | null
+          profile_picture_url: string | null
           streak_notifications_enabled: boolean | null
           updated_at: string
+          username: string | null
           wednesday_notifications_enabled: boolean | null
         }
         Insert: {
@@ -446,8 +448,10 @@ export type Database = {
           fasting_reminder_days?: number[] | null
           id: string
           journal_view_mode?: string | null
+          profile_picture_url?: string | null
           streak_notifications_enabled?: boolean | null
           updated_at?: string
+          username?: string | null
           wednesday_notifications_enabled?: boolean | null
         }
         Update: {
@@ -457,8 +461,10 @@ export type Database = {
           fasting_reminder_days?: number[] | null
           id?: string
           journal_view_mode?: string | null
+          profile_picture_url?: string | null
           streak_notifications_enabled?: boolean | null
           updated_at?: string
+          username?: string | null
           wednesday_notifications_enabled?: boolean | null
         }
         Relationships: []
