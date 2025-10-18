@@ -25,7 +25,7 @@ export const BottomNavigation = () => {
     {
       icon: Church,
       path: "/church-resources",
-      label: "Resources"
+      label: "Church"
     },
     {
       icon: Users,
