@@ -199,7 +199,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         >
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-background dark:bg-white border-2 border-primary flex items-center justify-center animate-bounce">
+              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-background dark:bg-white border-2 border-primary flex items-center justify-center">
                 <img 
                   src={completionCross} 
                   alt="Completion" 
@@ -212,12 +212,26 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
               <p className="text-xl text-muted-foreground">Island Complete!</p>
             </div>
             
-            <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg">
+            <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
               <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
               <div className="relative">
                 <Shield className="w-32 h-32 mx-auto mb-4 text-primary" />
-                <p className="text-2xl font-bold capitalize">
-                  {island.awardPiece.replace(/_/g, ' ')}
+                <div className="absolute inset-0 pointer-events-none">
+                  {[...Array(12)].map((_, i) => (
+                    <Sparkles 
+                      key={i}
+                      className="absolute text-primary animate-ping"
+                      style={{
+                        top: `${Math.random() * 100}%`,
+                        left: `${Math.random() * 100}%`,
+                        animationDelay: `${i * 0.1}s`,
+                        animationDuration: "1s"
+                      }}
+                    />
+                  ))}
+                </div>
+              <p className="text-2xl font-bold capitalize relative z-10">
+                {island.awardPiece.replace(/_/g, ' ')}
                 </p>
               </div>
               <p className="text-sm text-muted-foreground mt-4">A piece of the Armor of God</p>
