@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, Settings as SettingsIcon } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -317,25 +317,6 @@ const Settings = () => {
             </div>
             <nav className="flex items-center gap-2">
               <ThemeToggle />
-              <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
-                <SettingsIcon className="w-5 h-5" />
-              </Button>
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
-                    <Avatar className="h-12 w-12 cursor-pointer">
-                      <AvatarImage src={profilePicture || undefined} />
-                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Profile Picture</DialogTitle>
-                  </DialogHeader>
-                  <ProfilePictureUpload />
-                </DialogContent>
-              </Dialog>
             </nav>
           </div>
         </div>
