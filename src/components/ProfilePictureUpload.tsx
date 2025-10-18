@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,13 +12,6 @@ export default function ProfilePictureUpload() {
   const [uploading, setUploading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [username, setUsername] = useState<string>("");
-
-  // Load profile data
-  useState(() => {
-    if (user) {
-      loadProfile();
-    }
-  });
 
   const loadProfile = async () => {
     if (!user) return;
@@ -34,6 +27,13 @@ export default function ProfilePictureUpload() {
       setUsername(data.username || "");
     }
   };
+
+  // Load profile data
+  useEffect(() => {
+    if (user) {
+      loadProfile();
+    }
+  }, [user]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
