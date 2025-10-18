@@ -310,6 +310,33 @@ export type Database = {
         }
         Relationships: []
       }
+      leaderboard_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          month_date: string
+          passed_by_user_id: string
+          read: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month_date: string
+          passed_by_user_id: string
+          read?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month_date?: string
+          passed_by_user_id?: string
+          read?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       monthly_leaderboard: {
         Row: {
           chapters_completed: number | null
