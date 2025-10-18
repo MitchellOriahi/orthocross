@@ -44,6 +44,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const [answers, setAnswers] = useState<number[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const [shuffledOptions, setShuffledOptions] = useState<{text: string, originalIndex: number}[][]>([]);
+
   const { toast } = useToast();
 
   const handleStartQuiz = () => {
@@ -62,8 +63,8 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const handleSubmitAnswer = () => {
     if (!selectedAnswer) return;
 
-    const selectedShuffledIndex = parseInt(selectedAnswer);
-    const originalIndex = shuffledOptions[currentQuestion][selectedShuffledIndex].originalIndex;
+    const selectedIndex = parseInt(selectedAnswer);
+    const originalIndex = shuffledOptions[currentQuestion][selectedIndex].originalIndex;
     const isCorrect = originalIndex === island.quiz[currentQuestion].correctAnswer;
     
     if (isCorrect) {
@@ -108,7 +109,9 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
               <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-2xl font-bold">History</h1>
+              <div>
+                <h1 className="text-2xl font-bold">History</h1>
+              </div>
             </div>
             <nav className="flex items-center gap-2">
               <ThemeToggle />
@@ -121,8 +124,8 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <Card className="shadow-elevated border-border/50 mb-6">
-          <div className="flex items-center justify-between p-4 border-b border-border/50">
+        <Card className="shadow-elevated border-border/50">
+          <div className="p-4 border-b border-border/50">
             <Button
               variant="ghost"
               onClick={onBack}
@@ -131,60 +134,59 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             </Button>
           </div>
           <div className="p-6">
-            <h1 className="text-3xl font-bold mb-6">{island.title}</h1>
+            <h2 className="text-3xl font-bold mb-6">{island.title}</h2>
+            
+            {stage === 'reading' && (
+              <>
+                <HistoryHighlightIntro />
+                <PaginatedReading
+                  content={island.reading}
+                  onComplete={handleStartQuiz}
+                  iconUrl={island.iconUrl}
+                  campaignId={campaignId}
+                  islandId={island.id}
+                />
+              </>
+            )}
 
-        {stage === 'reading' && (
-          <>
-            <HistoryHighlightIntro />
-            <PaginatedReading
-              content={island.reading}
-              onComplete={handleStartQuiz}
-              iconUrl={island.iconUrl}
-              campaignId={campaignId}
-              islandId={island.id}
-            />
-          </>
-        )}
-
-        {stage === 'quiz' && (
-          <div className="space-y-6">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Question {currentQuestion + 1} of {island.quiz.length}</span>
-                <span className="text-sm text-muted-foreground">{progress.toFixed(0)}%</span>
-              </div>
-              <Progress value={progress} />
-            </div>
-
-            <Card className="p-8">
-              <h2 className="text-xl font-bold mb-6">{island.quiz[currentQuestion].question}</h2>
-              
-              <RadioGroup value={selectedAnswer} onValueChange={handleAnswerSelect}>
-                <div className="space-y-4">
-                  {shuffledOptions[currentQuestion]?.map((option, index) => (
-                    <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-accent cursor-pointer"
-                         onClick={() => handleAnswerSelect(index.toString())}>
-                      <RadioGroupItem value={index.toString()} id={`option-${index}`} />
-                      <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                        {option.text}
-                      </Label>
-                    </div>
-                  ))}
+            {stage === 'quiz' && (
+              <div className="space-y-6">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium">Question {currentQuestion + 1} of {island.quiz.length}</span>
+                    <span className="text-sm text-muted-foreground">{Math.round(progress)}%</span>
+                  </div>
+                  <Progress value={progress} />
                 </div>
-              </RadioGroup>
 
-              <Button 
-                onClick={handleSubmitAnswer} 
-                disabled={!selectedAnswer}
-                size="lg" 
-                className="w-full mt-8"
-              >
-                Submit Answer
-              </Button>
-            </Card>
-          </div>
-        )}
+                <Card className="p-8">
+                  <h3 className="text-xl font-bold mb-6">{island.quiz[currentQuestion].question}</h3>
+                  
+                  <RadioGroup value={selectedAnswer} onValueChange={handleAnswerSelect}>
+                    <div className="space-y-4">
+                      {shuffledOptions[currentQuestion]?.map((option, index) => (
+                        <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-accent cursor-pointer"
+                             onClick={() => handleAnswerSelect(index.toString())}>
+                          <RadioGroupItem value={index.toString()} id={`option-${index}`} />
+                          <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
+                            {option.text}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </RadioGroup>
 
+                  <Button 
+                    onClick={handleSubmitAnswer} 
+                    disabled={!selectedAnswer}
+                    size="lg" 
+                    className="w-full mt-8"
+                  >
+                    Submit Answer
+                  </Button>
+                </Card>
+              </div>
+            )}
           </div>
         </Card>
       </main>
@@ -197,7 +199,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         >
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-background border-2 border-primary flex items-center justify-center animate-bounce">
+              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-background dark:bg-white border-2 border-primary flex items-center justify-center animate-bounce">
                 <img 
                   src={completionCross} 
                   alt="Completion" 
@@ -205,16 +207,16 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
                 />
               </div>
               <h2 className="text-4xl font-bold mb-2 text-foreground">
-                🎉 Congratulations!
+                🎀 Congratulations!
               </h2>
               <p className="text-xl text-muted-foreground">Island Complete!</p>
             </div>
             
-            <div className="bg-card border-2 border-primary rounded-xl p-8 mb-6 shadow-lg">
-              <p className="text-sm uppercase tracking-wider text-muted-foreground mb-2">You've Earned</p>
+            <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg">
+              <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
               <div className="relative">
                 <Shield className="w-32 h-32 mx-auto mb-4 text-primary" />
-                <p className="text-3xl font-bold capitalize text-foreground">
+                <p className="text-2xl font-bold capitalize">
                   {island.awardPiece.replace(/_/g, ' ')}
                 </p>
               </div>
