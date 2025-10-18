@@ -95,12 +95,21 @@ export default {
             transform: "scale(1.05)",
           },
         },
+        "bounce": {
+          "0%, 100%": { 
+            transform: "translateY(0)",
+          },
+          "50%": { 
+            transform: "translateY(-20px)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "flame-flicker": "flame-flicker 2s ease-in-out infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+        "bounce": "bounce 1s ease-in-out infinite",
       },
     },
   },

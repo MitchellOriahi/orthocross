@@ -11,7 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
-import jesusCongrats from "@/assets/jesus-congratulations.png";
+import orthodoxCrossDark from "@/assets/orthodox-cross-dark.png";
+import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 
 // ... Rest of code is same as original
@@ -197,9 +198,14 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
           <Card className="p-8 text-center border-0 shadow-none">
             <div className="mb-6">
               <img 
-                src={jesusCongrats} 
-                alt="Jesus" 
-                className="w-64 h-64 mx-auto -mb-8"
+                src={orthodoxCrossDark} 
+                alt="Orthodox Cross" 
+                className="w-64 h-64 mx-auto -mb-8 animate-bounce dark:block hidden"
+              />
+              <img 
+                src={orthodoxCrossLight} 
+                alt="Orthodox Cross" 
+                className="w-64 h-64 mx-auto -mb-8 animate-bounce dark:hidden block"
               />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
                 🎉 Congratulations!
