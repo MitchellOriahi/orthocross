@@ -25,7 +25,7 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Create audio element - Calm atmospheric ambient music for study/meditation (no vocals, no beats)
-    audioRef.current = new Audio('https://assets.mixkit.co/music/127/127.mp3');
+    audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3');
     audioRef.current.loop = true;
     audioRef.current.volume = volume;
     audioRef.current.crossOrigin = "anonymous";
