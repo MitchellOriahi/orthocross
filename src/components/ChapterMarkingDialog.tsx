@@ -106,6 +106,33 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
           newState[bookKey].add(chapter);
           return newState;
         });
+
+        // Check if this completes the book
+        const bookInfo = BIBLE_BOOKS.find(b => b.title === bookKey);
+        if (bookInfo) {
+          const updatedChapters = new Set(completedChapters[bookKey] || []);
+          updatedChapters.add(chapter);
+          
+          if (updatedChapters.size === bookInfo.totalChapters) {
+            // Book completed! Create friend activity
+            await supabase
+              .from('friend_activities')
+              .insert({
+                user_id: user.id,
+                activity_type: 'book_completed',
+                activity_data: {
+                  book_key: bookKey,
+                  book_name: bookInfo.bookName,
+                  chapters: bookInfo.totalChapters
+                }
+              });
+            
+            toast({
+              title: "Book Completed! 🎉",
+              description: `You've completed ${bookInfo.bookName}! Your friends have been notified.`,
+            });
+          }
+        }
       }
 
       onChaptersUpdated();

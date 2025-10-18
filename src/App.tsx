@@ -8,6 +8,7 @@ import { ThemeProvider } from "next-themes";
 import { MusicProvider } from "@/contexts/MusicContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Friends from "./pages/Friends";
+import FriendProfile from "./pages/FriendProfile";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { TutorialIntro } from "@/components/TutorialIntro";
@@ -55,8 +56,9 @@ const App = () => (
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
               <Route path="/church-resources" element={<ProtectedRoute><ChurchResources /></ProtectedRoute>} />
                <Route path="/orthodox-history" element={<ProtectedRoute><OrthodoxHistory /></ProtectedRoute>} />
-               <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
-              <Route path="/admin/import" element={<ProtectedRoute><AdminRoute><AdminImport /></AdminRoute></ProtectedRoute>} />
+                <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
+                <Route path="/friends/:friendId" element={<ProtectedRoute><FriendProfile /></ProtectedRoute>} />
+               <Route path="/admin/import" element={<ProtectedRoute><AdminRoute><AdminImport /></AdminRoute></ProtectedRoute>} />
               <Route path="/admin/scripture-import" element={<ProtectedRoute><AdminRoute><ScriptureImport /></AdminRoute></ProtectedRoute>} />
               <Route path="/crop-icons" element={<CropIcons />} />
               <Route path="/support" element={<Support />} />

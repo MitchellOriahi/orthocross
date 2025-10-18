@@ -433,6 +433,7 @@ export type Database = {
           display_name: string | null
           fasting_notifications_enabled: boolean | null
           fasting_reminder_days: number[] | null
+          friends_notifications_enabled: boolean | null
           id: string
           journal_view_mode: string | null
           profile_picture_url: string | null
@@ -446,6 +447,7 @@ export type Database = {
           display_name?: string | null
           fasting_notifications_enabled?: boolean | null
           fasting_reminder_days?: number[] | null
+          friends_notifications_enabled?: boolean | null
           id: string
           journal_view_mode?: string | null
           profile_picture_url?: string | null
@@ -459,6 +461,7 @@ export type Database = {
           display_name?: string | null
           fasting_notifications_enabled?: boolean | null
           fasting_reminder_days?: number[] | null
+          friends_notifications_enabled?: boolean | null
           id?: string
           journal_view_mode?: string | null
           profile_picture_url?: string | null

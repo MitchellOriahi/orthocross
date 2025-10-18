@@ -22,6 +22,7 @@ const Settings = () => {
   const [reminders, setReminders] = useState<ReminderTime[]>([]);
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(false);
   const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(false);
+  const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
   const [showFastingPreferencesDialog, setShowFastingPreferencesDialog] = useState(false);
   const [showStreakReminderDialog, setShowStreakReminderDialog] = useState(false);
   const [fastingReminderDays, setFastingReminderDays] = useState<number[]>([3, 0]);
@@ -57,13 +58,14 @@ const Settings = () => {
     
     const { data } = await supabase
       .from('profiles')
-      .select('fasting_notifications_enabled, streak_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled')
+      .select('fasting_notifications_enabled, streak_notifications_enabled, friends_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled')
       .eq('id', user.id)
       .single();
     
     if (data) {
       setFastingNotificationsEnabled(data.fasting_notifications_enabled || false);
       setStreakNotificationsEnabled(data.streak_notifications_enabled || false);
+      setFriendsNotificationsEnabled(data.friends_notifications_enabled ?? true);
       setFastingReminderDays(data.fasting_reminder_days || [3, 0]);
       setWednesdayNotificationsEnabled(data.wednesday_notifications_enabled || false);
     }
@@ -232,6 +234,18 @@ const Settings = () => {
     }
   };
 
+  const handleToggleFriendsNotifications = async (enabled: boolean) => {
+    if (!user) return;
+    
+    setFriendsNotificationsEnabled(enabled);
+    await supabase
+      .from('profiles')
+      .update({ friends_notifications_enabled: enabled })
+      .eq('id', user.id);
+    
+    toast.success(enabled ? "Friends notifications enabled" : "Friends notifications disabled");
+  };
+
   const handleReferFriend = async (method: 'native' | 'email' | 'sms') => {
     const appUrl = window.location.origin;
     const message = `Check out OrthoCross - a daily spiritual practice app with Bible reading streaks, fasting reminders, and Orthodox learning! ${appUrl}`;
@@ -391,6 +405,19 @@ const Settings = () => {
                 <Switch
                   checked={streakNotificationsEnabled}
                   onCheckedChange={handleToggleStreakNotifications}
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1">
+                  <p className="font-medium">Friends Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Get notified when friends complete books
+                  </p>
+                </div>
+                <Switch
+                  checked={friendsNotificationsEnabled}
+                  onCheckedChange={handleToggleFriendsNotifications}
                 />
               </div>
             </CardContent>

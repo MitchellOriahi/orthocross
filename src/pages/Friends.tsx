@@ -398,7 +398,11 @@ export default function Friends() {
               ) : (
                 <div className="space-y-3">
                   {friends.map(friend => (
-                    <div key={friend.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <div 
+                      key={friend.id} 
+                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 cursor-pointer hover:bg-muted transition-colors"
+                      onClick={() => navigate(`/friends/${friend.id}`)}
+                    >
                       <Avatar>
                         <AvatarImage src={friend.profile_picture_url || undefined} />
                         <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
@@ -437,6 +441,7 @@ export default function Friends() {
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {activity.activity_type === 'chapter_completed' && 'Completed a chapter'}
+                        {activity.activity_type === 'book_completed' && `Completed ${activity.activity_data?.book_name || 'a book'}! 🎉`}
                         {activity.activity_type === 'streak_milestone' && `Reached ${activity.activity_data?.streak} day streak!`}
                       </p>
                     </div>
