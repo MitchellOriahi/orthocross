@@ -205,7 +205,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
               <img 
                 src={crossLogo} 
                 alt="Orthodox Cross"
-                className="w-32 h-32 mx-auto mb-4 object-contain animate-bounce"
+                className="w-32 h-32 mx-auto mb-2 object-contain animate-bounce"
               />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
                 🎉 Congratulations!
