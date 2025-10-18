@@ -176,10 +176,10 @@ const ChurchResources = () => {
           <div className="container mx-auto px-4 lg:px-2 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 flex items-center justify-center p-1.5 bg-black/90 dark:bg-background rounded-lg">
+                <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
                   <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                 </div>
-                <h1 className="text-2xl font-bold">Resources</h1>
+                <h1 className="text-2xl font-bold">Church</h1>
               </div>
               <nav className="flex items-center gap-2">
                 <ThemeToggle />
@@ -600,10 +600,10 @@ const ChurchResources = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
+                <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
                   <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
                 </div>
-                <h1 className="text-2xl font-bold">Resources</h1>
+                <h1 className="text-2xl font-bold">Church</h1>
               </div>
             <nav className="flex items-center gap-2">
               <ThemeToggle />
