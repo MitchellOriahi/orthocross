@@ -5,12 +5,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { ImageCropper } from "./ImageCropper";
 
 export default function ProfilePictureUpload() {
   const { user } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [username, setUsername] = useState<string>("");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const loadProfile = async () => {
     if (!user) return;
@@ -34,7 +37,7 @@ export default function ProfilePictureUpload() {
     }
   }, [user]);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
 
@@ -44,25 +47,38 @@ export default function ProfilePictureUpload() {
       return;
     }
 
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('Image must be less than 2MB');
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
       return;
     }
+
+    // Read file and show cropper
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setSelectedImage(event.target.result as string);
+        setSelectedFile(file);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    if (!user) return;
 
     setUploading(true);
 
     try {
       // Upload to Supabase Storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      const fileName = `${user.id}-${Date.now()}.png`;
       const filePath = `${user.id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('profile-pictures')
-        .upload(filePath, file, {
+        .upload(filePath, croppedBlob, {
           upsert: true,
-          contentType: file.type,
+          contentType: 'image/png',
         });
 
       if (uploadError) throw uploadError;
@@ -81,6 +97,8 @@ export default function ProfilePictureUpload() {
       if (updateError) throw updateError;
 
       setProfilePicture(publicUrl);
+      setSelectedImage(null);
+      setSelectedFile(null);
       toast.success('Profile picture updated!');
     } catch (error) {
       console.error('Error uploading profile picture:', error);
@@ -90,12 +108,27 @@ export default function ProfilePictureUpload() {
     }
   };
 
+  const handleCropCancel = () => {
+    setSelectedImage(null);
+    setSelectedFile(null);
+  };
+
   const getUserInitials = () => {
     if (username) {
       return username.substring(0, 2).toUpperCase();
     }
     return user?.email?.substring(0, 2).toUpperCase() || "U";
   };
+
+  if (selectedImage) {
+    return (
+      <ImageCropper
+        imageSrc={selectedImage}
+        onCropComplete={handleCropComplete}
+        onCancel={handleCropCancel}
+      />
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -110,7 +143,7 @@ export default function ProfilePictureUpload() {
             id="profile-picture-upload"
             className="hidden"
             accept="image/*"
-            onChange={handleFileUpload}
+            onChange={handleFileSelect}
             disabled={uploading}
           />
           <label htmlFor="profile-picture-upload">
@@ -135,7 +168,7 @@ export default function ProfilePictureUpload() {
             </Button>
           </label>
           <p className="text-xs text-muted-foreground mt-2">
-            Max 2MB. JPG, PNG, or GIF
+            Max 5MB. JPG, PNG, or GIF
           </p>
         </div>
       </div>
