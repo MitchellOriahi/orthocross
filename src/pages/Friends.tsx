@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Users, UserPlus, Trophy, Activity } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../contexts/AuthContext";
@@ -28,7 +28,7 @@ export default function Friends() {
             <Trophy className="h-4 w-4 mr-2" />
             Leaderboard
           </TabsTrigger>
-        </TabsList>
+        </TabsTrigger>
 
         {/* Friends List */}
         <TabsContent value="friends" className="space-y-4">
@@ -68,7 +68,7 @@ export default function Friends() {
               </div>
             </CardContent>
           </Card>
-        </CardContentContent>
+        </TabsContent>
 
         {/* Activity Feed */}
         <TabsContent value="activity" className="space-y-4">
@@ -97,7 +97,7 @@ export default function Friends() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center text-muted-foregroundpy-8">
+              <div className="text-center text-muted-foreground py-8">
                 No stats yet. Complete some Bible readings to appear on the leaderboard!
               </div>
             </CardContent>
