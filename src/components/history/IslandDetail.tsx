@@ -199,7 +199,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
               <img 
                 src={jesusCongrats} 
                 alt="Jesus" 
-                className="w-48 h-48 mx-auto -mb-8"
+                className="w-64 h-64 mx-auto -mb-8"
               />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
                 🎉 Congratulations!
