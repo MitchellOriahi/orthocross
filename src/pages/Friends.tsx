@@ -54,7 +54,7 @@ export default function Friends() {
               <div className="flex gap-2">
                 <Input
                   type="text"
-                  placeholder="username/phone#"
+                  placeholder="username/phone #"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
