@@ -13,6 +13,9 @@ import { ChapterSelector } from "@/components/ChapterSelector";
 import { bibleContent } from "@/data/bibleContent";
 import { useTheme } from "next-themes";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 
@@ -63,6 +66,9 @@ const Reading = () => {
   const [progress, setProgress] = useState(0);
   const [verses, setVerses] = useState<Array<{number: number; text: string}>>([]);
   const [loadingVerses, setLoadingVerses] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Load verses from database first, then API, then fallback to hardcoded content
   useEffect(() => {
@@ -149,7 +155,23 @@ const Reading = () => {
   }, [book, chapter]);
 
   useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('profile_picture_url, username')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setProfilePicture(data.profile_picture_url);
+        setUsername(data.username || "");
+      }
+    };
+
     if (user) {
+      loadProfile();
       loadHighlights();
       loadBookmarks();
       loadProgress();
@@ -480,6 +502,13 @@ const Reading = () => {
     return bookmarks.some(b => b.verse_number === verseNumber);
   };
 
+  const getUserInitials = () => {
+    if (username) {
+      return username.substring(0, 2).toUpperCase();
+    }
+    return user?.email?.substring(0, 2).toUpperCase() || "U";
+  };
+
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!contentRef.current) return;
     const rect = contentRef.current.getBoundingClientRect();
@@ -510,7 +539,6 @@ const Reading = () => {
   return (
     <div className="min-h-screen gradient-peaceful">
       {/* Header */}
-      {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
@@ -525,6 +553,22 @@ const Reading = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
               </Button>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
+                    <Avatar className="h-12 w-12 cursor-pointer">
+                      <AvatarImage src={profilePicture || undefined} />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Profile Picture</DialogTitle>
+                  </DialogHeader>
+                  <ProfilePictureUpload />
+                </DialogContent>
+              </Dialog>
             </nav>
           </div>
         </div>
