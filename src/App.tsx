@@ -12,6 +12,7 @@ import FriendProfile from "./pages/FriendProfile";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { TutorialIntro } from "@/components/TutorialIntro";
+import { NotificationManager } from "@/components/NotificationManager";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
@@ -47,6 +48,7 @@ const App = () => (
           <TutorialIntro />
           <BrowserRouter>
             <AuthProvider>
+              <NotificationManager />
               <Routes>
               <Route path="/" element={<Auth />} />
               <Route path="/home" element={<Home />} />
