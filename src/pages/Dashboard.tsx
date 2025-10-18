@@ -15,9 +15,12 @@ import { useCompletionTracking } from "@/hooks/useCompletionTracking";
 import { Settings as SettingsIcon, BookOpen, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { useTheme } from "next-themes";
@@ -38,6 +41,9 @@ const Dashboard = () => {
   const [showMilestoneDialog, setShowMilestoneDialog] = useState(false);
   const [showCompletionDialog, setShowCompletionDialog] = useState(false);
   const [milestoneStreak, setMilestoneStreak] = useState(0);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [lastReading, setLastReading] = useState<{
     title: string;
     passage: string;
@@ -49,6 +55,21 @@ const Dashboard = () => {
   } | null>(null);
 
   useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('profile_picture_url, username')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setProfilePicture(data.profile_picture_url);
+        setUsername(data.username || "");
+      }
+    };
+
     // Populate initial verses on first load
     const checkAndPopulate = async () => {
       if (!user) return;
@@ -67,6 +88,7 @@ const Dashboard = () => {
       }
     };
     
+    loadProfile();
     checkAndPopulate();
     fetchStreak();
     fetchLastReading();
@@ -285,6 +307,13 @@ const Dashboard = () => {
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [user]);
+
+  const getUserInitials = () => {
+    if (username) {
+      return username.substring(0, 2).toUpperCase();
+    }
+    return user?.email?.substring(0, 2).toUpperCase() || "U";
+  };
   
   return (
     <div className="min-h-screen gradient-peaceful pb-20 overflow-x-hidden">
@@ -303,6 +332,22 @@ const Dashboard = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
               </Button>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
+                    <Avatar className="h-12 w-12 cursor-pointer">
+                      <AvatarImage src={profilePicture || undefined} />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Profile Picture</DialogTitle>
+                  </DialogHeader>
+                  <ProfilePictureUpload />
+                </DialogContent>
+              </Dialog>
             </nav>
           </div>
         </div>

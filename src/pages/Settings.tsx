@@ -1,14 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, Settings as SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useMusic } from "@/contexts/MusicContext";
 import { useNotifications, ReminderTime } from "@/hooks/useNotifications";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useTheme } from "next-themes";
+import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import FastingPreferencesDialog from "@/components/FastingPreferencesDialog";
@@ -16,6 +21,7 @@ import StreakReminderDialog from "@/components/StreakReminderDialog";
 
 const Settings = () => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const { isPlaying, toggleMusic, volume, setVolume } = useMusic();
   const { updateStreakReminders, getStreakReminders, scheduleStreakReminders } = useNotifications();
   const { user, signOut } = useAuth();
@@ -27,11 +33,30 @@ const Settings = () => {
   const [showStreakReminderDialog, setShowStreakReminderDialog] = useState(false);
   const [fastingReminderDays, setFastingReminderDays] = useState<number[]>([3, 0]);
   const [wednesdayNotificationsEnabled, setWednesdayNotificationsEnabled] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('profile_picture_url, username')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setProfilePicture(data.profile_picture_url);
+        setUsername(data.username || "");
+      }
+    };
+
+    loadProfile();
     loadNotificationPreferences();
     loadStreakReminders();
-  }, []);
+  }, [user]);
 
   const loadStreakReminders = async () => {
     if (!user) return;
@@ -271,23 +296,47 @@ const Settings = () => {
     }
   };
 
+  const getUserInitials = () => {
+    if (username) {
+      return username.substring(0, 2).toUpperCase();
+    }
+    return user?.email?.substring(0, 2).toUpperCase() || "U";
+  };
+
   return (
     <div className="min-h-screen gradient-peaceful">
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')}>
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-background rounded-lg flex items-center justify-center p-1.5">
-                  <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
-                </div>
-                <h1 className="text-2xl font-bold">Settings</h1>
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
+                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
+              <h1 className="text-2xl font-bold">Settings</h1>
             </div>
+            <nav className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+                <SettingsIcon className="w-5 h-5" />
+              </Button>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
+                    <Avatar className="h-12 w-12 cursor-pointer">
+                      <AvatarImage src={profilePicture || undefined} />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Profile Picture</DialogTitle>
+                  </DialogHeader>
+                  <ProfilePictureUpload />
+                </DialogContent>
+              </Dialog>
+            </nav>
           </div>
         </div>
       </header>

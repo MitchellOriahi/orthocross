@@ -4,8 +4,11 @@ import { Settings as SettingsIcon, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,6 +37,9 @@ const OrthodoxHistory = () => {
   const [progress, setProgress] = useState<UserProgress[]>([]);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [completedCampaignType, setCompletedCampaignType] = useState<"eastern" | "oriental" | null>(null);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -41,6 +47,22 @@ const OrthodoxHistory = () => {
   }, []);
 
   useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('profile_picture_url, username')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setProfilePicture(data.profile_picture_url);
+        setUsername(data.username || "");
+      }
+    };
+
+    loadProfile();
     loadProgress();
   }, [user]);
 
@@ -147,6 +169,13 @@ const OrthodoxHistory = () => {
     }
   };
 
+  const getUserInitials = () => {
+    if (username) {
+      return username.substring(0, 2).toUpperCase();
+    }
+    return user?.email?.substring(0, 2).toUpperCase() || "U";
+  };
+
   const campaign = historyContent.campaigns.find(c => c.id === selectedCampaign);
   const completedIslands = progress.filter(p => p.campaignId === selectedCampaign && p.completed).length;
   const progressPercent = campaign ? (completedIslands / campaign.islands.length) * 100 : 0;
@@ -183,6 +212,22 @@ const OrthodoxHistory = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
               </Button>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
+                    <Avatar className="h-12 w-12 cursor-pointer">
+                      <AvatarImage src={profilePicture || undefined} />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Profile Picture</DialogTitle>
+                  </DialogHeader>
+                  <ProfilePictureUpload />
+                </DialogContent>
+              </Dialog>
             </nav>
           </div>
         </div>

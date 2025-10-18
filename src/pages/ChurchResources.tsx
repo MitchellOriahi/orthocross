@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
@@ -40,11 +43,33 @@ const ChurchResources = () => {
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
   const [showCongratulations, setShowCongratulations] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('profile_picture_url, username')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setProfilePicture(data.profile_picture_url);
+        setUsername(data.username || "");
+      }
+    };
+
+    loadProfile();
+  }, [user]);
 
   // Load pinned prayers
   useEffect(() => {
@@ -113,6 +138,13 @@ const ChurchResources = () => {
       setPinnedPrayerIds(newPinned);
       toast({ description: "Prayer pinned to top!", duration: 1500 });
     }
+  };
+
+  const getUserInitials = () => {
+    if (username) {
+      return username.substring(0, 2).toUpperCase();
+    }
+    return user?.email?.substring(0, 2).toUpperCase() || "U";
   };
 
   if (selectedSaint) {
@@ -186,6 +218,22 @@ const ChurchResources = () => {
                 <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                   <SettingsIcon className="w-5 h-5" />
                 </Button>
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
+                      <Avatar className="h-12 w-12 cursor-pointer">
+                        <AvatarImage src={profilePicture || undefined} />
+                        <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Profile Picture</DialogTitle>
+                    </DialogHeader>
+                    <ProfilePictureUpload />
+                  </DialogContent>
+                </Dialog>
               </nav>
             </div>
           </div>
