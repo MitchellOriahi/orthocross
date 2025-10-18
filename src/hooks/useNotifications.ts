@@ -39,6 +39,10 @@ export const useNotifications = () => {
             body,
             id: Math.floor(Math.random() * 100000),
             schedule: scheduledTime ? { at: scheduledTime } : undefined,
+            sound: 'default',
+            smallIcon: 'ic_stat_icon',
+            iconColor: '#8B4513',
+            channelId: 'orthocross-reminders',
           },
         ],
       });
@@ -103,6 +107,10 @@ export const useNotifications = () => {
               repeats: true,
               every: 'day' as const,
             },
+            sound: 'default',
+            smallIcon: 'ic_stat_icon',
+            iconColor: '#8B4513',
+            channelId: 'orthocross-reminders',
           };
         });
 
@@ -145,6 +153,10 @@ export const useNotifications = () => {
           body,
           id: Math.floor(Math.random() * 100000),
           schedule: { at: eventDate },
+          sound: 'default',
+          smallIcon: 'ic_stat_icon',
+          iconColor: '#8B4513',
+          channelId: 'orthocross-fasting',
         });
       } else {
         // Schedule daily reminders for the specified number of days before
@@ -176,6 +188,10 @@ export const useNotifications = () => {
             body,
             id: Math.floor(Math.random() * 100000),
             schedule: { at: notificationDate },
+            sound: 'default',
+            smallIcon: 'ic_stat_icon',
+            iconColor: '#8B4513',
+            channelId: 'orthocross-fasting',
           });
         }
       }

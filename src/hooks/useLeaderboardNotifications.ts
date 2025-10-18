@@ -95,6 +95,8 @@ export const useLeaderboardNotifications = () => {
                   id: Math.floor(Math.random() * 100000),
                   sound: 'default',
                   smallIcon: 'ic_stat_icon',
+                  iconColor: '#8B4513',
+                  channelId: 'orthocross-friends',
                 },
               ],
             });
