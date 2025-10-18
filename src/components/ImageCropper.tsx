@@ -7,9 +7,10 @@ interface ImageCropperProps {
   imageSrc: string;
   onCropComplete: (croppedImage: Blob) => void;
   onCancel: () => void;
+  onUseOriginal: () => void;
 }
 
-export const ImageCropper = ({ imageSrc, onCropComplete, onCancel }: ImageCropperProps) => {
+export const ImageCropper = ({ imageSrc, onCropComplete, onCancel, onUseOriginal }: ImageCropperProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [scale, setScale] = useState([1]);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
@@ -133,13 +134,13 @@ export const ImageCropper = ({ imageSrc, onCropComplete, onCancel }: ImageCroppe
   };
 
   return (
-    <div className="space-y-4">
-      <div className="relative">
+    <div className="space-y-4 max-w-full overflow-hidden">
+      <div className="relative w-full flex justify-center">
         <canvas
           ref={canvasRef}
-          width={400}
-          height={400}
-          className="border border-border rounded-lg cursor-move mx-auto"
+          width={320}
+          height={320}
+          className="border border-border rounded-lg cursor-move max-w-full"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -149,7 +150,7 @@ export const ImageCropper = ({ imageSrc, onCropComplete, onCancel }: ImageCroppe
       
       <div className="space-y-2">
         <div className="flex items-center gap-3">
-          <ZoomIn className="w-4 h-4" />
+          <ZoomIn className="w-4 h-4 flex-shrink-0" />
           <Slider
             value={scale}
             onValueChange={setScale}
@@ -158,20 +159,25 @@ export const ImageCropper = ({ imageSrc, onCropComplete, onCancel }: ImageCroppe
             step={0.1}
             className="flex-1"
           />
-          <span className="text-sm text-muted-foreground w-12">{Math.round(scale[0] * 100)}%</span>
+          <span className="text-sm text-muted-foreground w-12 text-right">{Math.round(scale[0] * 100)}%</span>
         </div>
         <p className="text-xs text-muted-foreground text-center">
           Drag to reposition • Use slider to zoom
         </p>
       </div>
 
-      <div className="flex gap-2">
-        <Button variant="outline" onClick={onCancel} className="flex-1">
-          Cancel
-        </Button>
-        <Button onClick={handleCrop} className="flex-1">
+      <div className="flex flex-col gap-2">
+        <Button onClick={handleCrop} className="w-full">
           Crop & Save
         </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={onUseOriginal} className="flex-1">
+            Use Original
+          </Button>
+          <Button variant="outline" onClick={onCancel} className="flex-1">
+            Cancel
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -113,6 +113,48 @@ export default function ProfilePictureUpload() {
     setSelectedFile(null);
   };
 
+  const handleUseOriginal = async () => {
+    if (!user || !selectedFile) return;
+
+    setUploading(true);
+
+    try {
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-pictures')
+        .upload(filePath, selectedFile, {
+          upsert: true,
+          contentType: selectedFile.type,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-pictures')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ profile_picture_url: publicUrl })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      setProfilePicture(publicUrl);
+      setSelectedImage(null);
+      setSelectedFile(null);
+      toast.success('Profile picture updated!');
+    } catch (error) {
+      console.error('Error uploading profile picture:', error);
+      toast.error('Failed to upload profile picture');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const getUserInitials = () => {
     if (username) {
       return username.substring(0, 2).toUpperCase();
@@ -126,6 +168,7 @@ export default function ProfilePictureUpload() {
         imageSrc={selectedImage}
         onCropComplete={handleCropComplete}
         onCancel={handleCropCancel}
+        onUseOriginal={handleUseOriginal}
       />
     );
   }
