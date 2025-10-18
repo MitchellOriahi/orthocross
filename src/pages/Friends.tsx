@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, UserPlus, Trophy, Activity, ArrowLeft } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,10 +11,15 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import ProfilePictureUpload from "@/components/ProfilePictureUpload";
+import { BottomNavigation } from "@/components/BottomNavigation";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import { useTheme } from "next-themes";
 
 export default function Friends() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
@@ -169,37 +174,42 @@ export default function Friends() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 pb-20">
-      <div className="flex items-center justify-between gap-4 mb-6">
-        <div className="flex items-center gap-4">
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => navigate('/dashboard')}
-            className="shrink-0"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="text-3xl font-bold">Friends</h1>
+    <div className="min-h-screen gradient-peaceful pb-20 overflow-x-hidden">
+      {/* Header */}
+      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 lg:px-2 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
+                <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
+              </div>
+              <h1 className="text-2xl font-bold">Friends</h1>
+            </div>
+            <nav className="flex items-center gap-2">
+              <ThemeToggle />
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
+                    <Avatar className="h-12 w-12 cursor-pointer">
+                      <AvatarImage src={profilePicture || undefined} />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Profile Picture</DialogTitle>
+                  </DialogHeader>
+                  <ProfilePictureUpload />
+                </DialogContent>
+              </Dialog>
+            </nav>
+          </div>
         </div>
-        
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
-              <Avatar className="h-12 w-12 cursor-pointer">
-                <AvatarImage src={profilePicture || undefined} />
-                <AvatarFallback>{getUserInitials()}</AvatarFallback>
-              </Avatar>
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Profile Picture</DialogTitle>
-            </DialogHeader>
-            <ProfilePictureUpload />
-          </DialogContent>
-        </Dialog>
-      </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8 space-y-4">
       
       <Tabs defaultValue="friends" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
@@ -289,6 +299,9 @@ export default function Friends() {
           </Card>
         </TabsContent>
       </Tabs>
+      </main>
+
+      <BottomNavigation />
     </div>
   );
 }
