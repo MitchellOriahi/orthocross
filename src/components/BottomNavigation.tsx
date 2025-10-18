@@ -20,7 +20,7 @@ export const BottomNavigation = () => {
     {
       icon: Flame,
       path: "/dashboard",
-      label: "Board"
+      label: "Dashboard"
     },
     {
       icon: Church,
