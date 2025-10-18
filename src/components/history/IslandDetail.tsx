@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
+import completionCross from "@/assets/completion-cross.png";
 
 interface Quiz {
   question: string;
@@ -196,7 +197,11 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         >
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
-              <Trophy className="w-24 h-24 mx-auto mb-4 text-primary animate-bounce" />
+              <img 
+                src={completionCross} 
+                alt="Completion" 
+                className="w-24 h-24 mx-auto mb-4 animate-bounce" 
+              />
               <h2 className="text-4xl font-bold mb-2 text-foreground">
                 🎉 Congratulations!
               </h2>
@@ -230,9 +235,3 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
     </div>
   );
 };
-
-const Trophy = ({ className }: { className?: string }) => (
-  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-    <path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v3c0 2.21 1.79 4 4 4h.19l1.55 6.21c.16.65.76 1.09 1.43 1.09h5.66c.67 0 1.27-.44 1.43-1.09L18.81 16H19c2.21 0 4-1.79 4-4v-3c0-1.1-.9-2-2-2zM6 14c-1.1 0-2-.9-2-2v-2h2v4zm4 4l-1.5-6H10V6h4v6h1.5l-1.5 6h-4zm8-6c0 1.1-.9 2-2 2v-4h2v2z"/>
-  </svg>
-);
