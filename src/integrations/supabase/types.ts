@@ -828,6 +828,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_notification_channels: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       delete_user_account: {
         Args: Record<PropertyKey, never>
         Returns: undefined
