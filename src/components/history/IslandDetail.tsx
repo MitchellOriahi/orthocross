@@ -12,7 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
-import completionCross from "@/assets/orthodox-cross-black-new.png";
+import completionCross from "@/assets/completion-cross-hq.png";
 
 interface Quiz {
   question: string;
