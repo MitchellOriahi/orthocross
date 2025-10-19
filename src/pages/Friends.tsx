@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,6 +50,8 @@ export default function Friends() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [activities, setActivities] = useState<FriendActivity[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -294,6 +297,40 @@ export default function Friends() {
     }
   };
 
+  const handleRemoveFriend = async () => {
+    if (!user || !friendToRemove) return;
+
+    try {
+      // Find and delete the friendship record
+      const { error } = await supabase
+        .from('friends')
+        .delete()
+        .or(`and(user_id.eq.${user.id},friend_id.eq.${friendToRemove.id}),and(user_id.eq.${friendToRemove.id},friend_id.eq.${user.id})`);
+
+      if (error) throw error;
+
+      toast({
+        title: "Friend removed",
+        description: `${friendToRemove.username} has been removed from your friends list`,
+      });
+
+      // Reload friends list
+      loadFriends();
+      loadActivities();
+      loadLeaderboard();
+    } catch (error) {
+      console.error("Error removing friend:", error);
+      toast({
+        title: "Error",
+        description: "Failed to remove friend. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setShowRemoveDialog(false);
+      setFriendToRemove(null);
+    }
+  };
+
   const getUserInitials = () => {
     if (username) {
       return username.substring(0, 2).toUpperCase();
@@ -400,14 +437,30 @@ export default function Friends() {
                   {friends.map(friend => (
                     <div 
                       key={friend.id} 
-                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 cursor-pointer hover:bg-muted transition-colors"
-                      onClick={() => navigate(`/friends/${friend.id}`)}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
                     >
-                      <Avatar>
-                        <AvatarImage src={friend.profile_picture_url || undefined} />
-                        <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium">{friend.username}</span>
+                      <div 
+                        className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => navigate(`/friends/${friend.id}`)}
+                      >
+                        <Avatar>
+                          <AvatarImage src={friend.profile_picture_url || undefined} />
+                          <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">{friend.username}</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFriendToRemove(friend);
+                          setShowRemoveDialog(true);
+                        }}
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <UserMinus className="h-4 w-4" />
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -489,6 +542,24 @@ export default function Friends() {
         </TabsContent>
       </Tabs>
       </main>
+
+      <AlertDialog open={showRemoveDialog} onOpenChange={setShowRemoveDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Friend</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove {friendToRemove?.username} from your friends list? 
+              You can add them again later if you change your mind.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setFriendToRemove(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemoveFriend} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <BottomNavigation />
     </div>
