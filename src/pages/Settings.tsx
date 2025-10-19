@@ -310,6 +310,14 @@ const Settings = () => {
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate(-1)}
+                className="shrink-0"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
               <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
@@ -512,20 +520,6 @@ const Settings = () => {
                 Build your daily spiritual practice with Bible reading streaks, 
                 fasting reminders, and Orthodox learning.
               </p>
-            </CardContent>
-          </Card>
-
-          {/* Home Button */}
-          <Card className="shadow-elevated">
-            <CardContent className="p-0">
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-14 px-6 rounded-none"
-                onClick={() => navigate('/dashboard')}
-              >
-                <Home className="w-5 h-5 mr-3" />
-                <span className="text-base">Return to Dashboard</span>
-              </Button>
             </CardContent>
           </Card>
 
