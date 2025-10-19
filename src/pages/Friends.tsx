@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { MonthlyPodiumModal } from "@/components/MonthlyPodiumModal";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useTheme } from "next-themes";
 
@@ -29,6 +30,15 @@ interface FriendActivity {
   activity_type: string;
   activity_data: any;
   created_at: string;
+  reactions?: { emoji: string; count: number; userReacted: boolean }[];
+}
+
+interface PodiumEntry {
+  id: string;
+  username: string;
+  profile_picture_url: string | null;
+  total_points: number;
+  rank: number;
 }
 
 interface LeaderboardEntry {
@@ -52,6 +62,17 @@ export default function Friends() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+  const [showPodium, setShowPodium] = useState(false);
+  const [podiumData, setPodiumData] = useState<PodiumEntry[]>([]);
+  const [lastMonthName, setLastMonthName] = useState("");
+
+  const REACTION_EMOJIS = [
+    { emoji: "👍", icon: ThumbsUp, label: "Like" },
+    { emoji: "❤️", icon: Heart, label: "Love" },
+    { emoji: "🔥", icon: Flame, label: "Fire" },
+    { emoji: "🎉", icon: PartyPopper, label: "Celebrate" },
+    { emoji: "⭐", icon: Star, label: "Star" }
+  ];
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -73,6 +94,7 @@ export default function Friends() {
     loadFriends();
     loadActivities();
     loadLeaderboard();
+    checkMonthlyPodium();
   }, [user]);
 
   const loadFriends = async () => {
@@ -125,10 +147,37 @@ export default function Friends() {
           .select('id, username')
           .in('id', activitiesData.map(a => a.user_id));
 
-        const activitiesWithUsernames = activitiesData.map(activity => ({
-          ...activity,
-          username: profilesData?.find(p => p.id === activity.user_id)?.username || 'Unknown User'
-        }));
+        // Load reactions for activities
+        const { data: reactionsData } = await supabase
+          .from('activity_reactions')
+          .select('activity_id, emoji, user_id')
+          .in('activity_id', activitiesData.map(a => a.id));
+
+        const activitiesWithUsernames = activitiesData.map(activity => {
+          // Aggregate reactions
+          const activityReactions = reactionsData?.filter(r => r.activity_id === activity.id) || [];
+          const reactionCounts = new Map<string, { count: number; userReacted: boolean }>();
+          
+          activityReactions.forEach(reaction => {
+            const current = reactionCounts.get(reaction.emoji) || { count: 0, userReacted: false };
+            reactionCounts.set(reaction.emoji, {
+              count: current.count + 1,
+              userReacted: current.userReacted || reaction.user_id === user.id
+            });
+          });
+
+          const reactions = Array.from(reactionCounts.entries()).map(([emoji, data]) => ({
+            emoji,
+            count: data.count,
+            userReacted: data.userReacted
+          }));
+
+          return {
+            ...activity,
+            username: profilesData?.find(p => p.id === activity.user_id)?.username || 'Unknown User',
+            reactions
+          };
+        });
 
         setActivities(activitiesWithUsernames as FriendActivity[]);
       }
@@ -331,6 +380,108 @@ export default function Friends() {
     }
   };
 
+  const checkMonthlyPodium = async () => {
+    if (!user) return;
+
+    const currentDate = new Date();
+    const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
+    const lastMonthDate = lastMonth.toISOString().slice(0, 7);
+
+    // Check if user has seen this month's podium
+    const { data: viewedData } = await supabase
+      .from('monthly_podium_views')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('month_date', lastMonthDate)
+      .maybeSingle();
+
+    if (!viewedData) {
+      // Load last month's top 3
+      const { data: friendsData } = await supabase
+        .from('friends')
+        .select('user_id, friend_id')
+        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+
+      if (friendsData) {
+        const friendIds = friendsData.map(f => 
+          f.user_id === user.id ? f.friend_id : f.user_id
+        );
+        friendIds.push(user.id);
+
+        const { data: leaderboardData } = await supabase
+          .from('monthly_leaderboard')
+          .select('user_id, total_points')
+          .eq('month_date', lastMonthDate)
+          .in('user_id', friendIds)
+          .order('total_points', { ascending: false })
+          .limit(3);
+
+        if (leaderboardData && leaderboardData.length > 0) {
+          const { data: profilesData } = await supabase
+            .from('profiles')
+            .select('id, username, profile_picture_url')
+            .in('id', leaderboardData.map(l => l.user_id));
+
+          const topThree = leaderboardData.map((entry, index) => ({
+            id: entry.user_id,
+            username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
+            profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
+            total_points: entry.total_points,
+            rank: index + 1
+          }));
+
+          setPodiumData(topThree);
+          setLastMonthName(lastMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
+          setShowPodium(true);
+        }
+      }
+    }
+  };
+
+  const handlePodiumClose = async () => {
+    if (!user) return;
+
+    const lastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1);
+    const lastMonthDate = lastMonth.toISOString().slice(0, 7);
+
+    await supabase
+      .from('monthly_podium_views')
+      .insert({ user_id: user.id, month_date: lastMonthDate });
+
+    setShowPodium(false);
+  };
+
+  const handleReaction = async (activityId: string, emoji: string) => {
+    if (!user) return;
+
+    // Check if user already reacted with this emoji
+    const activity = activities.find(a => a.id === activityId);
+    const existingReaction = activity?.reactions?.find(r => r.emoji === emoji && r.userReacted);
+
+    if (existingReaction) {
+      // Remove reaction
+      const { error } = await supabase
+        .from('activity_reactions')
+        .delete()
+        .eq('activity_id', activityId)
+        .eq('user_id', user.id)
+        .eq('emoji', emoji);
+
+      if (!error) {
+        loadActivities();
+      }
+    } else {
+      // Add reaction
+      const { error } = await supabase
+        .from('activity_reactions')
+        .insert({ activity_id: activityId, user_id: user.id, emoji });
+
+      if (!error) {
+        loadActivities();
+      }
+    }
+  };
+
   const getUserInitials = () => {
     if (username) {
       return username.substring(0, 2).toUpperCase();
@@ -485,18 +636,45 @@ export default function Friends() {
               ) : (
                 <div className="space-y-3">
                   {activities.map(activity => (
-                    <div key={activity.id} className="p-3 rounded-lg bg-muted/50">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium">{activity.username}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(activity.created_at).toLocaleDateString()}
-                        </span>
+                    <div key={activity.id} className="p-3 rounded-lg bg-muted/50 space-y-2">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium">{activity.username}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(activity.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {activity.activity_type === 'chapter_completed' && 'Completed a chapter'}
+                          {activity.activity_type === 'book_completed' && `Completed ${activity.activity_data?.book_name || 'a book'}! 🎉`}
+                          {activity.activity_type === 'streak_milestone' && `Reached ${activity.activity_data?.streak} day streak!`}
+                        </p>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {activity.activity_type === 'chapter_completed' && 'Completed a chapter'}
-                        {activity.activity_type === 'book_completed' && `Completed ${activity.activity_data?.book_name || 'a book'}! 🎉`}
-                        {activity.activity_type === 'streak_milestone' && `Reached ${activity.activity_data?.streak} day streak!`}
-                      </p>
+                      
+                      {/* Reactions */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {REACTION_EMOJIS.map(({ emoji, icon: Icon, label }) => {
+                          const reactionData = activity.reactions?.find(r => r.emoji === emoji);
+                          const isActive = reactionData?.userReacted || false;
+                          const count = reactionData?.count || 0;
+                          
+                          return (
+                            <button
+                              key={emoji}
+                              onClick={() => handleReaction(activity.id, emoji)}
+                              className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-colors ${
+                                isActive 
+                                  ? 'bg-primary text-primary-foreground' 
+                                  : 'bg-muted hover:bg-muted/80'
+                              }`}
+                              title={label}
+                            >
+                              <Icon className="w-3 h-3" />
+                              {count > 0 && <span>{count}</span>}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -560,6 +738,13 @@ export default function Friends() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <MonthlyPodiumModal
+        isOpen={showPodium}
+        onClose={handlePodiumClose}
+        topThree={podiumData}
+        monthName={lastMonthName}
+      />
 
       <BottomNavigation />
     </div>

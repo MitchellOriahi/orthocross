@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_reactions: {
+        Row: {
+          activity_id: string
+          created_at: string
+          emoji: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          activity_id: string
+          created_at?: string
+          emoji: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          activity_id?: string
+          created_at?: string
+          emoji?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_reactions_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "friend_activities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bible_verses: {
         Row: {
           book: string
@@ -373,6 +405,27 @@ export type Database = {
           total_points?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      monthly_podium_views: {
+        Row: {
+          id: string
+          month_date: string
+          user_id: string
+          viewed_at: string
+        }
+        Insert: {
+          id?: string
+          month_date: string
+          user_id: string
+          viewed_at?: string
+        }
+        Update: {
+          id?: string
+          month_date?: string
+          user_id?: string
+          viewed_at?: string
         }
         Relationships: []
       }
