@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -71,7 +71,19 @@ export default function Friends() {
     { emoji: "❤️", icon: Heart, label: "Love" },
     { emoji: "🔥", icon: Flame, label: "Fire" },
     { emoji: "🎉", icon: PartyPopper, label: "Celebrate" },
-    { emoji: "⭐", icon: Star, label: "Star" }
+    { emoji: "⭐", icon: Star, label: "Star" },
+    { emoji: "😮", icon: AlertCircle, label: "Surprised" },
+    { emoji: "😱", icon: Zap, label: "Shocked" },
+    { emoji: "😠", icon: Frown, label: "Angry" },
+    { emoji: "👏", icon: Hand, label: "Clap" },
+    { emoji: "💯", icon: Award, label: "100" },
+    { emoji: "✝️", icon: Cross, label: "Cross" },
+    { emoji: "☦️", icon: Cross, label: "Orthodox Cross" },
+    { emoji: "❤️‍🔥", icon: Flame, label: "Heart on Fire" },
+    { emoji: "😇", icon: Circle, label: "Halo" },
+    { emoji: "🫡", icon: Hand, label: "Salute" },
+    { emoji: "🙏", icon: Hand, label: "Pray" },
+    { emoji: "🙌", icon: Hand, label: "Hands Up" }
   ];
 
   useEffect(() => {
