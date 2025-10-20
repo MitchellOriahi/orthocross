@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -86,6 +86,7 @@ export default function Friends() {
   const [showPodium, setShowPodium] = useState(false);
   const [podiumData, setPodiumData] = useState<PodiumEntry[]>([]);
   const [lastMonthName, setLastMonthName] = useState("");
+  const [activityTabOpen, setActivityTabOpen] = useState(false);
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
@@ -748,14 +749,10 @@ export default function Friends() {
       <main className="container mx-auto px-4 py-8 space-y-4">
       
       <Tabs defaultValue="friends" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="friends">
             <Users className="h-4 w-4 mr-2" />
             Friends
-          </TabsTrigger>
-          <TabsTrigger value="activity">
-            <Activity className="h-4 w-4 mr-2" />
-            Activity
           </TabsTrigger>
           <TabsTrigger value="leaderboard">
             <Trophy className="h-4 w-4 mr-2" />
@@ -927,69 +924,76 @@ export default function Friends() {
                   </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
-        <TabsContent value="activity" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Friend Activity</CardTitle>
-              <CardDescription>
-                See what your friends have been accomplishing
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {activities.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">
-                  No activity yet. Connect with friends to see their progress!
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {activities.map(activity => (
-                    <div key={activity.id} className="p-3 rounded-lg bg-muted/50 space-y-2">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium">{activity.username}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(activity.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {activity.activity_type === 'chapter_completed' && 'Completed a chapter'}
-                          {activity.activity_type === 'book_completed' && `Completed ${activity.activity_data?.book_name || 'a book'}! 🎉`}
-                          {activity.activity_type === 'streak_milestone' && `Reached ${activity.activity_data?.streak} day streak!`}
-                        </p>
+              {/* Friend Activity Collapsible Section */}
+              <div className="space-y-3 pt-6 border-t border-border/50">
+                <Button
+                  variant="outline"
+                  className="w-full justify-between"
+                  onClick={() => setActivityTabOpen(!activityTabOpen)}
+                >
+                  <div className="flex items-center gap-2">
+                    <Activity className="h-4 w-4" />
+                    <span>Friend Activity</span>
+                  </div>
+                  {activityTabOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </Button>
+                
+                {activityTabOpen && (
+                  <div className="space-y-3">
+                    {activities.length === 0 ? (
+                      <div className="text-center text-muted-foreground py-8">
+                        No activity yet. Connect with friends to see their progress!
                       </div>
-                      
-                      {/* Reactions */}
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {REACTION_EMOJIS.map(({ emoji, icon: Icon, label }) => {
-                          const reactionData = activity.reactions?.find(r => r.emoji === emoji);
-                          const isActive = reactionData?.userReacted || false;
-                          const count = reactionData?.count || 0;
-                          
-                          return (
-                            <button
-                              key={emoji}
-                              onClick={() => handleReaction(activity.id, emoji)}
-                              className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-colors ${
-                                isActive 
-                                  ? 'bg-primary text-primary-foreground' 
-                                  : 'bg-muted hover:bg-muted/80'
-                              }`}
-                              title={label}
-                            >
-                              <Icon className="w-3 h-3" />
-                              {count > 0 && <span>{count}</span>}
-                            </button>
-                          );
-                        })}
+                    ) : (
+                      <div className="space-y-3">
+                        {activities.map(activity => (
+                          <div key={activity.id} className="p-3 rounded-lg bg-muted/50 space-y-2">
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium">{activity.username}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(activity.created_at).toLocaleDateString()}
+                                </span>
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                {activity.activity_type === 'chapter_completed' && 'Completed a chapter'}
+                                {activity.activity_type === 'book_completed' && `Completed ${activity.activity_data?.book_name || 'a book'}! 🎉`}
+                                {activity.activity_type === 'streak_milestone' && `Reached ${activity.activity_data?.streak} day streak!`}
+                              </p>
+                            </div>
+                            
+                            {/* Reactions */}
+                            <div className="flex items-center gap-2 flex-wrap">
+                              {REACTION_EMOJIS.map(({ emoji, icon: Icon, label }) => {
+                                const reactionData = activity.reactions?.find(r => r.emoji === emoji);
+                                const isActive = reactionData?.userReacted || false;
+                                const count = reactionData?.count || 0;
+                                
+                                return (
+                                  <button
+                                    key={emoji}
+                                    onClick={() => handleReaction(activity.id, emoji)}
+                                    className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-colors ${
+                                      isActive 
+                                        ? 'bg-primary text-primary-foreground' 
+                                        : 'bg-muted hover:bg-muted/80'
+                                    }`}
+                                    title={label}
+                                  >
+                                    <Icon className="w-3 h-3" />
+                                    {count > 0 && <span>{count}</span>}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    )}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

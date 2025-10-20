@@ -565,6 +565,7 @@ export type Database = {
           journal_view_mode: string | null
           profile_picture_url: string | null
           streak_notifications_enabled: boolean | null
+          streak_visible: boolean
           updated_at: string
           username: string | null
           wednesday_notifications_enabled: boolean | null
@@ -579,6 +580,7 @@ export type Database = {
           journal_view_mode?: string | null
           profile_picture_url?: string | null
           streak_notifications_enabled?: boolean | null
+          streak_visible?: boolean
           updated_at?: string
           username?: string | null
           wednesday_notifications_enabled?: boolean | null
@@ -593,6 +595,7 @@ export type Database = {
           journal_view_mode?: string | null
           profile_picture_url?: string | null
           streak_notifications_enabled?: boolean | null
+          streak_visible?: boolean
           updated_at?: string
           username?: string | null
           wednesday_notifications_enabled?: boolean | null

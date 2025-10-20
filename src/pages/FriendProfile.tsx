@@ -10,10 +10,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useTheme } from "next-themes";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { StreakFlame } from "@/components/StreakFlame";
 
 interface FriendData {
   username: string;
   profile_picture_url: string | null;
+  display_name: string | null;
+  streak_visible: boolean;
 }
 
 interface BookProgress {
@@ -22,10 +25,19 @@ interface BookProgress {
   completed_chapters: number;
 }
 
+interface Activity {
+  id: string;
+  activity_type: string;
+  activity_data: any;
+  created_at: string;
+}
+
 interface ReadingHistory {
-  book_key: string;
-  chapter: number;
+  book_key?: string;
+  chapter?: number;
   completed_at: string;
+  activity_type?: string;
+  activity_data?: any;
 }
 
 export default function FriendProfile() {
@@ -37,12 +49,60 @@ export default function FriendProfile() {
   const [bookProgress, setBookProgress] = useState<BookProgress[]>([]);
   const [readingHistory, setReadingHistory] = useState<ReadingHistory[]>([]);
   const [totalBibleProgress, setTotalBibleProgress] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
 
   useEffect(() => {
     if (friendId) {
       loadFriendData();
       loadReadingProgress();
       loadReadingHistory();
+      loadStreak();
+
+      // Set up real-time subscriptions for live updates
+      const progressChannel = supabase
+        .channel(`friend-progress-${friendId}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'completed_chapters',
+            filter: `user_id=eq.${friendId}`
+          },
+          () => {
+            loadReadingProgress();
+            loadReadingHistory();
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'friend_activities',
+            filter: `user_id=eq.${friendId}`
+          },
+          () => {
+            loadReadingHistory();
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'user_streaks',
+            filter: `user_id=eq.${friendId}`
+          },
+          () => {
+            loadStreak();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(progressChannel);
+      };
     }
   }, [friendId]);
 
@@ -51,12 +111,26 @@ export default function FriendProfile() {
 
     const { data } = await supabase
       .from('profiles')
-      .select('username, profile_picture_url')
+      .select('username, profile_picture_url, display_name, streak_visible')
       .eq('id', friendId)
       .single();
 
     if (data) {
       setFriend(data);
+    }
+  };
+
+  const loadStreak = async () => {
+    if (!friendId) return;
+
+    const { data } = await supabase
+      .from('user_streaks')
+      .select('current_streak')
+      .eq('user_id', friendId)
+      .maybeSingle();
+
+    if (data) {
+      setCurrentStreak(data.current_streak);
     }
   };
 
@@ -114,16 +188,49 @@ export default function FriendProfile() {
   const loadReadingHistory = async () => {
     if (!friendId) return;
 
-    const { data } = await supabase
+    // Get completed chapters
+    const { data: chaptersData } = await supabase
       .from('completed_chapters')
       .select('book_key, chapter, completed_at')
       .eq('user_id', friendId)
       .order('completed_at', { ascending: false })
-      .limit(10);
+      .limit(20);
 
-    if (data) {
-      setReadingHistory(data);
+    // Get friend activities (islands, saints, etc.)
+    const { data: activitiesData } = await supabase
+      .from('friend_activities')
+      .select('*')
+      .eq('user_id', friendId)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    // Combine and sort by date
+    const combined: ReadingHistory[] = [];
+    
+    if (chaptersData) {
+      chaptersData.forEach(item => {
+        combined.push({
+          book_key: item.book_key,
+          chapter: item.chapter,
+          completed_at: item.completed_at,
+          activity_type: 'chapter'
+        });
+      });
     }
+
+    if (activitiesData) {
+      activitiesData.forEach(item => {
+        combined.push({
+          completed_at: item.created_at,
+          activity_type: item.activity_type,
+          activity_data: item.activity_data
+        });
+      });
+    }
+
+    // Sort by date and take the most recent 15 items
+    combined.sort((a, b) => new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime());
+    setReadingHistory(combined.slice(0, 15));
   };
 
   const formatBookName = (bookKey: string) => {
@@ -162,7 +269,17 @@ export default function FriendProfile() {
               <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-2xl font-bold">{friend.username}'s Profile</h1>
+              <h1 className="text-2xl font-bold">
+                {friend.display_name 
+                  ? friend.display_name.charAt(0).toUpperCase() + friend.display_name.slice(1)
+                  : friend.username.charAt(0).toUpperCase() + friend.username.slice(1)
+                }'s Profile
+              </h1>
+              {friend.streak_visible && currentStreak > 0 && (
+                <div className="ml-4">
+                  <StreakFlame days={currentStreak} size="sm" />
+                </div>
+              )}
             </div>
             <ThemeToggle />
           </div>
@@ -255,14 +372,29 @@ export default function FriendProfile() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {readingHistory.map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                  <div>
-                    <p className="font-medium">{formatBookName(item.book_key)} {item.chapter}</p>
-                    <p className="text-sm text-muted-foreground">{formatDate(item.completed_at)}</p>
+              {readingHistory.map((item, index) => {
+                let content = '';
+                if (item.activity_type === 'chapter' && item.book_key) {
+                  content = `${formatBookName(item.book_key)} ${item.chapter}`;
+                } else if (item.activity_type === 'island_completed') {
+                  content = `Completed island: ${item.activity_data?.island_name || 'Unknown'}`;
+                } else if (item.activity_type === 'saint_read') {
+                  content = `Read about: ${item.activity_data?.saint_name || 'Unknown Saint'}`;
+                } else if (item.activity_type === 'book_completed') {
+                  content = `Completed book: ${item.activity_data?.book_name || 'Unknown'}`;
+                } else {
+                  content = `Activity: ${item.activity_type}`;
+                }
+
+                return (
+                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <div>
+                      <p className="font-medium">{content}</p>
+                      <p className="text-sm text-muted-foreground">{formatDate(item.completed_at)}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {readingHistory.length === 0 && (
                 <p className="text-center text-muted-foreground py-4">
                   No reading history yet

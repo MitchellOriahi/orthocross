@@ -36,6 +36,7 @@ const Settings = () => {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [username, setUsername] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [streakVisible, setStreakVisible] = useState(true);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -43,13 +44,14 @@ const Settings = () => {
 
       const { data } = await supabase
         .from('profiles')
-        .select('profile_picture_url, username')
+        .select('profile_picture_url, username, streak_visible')
         .eq('id', user.id)
         .maybeSingle();
 
       if (data) {
         setProfilePicture(data.profile_picture_url);
         setUsername(data.username || "");
+        setStreakVisible(data.streak_visible ?? true);
       }
     };
 
@@ -271,6 +273,18 @@ const Settings = () => {
     toast.success(enabled ? "Friends notifications enabled" : "Friends notifications disabled");
   };
 
+  const handleToggleStreakVisibility = async (visible: boolean) => {
+    if (!user) return;
+    
+    setStreakVisible(visible);
+    await supabase
+      .from('profiles')
+      .update({ streak_visible: visible })
+      .eq('id', user.id);
+    
+    toast.success(visible ? "Streak is now visible to friends" : "Streak is now hidden from friends");
+  };
+
   const handleReferFriend = async (method: 'native' | 'email' | 'sms') => {
     const appUrl = window.location.origin;
     const message = `Check out OrthoCross - a daily spiritual practice app with Bible reading streaks, fasting reminders, and Orthodox learning! ${appUrl}`;
@@ -456,6 +470,19 @@ const Settings = () => {
                 <Switch
                   checked={friendsNotificationsEnabled}
                   onCheckedChange={handleToggleFriendsNotifications}
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1">
+                  <p className="font-medium">Show Streak to Friends</p>
+                  <p className="text-sm text-muted-foreground">
+                    Let your friends see your reading streak
+                  </p>
+                </div>
+                <Switch
+                  checked={streakVisible}
+                  onCheckedChange={handleToggleStreakVisibility}
                 />
               </div>
             </CardContent>
