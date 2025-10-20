@@ -86,7 +86,7 @@ export default function Friends() {
   const [showPodium, setShowPodium] = useState(false);
   const [podiumData, setPodiumData] = useState<PodiumEntry[]>([]);
   const [lastMonthName, setLastMonthName] = useState("");
-  const [activityTabOpen, setActivityTabOpen] = useState(false);
+  const [activityTabOpen, setActivityTabOpen] = useState(true);
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
