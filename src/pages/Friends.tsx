@@ -161,13 +161,16 @@ export default function Friends() {
         .select('id, username, profile_picture_url')
         .in('id', receiverIds);
 
-      const requestsWithProfiles = requestsData.map(request => ({
-        id: request.id,
-        receiver_id: request.receiver_id,
-        username: profilesData?.find(p => p.id === request.receiver_id)?.username || 'Unknown User',
-        profile_picture_url: profilesData?.find(p => p.id === request.receiver_id)?.profile_picture_url || null,
-        created_at: request.created_at
-      }));
+      const requestsWithProfiles = requestsData.map(request => {
+        const profile = profilesData?.find(p => p.id === request.receiver_id);
+        return {
+          id: request.id,
+          receiver_id: request.receiver_id,
+          username: profile?.username || 'User',
+          profile_picture_url: profile?.profile_picture_url || null,
+          created_at: request.created_at
+        };
+      });
 
       setSentRequests(requestsWithProfiles);
     } else {
@@ -664,8 +667,13 @@ export default function Friends() {
                       <div key={request.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage src={request.profile_picture_url || orthodoxCross} />
-                            <AvatarFallback>{request.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                            {request.profile_picture_url ? (
+                              <AvatarImage src={request.profile_picture_url} />
+                            ) : (
+                              <AvatarFallback className="bg-muted">
+                                <Users className="h-5 w-5 text-muted-foreground" />
+                              </AvatarFallback>
+                            )}
                           </Avatar>
                           <div>
                             <p className="font-medium">{request.username}</p>
