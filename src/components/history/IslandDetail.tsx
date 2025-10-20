@@ -82,15 +82,19 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         setCurrentQuestion(currentQuestion + 1);
         setSelectedAnswer('');
       } else {
+        // Last question - show correct message briefly before completion
         // Calculate score
         const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
         const score = (correctCount / island.quiz.length) * 100;
         
-        // Play island completion sound
-        playSound('island');
-        
-        setShowCompletionModal(true);
-        onComplete(campaignId, island.id, score);
+        // Brief delay to let user see the "Correct!" message
+        setTimeout(() => {
+          // Play island completion sound
+          playSound('island');
+          
+          setShowCompletionModal(true);
+          onComplete(campaignId, island.id, score);
+        }, 800); // 0.8 second delay to see the correct message
       }
     } else {
       toast({
