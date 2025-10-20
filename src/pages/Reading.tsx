@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChapterSelector } from "@/components/ChapterSelector";
-import { bibleContent } from "@/data/bibleContent";
+import { bibleContent, BIBLE_BOOKS } from "@/data/bibleContent";
 import { useTheme } from "next-themes";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
@@ -427,7 +427,7 @@ const Reading = () => {
         .eq('user_id', user.id)
         .eq('book_key', book);
 
-      const bookInfo = require('@/data/bibleContent').BIBLE_BOOKS.find((b: any) => b.title === book);
+      const bookInfo = BIBLE_BOOKS.find((b) => b.title === book);
       if (bookInfo && completedInBook && completedInBook.length === bookInfo.totalChapters) {
         // Book just completed! Create friend activity
         await supabase
@@ -456,8 +456,7 @@ const Reading = () => {
             booksCompleted.get(c.book_key).add(c.chapter);
           });
 
-          const BIBLE_BOOKS = require('@/data/bibleContent').BIBLE_BOOKS;
-          const allBooksComplete = BIBLE_BOOKS.every((book: any) => {
+          const allBooksComplete = BIBLE_BOOKS.every((book) => {
             const completedChaptersInBook = booksCompleted.get(book.title);
             return completedChaptersInBook && completedChaptersInBook.size === book.totalChapters;
           });
