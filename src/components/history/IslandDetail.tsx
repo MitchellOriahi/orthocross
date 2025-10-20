@@ -14,6 +14,12 @@ import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import completionCross from "@/assets/completion-cross-hq.png";
+import swordEmblem from "@/assets/armor/sword-emblem.png";
+import shieldEmblem from "@/assets/armor/shield-emblem.jpg";
+import bootEmblem from "@/assets/armor/boot-emblem.png";
+import beltEmblem from "@/assets/armor/belt-emblem.webp";
+import helmetEmblem from "@/assets/armor/helmet-emblem.png";
+import breastplateEmblem from "@/assets/armor/breastplate-emblem.webp";
 
 interface Quiz {
   question: string;
@@ -55,58 +61,23 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
     switch (normalizedPiece) {
       case 'sword of spirit':
       case 'sword of the spirit':
-        return (
-          <svg viewBox="0 0 100 100" className="w-32 h-32 mx-auto mb-4 fill-primary">
-            <path d="M50 5 L55 40 L60 40 L60 45 L55 45 L60 90 L50 95 L40 90 L45 45 L40 45 L40 40 L45 40 Z"/>
-            <rect x="45" y="40" width="10" height="8" className="fill-primary"/>
-          </svg>
-        );
+        return <img src={swordEmblem} alt="Sword" className="w-32 h-32 mx-auto mb-4 object-contain" />;
       
       case 'shield of faith':
-        return (
-          <svg viewBox="0 0 100 100" className="w-32 h-32 mx-auto mb-4 fill-primary">
-            <path d="M50 10 L80 25 L80 50 Q80 75 50 90 Q20 75 20 50 L20 25 Z"/>
-            <path d="M50 20 L70 30 L70 50 Q70 67 50 80 Q30 67 30 50 L30 30 Z" className="fill-background"/>
-          </svg>
-        );
+        return <img src={shieldEmblem} alt="Shield" className="w-32 h-32 mx-auto mb-4 object-contain" />;
       
       case 'sandals of gospel of peace':
       case 'shoes of peace':
-        return (
-          <svg viewBox="0 0 100 100" className="w-32 h-32 mx-auto mb-4 fill-primary">
-            <path d="M30 50 Q30 40 35 35 L45 35 L45 45 Q45 55 40 60 L35 65 Q28 68 25 75 L25 85 L45 85 L45 75 Q45 70 40 68 L35 65 Q30 62 30 55 Z"/>
-            <ellipse cx="37" cy="45" rx="8" ry="5"/>
-          </svg>
-        );
+        return <img src={bootEmblem} alt="Boots" className="w-32 h-32 mx-auto mb-4 object-contain" />;
       
       case 'belt of truth':
-        return (
-          <svg viewBox="0 0 100 100" className="w-32 h-32 mx-auto mb-4 fill-primary">
-            <rect x="10" y="40" width="80" height="15" rx="2"/>
-            <rect x="42" y="35" width="16" height="25" rx="3"/>
-            <rect x="46" y="38" width="8" height="6" rx="1" className="fill-background"/>
-            <rect x="46" y="47" width="8" height="6" rx="1" className="fill-background"/>
-            <path d="M48 55 L48 75 M52 55 L52 75" stroke="currentColor" strokeWidth="2" className="stroke-primary"/>
-          </svg>
-        );
+        return <img src={beltEmblem} alt="Belt" className="w-32 h-32 mx-auto mb-4 object-contain" />;
       
       case 'helmet of salvation':
-        return (
-          <svg viewBox="0 0 100 100" className="w-32 h-32 mx-auto mb-4 fill-primary">
-            <path d="M50 15 Q30 15 25 35 L25 55 Q25 65 30 70 L70 70 Q75 65 75 55 L75 35 Q70 15 50 15 Z"/>
-            <ellipse cx="50" cy="20" rx="20" ry="10"/>
-            <rect x="25" y="65" width="50" height="8" rx="2"/>
-          </svg>
-        );
+        return <img src={helmetEmblem} alt="Helmet" className="w-32 h-32 mx-auto mb-4 object-contain" />;
       
       case 'breastplate of righteousness':
-        return (
-          <svg viewBox="0 0 100 100" className="w-32 h-32 mx-auto mb-4 fill-primary">
-            <path d="M30 20 L70 20 L75 30 L75 65 Q75 75 70 80 L60 85 L50 90 L40 85 L30 80 Q25 75 25 65 L25 30 Z"/>
-            <path d="M35 30 L65 30 L68 38 L68 65 Q68 72 50 82 Q32 72 32 65 L32 38 Z" className="fill-background"/>
-            <line x1="50" y1="30" x2="50" y2="80" stroke="currentColor" strokeWidth="2" className="stroke-primary"/>
-          </svg>
-        );
+        return <img src={breastplateEmblem} alt="Breastplate" className="w-32 h-32 mx-auto mb-4 object-contain" />;
       
       case 'full eastern armor':
         return (
