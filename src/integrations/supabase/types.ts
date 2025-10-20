@@ -190,6 +190,41 @@ export type Database = {
         }
         Relationships: []
       }
+      friend_request_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          read: boolean
+          receiver_id: string
+          request_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          read?: boolean
+          receiver_id: string
+          request_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          read?: boolean
+          receiver_id?: string
+          request_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friend_request_notifications_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "friend_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       friend_requests: {
         Row: {
           created_at: string
