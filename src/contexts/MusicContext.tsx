@@ -92,17 +92,33 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const playSound = (soundType: 'chapter' | 'book' | 'island' | 'saint') => {
-    // Using church bell themed sound effects
-    const soundMap = {
-      chapter: 'https://assets.mixkit.co/active_storage/sfx/2571/2571.wav', // Church bell single
-      book: 'https://assets.mixkit.co/active_storage/sfx/1433/1433.wav', // Heavenly chime
-      island: 'https://assets.mixkit.co/active_storage/sfx/1434/1434.wav', // Angelic success
-      saint: 'https://assets.mixkit.co/active_storage/sfx/2873/2873.wav', // Gentle blessed chime
+    // Using different sound frequencies for church bell effects
+    // Create short audio clips using Web Audio API for reliability
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    // Different bell tones for different completions
+    const soundConfig = {
+      chapter: { freq: 523.25, duration: 0.3 }, // C5 - single bell
+      book: { freq: 659.25, duration: 0.5 }, // E5 - higher chime
+      island: { freq: 783.99, duration: 0.7 }, // G5 - celebration
+      saint: { freq: 440.00, duration: 0.4 }, // A4 - reverent
     };
-
-    const audio = new Audio(soundMap[soundType]);
-    audio.volume = sfxVolume;
-    audio.play().catch(e => console.log('Sound play failed:', e));
+    
+    const config = soundConfig[soundType];
+    oscillator.frequency.setValueAtTime(config.freq, audioContext.currentTime);
+    oscillator.type = 'sine'; // Bell-like tone
+    
+    // Volume envelope for natural bell sound
+    gainNode.gain.setValueAtTime(sfxVolume, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + config.duration);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + config.duration);
   };
 
   return (
