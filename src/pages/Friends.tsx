@@ -24,6 +24,14 @@ interface Friend {
   profile_picture_url: string | null;
 }
 
+interface FriendRequest {
+  id: string;
+  receiver_id: string;
+  username: string;
+  profile_picture_url: string | null;
+  created_at: string;
+}
+
 interface FriendActivity {
   id: string;
   username: string;
@@ -58,6 +66,7 @@ export default function Friends() {
   const [username, setUsername] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [sentRequests, setSentRequests] = useState<FriendRequest[]>([]);
   const [activities, setActivities] = useState<FriendActivity[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
@@ -104,6 +113,7 @@ export default function Friends() {
 
     loadProfile();
     loadFriends();
+    loadSentRequests();
     loadActivities();
     loadLeaderboard();
     checkMonthlyPodium();
@@ -130,6 +140,38 @@ export default function Friends() {
       if (profilesData) {
         setFriends(profilesData as Friend[]);
       }
+    }
+  };
+
+  const loadSentRequests = async () => {
+    if (!user) return;
+
+    const { data: requestsData } = await supabase
+      .from('friend_requests')
+      .select('id, receiver_id, created_at')
+      .eq('sender_id', user.id)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+
+    if (requestsData && requestsData.length > 0) {
+      const receiverIds = requestsData.map(r => r.receiver_id);
+
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('id, username, profile_picture_url')
+        .in('id', receiverIds);
+
+      const requestsWithProfiles = requestsData.map(request => ({
+        id: request.id,
+        receiver_id: request.receiver_id,
+        username: profilesData?.find(p => p.id === request.receiver_id)?.username || 'Unknown User',
+        profile_picture_url: profilesData?.find(p => p.id === request.receiver_id)?.profile_picture_url || null,
+        created_at: request.created_at
+      }));
+
+      setSentRequests(requestsWithProfiles);
+    } else {
+      setSentRequests([]);
     }
   };
 
@@ -340,6 +382,7 @@ export default function Friends() {
       });
 
       setSearchQuery("");
+      loadSentRequests();
     } catch (error) {
       console.error("Error sending friend request:", error);
       toast({
@@ -349,6 +392,33 @@ export default function Friends() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCancelRequest = async (requestId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('friend_requests')
+        .delete()
+        .eq('id', requestId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Request cancelled",
+        description: "Friend request has been cancelled",
+      });
+
+      loadSentRequests();
+    } catch (error) {
+      console.error("Error cancelling request:", error);
+      toast({
+        title: "Error",
+        description: "Failed to cancel request. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -371,6 +441,7 @@ export default function Friends() {
 
       // Reload friends list
       loadFriends();
+      loadSentRequests();
       loadActivities();
       loadLeaderboard();
     } catch (error) {
@@ -584,44 +655,76 @@ export default function Friends() {
                 Connect with friends to see their progress
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              {friends.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">
-                  No friends yet. Add someone to get started!
-                </div>
-              ) : (
+            <CardContent className="space-y-6">
+              {sentRequests.length > 0 && (
                 <div className="space-y-3">
-                  {friends.map(friend => (
-                    <div 
-                      key={friend.id} 
-                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
-                    >
-                      <div 
-                        className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() => navigate(`/friends/${friend.id}`)}
-                      >
-                        <Avatar>
-                          <AvatarImage src={friend.profile_picture_url || undefined} />
-                          <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
-                        </Avatar>
-                        <span className="font-medium">{friend.username}</span>
+                  <h3 className="text-sm font-semibold text-muted-foreground">Pending Requests ({sentRequests.length})</h3>
+                  <div className="space-y-2">
+                    {sentRequests.map((request) => (
+                      <div key={request.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={request.profile_picture_url || orthodoxCross} />
+                            <AvatarFallback>{request.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium">{request.username}</p>
+                            <p className="text-xs text-muted-foreground">Request sent</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleCancelRequest(request.id)}
+                        >
+                          Cancel
+                        </Button>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFriendToRemove(friend);
-                          setShowRemoveDialog(true);
-                        }}
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                      >
-                        <UserMinus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
+
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-muted-foreground">Your Friends ({friends.length})</h3>
+                {friends.length === 0 ? (
+                  <div className="text-center text-muted-foreground py-8">
+                    No friends yet. Add someone to get started!
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {friends.map(friend => (
+                      <div 
+                        key={friend.id} 
+                        className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
+                      >
+                        <div 
+                          className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => navigate(`/friends/${friend.id}`)}
+                        >
+                          <Avatar>
+                            <AvatarImage src={friend.profile_picture_url || undefined} />
+                            <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                          </Avatar>
+                          <span className="font-medium">{friend.username}</span>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFriendToRemove(friend);
+                            setShowRemoveDialog(true);
+                          }}
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <UserMinus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
