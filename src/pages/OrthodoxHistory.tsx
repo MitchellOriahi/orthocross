@@ -127,6 +127,25 @@ const OrthodoxHistory = () => {
     const { updateUserStreak } = await import('@/utils/streakManager');
     await updateUserStreak(user.id);
 
+    // Create friend activity for island completion
+    const island = historyContent.campaigns
+      .find(c => c.id === campaignId)?.islands
+      .find(i => i.id === islandId);
+    
+    if (island) {
+      await supabase
+        .from('friend_activities')
+        .insert({
+          user_id: user.id,
+          activity_type: 'island_completed',
+          activity_data: {
+            campaign_id: campaignId,
+            island_id: islandId,
+            island_name: island.title
+          }
+        });
+    }
+
     await loadProgress();
     // Don't set selectedIsland to null here - let the modal show and user dismiss it manually
 

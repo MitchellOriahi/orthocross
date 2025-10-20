@@ -128,6 +128,19 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
     const { updateUserStreak } = await import('@/utils/streakManager');
     await updateUserStreak(user.id);
 
+    // Create friend activity for saint completion
+    if (saintMatch) {
+      await supabase
+        .from('friend_activities')
+        .insert({
+          user_id: user.id,
+          activity_type: 'saint_completed',
+          activity_data: {
+            saint_name: title
+          }
+        });
+    }
+
     if (onComplete) {
       onComplete();
     }

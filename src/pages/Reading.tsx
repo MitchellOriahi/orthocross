@@ -419,6 +419,62 @@ const Reading = () => {
         description: "Chapter completed! 🎉",
         duration: 3000,
       });
+
+      // Check if book is now complete
+      const { data: completedInBook } = await supabase
+        .from('completed_chapters')
+        .select('chapter')
+        .eq('user_id', user.id)
+        .eq('book_key', book);
+
+      const bookInfo = require('@/data/bibleContent').BIBLE_BOOKS.find((b: any) => b.title === book);
+      if (bookInfo && completedInBook && completedInBook.length === bookInfo.totalChapters) {
+        // Book just completed! Create friend activity
+        await supabase
+          .from('friend_activities')
+          .insert({
+            user_id: user.id,
+            activity_type: 'book_completed',
+            activity_data: {
+              book_key: book,
+              book_name: bookInfo.bookName
+            }
+          });
+
+        // Check if entire Bible is completed
+        const { data: allCompleted } = await supabase
+          .from('completed_chapters')
+          .select('book_key, chapter')
+          .eq('user_id', user.id);
+
+        if (allCompleted) {
+          const booksCompleted = new Map();
+          allCompleted.forEach(c => {
+            if (!booksCompleted.has(c.book_key)) {
+              booksCompleted.set(c.book_key, new Set());
+            }
+            booksCompleted.get(c.book_key).add(c.chapter);
+          });
+
+          const BIBLE_BOOKS = require('@/data/bibleContent').BIBLE_BOOKS;
+          const allBooksComplete = BIBLE_BOOKS.every((book: any) => {
+            const completedChaptersInBook = booksCompleted.get(book.title);
+            return completedChaptersInBook && completedChaptersInBook.size === book.totalChapters;
+          });
+
+          if (allBooksComplete) {
+            await supabase
+              .from('friend_activities')
+              .insert({
+                user_id: user.id,
+                activity_type: 'bible_completed',
+                activity_data: {
+                  total_chapters: BIBLE_BOOKS.reduce((sum: number, book: any) => sum + book.totalChapters, 0)
+                }
+              });
+          }
+        }
+      }
       
       // Navigate to next chapter if available
       if (chapter < totalChapters) {

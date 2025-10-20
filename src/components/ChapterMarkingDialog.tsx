@@ -118,13 +118,61 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
           
           const isBookCompleted = updatedChapters.size === bookInfo.totalChapters;
           
-          // If book is completed, show notification
+          // If book is completed, show notification and create friend activity
           if (isBookCompleted) {
             toast({
               title: "Book Completed! 🎉",
               description: `You've completed ${bookInfo.bookName}!`,
               duration: 3000,
             });
+
+            // Create friend activity for book completion
+            await supabase
+              .from('friend_activities')
+              .insert({
+                user_id: user.id,
+                activity_type: 'book_completed',
+                activity_data: {
+                  book_key: bookInfo.title,
+                  book_name: bookInfo.bookName
+                }
+              });
+
+            // Check if entire Bible is completed
+            const { data: allCompleted } = await supabase
+              .from('completed_chapters')
+              .select('book_key, chapter')
+              .eq('user_id', user.id);
+
+            if (allCompleted) {
+              // Group by book to check completion
+              const booksCompleted = new Map();
+              allCompleted.forEach(c => {
+                if (!booksCompleted.has(c.book_key)) {
+                  booksCompleted.set(c.book_key, new Set());
+                }
+                booksCompleted.get(c.book_key).add(c.chapter);
+              });
+
+              // Check if all books are complete
+              const allBooksComplete = BIBLE_BOOKS.every(book => {
+                const completedChaptersInBook = booksCompleted.get(book.title);
+                return completedChaptersInBook && completedChaptersInBook.size === book.totalChapters;
+              });
+
+              if (allBooksComplete) {
+                // Create Bible completion activity
+                await supabase
+                  .from('friend_activities')
+                  .insert({
+                    user_id: user.id,
+                    activity_type: 'bible_completed',
+                    activity_data: {
+                      total_chapters: BIBLE_BOOKS.reduce((sum, book) => sum + book.totalChapters, 0)
+                    }
+                  });
+              }
+            }
           }
         }
       }

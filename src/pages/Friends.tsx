@@ -900,9 +900,33 @@ export default function Friends() {
                                 </span>
                               </div>
                               <p className="text-sm text-muted-foreground">
-                                {activity.activity_type === 'chapter_completed' && 'Completed a chapter'}
-                                {activity.activity_type === 'book_completed' && `Completed ${activity.activity_data?.book_name || 'a book'}! 🎉`}
-                                {activity.activity_type === 'streak_milestone' && `Reached ${activity.activity_data?.streak} day streak!`}
+                                {activity.activity_type === 'chapter_completed' && (
+                                  <>
+                                    📖 Completed {activity.activity_data?.book_key ? 
+                                      `${activity.activity_data.book_key} Chapter ${activity.activity_data.chapter}` : 
+                                      'a chapter'}
+                                  </>
+                                )}
+                                {activity.activity_type === 'book_completed' && (
+                                  <>
+                                    📚 Completed {activity.activity_data?.book_name || 'a book'}!
+                                  </>
+                                )}
+                                {activity.activity_type === 'bible_completed' && (
+                                  <>
+                                    ✨ Completed the entire Bible!
+                                  </>
+                                )}
+                                {activity.activity_type === 'saint_completed' && (
+                                  <>
+                                    🕊️ Finished reading about {activity.activity_data?.saint_name || 'a saint'}
+                                  </>
+                                )}
+                                {activity.activity_type === 'island_completed' && (
+                                  <>
+                                    🏰 Completed island: {activity.activity_data?.island_name || 'Unknown Island'}
+                                  </>
+                                )}
                               </p>
                             </div>
                             
