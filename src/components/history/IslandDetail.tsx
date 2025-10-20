@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Shield, Settings as SettingsIcon, Sparkles } from "lucide-react";
+import { ArrowLeft, Shield, Settings as SettingsIcon, Sparkles, Heart, Footprints, Sword, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -105,7 +105,38 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
 
   const progress = ((currentQuestion + 1) / island.quiz.length) * 100;
 
-  const isBeltOfTruth = island.awardPiece.toLowerCase().replace(/_/g, ' ') === 'belt of truth';
+  const getArmorEmblem = () => {
+    const awardName = island.awardPiece.toLowerCase().replace(/_/g, ' ');
+    const iconClass = "w-32 h-32 mx-auto text-primary";
+    
+    switch(awardName) {
+      case 'belt of truth':
+        return (
+          <div className="relative w-32 h-32 mx-auto">
+            {/* Belt buckle - rectangular frame */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-24 h-16 border-8 border-primary rounded-lg" />
+            </div>
+            {/* Belt strap going through */}
+            <div className="absolute top-1/2 left-0 right-0 h-8 bg-primary -translate-y-1/2" />
+          </div>
+        );
+      case 'breastplate of righteousness':
+        return <Heart className={iconClass} fill="currentColor" />;
+      case 'shoes of peace':
+      case 'feet of peace':
+        return <Footprints className={iconClass} />;
+      case 'shield of faith':
+        return <Shield className={iconClass} />;
+      case 'sword of spirit':
+      case 'sword of the spirit':
+        return <Sword className={iconClass} />;
+      case 'helmet of salvation':
+        return <ShieldCheck className={iconClass} />;
+      default:
+        return <Shield className={iconClass} />;
+    }
+  };
 
   return (
     <div className="min-h-screen gradient-peaceful pb-20">
@@ -233,15 +264,8 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             <div className="bg-white dark:bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
               <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
               <div className="relative">
-                <div className="relative inline-block mx-auto">
-                  <Shield className="w-32 h-32 mx-auto mb-4 text-primary relative z-10" />
-                  {isBeltOfTruth && (
-                    <>
-                      {/* Belt straps */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-8 bg-primary border-2 border-primary rounded" style={{ transform: 'translate(-50%, -50%)' }} />
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-12 bg-primary border-2 border-primary rounded" style={{ transform: 'translate(-50%, -50%)' }} />
-                    </>
-                  )}
+                <div className="mb-4">
+                  {getArmorEmblem()}
                 </div>
                 <div className="absolute inset-0 pointer-events-none">
                   {[...Array(12)].map((_, i) => (
