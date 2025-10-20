@@ -13,6 +13,22 @@ serve(async (req) => {
   try {
     const { book, chapter } = await req.json();
 
+    // Validate chapter parameter
+    if (!chapter || typeof chapter !== 'number' || !Number.isInteger(chapter) || chapter < 1 || chapter > 150) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid chapter number. Must be between 1 and 150', verses: [] }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate book parameter
+    if (!book || typeof book !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Invalid book name', verses: [] }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Map book names to Bible API format
     const bookMap: Record<string, string> = {
       "Genesis": "Genesis", "Exodus": "Exodus", "Leviticus": "Leviticus", 
