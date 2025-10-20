@@ -639,7 +639,6 @@ const ChurchResources = () => {
               />
             </div>
             <h2 className="text-3xl font-bold">Orthodox Church Guide</h2>
-            <p className="text-muted-foreground">Learn the traditions and proper conduct in Orthodox worship</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
