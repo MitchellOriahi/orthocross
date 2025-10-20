@@ -6,6 +6,7 @@ import { FastingCalendar } from "@/components/FastingCalendar";
 import { FastingCalendarView } from "@/components/FastingCalendarView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Journal } from "@/components/Journal";
+import { VerseOfTheDay } from "@/components/VerseOfTheDay";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
 import { StreakMilestoneShare } from "@/components/StreakMilestoneShare";
@@ -414,7 +415,10 @@ const Dashboard = () => {
         </section>
 
         {/* Additional Sections */}
-        <div className="space-y-6">
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Verse of the Day */}
+          <VerseOfTheDay />
+
           {/* Fasting Calendar */}
           <FastingCalendar />
         </div>
