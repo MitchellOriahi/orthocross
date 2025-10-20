@@ -168,7 +168,7 @@ const Auth = () => {
 
     toast({
       title: 'Account Created',
-      description: 'Welcome to OrthoCross App!',
+      description: 'Welcome to the OrthoCross app!',
     });
     setLoading(false);
     // Show notification preference dialogs
@@ -208,7 +208,7 @@ const Auth = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-background rounded-2xl shadow-sacred mb-4 p-2 mx-auto">
             <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
           </div>
-          <CardTitle className="text-2xl">Welcome to OrthoCross App</CardTitle>
+          <CardTitle className="text-2xl">Welcome to the OrthoCross app</CardTitle>
           <CardDescription>Sign in or create an account to continue</CardDescription>
         </CardHeader>
         <CardContent>
