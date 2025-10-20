@@ -17,6 +17,7 @@ import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { MonthlyPodiumModal } from "@/components/MonthlyPodiumModal";
+import { StreakFlame } from "@/components/StreakFlame";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useTheme } from "next-themes";
 import { formatDistanceToNow } from "date-fns";
@@ -25,6 +26,8 @@ interface Friend {
   id: string;
   username: string;
   profile_picture_url: string | null;
+  streak_visible: boolean;
+  current_streak: number;
 }
 
 interface FriendRequest {
@@ -182,11 +185,21 @@ export default function Friends() {
 
       const { data: profilesData } = await supabase
         .from('profiles')
-        .select('id, username, profile_picture_url')
+        .select('id, username, profile_picture_url, streak_visible')
         .in('id', friendIds);
 
+      // Load streak data for each friend
+      const { data: streaksData } = await supabase
+        .from('user_streaks')
+        .select('user_id, current_streak')
+        .in('user_id', friendIds);
+
       if (profilesData) {
-        setFriends(profilesData as Friend[]);
+        const friendsWithStreaks = profilesData.map(profile => ({
+          ...profile,
+          current_streak: streaksData?.find(s => s.user_id === profile.id)?.current_streak || 0
+        }));
+        setFriends(friendsWithStreaks as Friend[]);
       }
     }
   };
@@ -906,7 +919,12 @@ export default function Friends() {
                             <AvatarImage src={friend.profile_picture_url || undefined} />
                             <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
                           </Avatar>
-                          <span className="font-medium">{friend.username}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{friend.username}</span>
+                            {friend.streak_visible && friend.current_streak > 0 && (
+                              <StreakFlame days={friend.current_streak} size="sm" />
+                            )}
+                          </div>
                         </div>
                         <Button
                           variant="ghost"

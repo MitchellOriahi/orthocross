@@ -275,11 +275,6 @@ export default function FriendProfile() {
                   : friend.username.charAt(0).toUpperCase() + friend.username.slice(1)
                 }'s Profile
               </h1>
-              {friend.streak_visible && currentStreak > 0 && (
-                <div className="ml-4">
-                  <StreakFlame days={currentStreak} size="sm" />
-                </div>
-              )}
             </div>
             <ThemeToggle />
           </div>
@@ -297,7 +292,12 @@ export default function FriendProfile() {
                 <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-2xl font-bold">{friend.username}</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-2xl font-bold">{friend.username}</h2>
+                  {friend.streak_visible && currentStreak > 0 && (
+                    <StreakFlame days={currentStreak} size="sm" />
+                  )}
+                </div>
                 <p className="text-muted-foreground">Friend</p>
               </div>
             </div>
