@@ -886,6 +886,12 @@ export default function Friends() {
                            <div key={activity.id} className="p-3 rounded-lg bg-muted/50 space-y-2">
                             <div>
                               <div className="flex items-center gap-2 mb-1">
+                                <Avatar className="h-8 w-8">
+                                  <AvatarImage src={activity.profile_picture_url || undefined} />
+                                  <AvatarFallback className="text-xs">
+                                    {activity.username?.substring(0, 2).toUpperCase() || 'U'}
+                                  </AvatarFallback>
+                                </Avatar>
                                 <span className="font-medium">{activity.username}</span>
                                 <span className="text-xs text-muted-foreground">
                                   {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}

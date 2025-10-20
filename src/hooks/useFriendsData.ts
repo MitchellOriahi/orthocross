@@ -28,6 +28,7 @@ export interface ReceivedRequest {
 export interface FriendActivity {
   id: string;
   username: string;
+  profile_picture_url: string | null;
   activity_type: string;
   activity_data: any;
   created_at: string;
@@ -151,7 +152,7 @@ const loadActivitiesData = async (userId: string | undefined) => {
     if (activitiesData) {
       const { data: profilesData } = await supabase
         .from('profiles')
-        .select('id, username')
+        .select('id, username, profile_picture_url')
         .in('id', activitiesData.map(a => a.user_id));
 
       const { data: reactionsData } = await supabase
@@ -177,9 +178,11 @@ const loadActivitiesData = async (userId: string | undefined) => {
           userReacted: data.userReacted
         }));
 
+        const profile = profilesData?.find(p => p.id === activity.user_id);
         return {
           ...activity,
-          username: profilesData?.find(p => p.id === activity.user_id)?.username || 'Unknown User',
+          username: profile?.username || 'Unknown User',
+          profile_picture_url: profile?.profile_picture_url || null,
           reactions
         };
       });
