@@ -20,6 +20,8 @@ import bootEmblem from "@/assets/armor/boot-emblem.png";
 import beltEmblem from "@/assets/armor/belt-emblem.webp";
 import helmetEmblem from "@/assets/armor/helmet-emblem.png";
 import breastplateEmblem from "@/assets/armor/breastplate-emblem.webp";
+import easternArmorEmblem from "@/assets/armor/eastern-armor-preview.png";
+import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview.png";
 
 interface Quiz {
   question: string;
@@ -80,30 +82,10 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         return <img src={breastplateEmblem} alt="Breastplate" className="w-32 h-32 mx-auto mb-4 object-contain" />;
       
       case 'full eastern armor':
-        return (
-          <svg viewBox="0 0 100 100" className="w-32 h-32 mx-auto mb-4 fill-primary">
-            <ellipse cx="50" cy="25" rx="18" ry="12"/>
-            <rect x="32" y="23" width="36" height="6" rx="2"/>
-            <path d="M35 35 L65 35 L70 45 L70 70 Q70 78 50 88 Q30 78 30 70 L30 45 Z"/>
-            <rect x="30" y="70" width="40" height="18"/>
-            <rect x="20" y="40" width="12" height="35" rx="2"/>
-            <rect x="68" y="40" width="12" height="35" rx="2"/>
-          </svg>
-        );
+        return <img src={easternArmorEmblem} alt="Full Eastern Armor" className="w-32 h-32 mx-auto mb-4 object-contain" />;
       
       case 'full oriental armor':
-        return (
-          <svg viewBox="0 0 100 100" className="w-32 h-32 mx-auto mb-4 fill-primary">
-            <path d="M50 15 Q35 15 32 28 L32 40 L68 40 L68 28 Q65 15 50 15 Z"/>
-            <rect x="30" y="38" width="40" height="4"/>
-            <path d="M32 45 L68 45 L72 55 L72 75 Q72 82 50 90 Q28 82 28 75 L28 55 Z"/>
-            <circle cx="42" cy="60" r="3" className="fill-background"/>
-            <circle cx="50" cy="60" r="3" className="fill-background"/>
-            <circle cx="58" cy="60" r="3" className="fill-background"/>
-            <rect x="25" y="50" width="10" height="25" rx="2"/>
-            <rect x="65" y="50" width="10" height="25" rx="2"/>
-          </svg>
-        );
+        return <img src={orientalArmorEmblem} alt="Full Oriental Armor" className="w-32 h-32 mx-auto mb-4 object-contain" />;
       
       default:
         return <Shield className="w-32 h-32 mx-auto mb-4 text-primary" />;
