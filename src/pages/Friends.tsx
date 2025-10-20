@@ -993,21 +993,30 @@ export default function Friends() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {leaderboard.map((entry, index) => (
-                    <div key={entry.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                      <div className="w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
-                        {index + 1}
+                  {leaderboard.map((entry, index) => {
+                    const getRankColors = () => {
+                      if (index === 0) return "bg-amber-400/20 text-amber-400";
+                      if (index === 1) return "bg-slate-300/20 text-slate-300";
+                      if (index === 2) return "bg-amber-700/20 text-amber-700";
+                      return "bg-primary/10 text-primary";
+                    };
+                    
+                    return (
+                      <div key={entry.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                        <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${getRankColors()}`}>
+                          {index + 1}
+                        </div>
+                        <Avatar>
+                          <AvatarImage src={entry.profile_picture_url || undefined} />
+                          <AvatarFallback>{entry.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium flex-1">{entry.username}</span>
+                        <span className="text-sm text-muted-foreground">
+                          {entry.books_completed} {entry.books_completed === 1 ? 'point' : 'points'}
+                        </span>
                       </div>
-                      <Avatar>
-                        <AvatarImage src={entry.profile_picture_url || undefined} />
-                        <AvatarFallback>{entry.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium flex-1">{entry.username}</span>
-                      <span className="text-sm text-muted-foreground">
-                        {entry.books_completed} {entry.books_completed === 1 ? 'point' : 'points'}
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
