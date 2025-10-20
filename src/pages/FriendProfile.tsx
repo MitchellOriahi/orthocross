@@ -58,8 +58,8 @@ export default function FriendProfile() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [totalBibleProgress, setTotalBibleProgress] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(0);
-  const [bookProgressOpen, setBookProgressOpen] = useState(true);
-  const [activityOpen, setActivityOpen] = useState(true);
+  const [bookProgressOpen, setBookProgressOpen] = useState(false);
+  const [activityOpen, setActivityOpen] = useState(false);
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
