@@ -25,8 +25,8 @@ export const HistoryHighlightIntro = () => {
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="sm:max-w-md mx-4" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
-        <div className="flex flex-col items-center text-center space-y-6 py-6">
+      <DialogContent className="sm:max-w-md mx-auto w-[calc(100%-2rem)] max-w-[calc(100%-2rem)]" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+        <div className="flex flex-col items-center justify-center text-center space-y-6 py-6">
           <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center animate-fade-in">
             <Highlighter className="w-12 h-12 text-primary" />
           </div>
