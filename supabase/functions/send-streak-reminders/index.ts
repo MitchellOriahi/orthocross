@@ -24,13 +24,12 @@ const handler = async (req: Request): Promise<Response> => {
     const currentHour = new Date().getHours();
     console.log('Current hour:', currentHour);
 
-    // Get all users with streak notifications enabled who have phone numbers and active reminders at this hour
+    // Get all users with streak notifications enabled and active reminders at this hour
     const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
       .select(`
         id, 
         streak_notifications_enabled,
-        user_phone_numbers!inner(phone_number),
         user_streak_reminders!inner(hour, minute, enabled)
       `)
       .eq('streak_notifications_enabled', true)
@@ -52,8 +51,24 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Found ${profiles.length} users with streak notifications enabled`);
 
-    // Get streak data for these users
+    // Get phone numbers from auth metadata
     const userIds = profiles.map(p => p.id);
+    const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
+    
+    if (authError) {
+      console.error('Error fetching auth users:', authError);
+      throw authError;
+    }
+
+    // Create phone number map
+    const phoneMap = new Map();
+    users?.forEach(user => {
+      if (user.user_metadata?.phone_number && userIds.includes(user.id)) {
+        phoneMap.set(user.id, user.user_metadata.phone_number);
+      }
+    });
+
+    // Get streak data for these users
     const { data: streaks, error: streaksError } = await supabase
       .from("user_streaks")
       .select("user_id, current_streak, last_activity_date")
@@ -69,9 +84,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Send SMS to users who haven't completed their reading today and have a reminder at this hour
     const notifications = [];
     for (const profile of profiles) {
-      const phoneData = profile.user_phone_numbers as any;
+      const phoneNumber = phoneMap.get(profile.id);
       
-      if (!phoneData?.phone_number) {
+      if (!phoneNumber) {
         console.log(`User ${profile.id} has no phone number, skipping`);
         continue;
       }
@@ -90,12 +105,12 @@ const handler = async (req: Request): Promise<Response> => {
         ? `🔥 Keep Your ${currentStreak}-Day Streak! Don't forget your daily Bible reading to maintain your streak! - OrthoCross App`
         : `📖 Start Your Reading Streak! Complete your daily Bible reading today. - OrthoCross App`;
 
-      console.log(`Sending SMS to ${phoneData.phone_number}`);
+      console.log(`Sending SMS to ${phoneNumber}`);
 
       try {
         const smsResponse = await supabase.functions.invoke('send-sms-notification', {
           body: {
-            to: phoneData.phone_number,
+            to: phoneNumber,
             message: message,
           },
         });

@@ -38,10 +38,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Checking fasting reminders for:', todayStr, oneDayStr, twoDaysStr, threeDaysStr);
 
-    // Get all reminders for today and next 3 days with phone numbers and user preferences
+    // Get all reminders for today and next 3 days with user preferences
     const { data: reminders, error: remindersError } = await supabase
       .from("fasting_reminders")
-      .select("*, user_phone_numbers!inner(phone_number), profiles!inner(fasting_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled)")
+      .select("*, profiles!inner(fasting_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled)")
       .or(`event_date.eq.${todayStr},event_date.eq.${oneDayStr},event_date.eq.${twoDaysStr},event_date.eq.${threeDaysStr}`)
       .eq("profiles.fasting_notifications_enabled", true);
 
@@ -60,12 +60,29 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Found ${reminders.length} reminders for today`);
 
+    // Get phone numbers from auth metadata
+    const userIds = [...new Set(reminders.map(r => r.user_id))];
+    const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
+    
+    if (authError) {
+      console.error('Error fetching auth users:', authError);
+      throw authError;
+    }
+
+    // Create phone number map
+    const phoneMap = new Map();
+    users?.forEach(user => {
+      if (user.user_metadata?.phone_number && userIds.includes(user.id)) {
+        phoneMap.set(user.id, user.user_metadata.phone_number);
+      }
+    });
+
     // Send SMS to all users with reminders
     const notifications = [];
     for (const reminder of reminders) {
-      const phoneData = reminder.user_phone_numbers as any;
+      const phoneNumber = phoneMap.get(reminder.user_id);
       
-      if (!phoneData?.phone_number) {
+      if (!phoneNumber) {
         console.log(`User ${reminder.user_id} has no phone number, skipping`);
         continue;
       }
@@ -116,13 +133,13 @@ const handler = async (req: Request): Promise<Response> => {
           : `✨ ${reminder.event_name} is ${daysText} (${reminder.event_tradition}). Prepare for the feast!`;
       }
 
-      console.log(`Sending SMS to ${phoneData.phone_number} for event: ${reminder.event_name}`);
+      console.log(`Sending SMS to ${phoneNumber} for event: ${reminder.event_name}`);
 
       // Call the SMS function
       try {
         const smsResponse = await supabase.functions.invoke('send-sms-notification', {
           body: {
-            to: phoneData.phone_number,
+            to: phoneNumber,
             message: message,
           },
         });

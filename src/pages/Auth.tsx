@@ -127,16 +127,13 @@ const Auth = () => {
     // Store phone number and username
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      // Store phone number in secure table
-      const { error: phoneError } = await supabase
-        .from('user_phone_numbers')
-        .insert({
-          user_id: user.id,
-          phone_number: phoneNumber
-        });
+      // Update user metadata with phone number (securely stored in auth)
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { phone_number: phoneNumber }
+      });
 
-      if (phoneError) {
-        console.error('Error storing phone number:', phoneError);
+      if (updateError) {
+        console.error('Error storing phone number:', updateError);
         toast({
           variant: 'destructive',
           title: 'Warning',
