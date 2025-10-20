@@ -674,9 +674,6 @@ export default function Friends() {
           <Card>
             <CardHeader>
               <CardTitle>Add a Friend</CardTitle>
-              <CardDescription>
-                Connect with other users by their username or phone number
-              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex gap-2">
@@ -700,9 +697,6 @@ export default function Friends() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Your Friends</CardTitle>
-                  <CardDescription>
-                    Connect with friends to see their progress
-                  </CardDescription>
                 </div>
                 {receivedRequests.length > 0 && (
                   <DropdownMenu>
