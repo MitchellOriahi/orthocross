@@ -37,10 +37,12 @@ const Settings = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
+  const [activityVisible, setActivityVisible] = useState(true);
 
   useEffect(() => {
     if (profile) {
       setStreakVisible(profile.streak_visible ?? true);
+      setActivityVisible(profile.activity_visible ?? true);
       setFastingNotificationsEnabled(profile.fasting_notifications_enabled || false);
       setStreakNotificationsEnabled(profile.streak_notifications_enabled || false);
       setFriendsNotificationsEnabled(profile.friends_notifications_enabled ?? true);
@@ -258,6 +260,18 @@ const Settings = () => {
     toast.success(visible ? "Streak is now visible to friends" : "Streak is now hidden from friends");
   };
 
+  const handleToggleActivityVisibility = async (visible: boolean) => {
+    if (!user) return;
+    
+    setActivityVisible(visible);
+    await supabase
+      .from('profiles')
+      .update({ activity_visible: visible })
+      .eq('id', user.id);
+    
+    toast.success(visible ? "Activity is now visible to friends" : "Activity is now hidden from friends");
+  };
+
   const handleReferFriend = async (method: 'native' | 'email' | 'sms') => {
     const appUrl = window.location.origin;
     const message = `Check out OrthoCross - a daily spiritual practice app with Bible reading streaks, fasting reminders, and Orthodox learning! ${appUrl}`;
@@ -456,6 +470,19 @@ const Settings = () => {
                 <Switch
                   checked={streakVisible}
                   onCheckedChange={handleToggleStreakVisibility}
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1">
+                  <p className="font-medium">Share Activity with Friends</p>
+                  <p className="text-sm text-muted-foreground">
+                    Let your friends see your reading activities and achievements
+                  </p>
+                </div>
+                <Switch
+                  checked={activityVisible}
+                  onCheckedChange={handleToggleActivityVisibility}
                 />
               </div>
             </CardContent>

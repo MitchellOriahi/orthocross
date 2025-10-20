@@ -556,6 +556,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          activity_visible: boolean | null
           created_at: string
           display_name: string | null
           fasting_notifications_enabled: boolean | null
@@ -571,6 +572,7 @@ export type Database = {
           wednesday_notifications_enabled: boolean | null
         }
         Insert: {
+          activity_visible?: boolean | null
           created_at?: string
           display_name?: string | null
           fasting_notifications_enabled?: boolean | null
@@ -586,6 +588,7 @@ export type Database = {
           wednesday_notifications_enabled?: boolean | null
         }
         Update: {
+          activity_visible?: boolean | null
           created_at?: string
           display_name?: string | null
           fasting_notifications_enabled?: boolean | null

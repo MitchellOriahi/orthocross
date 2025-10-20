@@ -12,7 +12,7 @@ export const useProfileData = () => {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('profile_picture_url, username, streak_visible, fasting_notifications_enabled, streak_notifications_enabled, friends_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled, display_name')
+        .select('profile_picture_url, username, streak_visible, activity_visible, fasting_notifications_enabled, streak_notifications_enabled, friends_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled, display_name')
         .eq('id', user.id)
         .maybeSingle();
 
