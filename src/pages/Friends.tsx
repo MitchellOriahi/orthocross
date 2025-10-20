@@ -154,15 +154,14 @@ export default function Friends() {
       .order('created_at', { ascending: false });
 
     if (requestsData && requestsData.length > 0) {
-      const receiverIds = requestsData.map(r => r.receiver_id);
+      const requestIds = requestsData.map(r => r.id);
 
+      // Use the secure function to get profile info bypassing RLS
       const { data: profilesData } = await supabase
-        .from('profiles')
-        .select('id, username, profile_picture_url')
-        .in('id', receiverIds);
+        .rpc('get_friend_request_profiles', { request_ids: requestIds });
 
       const requestsWithProfiles = requestsData.map(request => {
-        const profile = profilesData?.find(p => p.id === request.receiver_id);
+        const profile = profilesData?.find(p => p.request_id === request.id);
         return {
           id: request.id,
           receiver_id: request.receiver_id,

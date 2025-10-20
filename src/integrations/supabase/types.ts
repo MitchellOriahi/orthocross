@@ -889,6 +889,15 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      get_friend_request_profiles: {
+        Args: { request_ids: string[] }
+        Returns: {
+          profile_picture_url: string
+          receiver_id: string
+          request_id: string
+          username: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
