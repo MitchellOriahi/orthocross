@@ -6,7 +6,6 @@ import { FastingCalendar } from "@/components/FastingCalendar";
 import { FastingCalendarView } from "@/components/FastingCalendarView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Journal } from "@/components/Journal";
-import { VerseOfTheDay } from "@/components/VerseOfTheDay";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
 import { StreakMilestoneShare } from "@/components/StreakMilestoneShare";
@@ -23,6 +22,7 @@ import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { useTheme } from "next-themes";
 import { populateInitialVerses } from "@/scripts/populateInitialVerses";
 import { checkStreakOnAppOpen, GuardianAngelResult } from "@/utils/streakManager";
+import { getVerseOfTheDay } from "@/lib/verseOfTheDay";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -47,6 +47,7 @@ const Dashboard = () => {
     totalChapters?: number;
     bookProgress?: number;
   } | null>(null);
+  const [verseOfTheDay, setVerseOfTheDay] = useState<{ reference: string; text: string } | null>(null);
 
   useEffect(() => {
     // Populate initial verses on first load
@@ -71,6 +72,7 @@ const Dashboard = () => {
       checkAndPopulate();
       fetchStreak();
       fetchLastReading();
+      setVerseOfTheDay(getVerseOfTheDay());
     }
   }, [user]);
 
@@ -318,6 +320,16 @@ const Dashboard = () => {
           <StreakFlame days={streakDays} size="lg" />
         </section>
 
+        {/* Verse of the Day - Inline */}
+        {verseOfTheDay && (
+          <div className="text-center px-4 py-2">
+            <p className="text-sm italic text-muted-foreground">
+              &ldquo;{verseOfTheDay.text}&rdquo;
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">— {verseOfTheDay.reference}</p>
+          </div>
+        )}
+
         {/* Continue Reading */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold">Continue Reading</h2>
@@ -415,10 +427,7 @@ const Dashboard = () => {
         </section>
 
         {/* Additional Sections */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Verse of the Day */}
-          <VerseOfTheDay />
-
+        <div className="space-y-6">
           {/* Fasting Calendar */}
           <FastingCalendar />
         </div>
