@@ -203,7 +203,10 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen gradient-peaceful flex items-center justify-center px-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md relative">
+        <div className="absolute top-4 right-4 text-xs text-muted-foreground">
+          @orthocross on Instagram
+        </div>
         <CardHeader className="text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-background rounded-2xl shadow-sacred mb-4 p-2 mx-auto">
             <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
