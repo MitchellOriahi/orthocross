@@ -42,9 +42,9 @@ export const MonthlyPodiumModal = ({
   const third = topThree.find(w => w.rank === 3);
 
   const getMedalColor = (rank: number) => {
-    if (rank === 1) return "text-yellow-500";
-    if (rank === 2) return "text-gray-400";
-    return "text-orange-600";
+    if (rank === 1) return "text-amber-400";
+    if (rank === 2) return "text-slate-300";
+    return "text-amber-700";
   };
 
   const PodiumWinner = ({ winner, rank, height }: { winner?: PodiumEntry; rank: number; height: string }) => {
