@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Shield, Settings as SettingsIcon, Sparkles, CircleDot, Heart, Footprints, Swords } from "lucide-react";
+import { ArrowLeft, Shield, Settings as SettingsIcon, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -105,26 +105,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
 
   const progress = ((currentQuestion + 1) / island.quiz.length) * 100;
 
-  const getArmorIcon = (awardPiece: string) => {
-    const iconProps = { className: "w-32 h-32 mx-auto mb-4 text-primary" };
-    
-    switch(awardPiece.toLowerCase().replace(/_/g, ' ')) {
-      case 'belt of truth':
-        return <CircleDot {...iconProps} />;
-      case 'breastplate of righteousness':
-        return <Heart {...iconProps} />;
-      case 'shoes of peace':
-      case 'feet of peace':
-        return <Footprints {...iconProps} />;
-      case 'shield of faith':
-        return <Shield {...iconProps} />;
-      case 'sword of spirit':
-      case 'sword of the spirit':
-        return <Swords {...iconProps} />;
-      default:
-        return <Shield {...iconProps} />;
-    }
-  };
+  const isBeltOfTruth = island.awardPiece.toLowerCase().replace(/_/g, ' ') === 'belt of truth';
 
   return (
     <div className="min-h-screen gradient-peaceful pb-20">
@@ -249,10 +230,19 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             </div>
 
 
-            <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
+            <div className="bg-black border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
               <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
               <div className="relative">
-                {getArmorIcon(island.awardPiece)}
+                <div className="relative inline-block">
+                  <Shield className="w-32 h-32 mx-auto mb-4 text-primary relative z-10" />
+                  {isBeltOfTruth && (
+                    <>
+                      {/* Belt straps */}
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-6 bg-primary/30 rounded-full" />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-4 bg-primary/40 rounded-full" />
+                    </>
+                  )}
+                </div>
                 <div className="absolute inset-0 pointer-events-none">
                   {[...Array(12)].map((_, i) => (
                     <Sparkles 
@@ -267,7 +257,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
                     />
                   ))}
                 </div>
-              <p className="text-2xl font-bold capitalize relative z-10">
+              <p className="text-2xl font-bold capitalize relative z-10 text-white">
                 {island.awardPiece.replace(/_/g, ' ')}
                 </p>
               </div>
