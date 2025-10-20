@@ -8,6 +8,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useMusic } from "@/contexts/MusicContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChapterSelector } from "@/components/ChapterSelector";
 import { bibleContent, BIBLE_BOOKS } from "@/data/bibleContent";
@@ -41,6 +42,7 @@ const Reading = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { theme } = useTheme();
+  const { playSound } = useMusic();
   const contentRef = useRef<HTMLDivElement>(null);
   
   const state = location.state || {};
@@ -420,6 +422,9 @@ const Reading = () => {
         duration: 3000,
       });
 
+      // Play chapter completion sound
+      playSound('chapter');
+
       // Check if book is now complete
       const { data: completedInBook } = await supabase
         .from('completed_chapters')
@@ -429,7 +434,9 @@ const Reading = () => {
 
       const bookInfo = BIBLE_BOOKS.find((b) => b.title === book);
       if (bookInfo && completedInBook && completedInBook.length === bookInfo.totalChapters) {
-        // Book just completed! Create friend activity
+        // Book just completed! Create friend activity and play sound
+        playSound('book');
+        
         await supabase
           .from('friend_activities')
           .insert({

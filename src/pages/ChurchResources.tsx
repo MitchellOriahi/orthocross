@@ -25,6 +25,7 @@ import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
+import { useMusic } from "@/contexts/MusicContext";
 
 type SectionType = "eastern" | "oriental" | "prayers" | "saints" | null;
 type PrayerFilterType = "all" | "Eastern" | "Oriental";
@@ -34,6 +35,7 @@ const ChurchResources = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { theme } = useTheme();
+  const { playSound } = useMusic();
   const [selectedSection, setSelectedSection] = useState<SectionType>(null);
   const [selectedSaint, setSelectedSaint] = useState<SaintDetail | null>(null);
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
@@ -130,6 +132,7 @@ const ChurchResources = () => {
           }}
           showProgress={true}
           onComplete={() => {
+            playSound('saint');
             setShowCongratulations(true);
           }}
         />

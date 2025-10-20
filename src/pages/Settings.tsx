@@ -23,7 +23,7 @@ import StreakReminderDialog from "@/components/StreakReminderDialog";
 const Settings = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { isPlaying, toggleMusic, volume, setVolume } = useMusic();
+  const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
   const { updateStreakReminders, getStreakReminders, scheduleStreakReminders } = useNotifications();
   const { user, signOut } = useAuth();
   const [reminders, setReminders] = useState<ReminderTime[]>([]);
@@ -366,7 +366,7 @@ const Settings = () => {
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium flex items-center gap-2">
                       <Volume2 className="w-4 h-4" />
-                      Volume
+                      Music Volume
                     </label>
                     <span className="text-sm text-muted-foreground">
                       {Math.round(volume * 100)}%
@@ -382,6 +382,35 @@ const Settings = () => {
                   />
                 </div>
               )}
+
+              {/* SFX Volume Control */}
+              <div className="space-y-4 pt-4 border-t border-border/50">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Volume2 className="w-4 h-4" />
+                    SFX Volume
+                  </label>
+                  <span className="text-sm text-muted-foreground">
+                    {Math.round(sfxVolume * 100)}%
+                  </span>
+                </div>
+                <Slider
+                  value={[sfxVolume]}
+                  onValueChange={(values) => setSfxVolume(values[0])}
+                  min={0}
+                  max={1}
+                  step={0.1}
+                  className="w-full"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => playSound('chapter')}
+                  className="w-full"
+                >
+                  Test Sound
+                </Button>
+              </div>
             </CardContent>
           </Card>
 

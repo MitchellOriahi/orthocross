@@ -4,6 +4,7 @@ import { DoveMascot } from "../DoveMascot";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Share2 } from "lucide-react";
 import { CampaignAchievementShare } from "./CampaignAchievementShare";
+import { useMusic } from "@/contexts/MusicContext";
 
 interface CampaignCompletionModalProps {
   isOpen: boolean;
@@ -18,14 +19,16 @@ export const CampaignCompletionModal = ({
 }: CampaignCompletionModalProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const { playSound } = useMusic();
 
   useEffect(() => {
     if (isOpen) {
       setShowConfetti(true);
+      playSound('island'); // Play sound when campaign is completed
       const timer = setTimeout(() => setShowConfetti(false), 3000);
       return () => clearTimeout(timer);
     }
-  }, [isOpen]);
+  }, [isOpen, playSound]);
 
   const title = campaignType === "eastern" 
     ? "Full Eastern Armor of God Assembled!" 

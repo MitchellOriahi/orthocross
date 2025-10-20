@@ -41,9 +41,9 @@ export const CongratulationsModal = ({
   }, [isOpen]);
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent 
-        className="max-w-md [&>button]:hidden"
+        className="max-w-md"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >

@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useMusic } from "@/contexts/MusicContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
@@ -46,6 +47,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const [shuffledOptions, setShuffledOptions] = useState<{text: string, originalIndex: number}[][]>([]);
 
   const { toast } = useToast();
+  const { playSound } = useMusic();
 
   const handleStartQuiz = () => {
     const shuffled = island.quiz.map(q => {
@@ -83,6 +85,9 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         // Calculate score
         const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
         const score = (correctCount / island.quiz.length) * 100;
+        
+        // Play island completion sound
+        playSound('island');
         
         setShowCompletionModal(true);
         onComplete(campaignId, island.id, score);

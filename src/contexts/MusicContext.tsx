@@ -6,6 +6,9 @@ interface MusicContextType {
   toggleMusic: () => void;
   volume: number;
   setVolume: (volume: number) => void;
+  sfxVolume: number;
+  setSfxVolume: (volume: number) => void;
+  playSound: (soundType: 'chapter' | 'book' | 'island' | 'saint') => void;
 }
 
 const MusicContext = createContext<MusicContextType | undefined>(undefined);
@@ -19,6 +22,11 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   const [volume, setVolumeState] = useState(() => {
     const saved = localStorage.getItem('musicVolume');
     return saved ? parseFloat(saved) : 0.2;
+  });
+
+  const [sfxVolume, setSfxVolumeState] = useState(() => {
+    const saved = localStorage.getItem('sfxVolume');
+    return saved ? parseFloat(saved) : 0.5;
   });
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -78,8 +86,26 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
     setVolumeState(newVolume);
   };
 
+  const setSfxVolume = (newVolume: number) => {
+    setSfxVolumeState(newVolume);
+    localStorage.setItem('sfxVolume', newVolume.toString());
+  };
+
+  const playSound = (soundType: 'chapter' | 'book' | 'island' | 'saint') => {
+    const soundMap = {
+      chapter: '/sounds/chapter-complete.mp3',
+      book: '/sounds/book-complete.mp3',
+      island: '/sounds/island-complete.mp3',
+      saint: '/sounds/saint-complete.mp3',
+    };
+
+    const audio = new Audio(soundMap[soundType]);
+    audio.volume = sfxVolume;
+    audio.play().catch(e => console.log('Sound play failed:', e));
+  };
+
   return (
-    <MusicContext.Provider value={{ isPlaying, toggleMusic, volume, setVolume }}>
+    <MusicContext.Provider value={{ isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound }}>
       {children}
     </MusicContext.Provider>
   );
