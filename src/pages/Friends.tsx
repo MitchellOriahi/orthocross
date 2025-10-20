@@ -22,6 +22,7 @@ import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useTheme } from "next-themes";
 import { formatDistanceToNow } from "date-fns";
 import { useFriendsData } from "@/hooks/useFriendsData";
+import { useProfileData } from "@/hooks/useProfileData";
 import type { Friend } from "@/hooks/useFriendsData";
 
 interface PodiumEntry {
@@ -56,8 +57,7 @@ export default function Friends() {
   
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
-  const [username, setUsername] = useState<string>("");
+  const { profile } = useProfileData();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -118,22 +118,6 @@ export default function Friends() {
   }, [hookUnreadCount]);
 
   useEffect(() => {
-    const loadProfile = async () => {
-      if (!user) return;
-
-      const { data } = await supabase
-        .from('profiles')
-        .select('profile_picture_url, username')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (data) {
-        setProfilePicture(data.profile_picture_url);
-        setUsername(data.username || "");
-      }
-    };
-
-    loadProfile();
     loadLeaderboard();
     checkMonthlyPodium();
 
@@ -554,8 +538,8 @@ export default function Friends() {
   };
 
   const getUserInitials = () => {
-    if (username) {
-      return username.substring(0, 2).toUpperCase();
+    if (profile?.username) {
+      return profile.username.substring(0, 2).toUpperCase();
     }
     return user?.email?.substring(0, 2).toUpperCase() || "U";
   };
@@ -581,7 +565,7 @@ export default function Friends() {
                 <DialogTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
                     <Avatar className="h-12 w-12 cursor-pointer">
-                      <AvatarImage src={profilePicture || undefined} />
+                      <AvatarImage src={profile?.profile_picture_url || undefined} />
                       <AvatarFallback>{getUserInitials()}</AvatarFallback>
                     </Avatar>
                   </Button>

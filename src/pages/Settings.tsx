@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "next-themes";
 import ProfilePictureUpload from "@/components/ProfilePictureUpload";
+import { useProfileData } from "@/hooks/useProfileData";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import FastingPreferencesDialog from "@/components/FastingPreferencesDialog";
@@ -33,32 +34,21 @@ const Settings = () => {
   const [showStreakReminderDialog, setShowStreakReminderDialog] = useState(false);
   const [fastingReminderDays, setFastingReminderDays] = useState<number[]>([3, 0]);
   const [wednesdayNotificationsEnabled, setWednesdayNotificationsEnabled] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
-  const [username, setUsername] = useState<string>("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
 
   useEffect(() => {
-    const loadProfile = async () => {
-      if (!user) return;
-
-      const { data } = await supabase
-        .from('profiles')
-        .select('profile_picture_url, username, streak_visible')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (data) {
-        setProfilePicture(data.profile_picture_url);
-        setUsername(data.username || "");
-        setStreakVisible(data.streak_visible ?? true);
-      }
-    };
-
-    loadProfile();
-    loadNotificationPreferences();
+    if (profile) {
+      setStreakVisible(profile.streak_visible ?? true);
+      setFastingNotificationsEnabled(profile.fasting_notifications_enabled || false);
+      setStreakNotificationsEnabled(profile.streak_notifications_enabled || false);
+      setFriendsNotificationsEnabled(profile.friends_notifications_enabled ?? true);
+      setFastingReminderDays(profile.fasting_reminder_days || [3, 0]);
+      setWednesdayNotificationsEnabled(profile.wednesday_notifications_enabled || false);
+    }
     loadStreakReminders();
-  }, [user]);
+  }, [user, profile]);
 
   const loadStreakReminders = async () => {
     if (!user) return;
@@ -80,23 +70,6 @@ const Settings = () => {
     }
   };
 
-  const loadNotificationPreferences = async () => {
-    if (!user) return;
-    
-    const { data } = await supabase
-      .from('profiles')
-      .select('fasting_notifications_enabled, streak_notifications_enabled, friends_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled')
-      .eq('id', user.id)
-      .single();
-    
-    if (data) {
-      setFastingNotificationsEnabled(data.fasting_notifications_enabled || false);
-      setStreakNotificationsEnabled(data.streak_notifications_enabled || false);
-      setFriendsNotificationsEnabled(data.friends_notifications_enabled ?? true);
-      setFastingReminderDays(data.fasting_reminder_days || [3, 0]);
-      setWednesdayNotificationsEnabled(data.wednesday_notifications_enabled || false);
-    }
-  };
 
   const handleToggleReminder = async (id: number) => {
     if (!user) return;
@@ -311,8 +284,8 @@ const Settings = () => {
   };
 
   const getUserInitials = () => {
-    if (username) {
-      return username.substring(0, 2).toUpperCase();
+    if (profile?.username) {
+      return profile.username.substring(0, 2).toUpperCase();
     }
     return user?.email?.substring(0, 2).toUpperCase() || "U";
   };

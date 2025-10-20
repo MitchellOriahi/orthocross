@@ -5,37 +5,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfileData } from "@/hooks/useProfileData";
 import { ImageCropper } from "./ImageCropper";
 
 export default function ProfilePictureUpload() {
   const { user } = useAuth();
+  const { profile, refetch } = useProfileData();
   const [uploading, setUploading] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
-  const [username, setUsername] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const loadProfile = async () => {
-    if (!user) return;
-
-    const { data } = await supabase
-      .from('profiles')
-      .select('profile_picture_url, username')
-      .eq('id', user.id)
-      .single();
-
-    if (data) {
-      setProfilePicture(data.profile_picture_url);
-      setUsername(data.username || "");
-    }
-  };
-
-  // Load profile data
-  useEffect(() => {
-    if (user) {
-      loadProfile();
-    }
-  }, [user]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -96,7 +74,7 @@ export default function ProfilePictureUpload() {
 
       if (updateError) throw updateError;
 
-      setProfilePicture(publicUrl);
+      await refetch();
       setSelectedImage(null);
       setSelectedFile(null);
       toast.success('Profile picture updated!');
@@ -143,7 +121,7 @@ export default function ProfilePictureUpload() {
 
       if (updateError) throw updateError;
 
-      setProfilePicture(publicUrl);
+      await refetch();
       setSelectedImage(null);
       setSelectedFile(null);
       toast.success('Profile picture updated!');
@@ -156,8 +134,8 @@ export default function ProfilePictureUpload() {
   };
 
   const getUserInitials = () => {
-    if (username) {
-      return username.substring(0, 2).toUpperCase();
+    if (profile?.username) {
+      return profile.username.substring(0, 2).toUpperCase();
     }
     return user?.email?.substring(0, 2).toUpperCase() || "U";
   };
@@ -177,7 +155,7 @@ export default function ProfilePictureUpload() {
     <div className="space-y-4">
       <div className="flex items-center gap-4">
         <Avatar className="w-20 h-20">
-          <AvatarImage src={profilePicture || undefined} />
+          <AvatarImage src={profile?.profile_picture_url || undefined} />
           <AvatarFallback className="text-lg">{getUserInitials()}</AvatarFallback>
         </Avatar>
         <div className="flex-1">
@@ -204,7 +182,7 @@ export default function ProfilePictureUpload() {
                 ) : (
                   <>
                     <Camera className="w-4 h-4 mr-2" />
-                    {profilePicture ? 'Change Picture' : 'Upload Picture'}
+                    {profile?.profile_picture_url ? 'Change Picture' : 'Upload Picture'}
                   </>
                 )}
               </span>
@@ -215,10 +193,10 @@ export default function ProfilePictureUpload() {
           </p>
         </div>
       </div>
-      {username && (
+      {profile?.username && (
         <div className="pt-2 border-t border-border/50">
           <p className="text-sm text-muted-foreground">
-            Username: <span className="font-medium text-foreground">@{username}</span>
+            Username: <span className="font-medium text-foreground">@{profile.username}</span>
           </p>
         </div>
       )}

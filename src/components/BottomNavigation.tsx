@@ -11,6 +11,24 @@ export const BottomNavigation = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  const prefetchProfileData = async () => {
+    if (!user) return;
+
+    queryClient.prefetchQuery({
+      queryKey: ['profile', user.id],
+      queryFn: async () => {
+        const { data } = await supabase
+          .from('profiles')
+          .select('profile_picture_url, username, streak_visible, fasting_notifications_enabled, streak_notifications_enabled, friends_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled, display_name')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        return data;
+      },
+      staleTime: 30000,
+    });
+  };
+
   const prefetchFriendsData = async () => {
     if (!user) return;
     
@@ -219,8 +237,24 @@ export const BottomNavigation = () => {
                 key={item.path}
                 variant="ghost"
                 onClick={() => navigate(item.path)}
-                onMouseEnter={() => item.path === "/friends" && prefetchFriendsData()}
-                onFocus={() => item.path === "/friends" && prefetchFriendsData()}
+                onMouseEnter={() => {
+                  if (item.path === "/friends") {
+                    prefetchFriendsData();
+                    prefetchProfileData();
+                  }
+                  if (item.path === "/settings") {
+                    prefetchProfileData();
+                  }
+                }}
+                onFocus={() => {
+                  if (item.path === "/friends") {
+                    prefetchFriendsData();
+                    prefetchProfileData();
+                  }
+                  if (item.path === "/settings") {
+                    prefetchProfileData();
+                  }
+                }}
                 className={`flex flex-col items-center gap-1 h-auto py-2 px-3 ${
                   isActive ? "text-primary" : "text-muted-foreground"
                 }`}
