@@ -91,6 +91,7 @@ export default function Friends() {
   const [podiumData, setPodiumData] = useState<PodiumEntry[]>([]);
   const [lastMonthName, setLastMonthName] = useState("");
   const [activityTabOpen, setActivityTabOpen] = useState(true);
+  const [pendingRequestsOpen, setPendingRequestsOpen] = useState(true);
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
@@ -866,35 +867,44 @@ export default function Friends() {
             <CardContent className="space-y-6">
               {sentRequests.length > 0 && (
                 <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Pending Requests ({sentRequests.length})</h3>
-                  <div className="space-y-2">
-                    {sentRequests.map((request) => (
-                      <div key={request.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-10 w-10">
-                            {request.profile_picture_url ? (
-                              <AvatarImage src={request.profile_picture_url} />
-                            ) : (
-                              <AvatarFallback className="bg-muted">
-                                <Users className="h-5 w-5 text-muted-foreground" />
-                              </AvatarFallback>
-                            )}
-                          </Avatar>
-                          <div>
-                            <p className="font-medium">{request.username}</p>
-                            <p className="text-xs text-muted-foreground">Request sent</p>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-between p-0 h-auto hover:bg-transparent"
+                    onClick={() => setPendingRequestsOpen(!pendingRequestsOpen)}
+                  >
+                    <h3 className="text-sm font-semibold text-muted-foreground">Pending Requests ({sentRequests.length})</h3>
+                    {pendingRequestsOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  </Button>
+                  {pendingRequestsOpen && (
+                    <div className="space-y-2">
+                      {sentRequests.map((request) => (
+                        <div key={request.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10">
+                              {request.profile_picture_url ? (
+                                <AvatarImage src={request.profile_picture_url} />
+                              ) : (
+                                <AvatarFallback className="bg-muted">
+                                  <Users className="h-5 w-5 text-muted-foreground" />
+                                </AvatarFallback>
+                              )}
+                            </Avatar>
+                            <div>
+                              <p className="font-medium">{request.username}</p>
+                              <p className="text-xs text-muted-foreground">Request sent</p>
+                            </div>
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCancelRequest(request.id)}
+                          >
+                            Cancel
+                          </Button>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleCancelRequest(request.id)}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
