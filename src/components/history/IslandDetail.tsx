@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Shield, Settings as SettingsIcon, Sparkles } from "lucide-react";
+import { ArrowLeft, Shield, Settings as SettingsIcon, Sparkles, CircleDot, Heart, Footprints, Swords } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -105,6 +105,27 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
 
   const progress = ((currentQuestion + 1) / island.quiz.length) * 100;
 
+  const getArmorIcon = (awardPiece: string) => {
+    const iconProps = { className: "w-32 h-32 mx-auto mb-4 text-primary" };
+    
+    switch(awardPiece.toLowerCase().replace(/_/g, ' ')) {
+      case 'belt of truth':
+        return <CircleDot {...iconProps} />;
+      case 'breastplate of righteousness':
+        return <Heart {...iconProps} />;
+      case 'shoes of peace':
+      case 'feet of peace':
+        return <Footprints {...iconProps} />;
+      case 'shield of faith':
+        return <Shield {...iconProps} />;
+      case 'sword of spirit':
+      case 'sword of the spirit':
+        return <Swords {...iconProps} />;
+      default:
+        return <Shield {...iconProps} />;
+    }
+  };
+
   return (
     <div className="min-h-screen gradient-peaceful pb-20">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
@@ -202,7 +223,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
-          <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
+          <Card className="p-8 text-center bg-gradient-to-br from-primary/40 to-primary/20 border-0 shadow-none">
             <div className="mb-6">
               <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-white dark:bg-card border-2 border-primary flex items-center justify-center p-4">
                 <svg 
@@ -231,7 +252,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
               <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
               <div className="relative">
-                <Shield className="w-32 h-32 mx-auto mb-4 text-primary" />
+                {getArmorIcon(island.awardPiece)}
                 <div className="absolute inset-0 pointer-events-none">
                   {[...Array(12)].map((_, i) => (
                     <Sparkles 
