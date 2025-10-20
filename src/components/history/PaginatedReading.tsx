@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Highlighter } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChevronLeft, ChevronRight, Highlighter, BookOpen, Scroll } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
@@ -28,8 +29,17 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
   const [highlights, setHighlights] = useState<Record<number, string>>({});
   const [showHighlighter, setShowHighlighter] = useState(false);
   const [selectedColor, setSelectedColor] = useState(HIGHLIGHT_COLORS[0]);
+  const [viewMode, setViewMode] = useState<'paginated' | 'scroll'>(() => {
+    const saved = localStorage.getItem('history-view-mode');
+    return (saved as 'paginated' | 'scroll') || 'paginated';
+  });
   const contentRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+
+  // Save view mode preference
+  useEffect(() => {
+    localStorage.setItem('history-view-mode', viewMode);
+  }, [viewMode]);
 
   // Split content into sentences first - sentences are never split across pages
   const allSentences = content.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
@@ -159,43 +169,66 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
   return (
     <Card className="p-8">
       <div className="flex justify-between items-center mb-4">
-        <div className="relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => setShowHighlighter(!showHighlighter)}
-          >
-            <Highlighter className="h-4 w-4" />
-          </Button>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setShowHighlighter(!showHighlighter)}
+            >
+              <Highlighter className="h-4 w-4" />
+            </Button>
+            
+            {showHighlighter && (
+              <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-lg shadow-lg z-10 flex gap-1">
+                {HIGHLIGHT_COLORS.map((color) => (
+                  <button
+                    key={color.name}
+                    onClick={() => {
+                      setSelectedColor(color);
+                      setShowHighlighter(false);
+                    }}
+                    className={cn(
+                      "w-6 h-6 rounded border border-border",
+                      color.class,
+                      selectedColor.value === color.value && "ring-2 ring-primary"
+                    )}
+                    title={color.name}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
           
-          {showHighlighter && (
-            <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-lg shadow-lg z-10 flex gap-1">
-              {HIGHLIGHT_COLORS.map((color) => (
-                <button
-                  key={color.name}
-                  onClick={() => {
-                    setSelectedColor(color);
-                    setShowHighlighter(false);
-                  }}
-                  className={cn(
-                    "w-6 h-6 rounded border border-border",
-                    color.class,
-                    selectedColor.value === color.value && "ring-2 ring-primary"
-                  )}
-                  title={color.name}
-                />
-              ))}
-            </div>
-          )}
+          <div className="flex items-center gap-1 bg-muted rounded-md p-1">
+            <Button
+              variant={viewMode === 'paginated' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('paginated')}
+              className="h-7 px-2"
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant={viewMode === 'scroll' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('scroll')}
+              className="h-7 px-2"
+            >
+              <Scroll className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
         
-        <div className="text-xs sm:text-sm font-medium text-muted-foreground bg-primary/10 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
-          <span className="hidden sm:inline">Page </span>{currentPage + 1}<span className="hidden sm:inline"> of</span><span className="sm:hidden">/</span> {totalPages}
-        </div>
+        {viewMode === 'paginated' && (
+          <div className="text-xs sm:text-sm font-medium text-muted-foreground bg-primary/10 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
+            <span className="hidden sm:inline">Page </span>{currentPage + 1}<span className="hidden sm:inline"> of</span><span className="sm:hidden">/</span> {totalPages}
+          </div>
+        )}
       </div>
       
-      {currentPage === 0 && iconUrl && (
+      {iconUrl && (
         <div className="flex justify-center mb-6">
           <div className="w-48 h-48 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
             <img src={iconUrl} alt="Historical Icon" className="w-full h-full object-cover" />
@@ -203,54 +236,89 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
         </div>
       )}
       
-      <div 
-        ref={contentRef}
-        className="prose dark:prose-invert max-w-none mb-8 min-h-[400px] flex items-start"
-      >
-        <div className="text-base sm:text-lg leading-relaxed space-y-3">
-          {pageSentences[currentPage].map((sentence, idx) => {
-            const globalIndex = getSentenceIndex(currentPage, idx);
-            const highlight = highlights[globalIndex];
-            
-            return (
-              <span
-                key={idx}
-                onClick={() => handleSentenceClick(globalIndex)}
-                className={cn(
-                  "cursor-pointer transition-all inline",
-                  highlight && getHighlightClass(highlight)
-                )}
-              >
-                {sentence}{' '}
-              </span>
-            );
-          })}
-        </div>
-      </div>
+      {viewMode === 'paginated' ? (
+        <>
+          <div 
+            ref={contentRef}
+            className="prose dark:prose-invert max-w-none mb-8 min-h-[400px] flex items-start"
+          >
+            <div className="text-base sm:text-lg leading-relaxed space-y-3">
+              {pageSentences[currentPage].map((sentence, idx) => {
+                const globalIndex = getSentenceIndex(currentPage, idx);
+                const highlight = highlights[globalIndex];
+                
+                return (
+                  <span
+                    key={idx}
+                    onClick={() => handleSentenceClick(globalIndex)}
+                    className={cn(
+                      "cursor-pointer transition-all inline",
+                      highlight && getHighlightClass(highlight)
+                    )}
+                  >
+                    {sentence}{' '}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
 
-      <div className="flex items-center justify-between gap-4">
-        <Button
-          onClick={handlePrev}
-          disabled={currentPage === 0}
-          variant="outline"
-          size="lg"
-          className="min-w-0"
-        >
-          <ChevronLeft className="w-5 h-5 sm:mr-2 flex-shrink-0" />
-          <span className="hidden sm:inline">Previous</span>
-        </Button>
+          <div className="flex items-center justify-between gap-4">
+            <Button
+              onClick={handlePrev}
+              disabled={currentPage === 0}
+              variant="outline"
+              size="lg"
+              className="min-w-0"
+            >
+              <ChevronLeft className="w-5 h-5 sm:mr-2 flex-shrink-0" />
+              <span className="hidden sm:inline">Previous</span>
+            </Button>
 
-        {currentPage === totalPages - 1 ? (
-          <Button onClick={onComplete} size="lg" className="flex-1 min-w-0">
-            <span className="truncate">Start Quiz</span>
-          </Button>
-        ) : (
-          <Button onClick={handleNext} size="lg" className="flex-1 min-w-0">
-            <span className="hidden sm:inline">Next</span>
-            <ChevronRight className="w-5 h-5 sm:ml-2 flex-shrink-0" />
-          </Button>
-        )}
-      </div>
+            {currentPage === totalPages - 1 ? (
+              <Button onClick={onComplete} size="lg" className="flex-1 min-w-0">
+                <span className="truncate">Start Quiz</span>
+              </Button>
+            ) : (
+              <Button onClick={handleNext} size="lg" className="flex-1 min-w-0">
+                <span className="hidden sm:inline">Next</span>
+                <ChevronRight className="w-5 h-5 sm:ml-2 flex-shrink-0" />
+              </Button>
+            )}
+          </div>
+        </>
+      ) : (
+        <>
+          <ScrollArea className="h-[600px] pr-4">
+            <div className="prose dark:prose-invert max-w-none">
+              <div className="text-base sm:text-lg leading-relaxed space-y-3">
+                {allSentences.map((sentence, idx) => {
+                  const highlight = highlights[idx];
+                  
+                  return (
+                    <span
+                      key={idx}
+                      onClick={() => handleSentenceClick(idx)}
+                      className={cn(
+                        "cursor-pointer transition-all inline",
+                        highlight && getHighlightClass(highlight)
+                      )}
+                    >
+                      {sentence}{' '}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          </ScrollArea>
+
+          <div className="mt-6">
+            <Button onClick={onComplete} size="lg" className="w-full">
+              <span className="truncate">Start Quiz</span>
+            </Button>
+          </div>
+        </>
+      )}
     </Card>
   );
 };
