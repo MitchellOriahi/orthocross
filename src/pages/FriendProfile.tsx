@@ -206,7 +206,7 @@ export default function FriendProfile() {
       });
 
       setBookProgress(progress);
-      setTotalBibleProgress(Math.round((totalCompleted / totalChapters) * 100));
+      setTotalBibleProgress(Number(((totalCompleted / totalChapters) * 100).toFixed(1)));
     }
   };
 
