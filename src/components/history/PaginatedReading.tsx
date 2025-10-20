@@ -41,8 +41,16 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
     localStorage.setItem('history-view-mode', viewMode);
   }, [viewMode]);
 
-  // Split content into sentences first - sentences are never split across pages
-  const allSentences = content.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+  // Split content into paragraphs first
+  const paragraphs = content.split(/\n\n+/).filter(p => p.trim().length > 0);
+  
+  // Split each paragraph into sentences
+  const paragraphsWithSentences = paragraphs.map(para => 
+    para.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0)
+  );
+  
+  // Flatten for pagination
+  const allSentences = paragraphsWithSentences.flat();
   
   // Group sentences into pages - each page ends with a complete sentence
   const pages: string[][] = [];
@@ -291,21 +299,34 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
         <>
           <ScrollArea className="h-[600px] pr-4">
             <div className="prose dark:prose-invert max-w-none">
-              <div className="text-base sm:text-lg leading-relaxed space-y-3">
-                {allSentences.map((sentence, idx) => {
-                  const highlight = highlights[idx];
+              <div className="text-base sm:text-lg leading-relaxed space-y-6">
+                {paragraphsWithSentences.map((sentences, paraIdx) => {
+                  // Calculate the starting sentence index for this paragraph
+                  let sentenceOffset = 0;
+                  for (let i = 0; i < paraIdx; i++) {
+                    sentenceOffset += paragraphsWithSentences[i].length;
+                  }
                   
                   return (
-                    <span
-                      key={idx}
-                      onClick={() => handleSentenceClick(idx)}
-                      className={cn(
-                        "cursor-pointer transition-all inline",
-                        highlight && getHighlightClass(highlight)
-                      )}
-                    >
-                      {sentence}{' '}
-                    </span>
+                    <p key={paraIdx} className="mb-4">
+                      {sentences.map((sentence, sentIdx) => {
+                        const globalIdx = sentenceOffset + sentIdx;
+                        const highlight = highlights[globalIdx];
+                        
+                        return (
+                          <span
+                            key={sentIdx}
+                            onClick={() => handleSentenceClick(globalIdx)}
+                            className={cn(
+                              "cursor-pointer transition-all inline",
+                              highlight && getHighlightClass(highlight)
+                            )}
+                          >
+                            {sentence}{' '}
+                          </span>
+                        );
+                      })}
+                    </p>
                   );
                 })}
               </div>
