@@ -70,31 +70,27 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
     const isCorrect = originalIndex === island.quiz[currentQuestion].correctAnswer;
     
     if (isCorrect) {
-      toast({
-        title: "Correct! ✓",
-        description: "Great job!",
-      });
-
       const newAnswers = [...answers, originalIndex];
       setAnswers(newAnswers);
 
       if (currentQuestion < island.quiz.length - 1) {
+        // Not the last question - show toast and continue
+        toast({
+          title: "Correct! ✓",
+          description: "Great job!",
+        });
         setCurrentQuestion(currentQuestion + 1);
         setSelectedAnswer('');
       } else {
-        // Last question - show correct message briefly before completion
-        // Calculate score
+        // Last question - skip toast and go straight to completion
         const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
         const score = (correctCount / island.quiz.length) * 100;
         
-        // Brief delay to let user see the "Correct!" message
-        setTimeout(() => {
-          // Play island completion sound
-          playSound('island');
-          
-          setShowCompletionModal(true);
-          onComplete(campaignId, island.id, score);
-        }, 800); // 0.8 second delay to see the correct message
+        // Play island completion sound
+        playSound('island');
+        
+        setShowCompletionModal(true);
+        onComplete(campaignId, island.id, score);
       }
     } else {
       toast({
