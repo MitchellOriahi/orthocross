@@ -173,7 +173,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
             </div>
           </div>
           
-          {showProgress && (
+          {showProgress && viewMode === 'paginated' && (
             <div className="mt-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">Reading Progress</span>
