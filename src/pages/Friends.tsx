@@ -123,8 +123,10 @@ export default function Friends() {
       checkMonthlyPodium();
     }
 
-    // Set up realtime subscription for friend requests
-    const requestsChannel = supabase
+    if (!user) return;
+
+    // Set up comprehensive realtime subscriptions
+    const friendRequestsChannel = supabase
       .channel('friend-requests-changes')
       .on(
         'postgres_changes',
@@ -132,10 +134,11 @@ export default function Friends() {
           event: '*',
           schema: 'public',
           table: 'friend_requests',
-          filter: `receiver_id=eq.${user?.id}`
+          filter: `receiver_id=eq.${user.id}`
         },
         () => {
           refetch.receivedRequests();
+          refetch.sentRequests();
         }
       )
       .on(
@@ -144,7 +147,7 @@ export default function Friends() {
           event: '*',
           schema: 'public',
           table: 'friend_request_notifications',
-          filter: `receiver_id=eq.${user?.id}`
+          filter: `receiver_id=eq.${user.id}`
         },
         () => {
           refetch.receivedRequests();
@@ -152,8 +155,84 @@ export default function Friends() {
       )
       .subscribe();
 
+    // Subscribe to friendship changes
+    const friendshipsChannel = supabase
+      .channel('friendships-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'friends',
+        },
+        (payload) => {
+          // Refetch if the current user is involved
+          const newRecord = payload.new as any;
+          const oldRecord = payload.old as any;
+          if (newRecord?.user_id === user.id || newRecord?.friend_id === user.id ||
+              oldRecord?.user_id === user.id || oldRecord?.friend_id === user.id) {
+            refetch.friends();
+            refetch.activities();
+            loadLeaderboard();
+          }
+        }
+      )
+      .subscribe();
+
+    // Subscribe to friend activities
+    const activitiesChannel = supabase
+      .channel('friend-activities-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'friend_activities',
+        },
+        () => {
+          refetch.activities();
+        }
+      )
+      .subscribe();
+
+    // Subscribe to activity reactions
+    const reactionsChannel = supabase
+      .channel('activity-reactions-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'activity_reactions',
+        },
+        () => {
+          refetch.activities();
+        }
+      )
+      .subscribe();
+
+    // Subscribe to streak updates for friends
+    const streaksChannel = supabase
+      .channel('friend-streaks-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'user_streaks',
+        },
+        () => {
+          refetch.friends();
+        }
+      )
+      .subscribe();
+
     return () => {
-      supabase.removeChannel(requestsChannel);
+      supabase.removeChannel(friendRequestsChannel);
+      supabase.removeChannel(friendshipsChannel);
+      supabase.removeChannel(activitiesChannel);
+      supabase.removeChannel(reactionsChannel);
+      supabase.removeChannel(streaksChannel);
     };
   }, [user, refetch]);
 
