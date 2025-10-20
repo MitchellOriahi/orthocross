@@ -467,11 +467,6 @@ export default function Friends() {
 
       if (error) throw error;
 
-      toast({
-        title: "Friend request sent!",
-        description: "Your friend request has been sent successfully",
-      });
-
       setSearchQuery("");
       loadSentRequests();
     } catch (error) {
