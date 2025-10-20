@@ -110,7 +110,6 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
     const svgClass = "w-32 h-32 mx-auto";
     
     switch(awardName) {
-      case 'sword of spirit':
       case 'sword of the spirit':
         return (
           <svg className={svgClass} viewBox="0 0 100 100" fill="currentColor">
@@ -124,8 +123,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             <path d="M50 5 C30 5, 15 15, 15 25 C15 25, 10 40, 10 55 C10 75, 25 90, 50 95 C75 90, 90 75, 90 55 C90 40, 85 25, 85 25 C85 15, 70 5, 50 5 Z M50 15 C65 15, 75 20, 75 27 C75 27, 78 38, 78 52 C78 68, 67 80, 50 85 C33 80, 22 68, 22 52 C22 38, 25 27, 25 27 C25 20, 35 15, 50 15 Z" className="fill-primary" />
           </svg>
         );
-      case 'shoes of peace':
-      case 'feet of peace':
+      case 'sandals of gospel of peace':
         return (
           <svg className={svgClass} viewBox="0 0 100 100" fill="currentColor">
             <path d="M25 30 L25 50 L20 55 C20 55, 18 58, 20 62 L30 70 C35 73, 40 72, 43 70 L45 50 L40 30 Z M30 35 L35 40 L35 45 L30 45 Z M35 48 L35 53 L30 53 Z M35 56 L35 61 L32 63 Z" className="fill-primary" />
