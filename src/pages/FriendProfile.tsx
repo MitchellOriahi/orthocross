@@ -419,9 +419,6 @@ export default function FriendProfile() {
               <TrendingUp className="w-5 h-5 text-primary" />
               Overall Bible Progress
             </CardTitle>
-            <CardDescription>
-              Complete reading progress through the Bible.
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
