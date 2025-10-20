@@ -419,7 +419,7 @@ const Reading = () => {
       
       toast({
         description: "Chapter completed! 🎉",
-        duration: 3000,
+        duration: 1000, // Brief 1 second display
       });
 
       // Play chapter completion sound
@@ -482,11 +482,11 @@ const Reading = () => {
         }
       }
       
-      // Navigate to next chapter if available
+      // Navigate to next chapter quickly after completion
       if (chapter < totalChapters) {
         setTimeout(() => {
           handleChapterChange(chapter + 1);
-        }, 500);
+        }, 300); // Quick 0.3 second display
       }
     } catch (error) {
       console.error('Error saving completed chapter:', error);
