@@ -295,7 +295,7 @@ export default function FriendProfile() {
                 <div className="flex items-center gap-2">
                   <h2 className="text-2xl font-bold">{friend.username}</h2>
                   {friend.streak_visible && currentStreak > 0 && (
-                    <StreakFlame days={currentStreak} size="sm" />
+                    <StreakFlame days={currentStreak} size="sm" hideLabel />
                   )}
                 </div>
                 <p className="text-muted-foreground">Friend</p>

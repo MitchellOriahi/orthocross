@@ -3,9 +3,10 @@ import { Flame } from "lucide-react";
 interface StreakFlameProps {
   days: number;
   size?: "xs" | "sm" | "md" | "lg";
+  hideLabel?: boolean;
 }
 
-export const StreakFlame = ({ days, size = "md" }: StreakFlameProps) => {
+export const StreakFlame = ({ days, size = "md", hideLabel = false }: StreakFlameProps) => {
   const sizeClasses = {
     xs: "w-4 h-4",
     sm: "w-12 h-12",
@@ -87,9 +88,11 @@ export const StreakFlame = ({ days, size = "md" }: StreakFlameProps) => {
         <div className="text-2xl font-bold text-foreground">
           {days}
         </div>
-        <div className={`${textSizeClasses[size]} text-muted-foreground font-medium`}>
-          day{days !== 1 ? 's' : ''} streak
-        </div>
+        {!hideLabel && (
+          <div className={`${textSizeClasses[size]} text-muted-foreground font-medium`}>
+            day{days !== 1 ? 's' : ''} streak
+          </div>
+        )}
       </div>
     </div>
   );
