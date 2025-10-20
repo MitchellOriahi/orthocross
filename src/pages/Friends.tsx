@@ -78,6 +78,7 @@ export default function Friends() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [sentRequests, setSentRequests] = useState<FriendRequest[]>([]);
   const [receivedRequests, setReceivedRequests] = useState<ReceivedRequest[]>([]);
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [activities, setActivities] = useState<FriendActivity[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
@@ -129,6 +130,39 @@ export default function Friends() {
     loadActivities();
     loadLeaderboard();
     checkMonthlyPodium();
+
+    // Set up realtime subscription for friend requests
+    const requestsChannel = supabase
+      .channel('friend-requests-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'friend_requests',
+          filter: `receiver_id=eq.${user?.id}`
+        },
+        () => {
+          loadReceivedRequests();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'friend_request_notifications',
+          filter: `receiver_id=eq.${user?.id}`
+        },
+        () => {
+          loadReceivedRequests();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(requestsChannel);
+    };
   }, [user]);
 
   const loadFriends = async () => {
@@ -205,9 +239,31 @@ export default function Friends() {
       }));
 
       setReceivedRequests(requests);
+      
+      // Load unread notification count
+      const { count } = await supabase
+        .from('friend_request_notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('receiver_id', user.id)
+        .eq('read', false);
+
+      setUnreadNotificationCount(count || 0);
     } else {
       setReceivedRequests([]);
+      setUnreadNotificationCount(0);
     }
+  };
+
+  const markNotificationsAsRead = async () => {
+    if (!user) return;
+
+    await supabase
+      .from('friend_request_notifications')
+      .update({ read: true })
+      .eq('receiver_id', user.id)
+      .eq('read', false);
+
+    setUnreadNotificationCount(0);
   };
 
   const loadActivities = async () => {
@@ -472,6 +528,7 @@ export default function Friends() {
         description: "You are now friends",
       });
 
+      await markNotificationsAsRead();
       loadFriends();
       loadReceivedRequests();
       loadActivities();
@@ -502,6 +559,7 @@ export default function Friends() {
         description: "Friend request has been denied",
       });
 
+      await markNotificationsAsRead();
       loadReceivedRequests();
     } catch (error) {
       console.error("Error denying request:", error);
@@ -752,11 +810,13 @@ export default function Friends() {
                 {receivedRequests.length > 0 && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="gap-2">
+                      <Button variant="outline" className="gap-2" onClick={() => markNotificationsAsRead()}>
                         Requests
-                        <Badge variant="default" className="ml-1">
-                          {receivedRequests.length}
-                        </Badge>
+                        {unreadNotificationCount > 0 && (
+                          <Badge variant="destructive" className="ml-1">
+                            {unreadNotificationCount}
+                          </Badge>
+                        )}
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-80 max-h-96 overflow-y-auto bg-background">
