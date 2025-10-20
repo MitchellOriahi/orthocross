@@ -139,11 +139,11 @@ All colors MUST be HSL.
 
   /* iOS Safe Area Support */
   .safe-top {
-    padding-top: env(safe-area-inset-top);
+    padding-top: max(env(safe-area-inset-top), 1rem);
   }
 
   .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
   }
 
   .safe-left {
@@ -152,6 +152,15 @@ All colors MUST be HSL.
 
   .safe-right {
     padding-right: env(safe-area-inset-right);
+  }
+
+  /* Additional safe area utilities for fixed elements */
+  .safe-area-top {
+    top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    bottom: env(safe-area-inset-bottom);
   }
 }
 

@@ -292,7 +292,7 @@ export const BottomNavigation = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border z-50 safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border z-50" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 0.5rem)' }}>
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between py-2">
           {navItems.map((item) => {
