@@ -22,7 +22,6 @@ import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { useTheme } from "next-themes";
 import { populateInitialVerses } from "@/scripts/populateInitialVerses";
 import { checkStreakOnAppOpen, GuardianAngelResult } from "@/utils/streakManager";
-import { getVerseOfTheDay } from "@/lib/verseOfTheDay";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -47,7 +46,6 @@ const Dashboard = () => {
     totalChapters?: number;
     bookProgress?: number;
   } | null>(null);
-  const [verseOfTheDay, setVerseOfTheDay] = useState<{ reference: string; text: string } | null>(null);
 
   useEffect(() => {
     // Populate initial verses on first load
@@ -72,7 +70,6 @@ const Dashboard = () => {
       checkAndPopulate();
       fetchStreak();
       fetchLastReading();
-      setVerseOfTheDay(getVerseOfTheDay());
     }
   }, [user]);
 
@@ -319,16 +316,6 @@ const Dashboard = () => {
         <section className="flex justify-center py-8">
           <StreakFlame days={streakDays} size="lg" />
         </section>
-
-        {/* Verse of the Day - Inline */}
-        {verseOfTheDay && (
-          <div className="text-center px-4 py-2">
-            <p className="text-sm italic text-muted-foreground">
-              &ldquo;{verseOfTheDay.text}&rdquo;
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">— {verseOfTheDay.reference}</p>
-          </div>
-        )}
 
         {/* Continue Reading */}
         <section className="space-y-4">
