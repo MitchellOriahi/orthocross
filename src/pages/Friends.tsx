@@ -92,6 +92,7 @@ export default function Friends() {
   const [lastMonthName, setLastMonthName] = useState("");
   const [activityTabOpen, setActivityTabOpen] = useState(true);
   const [pendingRequestsOpen, setPendingRequestsOpen] = useState(true);
+  const [friendsListOpen, setFriendsListOpen] = useState(true);
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
@@ -909,48 +910,59 @@ export default function Friends() {
               )}
 
               <div className="space-y-3">
-                <h3 className="text-sm font-semibold text-muted-foreground">Your Friends ({friends.length})</h3>
-                {friends.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-8">
-                    No friends yet. Add someone to get started!
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {friends.map(friend => (
-                      <div 
-                        key={friend.id} 
-                        className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
-                      >
-                        <div 
-                          className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => navigate(`/friends/${friend.id}`)}
-                        >
-                          <Avatar>
-                            <AvatarImage src={friend.profile_picture_url || undefined} />
-                            <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{friend.username}</span>
-                            {friend.streak_visible && friend.current_streak > 0 && (
-                              <StreakFlame days={friend.current_streak} size="xs" />
-                            )}
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setFriendToRemove(friend);
-                            setShowRemoveDialog(true);
-                          }}
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        >
-                          <UserMinus className="h-4 w-4" />
-                        </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-between p-0 h-auto hover:bg-transparent"
+                  onClick={() => setFriendsListOpen(!friendsListOpen)}
+                >
+                  <h3 className="text-sm font-semibold text-muted-foreground">Your Friends ({friends.length})</h3>
+                  {friendsListOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </Button>
+                {friendsListOpen && (
+                  <>
+                    {friends.length === 0 ? (
+                      <div className="text-center text-muted-foreground py-8">
+                        No friends yet. Add someone to get started!
                       </div>
-                    ))}
-                  </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {friends.map(friend => (
+                          <div 
+                            key={friend.id} 
+                            className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
+                          >
+                            <div 
+                              className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
+                              onClick={() => navigate(`/friends/${friend.id}`)}
+                            >
+                              <Avatar>
+                                <AvatarImage src={friend.profile_picture_url || undefined} />
+                                <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                              </Avatar>
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium">{friend.username}</span>
+                                {friend.streak_visible && friend.current_streak > 0 && (
+                                  <StreakFlame days={friend.current_streak} size="xs" />
+                                )}
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setFriendToRemove(friend);
+                                setShowRemoveDialog(true);
+                              }}
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <UserMinus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 
