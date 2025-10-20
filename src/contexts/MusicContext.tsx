@@ -92,12 +92,12 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const playSound = (soundType: 'chapter' | 'book' | 'island' | 'saint') => {
-    // Using reliable CDN-hosted sound effects
+    // Using church bell themed sound effects
     const soundMap = {
-      chapter: 'https://assets.mixkit.co/active_storage/sfx/2568/2568.wav', // Single bell
-      book: 'https://assets.mixkit.co/active_storage/sfx/2869/2869.wav', // Success chime
-      island: 'https://assets.mixkit.co/active_storage/sfx/1435/1435.wav', // Achievement sound
-      saint: 'https://assets.mixkit.co/active_storage/sfx/2000/2000.wav', // Soft bell
+      chapter: 'https://assets.mixkit.co/active_storage/sfx/2571/2571.wav', // Church bell single
+      book: 'https://assets.mixkit.co/active_storage/sfx/1433/1433.wav', // Heavenly chime
+      island: 'https://assets.mixkit.co/active_storage/sfx/1434/1434.wav', // Angelic success
+      saint: 'https://assets.mixkit.co/active_storage/sfx/2873/2873.wav', // Gentle blessed chime
     };
 
     const audio = new Audio(soundMap[soundType]);
