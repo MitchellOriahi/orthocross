@@ -16,6 +16,17 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Verify authorization token for scheduled invocation
+    const authHeader = req.headers.get("authorization");
+    const schedulerSecret = Deno.env.get("SCHEDULER_SECRET_TOKEN");
+    
+    if (!schedulerSecret || authHeader !== `Bearer ${schedulerSecret}`) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     console.log('Sending streak reminder notifications');
