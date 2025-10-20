@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Book, TrendingUp } from "lucide-react";
+import { ArrowLeft, Book, TrendingUp, ThumbsUp, Heart, Flame, PartyPopper, Star, Hand } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useTheme } from "next-themes";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { StreakFlame } from "@/components/StreakFlame";
+import { formatDistanceToNow } from "date-fns";
 
 interface FriendData {
   username: string;
@@ -27,9 +29,13 @@ interface BookProgress {
 
 interface Activity {
   id: string;
+  user_id: string;
+  username: string;
+  profile_picture_url: string | null;
   activity_type: string;
   activity_data: any;
   created_at: string;
+  reactions?: { emoji: string; count: number; userReacted: boolean }[];
 }
 
 interface ReadingHistory {
@@ -48,14 +54,25 @@ export default function FriendProfile() {
   const [friend, setFriend] = useState<FriendData | null>(null);
   const [bookProgress, setBookProgress] = useState<BookProgress[]>([]);
   const [readingHistory, setReadingHistory] = useState<ReadingHistory[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [totalBibleProgress, setTotalBibleProgress] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(0);
+
+  const REACTION_EMOJIS = [
+    { emoji: "👍", icon: ThumbsUp, label: "Like" },
+    { emoji: "❤️", icon: Heart, label: "Love" },
+    { emoji: "🔥", icon: Flame, label: "Fire" },
+    { emoji: "🎉", icon: PartyPopper, label: "Celebrate" },
+    { emoji: "⭐", icon: Star, label: "Star" },
+    { emoji: "🙏", icon: Hand, label: "Pray" }
+  ];
 
   useEffect(() => {
     if (friendId) {
       loadFriendData();
       loadReadingProgress();
       loadReadingHistory();
+      loadActivities();
       loadStreak();
 
       // Set up real-time subscriptions for live updates
@@ -84,6 +101,18 @@ export default function FriendProfile() {
           },
           () => {
             loadReadingHistory();
+            loadActivities();
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'activity_reactions',
+          },
+          () => {
+            loadActivities();
           }
         )
         .on(
@@ -185,6 +214,58 @@ export default function FriendProfile() {
     }
   };
 
+  const loadActivities = async () => {
+    if (!friendId || !user) return;
+
+    const { data: activitiesData } = await supabase
+      .from('friend_activities')
+      .select('id, user_id, activity_type, activity_data, created_at')
+      .eq('user_id', friendId)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (activitiesData) {
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id, username, profile_picture_url')
+        .eq('id', friendId)
+        .single();
+
+      const { data: reactionsData } = await supabase
+        .from('activity_reactions')
+        .select('activity_id, emoji, user_id')
+        .in('activity_id', activitiesData.map(a => a.id));
+
+      const activitiesWithData = activitiesData.map(activity => {
+        const activityReactions = reactionsData?.filter(r => r.activity_id === activity.id) || [];
+        const reactionCounts = new Map<string, { count: number; userReacted: boolean }>();
+        
+        activityReactions.forEach(reaction => {
+          const current = reactionCounts.get(reaction.emoji) || { count: 0, userReacted: false };
+          reactionCounts.set(reaction.emoji, {
+            count: current.count + 1,
+            userReacted: current.userReacted || reaction.user_id === user.id
+          });
+        });
+
+        const reactions = Array.from(reactionCounts.entries()).map(([emoji, data]) => ({
+          emoji,
+          count: data.count,
+          userReacted: data.userReacted
+        }));
+
+        return {
+          ...activity,
+          username: profileData?.username || 'Unknown User',
+          profile_picture_url: profileData?.profile_picture_url || null,
+          reactions
+        };
+      });
+
+      setActivities(activitiesWithData as Activity[]);
+    }
+  };
+
   const loadReadingHistory = async () => {
     if (!friendId) return;
 
@@ -231,6 +312,37 @@ export default function FriendProfile() {
     // Sort by date and take the most recent 15 items
     combined.sort((a, b) => new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime());
     setReadingHistory(combined.slice(0, 15));
+  };
+
+  const handleReaction = async (activityId: string, emoji: string) => {
+    if (!user) return;
+
+    // Check if user already reacted with this emoji
+    const activity = activities.find(a => a.id === activityId);
+    const existingReaction = activity?.reactions?.find(r => r.emoji === emoji && r.userReacted);
+
+    if (existingReaction) {
+      // Remove reaction
+      const { error } = await supabase
+        .from('activity_reactions')
+        .delete()
+        .eq('activity_id', activityId)
+        .eq('user_id', user.id)
+        .eq('emoji', emoji);
+
+      if (!error) {
+        loadActivities();
+      }
+    } else {
+      // Add reaction
+      const { error } = await supabase
+        .from('activity_reactions')
+        .insert({ activity_id: activityId, user_id: user.id, emoji });
+
+      if (!error) {
+        loadActivities();
+      }
+    }
   };
 
   const formatBookName = (bookKey: string) => {
@@ -362,43 +474,114 @@ export default function FriendProfile() {
           </CardContent>
         </Card>
 
-        {/* Reading History */}
+        {/* Recent Activity */}
         <Card>
           <CardHeader>
             <CardTitle>Recent Reading History</CardTitle>
             <CardDescription>
-              Latest chapters completed
+              Latest activity and progress
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {readingHistory.map((item, index) => {
-                let content = '';
-                if (item.activity_type === 'chapter' && item.book_key) {
-                  content = `${formatBookName(item.book_key)} ${item.chapter}`;
-                } else if (item.activity_type === 'island_completed') {
-                  content = `Completed island: ${item.activity_data?.island_name || 'Unknown'}`;
-                } else if (item.activity_type === 'saint_read') {
-                  content = `Read about: ${item.activity_data?.saint_name || 'Unknown Saint'}`;
-                } else if (item.activity_type === 'book_completed') {
-                  content = `Completed book: ${item.activity_data?.book_name || 'Unknown'}`;
-                } else {
-                  content = `Activity: ${item.activity_type}`;
-                }
-
-                return (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+              {activities.length === 0 ? (
+                <p className="text-center text-muted-foreground py-4">
+                  No activity yet
+                </p>
+              ) : (
+                activities.map(activity => (
+                  <div key={activity.id} className="p-3 rounded-lg bg-muted/50 space-y-2">
                     <div>
-                      <p className="font-medium">{content}</p>
-                      <p className="text-sm text-muted-foreground">{formatDate(item.completed_at)}</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Avatar className="h-8 w-8">
+                          {activity.profile_picture_url ? (
+                            <AvatarImage src={activity.profile_picture_url} alt={activity.username} />
+                          ) : null}
+                          <AvatarFallback className="text-xs">
+                            {activity.username?.substring(0, 2).toUpperCase() || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">{activity.username}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
+                        </span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {activity.activity_type === 'chapter_completed' && (
+                          <>
+                            ✨ Completed {activity.activity_data?.book_key ? 
+                              `${activity.activity_data.book_key} Chapter ${activity.activity_data.chapter}` : 
+                              'a chapter'}
+                          </>
+                        )}
+                        {activity.activity_type === 'book_completed' && (
+                          <>
+                            📚 Completed {activity.activity_data?.book_name || 'a book'}!
+                          </>
+                        )}
+                        {activity.activity_type === 'bible_completed' && (
+                          <>
+                            📖 Completed the entire Bible!
+                          </>
+                        )}
+                        {activity.activity_type === 'saint_completed' && (
+                          <>
+                            👤 Finished reading about {activity.activity_data?.saint_name || 'a saint'}
+                          </>
+                        )}
+                        {activity.activity_type === 'island_completed' && (
+                          <>
+                            ⛰️ Completed island: {activity.activity_data?.island_name || 'Unknown Island'}
+                          </>
+                        )}
+                      </p>
+                    </div>
+                    
+                    {/* Reactions */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {/* Display existing reactions */}
+                      {activity.reactions?.map((reactionData) => (
+                        <button
+                          key={reactionData.emoji}
+                          onClick={() => handleReaction(activity.id, reactionData.emoji)}
+                          className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-colors ${
+                            reactionData.userReacted 
+                              ? 'bg-primary text-primary-foreground' 
+                              : 'bg-muted hover:bg-muted/80'
+                          }`}
+                        >
+                          <span>{reactionData.emoji}</span>
+                          {reactionData.count > 0 && <span>{reactionData.count}</span>}
+                        </button>
+                      ))}
+                      
+                      {/* Dropdown to add new reactions */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 px-2 text-xs"
+                          >
+                            Add Reaction
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-48 bg-background">
+                          {REACTION_EMOJIS.map(({ emoji, icon: Icon, label }) => (
+                            <DropdownMenuItem
+                              key={emoji}
+                              onClick={() => handleReaction(activity.id, emoji)}
+                              className="flex items-center gap-2 cursor-pointer"
+                            >
+                              <Icon className="w-4 h-4" />
+                              <span>{emoji} {label}</span>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
-                );
-              })}
-              {readingHistory.length === 0 && (
-                <p className="text-center text-muted-foreground py-4">
-                  No reading history yet
-                </p>
+                ))
               )}
             </div>
           </CardContent>
