@@ -204,7 +204,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         >
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-background dark:bg-gray-800 border-2 border-primary flex items-center justify-center">
+              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-background dark:bg-black border-2 border-primary flex items-center justify-center">
                 <img 
                   src={completionCross} 
                   alt="Completion" 
