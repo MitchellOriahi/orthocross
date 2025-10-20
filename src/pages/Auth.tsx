@@ -204,7 +204,7 @@ const Auth = () => {
   return (
     <div className="min-h-screen gradient-peaceful flex items-center justify-center px-4">
       <Card className="w-full max-w-md relative">
-        <div className="absolute top-4 left-4 text-xs text-muted-foreground">
+        <div className="absolute top-4 right-4 text-xs text-muted-foreground">
           @orthocross on Instagram
         </div>
         <CardHeader className="text-center">
