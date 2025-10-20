@@ -259,14 +259,27 @@ export default function Friends() {
     setIsLoading(true);
 
     try {
-      // Search for user by username
+      // Search for user by username (case-insensitive)
       let { data: profileData } = await supabase
         .from("profiles")
         .select("id")
-        .eq("username", searchQuery.trim())
+        .ilike("username", searchQuery.trim())
         .maybeSingle();
 
-      // If not found by username, try phone number
+      // If not found by username, try display name (case-insensitive)
+      if (!profileData) {
+        const { data: displayNameData } = await supabase
+          .from("profiles")
+          .select("id")
+          .ilike("display_name", searchQuery.trim())
+          .maybeSingle();
+
+        if (displayNameData) {
+          profileData = { id: displayNameData.id };
+        }
+      }
+
+      // If not found by display name, try phone number
       if (!profileData) {
         const { data: phoneData } = await supabase
           .from("user_phone_numbers")
