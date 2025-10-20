@@ -217,7 +217,7 @@ export const useFriendsData = (userId: string | undefined) => {
     queryKey: ['friendActivities', userId],
     queryFn: () => loadActivitiesData(userId),
     enabled: !!userId,
-    staleTime: 30000,
+    staleTime: 0, // Always fetch fresh data for real-time updates
   });
 
   return {

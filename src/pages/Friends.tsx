@@ -23,6 +23,7 @@ import { useTheme } from "next-themes";
 import { formatDistanceToNow } from "date-fns";
 import { useFriendsData } from "@/hooks/useFriendsData";
 import { useProfileData } from "@/hooks/useProfileData";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Friend } from "@/hooks/useFriendsData";
 
 interface PodiumEntry {
@@ -44,6 +45,7 @@ export default function Friends() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const queryClient = useQueryClient();
   
   // Use the friends data hook
   const { 
@@ -137,8 +139,8 @@ export default function Friends() {
           filter: `receiver_id=eq.${user.id}`
         },
         () => {
-          refetch.receivedRequests();
-          refetch.sentRequests();
+          queryClient.invalidateQueries({ queryKey: ['receivedRequests', user.id] });
+          queryClient.invalidateQueries({ queryKey: ['sentRequests', user.id] });
         }
       )
       .on(
@@ -150,7 +152,7 @@ export default function Friends() {
           filter: `receiver_id=eq.${user.id}`
         },
         () => {
-          refetch.receivedRequests();
+          queryClient.invalidateQueries({ queryKey: ['receivedRequests', user.id] });
         }
       )
       .subscribe();
@@ -171,8 +173,8 @@ export default function Friends() {
           const oldRecord = payload.old as any;
           if (newRecord?.user_id === user.id || newRecord?.friend_id === user.id ||
               oldRecord?.user_id === user.id || oldRecord?.friend_id === user.id) {
-            refetch.friends();
-            refetch.activities();
+            queryClient.invalidateQueries({ queryKey: ['friends', user.id] });
+            queryClient.invalidateQueries({ queryKey: ['friendActivities', user.id] });
             loadLeaderboard();
           }
         }
@@ -190,7 +192,8 @@ export default function Friends() {
           table: 'friend_activities',
         },
         () => {
-          refetch.activities();
+          // Force immediate refresh by invalidating the query
+          queryClient.invalidateQueries({ queryKey: ['friendActivities', user.id] });
         }
       )
       .subscribe();
@@ -206,7 +209,7 @@ export default function Friends() {
           table: 'activity_reactions',
         },
         () => {
-          refetch.activities();
+          queryClient.invalidateQueries({ queryKey: ['friendActivities', user.id] });
         }
       )
       .subscribe();
@@ -222,7 +225,7 @@ export default function Friends() {
           table: 'user_streaks',
         },
         () => {
-          refetch.friends();
+          queryClient.invalidateQueries({ queryKey: ['friends', user.id] });
         }
       )
       .subscribe();
