@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Book, TrendingUp, ThumbsUp, Heart, Flame, PartyPopper, Star, Hand } from "lucide-react";
+import { ArrowLeft, Book, TrendingUp, ThumbsUp, Heart, Flame, PartyPopper, Star, Hand, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,6 +13,7 @@ import { useTheme } from "next-themes";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { StreakFlame } from "@/components/StreakFlame";
 import { formatDistanceToNow } from "date-fns";
+import { BIBLE_BOOKS } from "@/data/bibleContent";
 
 interface FriendData {
   username: string;
@@ -57,6 +58,8 @@ export default function FriendProfile() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [totalBibleProgress, setTotalBibleProgress] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(0);
+  const [bookProgressOpen, setBookProgressOpen] = useState(true);
+  const [activityOpen, setActivityOpen] = useState(true);
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
@@ -183,30 +186,23 @@ export default function FriendProfile() {
         bookMap.get(item.book_key)!.add(item.chapter);
       });
 
-      // Convert to progress array (assuming standard chapter counts)
-      const bookChapterCounts: Record<string, number> = {
-        'matthew': 28, 'mark': 16, 'luke': 24, 'john': 21,
-        'acts': 28, 'romans': 16, '1-corinthians': 16, '2-corinthians': 13,
-        'galatians': 6, 'ephesians': 6, 'philippians': 4, 'colossians': 4,
-        '1-thessalonians': 5, '2-thessalonians': 3, '1-timothy': 6, '2-timothy': 4,
-        'titus': 3, 'philemon': 1, 'hebrews': 13, 'james': 5,
-        '1-peter': 5, '2-peter': 3, '1-john': 5, '2-john': 1,
-        '3-john': 1, 'jude': 1, 'revelation': 22
-      };
+      // Map all Bible books with their progress
+      const progress: BookProgress[] = BIBLE_BOOKS.map(bookInfo => {
+        const completed = bookMap.get(bookInfo.title)?.size || 0;
+        return {
+          book_key: bookInfo.title,
+          total_chapters: bookInfo.totalChapters,
+          completed_chapters: completed
+        };
+      });
 
-      const progress: BookProgress[] = [];
+      // Calculate total progress
       let totalCompleted = 0;
       let totalChapters = 0;
 
-      Object.entries(bookChapterCounts).forEach(([bookKey, total]) => {
-        const completed = bookMap.get(bookKey)?.size || 0;
-        progress.push({
-          book_key: bookKey,
-          total_chapters: total,
-          completed_chapters: completed
-        });
-        totalCompleted += completed;
-        totalChapters += total;
+      progress.forEach(book => {
+        totalCompleted += book.completed_chapters;
+        totalChapters += book.total_chapters;
       });
 
       setBookProgress(progress);
@@ -441,48 +437,60 @@ export default function FriendProfile() {
         {/* Book Completion Progress */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Book className="w-5 h-5 text-primary" />
-              Book Progress
-            </CardTitle>
+            <Button
+              variant="ghost"
+              className="w-full justify-between p-0 h-auto hover:bg-transparent"
+              onClick={() => setBookProgressOpen(!bookProgressOpen)}
+            >
+              <CardTitle className="flex items-center gap-2">
+                <Book className="w-5 h-5 text-primary" />
+                Book Progress
+              </CardTitle>
+              {bookProgressOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </Button>
             <CardDescription>
               Chapter completion by book
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {bookProgress.filter(book => book.completed_chapters > 0).map(book => (
-                <div key={book.book_key} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{formatBookName(book.book_key)}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {book.completed_chapters}/{book.total_chapters}
-                    </span>
+          {bookProgressOpen && (
+            <CardContent>
+              <div className="space-y-4">
+                {bookProgress.map(book => (
+                  <div key={book.book_key} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{formatBookName(book.book_key)}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {book.completed_chapters}/{book.total_chapters}
+                      </span>
+                    </div>
+                    <Progress 
+                      value={(book.completed_chapters / book.total_chapters) * 100} 
+                      className="h-2"
+                    />
                   </div>
-                  <Progress 
-                    value={(book.completed_chapters / book.total_chapters) * 100} 
-                    className="h-2"
-                  />
-                </div>
-              ))}
-              {bookProgress.filter(book => book.completed_chapters > 0).length === 0 && (
-                <p className="text-center text-muted-foreground py-4">
-                  No books started yet
-                </p>
-              )}
-            </div>
-          </CardContent>
+                ))}
+              </div>
+            </CardContent>
+          )}
         </Card>
 
         {/* Recent Activity */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Reading History</CardTitle>
+            <Button
+              variant="ghost"
+              className="w-full justify-between p-0 h-auto hover:bg-transparent"
+              onClick={() => setActivityOpen(!activityOpen)}
+            >
+              <CardTitle>Recent Reading History</CardTitle>
+              {activityOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </Button>
             <CardDescription>
               Latest activity and progress
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          {activityOpen && (
+            <CardContent>
             <div className="space-y-3">
               {activities.length === 0 ? (
                 <p className="text-center text-muted-foreground py-4">
@@ -585,6 +593,7 @@ export default function FriendProfile() {
               )}
             </div>
           </CardContent>
+        )}
         </Card>
       </main>
     </div>
