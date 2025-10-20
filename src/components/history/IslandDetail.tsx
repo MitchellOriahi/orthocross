@@ -204,21 +204,16 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         >
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-white dark:bg-card border-2 border-primary flex items-center justify-center p-4">
+              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center">
                 <svg 
                   viewBox="0 0 100 100" 
-                  className="w-full h-full"
+                  className="w-12 h-12 text-primary"
                   fill="currentColor"
                 >
-                  {/* Orthodox three-bar cross */}
-                  {/* Top bar (inscription) */}
-                  <rect x="42" y="10" width="16" height="3" className="fill-black dark:fill-white" />
-                  {/* Middle vertical bar */}
-                  <rect x="47" y="10" width="6" height="80" className="fill-black dark:fill-white" />
-                  {/* Middle horizontal bar (longest) */}
-                  <rect x="25" y="35" width="50" height="6" className="fill-black dark:fill-white" />
-                  {/* Bottom slanted bar */}
-                  <rect x="30" y="70" width="40" height="4" transform="rotate(-20 50 72)" className="fill-black dark:fill-white" />
+                  {/* Simple Orthodox three-bar cross */}
+                  <rect x="45" y="15" width="10" height="70" />
+                  <rect x="30" y="35" width="40" height="8" />
+                  <rect x="35" y="70" width="30" height="6" transform="rotate(-15 50 73)" />
                 </svg>
               </div>
               <h2 className="text-4xl font-bold mb-2 text-foreground">
