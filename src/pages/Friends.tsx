@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +29,14 @@ interface Friend {
 interface FriendRequest {
   id: string;
   receiver_id: string;
+  username: string;
+  profile_picture_url: string | null;
+  created_at: string;
+}
+
+interface ReceivedRequest {
+  id: string;
+  sender_id: string;
   username: string;
   profile_picture_url: string | null;
   created_at: string;
@@ -67,6 +77,7 @@ export default function Friends() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [sentRequests, setSentRequests] = useState<FriendRequest[]>([]);
+  const [receivedRequests, setReceivedRequests] = useState<ReceivedRequest[]>([]);
   const [activities, setActivities] = useState<FriendActivity[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
@@ -114,6 +125,7 @@ export default function Friends() {
     loadProfile();
     loadFriends();
     loadSentRequests();
+    loadReceivedRequests();
     loadActivities();
     loadLeaderboard();
     checkMonthlyPodium();
@@ -174,6 +186,27 @@ export default function Friends() {
       setSentRequests(requestsWithProfiles);
     } else {
       setSentRequests([]);
+    }
+  };
+
+  const loadReceivedRequests = async () => {
+    if (!user) return;
+
+    const { data: requestsData } = await supabase
+      .rpc('get_received_request_profiles');
+
+    if (requestsData) {
+      const requests = requestsData.map(req => ({
+        id: req.request_id,
+        sender_id: req.sender_id,
+        username: req.username || 'User',
+        profile_picture_url: req.profile_picture_url || null,
+        created_at: req.created_at
+      }));
+
+      setReceivedRequests(requests);
+    } else {
+      setReceivedRequests([]);
     }
   };
 
@@ -414,11 +447,67 @@ export default function Friends() {
       });
 
       loadSentRequests();
+      loadReceivedRequests();
     } catch (error) {
       console.error("Error cancelling request:", error);
       toast({
         title: "Error",
         description: "Failed to cancel request. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAcceptRequest = async (requestId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .rpc('accept_friend_request', { request_id: requestId });
+
+      if (error) throw error;
+
+      toast({
+        title: "Request accepted!",
+        description: "You are now friends",
+      });
+
+      loadFriends();
+      loadReceivedRequests();
+      loadActivities();
+      loadLeaderboard();
+    } catch (error) {
+      console.error("Error accepting request:", error);
+      toast({
+        title: "Error",
+        description: "Failed to accept request. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDenyRequest = async (requestId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('friend_requests')
+        .delete()
+        .eq('id', requestId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Request denied",
+        description: "Friend request has been denied",
+      });
+
+      loadReceivedRequests();
+    } catch (error) {
+      console.error("Error denying request:", error);
+      toast({
+        title: "Error",
+        description: "Failed to deny request. Please try again.",
         variant: "destructive",
       });
     }
@@ -444,6 +533,7 @@ export default function Friends() {
       // Reload friends list
       loadFriends();
       loadSentRequests();
+      loadReceivedRequests();
       loadActivities();
       loadLeaderboard();
     } catch (error) {
@@ -652,10 +742,65 @@ export default function Friends() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Your Friends</CardTitle>
-              <CardDescription>
-                Connect with friends to see their progress
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Your Friends</CardTitle>
+                  <CardDescription>
+                    Connect with friends to see their progress
+                  </CardDescription>
+                </div>
+                {receivedRequests.length > 0 && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="gap-2">
+                        Requests
+                        <Badge variant="default" className="ml-1">
+                          {receivedRequests.length}
+                        </Badge>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-80 max-h-96 overflow-y-auto bg-background">
+                      <div className="p-2 space-y-2">
+                        {receivedRequests.map((request) => (
+                          <div key={request.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                            <Avatar className="h-10 w-10">
+                              {request.profile_picture_url ? (
+                                <AvatarImage src={request.profile_picture_url} />
+                              ) : (
+                                <AvatarFallback className="bg-muted">
+                                  <Users className="h-5 w-5 text-muted-foreground" />
+                                </AvatarFallback>
+                              )}
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium truncate">{request.username}</p>
+                              <p className="text-xs text-muted-foreground">wants to be friends</p>
+                            </div>
+                            <div className="flex gap-1">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-100 dark:hover:bg-green-900/20"
+                                onClick={() => handleAcceptRequest(request.id)}
+                              >
+                                <Check className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                                onClick={() => handleDenyRequest(request.id)}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-6">
               {sentRequests.length > 0 && (

@@ -881,6 +881,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_friend_request: {
+        Args: { request_id: string }
+        Returns: undefined
+      }
       create_notification_channels: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -895,6 +899,16 @@ export type Database = {
           profile_picture_url: string
           receiver_id: string
           request_id: string
+          username: string
+        }[]
+      }
+      get_received_request_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string
+          profile_picture_url: string
+          request_id: string
+          sender_id: string
           username: string
         }[]
       }
