@@ -90,9 +90,18 @@ export default function Friends() {
   const [showPodium, setShowPodium] = useState(false);
   const [podiumData, setPodiumData] = useState<PodiumEntry[]>([]);
   const [lastMonthName, setLastMonthName] = useState("");
-  const [activityTabOpen, setActivityTabOpen] = useState(true);
-  const [pendingRequestsOpen, setPendingRequestsOpen] = useState(true);
-  const [friendsListOpen, setFriendsListOpen] = useState(true);
+  const [activityTabOpen, setActivityTabOpen] = useState(() => {
+    const saved = localStorage.getItem('friendActivityTabOpen');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [pendingRequestsOpen, setPendingRequestsOpen] = useState(() => {
+    const saved = localStorage.getItem('pendingRequestsOpen');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [friendsListOpen, setFriendsListOpen] = useState(() => {
+    const saved = localStorage.getItem('friendsListOpen');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
@@ -113,6 +122,19 @@ export default function Friends() {
     { emoji: "🙏", icon: Hand, label: "Pray" },
     { emoji: "🙌", icon: Hand, label: "Hands Up" }
   ];
+
+  // Persist collapsible section states
+  useEffect(() => {
+    localStorage.setItem('friendActivityTabOpen', JSON.stringify(activityTabOpen));
+  }, [activityTabOpen]);
+
+  useEffect(() => {
+    localStorage.setItem('pendingRequestsOpen', JSON.stringify(pendingRequestsOpen));
+  }, [pendingRequestsOpen]);
+
+  useEffect(() => {
+    localStorage.setItem('friendsListOpen', JSON.stringify(friendsListOpen));
+  }, [friendsListOpen]);
 
   useEffect(() => {
     const loadProfile = async () => {
