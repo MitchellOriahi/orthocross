@@ -420,7 +420,7 @@ export default function FriendProfile() {
               Overall Bible Progress
             </CardTitle>
             <CardDescription>
-              Complete reading progress through the Bible
+              Complete reading progress through the Bible.
             </CardDescription>
           </CardHeader>
           <CardContent>
