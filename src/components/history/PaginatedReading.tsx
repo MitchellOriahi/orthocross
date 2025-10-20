@@ -313,7 +313,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
         <>
           <ScrollArea className="h-[600px] pr-4">
             <div className="prose dark:prose-invert max-w-none">
-              <div className="text-base sm:text-lg leading-relaxed space-y-6">
+              <div className="text-base sm:text-lg leading-relaxed">
                 {paragraphsWithSentences.map((sentences, paraIdx) => {
                   // Calculate the starting sentence index for this paragraph
                   let sentenceOffset = 0;
@@ -322,25 +322,30 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
                   }
                   
                   return (
-                    <p key={paraIdx} className="mb-4">
-                      {sentences.map((sentence, sentIdx) => {
-                        const globalIdx = sentenceOffset + sentIdx;
-                        const highlight = highlights[globalIdx];
-                        
-                        return (
-                          <span
-                            key={sentIdx}
-                            onClick={() => handleSentenceClick(globalIdx)}
-                            className={cn(
-                              "cursor-pointer transition-all inline",
-                              highlight && getHighlightClass(highlight)
-                            )}
-                          >
-                            {sentence}{' '}
-                          </span>
-                        );
-                      })}
-                    </p>
+                    <div key={paraIdx} className="mb-6">
+                      <p className="mb-4">
+                        {sentences.map((sentence, sentIdx) => {
+                          const globalIdx = sentenceOffset + sentIdx;
+                          const highlight = highlights[globalIdx];
+                          
+                          return (
+                            <span
+                              key={sentIdx}
+                              onClick={() => handleSentenceClick(globalIdx)}
+                              className={cn(
+                                "cursor-pointer transition-all inline",
+                                highlight && getHighlightClass(highlight)
+                              )}
+                            >
+                              {sentence}{' '}
+                            </span>
+                          );
+                        })}
+                      </p>
+                      {paraIdx < paragraphsWithSentences.length - 1 && (
+                        <div className="h-px bg-border/50 my-6" />
+                      )}
+                    </div>
                   );
                 })}
               </div>
