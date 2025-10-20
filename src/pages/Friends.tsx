@@ -259,47 +259,28 @@ export default function Friends() {
     setIsLoading(true);
 
     try {
-      // Search for user by username (case-insensitive)
-      let { data: profileData } = await supabase
-        .from("profiles")
-        .select("id")
-        .ilike("username", searchQuery.trim())
-        .maybeSingle();
+      // Search for user using secure database function
+      const { data: userId, error: searchError } = await supabase
+        .rpc('search_user_for_friend_request', { 
+          search_term: searchQuery.trim() 
+        });
 
-      // If not found by username, try display name (case-insensitive)
-      if (!profileData) {
-        const { data: displayNameData } = await supabase
-          .from("profiles")
-          .select("id")
-          .ilike("display_name", searchQuery.trim())
-          .maybeSingle();
-
-        if (displayNameData) {
-          profileData = { id: displayNameData.id };
-        }
+      if (searchError) {
+        console.error("Search error:", searchError);
+        throw searchError;
       }
 
-      // If not found by display name, try phone number
-      if (!profileData) {
-        const { data: phoneData } = await supabase
-          .from("user_phone_numbers")
-          .select("user_id")
-          .eq("phone_number", searchQuery.trim())
-          .maybeSingle();
-
-        if (phoneData) {
-          profileData = { id: phoneData.user_id };
-        }
-      }
-
-      if (!profileData) {
+      if (!userId) {
         toast({
           title: "User not found",
-          description: "No user found with that username or phone number",
+          description: "No user found with that username, display name, or phone number",
           variant: "destructive",
         });
         return;
       }
+
+      const profileData = { id: userId };
+
 
       if (profileData.id === user.id) {
         toast({

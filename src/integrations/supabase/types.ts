@@ -896,6 +896,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      search_user_for_friend_request: {
+        Args: { search_term: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "user"
