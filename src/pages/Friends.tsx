@@ -902,7 +902,7 @@ export default function Friends() {
                               <p className="text-sm text-muted-foreground">
                                 {activity.activity_type === 'chapter_completed' && (
                                   <>
-                                    📖 Completed {activity.activity_data?.book_key ? 
+                                    ✨ Completed {activity.activity_data?.book_key ? 
                                       `${activity.activity_data.book_key} Chapter ${activity.activity_data.chapter}` : 
                                       'a chapter'}
                                   </>
@@ -914,17 +914,17 @@ export default function Friends() {
                                 )}
                                 {activity.activity_type === 'bible_completed' && (
                                   <>
-                                    ✨ Completed the entire Bible!
+                                    📖 Completed the entire Bible!
                                   </>
                                 )}
                                 {activity.activity_type === 'saint_completed' && (
                                   <>
-                                    🕊️ Finished reading about {activity.activity_data?.saint_name || 'a saint'}
+                                    👤 Finished reading about {activity.activity_data?.saint_name || 'a saint'}
                                   </>
                                 )}
                                 {activity.activity_type === 'island_completed' && (
                                   <>
-                                    🏰 Completed island: {activity.activity_data?.island_name || 'Unknown Island'}
+                                    ⛰️ Completed island: {activity.activity_data?.island_name || 'Unknown Island'}
                                   </>
                                 )}
                               </p>
