@@ -107,18 +107,9 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
           return newState;
         });
 
-        // Create friend activity for chapter completion
-        await supabase
-          .from('friend_activities')
-          .insert({
-            user_id: user.id,
-            activity_type: 'chapter_completed',
-            activity_data: {
-              book_key: selectedBook?.title || bookKey,
-              chapter: chapter
-            }
-          });
-
+        // Note: Marking chapters from this dialog does NOT add leaderboard points
+        // Only marking chapters directly in the reading page counts for the leaderboard
+        
         // Check if this completes the book
         const bookInfo = BIBLE_BOOKS.find(b => b.title === (selectedBook?.title || bookKey));
         if (bookInfo) {
@@ -127,57 +118,14 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
           
           const isBookCompleted = updatedChapters.size === bookInfo.totalChapters;
           
-          // If book is completed, record it in friend_activities
+          // If book is completed, show notification
           if (isBookCompleted) {
-            await supabase
-              .from('friend_activities')
-              .insert({
-                user_id: user.id,
-                activity_type: 'book_completed',
-                activity_data: {
-                  book_key: bookInfo.title,
-                  book_name: bookInfo.bookName,
-                  chapters: bookInfo.totalChapters
-                }
-              });
-
             toast({
               title: "Book Completed! 🎉",
               description: `You've completed ${bookInfo.bookName}!`,
               duration: 3000,
             });
           }
-        }
-
-        // Add point to monthly leaderboard for chapter completion
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        const { data: leaderboard } = await supabase
-          .from('monthly_leaderboard')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('month_date', currentMonth)
-          .maybeSingle();
-
-        if (leaderboard) {
-          await supabase
-            .from('monthly_leaderboard')
-            .update({
-              chapters_completed: (leaderboard.chapters_completed || 0) + 1,
-              total_points: (leaderboard.total_points || 0) + 1,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', leaderboard.id);
-        } else {
-          await supabase
-            .from('monthly_leaderboard')
-            .insert({
-              user_id: user.id,
-              month_date: currentMonth,
-              history_islands_completed: 0,
-              chapters_completed: 1,
-              saints_read_count: 0,
-              total_points: 1
-            });
         }
       }
 

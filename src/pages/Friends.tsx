@@ -19,6 +19,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { MonthlyPodiumModal } from "@/components/MonthlyPodiumModal";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useTheme } from "next-themes";
+import { formatDistanceToNow } from "date-fns";
 
 interface Friend {
   id: string;
@@ -948,12 +949,12 @@ export default function Friends() {
                     ) : (
                       <div className="space-y-3">
                         {activities.map(activity => (
-                          <div key={activity.id} className="p-3 rounded-lg bg-muted/50 space-y-2">
+                           <div key={activity.id} className="p-3 rounded-lg bg-muted/50 space-y-2">
                             <div>
                               <div className="flex items-center gap-2 mb-1">
                                 <span className="font-medium">{activity.username}</span>
                                 <span className="text-xs text-muted-foreground">
-                                  {new Date(activity.created_at).toLocaleDateString()}
+                                  {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
                                 </span>
                               </div>
                               <p className="text-sm text-muted-foreground">
