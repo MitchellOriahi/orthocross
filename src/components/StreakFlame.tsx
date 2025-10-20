@@ -2,21 +2,56 @@ import { Flame } from "lucide-react";
 
 interface StreakFlameProps {
   days: number;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
 }
 
 export const StreakFlame = ({ days, size = "md" }: StreakFlameProps) => {
   const sizeClasses = {
+    xs: "w-4 h-4",
     sm: "w-12 h-12",
     md: "w-20 h-20",
     lg: "w-32 h-32"
   };
 
   const textSizeClasses = {
+    xs: "text-xs",
     sm: "text-xs",
     md: "text-sm",
     lg: "text-xl"
   };
+
+  // For xs size, use inline horizontal layout
+  if (size === "xs") {
+    return (
+      <div className="inline-flex items-center gap-1">
+        <Flame 
+          className="w-4 h-4 dark:hidden"
+          style={{ color: '#ff6b35' }}
+          fill="url(#fireGradient)"
+        />
+        <Flame 
+          className="w-4 h-4 hidden dark:block"
+          style={{ color: '#3b82f6' }}
+          fill="url(#blueFireGradient)"
+        />
+        <span className="text-xs font-medium text-muted-foreground">{days}</span>
+        <svg width="0" height="0" className="absolute">
+          <defs>
+            <linearGradient id="fireGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#ffd700" />
+              <stop offset="50%" stopColor="#f7931e" />
+              <stop offset="100%" stopColor="#ff6b35" />
+            </linearGradient>
+            <linearGradient id="blueFireGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#93c5fd" />
+              <stop offset="50%" stopColor="#60a5fa" />
+              <stop offset="100%" stopColor="#3b82f6" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    );
+  }
 
   return (
     <div className="relative inline-flex flex-col items-center gap-2">

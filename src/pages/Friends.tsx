@@ -922,7 +922,7 @@ export default function Friends() {
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{friend.username}</span>
                             {friend.streak_visible && friend.current_streak > 0 && (
-                              <StreakFlame days={friend.current_streak} size="sm" />
+                              <StreakFlame days={friend.current_streak} size="xs" />
                             )}
                           </div>
                         </div>
