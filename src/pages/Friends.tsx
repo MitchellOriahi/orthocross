@@ -87,18 +87,7 @@ export default function Friends() {
     { emoji: "🔥", icon: Flame, label: "Fire" },
     { emoji: "🎉", icon: PartyPopper, label: "Celebrate" },
     { emoji: "⭐", icon: Star, label: "Star" },
-    { emoji: "😮", icon: AlertCircle, label: "Surprised" },
-    { emoji: "😱", icon: Zap, label: "Shocked" },
-    { emoji: "😠", icon: Frown, label: "Angry" },
-    { emoji: "👏", icon: Hand, label: "Clap" },
-    { emoji: "💯", icon: Award, label: "100" },
-    { emoji: "✝️", icon: Cross, label: "Cross" },
-    { emoji: "☦️", icon: Cross, label: "Orthodox Cross" },
-    { emoji: "❤️‍🔥", icon: Flame, label: "Heart on Fire" },
-    { emoji: "😇", icon: Circle, label: "Halo" },
-    { emoji: "🫡", icon: Hand, label: "Salute" },
-    { emoji: "🙏", icon: Hand, label: "Pray" },
-    { emoji: "🙌", icon: Hand, label: "Hands Up" }
+    { emoji: "🙏", icon: Hand, label: "Pray" }
   ];
 
   // Persist collapsible section states
@@ -935,27 +924,46 @@ export default function Friends() {
                             
                             {/* Reactions */}
                             <div className="flex items-center gap-2 flex-wrap">
-                              {REACTION_EMOJIS.map(({ emoji, icon: Icon, label }) => {
-                                const reactionData = activity.reactions?.find(r => r.emoji === emoji);
-                                const isActive = reactionData?.userReacted || false;
-                                const count = reactionData?.count || 0;
-                                
-                                return (
-                                  <button
-                                    key={emoji}
-                                    onClick={() => handleReaction(activity.id, emoji)}
-                                    className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-colors ${
-                                      isActive 
-                                        ? 'bg-primary text-primary-foreground' 
-                                        : 'bg-muted hover:bg-muted/80'
-                                    }`}
-                                    title={label}
+                              {/* Display existing reactions */}
+                              {activity.reactions?.map((reactionData) => (
+                                <button
+                                  key={reactionData.emoji}
+                                  onClick={() => handleReaction(activity.id, reactionData.emoji)}
+                                  className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-colors ${
+                                    reactionData.userReacted 
+                                      ? 'bg-primary text-primary-foreground' 
+                                      : 'bg-muted hover:bg-muted/80'
+                                  }`}
+                                >
+                                  <span>{reactionData.emoji}</span>
+                                  {reactionData.count > 0 && <span>{reactionData.count}</span>}
+                                </button>
+                              ))}
+                              
+                              {/* Dropdown to add new reactions */}
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-7 px-2 text-xs"
                                   >
-                                    <Icon className="w-3 h-3" />
-                                    {count > 0 && <span>{count}</span>}
-                                  </button>
-                                );
-                              })}
+                                    Add Reaction
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-48 bg-background">
+                                  {REACTION_EMOJIS.map(({ emoji, icon: Icon, label }) => (
+                                    <DropdownMenuItem
+                                      key={emoji}
+                                      onClick={() => handleReaction(activity.id, emoji)}
+                                      className="flex items-center gap-2 cursor-pointer"
+                                    >
+                                      <Icon className="w-4 h-4" />
+                                      <span>{emoji} {label}</span>
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
                           </div>
                         ))}
