@@ -518,11 +518,6 @@ export default function Friends() {
 
       if (error) throw error;
 
-      toast({
-        title: "Request accepted!",
-        description: "You are now friends",
-      });
-
       await markNotificationsAsRead();
       loadFriends();
       loadReceivedRequests();
