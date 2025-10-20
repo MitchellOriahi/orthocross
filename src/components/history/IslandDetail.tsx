@@ -230,16 +230,16 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             </div>
 
 
-            <div className="bg-black border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
+            <div className="bg-white dark:bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
               <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
               <div className="relative">
-                <div className="relative inline-block">
+                <div className="relative inline-block mx-auto">
                   <Shield className="w-32 h-32 mx-auto mb-4 text-primary relative z-10" />
                   {isBeltOfTruth && (
                     <>
                       {/* Belt straps */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-6 bg-primary/30 rounded-full" />
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-4 bg-primary/40 rounded-full" />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-8 bg-primary border-2 border-primary rounded" style={{ transform: 'translate(-50%, -50%)' }} />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-12 bg-primary border-2 border-primary rounded" style={{ transform: 'translate(-50%, -50%)' }} />
                     </>
                   )}
                 </div>
@@ -257,7 +257,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
                     />
                   ))}
                 </div>
-              <p className="text-2xl font-bold capitalize relative z-10 text-white">
+              <p className="text-2xl font-bold capitalize relative z-10">
                 {island.awardPiece.replace(/_/g, ' ')}
                 </p>
               </div>
