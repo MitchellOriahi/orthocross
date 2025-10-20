@@ -118,8 +118,10 @@ export default function Friends() {
   }, [hookUnreadCount]);
 
   useEffect(() => {
-    loadLeaderboard();
-    checkMonthlyPodium();
+    if (user) {
+      loadLeaderboard();
+      checkMonthlyPodium();
+    }
 
     // Set up realtime subscription for friend requests
     const requestsChannel = supabase

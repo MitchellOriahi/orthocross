@@ -29,6 +29,73 @@ export const BottomNavigation = () => {
     });
   };
 
+  const prefetchDashboardData = async () => {
+    if (!user) return;
+
+    // Prefetch streak data
+    queryClient.prefetchQuery({
+      queryKey: ['streak', user.id],
+      queryFn: async () => {
+        const { data } = await supabase
+          .from('user_streaks')
+          .select('current_streak, longest_streak, last_completion_date, last_activity_date, guardian_angel_saves, guardian_angel_percentage')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        return data;
+      },
+      staleTime: 30000,
+    });
+
+    // Prefetch reading progress data
+    queryClient.prefetchQuery({
+      queryKey: ['lastReading', user.id],
+      queryFn: async () => {
+        const { data: lastCompleted } = await supabase
+          .from('completed_chapters')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('completed_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (!lastCompleted) return null;
+
+        const bookKey = lastCompleted.book_key;
+        const lastChapter = lastCompleted.chapter;
+        const nextChapter = lastChapter + 1;
+
+        const { BIBLE_BOOKS } = await import('@/data/bibleContent');
+        const bookInfo = BIBLE_BOOKS.find(b => b.title === bookKey);
+        const totalChapters = bookInfo?.totalChapters || 1;
+
+        const { data: completedInBook } = await supabase
+          .from('completed_chapters')
+          .select('chapter')
+          .eq('user_id', user.id)
+          .eq('book_key', bookKey);
+
+        const { data: chapterProgress } = await supabase
+          .from('reading_progress')
+          .select('progress')
+          .eq('user_id', user.id)
+          .eq('book_key', bookKey)
+          .eq('current_chapter', nextChapter)
+          .maybeSingle();
+
+        return {
+          lastCompleted,
+          bookInfo,
+          totalChapters,
+          completedInBook,
+          chapterProgress,
+          nextChapter
+        };
+      },
+      staleTime: 30000,
+    });
+  };
+
   const prefetchFriendsData = async () => {
     if (!user) return;
     
@@ -238,6 +305,9 @@ export const BottomNavigation = () => {
                 variant="ghost"
                 onClick={() => navigate(item.path)}
                 onMouseEnter={() => {
+                  if (item.path === "/dashboard") {
+                    prefetchDashboardData();
+                  }
                   if (item.path === "/friends") {
                     prefetchFriendsData();
                     prefetchProfileData();
@@ -247,6 +317,9 @@ export const BottomNavigation = () => {
                   }
                 }}
                 onFocus={() => {
+                  if (item.path === "/dashboard") {
+                    prefetchDashboardData();
+                  }
                   if (item.path === "/friends") {
                     prefetchFriendsData();
                     prefetchProfileData();
