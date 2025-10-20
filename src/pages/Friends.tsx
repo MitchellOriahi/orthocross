@@ -994,6 +994,13 @@ export default function Friends() {
               ) : (
                 <div className="space-y-3">
                   {leaderboard.map((entry, index) => {
+                    const getCardBackground = () => {
+                      if (index === 0) return "bg-amber-400/10";
+                      if (index === 1) return "bg-slate-300/10";
+                      if (index === 2) return "bg-amber-700/10";
+                      return "bg-muted/50";
+                    };
+                    
                     const getRankColors = () => {
                       if (index === 0) return "bg-amber-400/20 text-amber-400";
                       if (index === 1) return "bg-slate-300/20 text-slate-300";
@@ -1002,7 +1009,7 @@ export default function Friends() {
                     };
                     
                     return (
-                      <div key={entry.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                      <div key={entry.id} className={`flex items-center gap-3 p-3 rounded-lg ${getCardBackground()}`}>
                         <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${getRankColors()}`}>
                           {index + 1}
                         </div>
