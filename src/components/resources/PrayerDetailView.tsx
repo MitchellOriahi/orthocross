@@ -45,7 +45,7 @@ export const PrayerDetailView = ({ name, title, content, onClose, prayerId }: Pr
 
   return (
     <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
-      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-top">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button variant="ghost" onClick={onClose}>
