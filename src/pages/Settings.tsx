@@ -272,6 +272,15 @@ const Settings = () => {
     toast.success(visible ? "Activity is now visible to friends" : "Activity is now hidden from friends");
   };
 
+  const handleToggleVoiceRecording = async (checked: boolean) => {
+    if (!user) return;
+    await supabase
+      .from('profiles')
+      .update({ voice_recording_enabled: checked })
+      .eq('id', user.id);
+    toast.success(checked ? "Voice recording enabled" : "Voice recording disabled");
+  };
+
   const handleReferFriend = async (method: 'native' | 'email' | 'sms') => {
     const appUrl = window.location.origin;
     const message = `Check out OrthoCross - a daily spiritual practice app with Bible reading streaks, fasting reminders, and Orthodox learning! ${appUrl}`;
@@ -512,6 +521,30 @@ const Settings = () => {
                 <Switch
                   checked={activityVisible}
                   onCheckedChange={handleToggleActivityVisibility}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Journal Features */}
+          <Card className="shadow-elevated">
+            <CardHeader>
+              <CardTitle>Journal Features</CardTitle>
+              <CardDescription>
+                Customize your journal experience
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="font-medium">Voice Recording</p>
+                  <p className="text-sm text-muted-foreground">
+                    Enable voice notes with automatic transcription in your journal
+                  </p>
+                </div>
+                <Switch
+                  checked={profile?.voice_recording_enabled ?? false}
+                  onCheckedChange={handleToggleVoiceRecording}
                 />
               </div>
             </CardContent>
