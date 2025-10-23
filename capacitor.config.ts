@@ -5,8 +5,10 @@ const config: CapacitorConfig = {
   appName: 'orthodox-path-builder',
   webDir: 'dist',
   server: {
-    url: 'https://b611f71f-b22b-4a93-8697-f6b6fb41b6eb.lovableproject.com?forceHideBadge=true',
-    cleartext: true
+    androidScheme: 'https',
+    iosScheme: 'https',
+    hostname: 'app.orthocross.com',
+    cleartext: false
   },
   plugins: {
     LocalNotifications: {
