@@ -10,7 +10,6 @@ import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { useProfileData } from "@/hooks/useProfileData";
 
 interface Attachment {
   type: 'drawing' | 'voice' | 'image';
@@ -56,7 +55,6 @@ export const JournalEditor = ({
   const [pinnedMediaUrl, setPinnedMediaUrl] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const isUpdatingContent = useRef(false);
-  const { profile } = useProfileData();
 
   // Save cursor position
   const saveCursorPosition = () => {
@@ -603,17 +601,10 @@ export const JournalEditor = ({
               <h3 className="text-lg font-semibold">Voice Recording</h3>
             </div>
             <div className="flex-1 p-4 flex items-center justify-center">
-              {profile?.voice_recording_enabled ? (
-                <VoiceRecorder 
-                  onRecordingComplete={handleVoiceRecording} 
-                  onTranscription={handleTranscription}
-                />
-              ) : (
-                <div className="text-center text-muted-foreground">
-                  <p className="mb-2">Voice recording is disabled.</p>
-                  <p className="text-sm">Enable it in Settings to use this feature.</p>
-                </div>
-              )}
+              <VoiceRecorder 
+                onRecordingComplete={handleVoiceRecording} 
+                onTranscription={handleTranscription}
+              />
             </div>
           </div>
         </SheetContent>
