@@ -401,14 +401,6 @@ export const JournalEditor = ({
     }
   };
 
-  const handleTranscription = (text: string) => {
-    if (!contentDivRef.current) return;
-    const currentContent = contentDivRef.current.innerHTML || content;
-    const newContent = currentContent + (currentContent ? " " : "") + text;
-    contentDivRef.current.innerHTML = newContent;
-    onContentChange(newContent);
-  };
-
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!user || !files || files.length === 0) return;
@@ -601,10 +593,7 @@ export const JournalEditor = ({
               <h3 className="text-lg font-semibold">Voice Recording</h3>
             </div>
             <div className="flex-1 p-4 flex items-center justify-center">
-              <VoiceRecorder 
-                onRecordingComplete={handleVoiceRecording} 
-                onTranscription={handleTranscription}
-              />
+              <VoiceRecorder onRecordingComplete={handleVoiceRecording} />
             </div>
           </div>
         </SheetContent>
