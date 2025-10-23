@@ -53,28 +53,8 @@ export const JournalEditor = ({
   const [editingDrawingUrl, setEditingDrawingUrl] = useState<string | null>(null);
   const [editingDrawingElement, setEditingDrawingElement] = useState<HTMLElement | null>(null);
   const [pinnedMediaUrl, setPinnedMediaUrl] = useState<string | null>(null);
-  const [voiceRecordingEnabled, setVoiceRecordingEnabled] = useState(false);
   const isMobile = useIsMobile();
   const isUpdatingContent = useRef(false);
-
-  // Load voice recording preference
-  useEffect(() => {
-    const loadPreference = async () => {
-      if (!user) return;
-      
-      const { data } = await (supabase as any)
-        .from('profiles')
-        .select('voice_recording_enabled')
-        .eq('id', user.id)
-        .single();
-      
-      if (data) {
-        setVoiceRecordingEnabled(data.voice_recording_enabled || false);
-      }
-    };
-    
-    loadPreference();
-  }, [user]);
 
   // Save cursor position
   const saveCursorPosition = () => {
@@ -545,16 +525,14 @@ export const JournalEditor = ({
           >
             <ImageIcon className="h-5 w-5" />
           </Button>
-          {voiceRecordingEnabled && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowVoiceRecorder(true)}
-              className="h-10 w-10"
-            >
-              <Mic className="h-5 w-5" />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowVoiceRecorder(true)}
+            className="h-10 w-10"
+          >
+            <Mic className="h-5 w-5" />
+          </Button>
         </div>
       </div>
 
