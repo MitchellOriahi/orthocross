@@ -589,7 +589,7 @@ export const Journal = () => {
               <h2 className="text-lg font-semibold px-2">Journal</h2>
             </div>
             
-            <div className="journal-content flex-1 flex overflow-hidden">
+            <div className="flex-1 flex overflow-hidden">
               {/* Desktop: Always show sidebar */}
               {/* Mobile: Show sidebar only when toggled */}
               {(!isMobile || showSidebar) && (

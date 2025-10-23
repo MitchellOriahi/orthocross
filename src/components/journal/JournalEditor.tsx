@@ -445,7 +445,7 @@ export const JournalEditor = ({
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="p-4 border-b border-border safe-top">
+        <div className="p-4 border-b border-border">
           <Input
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
@@ -458,7 +458,7 @@ export const JournalEditor = ({
         </div>
 
         <div className="flex-1 overflow-auto">
-          <div className="p-4 min-h-full pb-safe">
+          <div className="p-4 min-h-full">
             {showHighlighter && (
               <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex gap-1">
                 {HIGHLIGHT_COLORS.map((color) => (
@@ -500,7 +500,7 @@ export const JournalEditor = ({
         )}
 
         {/* Bottom Toolbar */}
-        <div className="journal-toolbar border-t border-border p-2 flex items-center justify-around bg-card/50 safe-bottom">
+        <div className="border-t border-border p-2 flex items-center justify-around bg-card/50">
           <Button
             variant="ghost"
             size="icon"
@@ -542,7 +542,7 @@ export const JournalEditor = ({
 
       {/* Full-screen Drawing Sheet */}
       {showDrawing && (
-        <div className="fixed inset-0 z-50 bg-background flex flex-col safe-area-top safe-area-bottom">
+        <div className="fixed inset-0 z-50 bg-background flex flex-col">
           <div className="p-3 border-b border-border flex items-center justify-between">
             <h3 className="text-lg font-semibold">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</h3>
             <Button
