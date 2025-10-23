@@ -902,14 +902,8 @@ export type Database = {
         Args: { request_id: string }
         Returns: undefined
       }
-      create_notification_channels: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      delete_user_account: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      create_notification_channels: { Args: never; Returns: undefined }
+      delete_user_account: { Args: never; Returns: undefined }
       get_friend_request_profiles: {
         Args: { request_ids: string[] }
         Returns: {
@@ -920,7 +914,7 @@ export type Database = {
         }[]
       }
       get_received_request_profiles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string
           profile_picture_url: string
