@@ -445,7 +445,7 @@ export const JournalEditor = ({
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="p-4 border-b border-border">
+        <div className="p-4 border-b border-border safe-top">
           <Input
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
@@ -458,7 +458,7 @@ export const JournalEditor = ({
         </div>
 
         <div className="flex-1 overflow-auto">
-          <div className="p-4 min-h-full">
+          <div className="p-4 min-h-full pb-safe">
             {showHighlighter && (
               <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex gap-1">
                 {HIGHLIGHT_COLORS.map((color) => (
@@ -500,12 +500,13 @@ export const JournalEditor = ({
         )}
 
         {/* Bottom Toolbar */}
-        <div className="journal-toolbar border-t border-border p-2 flex items-center justify-around bg-card/50">
+        <div className="journal-toolbar border-t border-border p-2 flex items-center justify-around bg-card/50 safe-bottom">
           <Button
             variant="ghost"
             size="icon"
             onClick={handleHighlight}
             className="h-10 w-10"
+            title="Highlight text"
           >
             <Highlighter className="h-5 w-5" />
           </Button>
@@ -514,6 +515,7 @@ export const JournalEditor = ({
             size="icon"
             onClick={() => setShowDrawing(true)}
             className="h-10 w-10"
+            title="Draw"
           >
             <Pencil className="h-5 w-5" />
           </Button>
@@ -522,6 +524,7 @@ export const JournalEditor = ({
             size="icon"
             onClick={() => setShowAttachments(true)}
             className="h-10 w-10"
+            title="Insert images/videos"
           >
             <ImageIcon className="h-5 w-5" />
           </Button>
@@ -530,6 +533,7 @@ export const JournalEditor = ({
             size="icon"
             onClick={() => setShowVoiceRecorder(true)}
             className="h-10 w-10"
+            title="Record voice note (optional)"
           >
             <Mic className="h-5 w-5" />
           </Button>
@@ -538,8 +542,8 @@ export const JournalEditor = ({
 
       {/* Full-screen Drawing Sheet */}
       {showDrawing && (
-        <div className="journal-sheet fixed inset-0 z-50 bg-background flex flex-col">
-          <div className="journal-header p-3 border-b border-border flex items-center justify-between">
+        <div className="fixed inset-0 z-50 bg-background flex flex-col safe-area-top safe-area-bottom">
+          <div className="p-3 border-b border-border flex items-center justify-between">
             <h3 className="text-lg font-semibold">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</h3>
             <Button
               variant="ghost"
@@ -553,7 +557,7 @@ export const JournalEditor = ({
               <X className="h-5 w-5" />
             </Button>
           </div>
-          <div className="journal-content flex-1 p-4 overflow-hidden">
+          <div className="flex-1 p-4 overflow-hidden">
             <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
           </div>
         </div>

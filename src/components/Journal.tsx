@@ -589,13 +589,13 @@ export const Journal = () => {
               <h2 className="text-lg font-semibold px-2">Journal</h2>
             </div>
             
-            <div className="flex-1 flex overflow-hidden">
+            <div className="journal-content flex-1 flex overflow-hidden">
               {/* Desktop: Always show sidebar */}
               {/* Mobile: Show sidebar only when toggled */}
               {(!isMobile || showSidebar) && (
                 <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background' : 'w-48'}`}>
                   {isMobile && (
-                    <div className="journal-header p-2 border-b border-border flex items-center">
+                    <div className="p-2 border-b border-border flex items-center">
                       <Button
                         variant="ghost"
                         size="icon"
