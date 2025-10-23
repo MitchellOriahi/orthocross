@@ -14,12 +14,12 @@ import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import completionCross from "@/assets/completion-cross-hq.png";
-import swordEmblem from "@/assets/armor/sword-emblem-final.png";
+import swordEmblem from "@/assets/armor/sword-emblem.png";
 import shieldEmblem from "@/assets/armor/shield-emblem-final.png";
-import bootEmblem from "@/assets/armor/boot-emblem-final.png";
-import beltEmblem from "@/assets/armor/belt-emblem-final.png";
-import helmetEmblem from "@/assets/armor/helmet-emblem-final.png";
-import breastplateEmblem from "@/assets/armor/breastplate-emblem-final.png";
+import bootEmblem from "@/assets/armor/boot-emblem.png";
+import beltEmblem from "@/assets/armor/belt-emblem.webp";
+import helmetEmblem from "@/assets/armor/helmet-emblem.png";
+import breastplateEmblem from "@/assets/armor/breastplate-emblem.webp";
 import easternArmorEmblem from "@/assets/armor/eastern-armor-preview.png";
 import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview.png";
 
