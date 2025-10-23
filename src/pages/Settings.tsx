@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, ChevronDown } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useMusic } from "@/contexts/MusicContext";
 import { useNotifications, ReminderTime } from "@/hooks/useNotifications";
@@ -422,91 +421,51 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-3">
+              <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="font-medium">Fasting Notifications</p>
                   <p className="text-sm text-muted-foreground">
                     Get notified about upcoming fasts and feasts
                   </p>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="w-full justify-between">
-                      {fastingNotificationsEnabled ? "Enabled" : "Disabled"}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)]">
-                    <div className="px-2 py-3 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Enable Notifications</span>
-                        <Switch
-                          checked={fastingNotificationsEnabled}
-                          onCheckedChange={handleToggleFastingNotifications}
-                        />
-                      </div>
-                      {fastingNotificationsEnabled && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setShowFastingPreferencesDialog(true);
-                            }}
-                            className="w-full justify-start"
-                          >
-                            Configure Preferences
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Switch
+                  checked={fastingNotificationsEnabled}
+                  onCheckedChange={handleToggleFastingNotifications}
+                />
               </div>
               
-              <div className="space-y-3 pt-4 border-t border-border/50">
+              {fastingNotificationsEnabled && (
+                <Button
+                  variant="outline"
+                  onClick={() => setShowFastingPreferencesDialog(true)}
+                  className="w-full"
+                >
+                  Configure Reminders
+                </Button>
+              )}
+              
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="space-y-1">
                   <p className="font-medium">Streak Notifications</p>
                   <p className="text-sm text-muted-foreground">
                     Get reminders to maintain your reading streak
                   </p>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="w-full justify-between">
-                      {streakNotificationsEnabled ? "Enabled" : "Disabled"}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)]">
-                    <div className="px-2 py-3 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Enable Notifications</span>
-                        <Switch
-                          checked={streakNotificationsEnabled}
-                          onCheckedChange={handleToggleStreakNotifications}
-                        />
-                      </div>
-                      {streakNotificationsEnabled && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setShowStreakReminderDialog(true);
-                            }}
-                            className="w-full justify-start"
-                          >
-                            Configure Reminders
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Switch
+                  checked={streakNotificationsEnabled}
+                  onCheckedChange={handleToggleStreakNotifications}
+                />
               </div>
+              
+              {streakNotificationsEnabled && (
+                <Button
+                  variant="outline"
+                  onClick={() => setShowStreakReminderDialog(true)}
+                  className="w-full"
+                >
+                  Configure Reminders
+                </Button>
+              )}
 
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="space-y-1">
