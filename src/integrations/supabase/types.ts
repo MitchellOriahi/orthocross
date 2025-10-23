@@ -1124,6 +1124,12 @@ export type Database = {
       }
       create_notification_channels: { Args: never; Returns: undefined }
       delete_user_account: { Args: never; Returns: undefined }
+      find_dm_conversation: {
+        Args: { user_a: string; user_b: string }
+        Returns: {
+          id: string
+        }[]
+      }
       get_friend_request_profiles: {
         Args: { request_ids: string[] }
         Returns: {

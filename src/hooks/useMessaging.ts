@@ -150,38 +150,49 @@ export const useMessages = (conversationId: string | null) => {
     queryFn: async () => {
       if (!conversationId) return [];
 
-      const { data, error } = await supabase
+      const { data: messages, error } = await supabase
         .from('messages')
-        .select(`
-          id,
-          conversation_id,
-          sender_id,
-          body,
-          created_at,
-          edited_at,
-          is_deleted,
-          profiles!messages_sender_id_fkey (
-            username,
-            profile_picture_url
-          ),
-          attachments (
-            id,
-            kind,
-            url,
-            width,
-            height,
-            duration_ms
-          )
-        `)
+        .select('*')
         .eq('conversation_id', conversationId)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
 
-      return data.map(m => ({
+      if (!messages || messages.length === 0) return [];
+
+      // Get sender profiles
+      const senderIds = [...new Set(messages.map(m => m.sender_id))];
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, username, profile_picture_url')
+        .in('id', senderIds);
+
+      if (profileError) throw profileError;
+
+      const profileMap = profiles.reduce((acc, p) => {
+        acc[p.id] = p;
+        return acc;
+      }, {} as Record<string, any>);
+
+      // Get attachments
+      const messageIds = messages.map(m => m.id);
+      const { data: attachments, error: attachmentError } = await supabase
+        .from('attachments')
+        .select('*')
+        .in('message_id', messageIds);
+
+      if (attachmentError) throw attachmentError;
+
+      const attachmentsByMessage = (attachments || []).reduce((acc, a) => {
+        if (!acc[a.message_id]) acc[a.message_id] = [];
+        acc[a.message_id].push(a);
+        return acc;
+      }, {} as Record<string, any[]>);
+
+      return messages.map(m => ({
         ...m,
-        sender: m.profiles,
-        attachments: m.attachments || []
+        sender: profileMap[m.sender_id] || { username: 'Unknown', profile_picture_url: null },
+        attachments: attachmentsByMessage[m.id] || []
       })) as Message[];
     },
     enabled: !!conversationId
@@ -206,13 +217,24 @@ export const useCreateConversation = () => {
 
       // Check if DM already exists
       if (type === 'dm' && participantIds.length === 1) {
-        const { data: existing } = await supabase.rpc('find_dm_conversation', {
-          user_a: user.id,
-          user_b: participantIds[0]
-        });
+        const { data: existingConvos } = await supabase
+          .from('conversation_participants')
+          .select('conversation_id, conversations!inner(type)')
+          .eq('user_id', user.id);
 
-        if (existing && existing.length > 0) {
-          return existing[0].id;
+        if (existingConvos) {
+          for (const convo of existingConvos) {
+            const { data: otherParticipant } = await supabase
+              .from('conversation_participants')
+              .select('user_id')
+              .eq('conversation_id', convo.conversation_id)
+              .neq('user_id', user.id)
+              .single();
+
+            if (otherParticipant && otherParticipant.user_id === participantIds[0]) {
+              return convo.conversation_id;
+            }
+          }
         }
       }
 
@@ -234,12 +256,12 @@ export const useCreateConversation = () => {
         { 
           conversation_id: conversation.id, 
           user_id: user.id,
-          role: 'owner' 
+          role: 'owner' as 'owner' | 'admin' | 'member'
         },
         ...participantIds.map(id => ({
           conversation_id: conversation.id,
           user_id: id,
-          role: 'member' as const
+          role: 'member' as 'owner' | 'admin' | 'member'
         }))
       ];
 

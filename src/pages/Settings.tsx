@@ -517,6 +517,38 @@ const Settings = () => {
             </CardContent>
           </Card>
 
+          {/* Privacy & Safety */}
+          <Card className="shadow-elevated">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="w-5 h-5 text-primary" />
+                Privacy & Safety
+              </CardTitle>
+              <CardDescription>
+                Manage blocked users and review community guidelines
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => navigate('/community-standards')}
+              >
+                Community Standards
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => {
+                  // Create a BlockedUsersDialog component or navigate to dedicated page
+                  toast.info("Blocked users management - navigate to Friends > Messages and access from menu");
+                }}
+              >
+                Blocked Users
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* Refer a Friend */}
           <Card className="shadow-elevated">
             <CardHeader>
