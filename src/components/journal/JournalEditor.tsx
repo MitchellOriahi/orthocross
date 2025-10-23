@@ -500,7 +500,7 @@ export const JournalEditor = ({
         )}
 
         {/* Bottom Toolbar */}
-        <div className="border-t border-border p-2 flex items-center justify-around bg-card/50" style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom))' }}>
+        <div className="journal-toolbar border-t border-border p-2 flex items-center justify-around bg-card/50">
           <Button
             variant="ghost"
             size="icon"
@@ -538,8 +538,8 @@ export const JournalEditor = ({
 
       {/* Full-screen Drawing Sheet */}
       {showDrawing && (
-        <div className="fixed inset-0 z-50 bg-background flex flex-col" style={{ height: '100dvh' }}>
-          <div className="p-3 border-b border-border flex items-center justify-between" style={{ paddingTop: 'calc(0.75rem + env(safe-area-inset-top))' }}>
+        <div className="journal-sheet fixed inset-0 z-50 bg-background flex flex-col">
+          <div className="journal-header p-3 border-b border-border flex items-center justify-between">
             <h3 className="text-lg font-semibold">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</h3>
             <Button
               variant="ghost"
@@ -553,7 +553,7 @@ export const JournalEditor = ({
               <X className="h-5 w-5" />
             </Button>
           </div>
-          <div className="flex-1 p-4 overflow-hidden" style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))' }}>
+          <div className="journal-content flex-1 p-4 overflow-hidden">
             <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
           </div>
         </div>

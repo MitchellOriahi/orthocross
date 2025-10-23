@@ -139,11 +139,11 @@ All colors MUST be HSL.
 
   /* iOS Safe Area Support */
   .safe-top {
-    padding-top: max(env(safe-area-inset-top), 2.5rem);
+    padding-top: env(safe-area-inset-top, 0.5rem);
   }
 
   .safe-bottom {
-    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+    padding-bottom: env(safe-area-inset-bottom, 0.5rem);
   }
 
   .safe-left {
@@ -161,6 +161,24 @@ All colors MUST be HSL.
 
   .safe-area-bottom {
     bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Journal-specific safe area classes */
+  .journal-sheet {
+    height: 100dvh !important;
+    padding-top: env(safe-area-inset-top) !important;
+  }
+
+  .journal-toolbar {
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .journal-header {
+    padding-top: calc(0.5rem + env(safe-area-inset-top)) !important;
+  }
+
+  .journal-content {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom)) !important;
   }
 }
 

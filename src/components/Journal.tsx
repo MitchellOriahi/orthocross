@@ -561,15 +561,11 @@ export const Journal = () => {
       <Sheet open={isFullScreen} onOpenChange={setIsFullScreen}>
         <SheetContent 
           side="bottom" 
-          className="h-[100dvh] w-screen p-0 max-w-none"
-          style={{
-            paddingTop: 'env(safe-area-inset-top)',
-            paddingBottom: 'env(safe-area-inset-bottom)'
-          }}
+          className="journal-sheet w-screen p-0 max-w-none"
         >
           <SheetTitle className="sr-only">Journal Editor</SheetTitle>
-          <div className="h-full flex flex-col pb-[env(safe-area-inset-bottom)]">
-            <div className="border-b border-border p-2 flex items-center bg-card" style={{ paddingTop: 'calc(0.5rem + env(safe-area-inset-top))' }}>
+          <div className="h-full flex flex-col">
+            <div className="journal-header border-b border-border p-2 flex items-center bg-card">
               {isMobile && selectedNoteId && !showNotesList && (
                 <Button
                   variant="ghost"
@@ -599,7 +595,7 @@ export const Journal = () => {
               {(!isMobile || showSidebar) && (
                 <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background' : 'w-48'}`}>
                   {isMobile && (
-                    <div className="p-2 border-b border-border flex items-center" style={{ paddingTop: 'calc(0.5rem + env(safe-area-inset-top))' }}>
+                    <div className="journal-header p-2 border-b border-border flex items-center">
                       <Button
                         variant="ghost"
                         size="icon"
