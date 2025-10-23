@@ -14,12 +14,12 @@ import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import completionCross from "@/assets/completion-cross-hq.png";
-import swordEmblem from "@/assets/armor/sword-emblem.png";
-import shieldEmblem from "@/assets/armor/shield-emblem.jpg";
-import bootEmblem from "@/assets/armor/boot-emblem.png";
-import beltEmblem from "@/assets/armor/belt-emblem.webp";
-import helmetEmblem from "@/assets/armor/helmet-emblem.png";
-import breastplateEmblem from "@/assets/armor/breastplate-emblem.webp";
+import swordEmblem from "@/assets/armor/sword-emblem-transparent.png";
+import shieldEmblem from "@/assets/armor/shield-emblem-transparent.png";
+import bootEmblem from "@/assets/armor/boot-emblem-transparent.png";
+import beltEmblem from "@/assets/armor/belt-emblem-transparent.png";
+import helmetEmblem from "@/assets/armor/helmet-emblem-transparent.png";
+import breastplateEmblem from "@/assets/armor/breastplate-emblem-transparent.png";
 import easternArmorEmblem from "@/assets/armor/eastern-armor-preview.png";
 import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview.png";
 
@@ -60,32 +60,35 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const getArmorEmblem = (awardPiece: string) => {
     const normalizedPiece = awardPiece.toLowerCase().replace(/_/g, ' ');
     
+    // Common image classes with drop shadow for depth
+    const imgClasses = "w-32 h-32 mx-auto mb-4 object-contain drop-shadow-lg";
+    
     switch (normalizedPiece) {
       case 'sword of spirit':
       case 'sword of the spirit':
-        return <img src={swordEmblem} alt="Sword" className="w-32 h-32 mx-auto mb-4 object-contain" />;
+        return <img src={swordEmblem} alt="Sword" className={imgClasses} />;
       
       case 'shield of faith':
-        return <img src={shieldEmblem} alt="Shield" className="w-32 h-32 mx-auto mb-4 object-contain" />;
+        return <img src={shieldEmblem} alt="Shield" className={imgClasses} />;
       
       case 'sandals of gospel of peace':
       case 'shoes of peace':
-        return <img src={bootEmblem} alt="Boots" className="w-32 h-32 mx-auto mb-4 object-contain" />;
+        return <img src={bootEmblem} alt="Boots" className={imgClasses} />;
       
       case 'belt of truth':
-        return <img src={beltEmblem} alt="Belt" className="w-32 h-32 mx-auto mb-4 object-contain" />;
+        return <img src={beltEmblem} alt="Belt" className={imgClasses} />;
       
       case 'helmet of salvation':
-        return <img src={helmetEmblem} alt="Helmet" className="w-32 h-32 mx-auto mb-4 object-contain" />;
+        return <img src={helmetEmblem} alt="Helmet" className={imgClasses} />;
       
       case 'breastplate of righteousness':
-        return <img src={breastplateEmblem} alt="Breastplate" className="w-32 h-32 mx-auto mb-4 object-contain" />;
+        return <img src={breastplateEmblem} alt="Breastplate" className={imgClasses} />;
       
       case 'full eastern armor':
-        return <img src={easternArmorEmblem} alt="Full Eastern Armor" className="w-32 h-32 mx-auto mb-4 object-contain" />;
+        return <img src={easternArmorEmblem} alt="Full Eastern Armor" className={imgClasses} />;
       
       case 'full oriental armor':
-        return <img src={orientalArmorEmblem} alt="Full Oriental Armor" className="w-32 h-32 mx-auto mb-4 object-contain" />;
+        return <img src={orientalArmorEmblem} alt="Full Oriental Armor" className={imgClasses} />;
       
       default:
         return <Shield className="w-32 h-32 mx-auto mb-4 text-primary" />;

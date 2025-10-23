@@ -392,7 +392,6 @@ export const JournalEditor = ({
       insertIntoContent(audioHtml);
       
       toast.success("Voice note inserted!");
-      setShowVoiceRecorder(false);
     } catch (error) {
       console.error('Error saving voice note:', error);
       toast.error("Failed to save voice note");
@@ -536,28 +535,21 @@ export const JournalEditor = ({
         </div>
       </div>
 
-      {/* Full-screen Drawing Sheet */}
-      {showDrawing && (
-        <div className="fixed inset-0 z-50 bg-background flex flex-col">
-          <div className="p-3 border-b border-border flex items-center justify-between">
-            <h3 className="text-lg font-semibold">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</h3>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {
-                setShowDrawing(false);
-                setEditingDrawingUrl(null);
-                setEditingDrawingElement(null);
-              }}
-            >
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
-          <div className="flex-1 p-4 overflow-hidden">
+      {/* Full-screen Drawing Interface */}
+      <Sheet open={showDrawing} onOpenChange={(open) => {
+        setShowDrawing(open);
+        if (!open) {
+          setEditingDrawingUrl(null);
+          setEditingDrawingElement(null);
+        }
+      }}>
+        <SheetContent side="bottom" className="h-[90vh] w-screen p-0 max-w-none">
+          <SheetTitle className="sr-only">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</SheetTitle>
+          <div className="h-full p-4">
             <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
           </div>
-        </div>
-      )}
+        </SheetContent>
+      </Sheet>
 
       {/* Image/Video Upload Sheet */}
       <Sheet open={showAttachments} onOpenChange={setShowAttachments}>
@@ -593,7 +585,10 @@ export const JournalEditor = ({
               <h3 className="text-lg font-semibold">Voice Recording</h3>
             </div>
             <div className="flex-1 p-4 flex items-center justify-center">
-              <VoiceRecorder onRecordingComplete={handleVoiceRecording} />
+              <VoiceRecorder 
+                onRecordingComplete={handleVoiceRecording}
+                onRecordingFinished={() => setShowVoiceRecorder(false)}
+              />
             </div>
           </div>
         </SheetContent>

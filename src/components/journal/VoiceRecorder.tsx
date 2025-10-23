@@ -5,9 +5,10 @@ import { toast } from "sonner";
 
 interface VoiceRecorderProps {
   onRecordingComplete?: (audioBlob: Blob) => void;
+  onRecordingFinished?: () => void;
 }
 
-export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
+export const VoiceRecorder = ({ onRecordingComplete, onRecordingFinished }: VoiceRecorderProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -60,6 +61,8 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
         clearInterval(timerRef.current);
       }
       toast.success("Recording saved");
+      // Close the voice recorder immediately
+      onRecordingFinished?.();
     }
   };
 
