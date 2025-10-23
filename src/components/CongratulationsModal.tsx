@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { DoveMascot } from "./DoveMascot";
 import { StreakFlame } from "./StreakFlame";
 import { Button } from "@/components/ui/button";
@@ -47,6 +47,7 @@ export const CongratulationsModal = ({
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
+        <DialogTitle className="sr-only">Reading Complete</DialogTitle>
         <div className="flex flex-col items-center justify-center py-8 px-4 space-y-6">
           {/* Animated Cross Logo or Saint Icon */}
           <div className="relative">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Flame, Book, Hand, Move, Settings } from "lucide-react";
 
@@ -77,6 +77,7 @@ export const TutorialIntro = () => {
   return (
     <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-md [&>button]:hidden" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+        <DialogTitle className="sr-only">App Tutorial</DialogTitle>
         <div className="flex flex-col items-center text-center space-y-6 py-6">
           {/* Icon */}
           <div className={`w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center ${slide.animation}`}>

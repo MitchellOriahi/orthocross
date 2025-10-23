@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy } from "lucide-react";
@@ -87,6 +87,7 @@ export const MonthlyPodiumModal = ({
         onInteractOutside={(e) => !canSkip && e.preventDefault()}
         onEscapeKeyDown={(e) => !canSkip && e.preventDefault()}
       >
+        <DialogTitle className="sr-only">Monthly Leaderboard Winners</DialogTitle>
         <div className="flex flex-col items-center justify-center py-8 px-4 space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-4xl font-bold text-foreground flex items-center justify-center gap-3">

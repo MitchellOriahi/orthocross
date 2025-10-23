@@ -65,6 +65,8 @@ export default function Friends() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+  const [requestToCancel, setRequestToCancel] = useState<string | null>(null);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showPodium, setShowPodium] = useState(false);
   const [podiumData, setPodiumData] = useState<PodiumEntry[]>([]);
   const [lastMonthName, setLastMonthName] = useState("");
@@ -392,14 +394,14 @@ export default function Friends() {
     }
   };
 
-  const handleCancelRequest = async (requestId: string) => {
-    if (!user) return;
+  const handleCancelRequest = async () => {
+    if (!user || !requestToCancel) return;
 
     try {
       const { error } = await supabase
         .from('friend_requests')
         .delete()
-        .eq('id', requestId);
+        .eq('id', requestToCancel);
 
       if (error) throw error;
 
@@ -410,6 +412,8 @@ export default function Friends() {
 
       refetch.sentRequests();
       refetch.receivedRequests();
+      setShowCancelDialog(false);
+      setRequestToCancel(null);
     } catch (error) {
       console.error("Error cancelling request:", error);
       toast({
@@ -786,7 +790,10 @@ export default function Friends() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleCancelRequest(request.id)}
+                            onClick={() => {
+                              setRequestToCancel(request.id);
+                              setShowCancelDialog(true);
+                            }}
                           >
                             Cancel
                           </Button>
@@ -1045,6 +1052,28 @@ export default function Friends() {
             <AlertDialogCancel onClick={() => setFriendToRemove(null)}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleRemoveFriend} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Friend Request</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel this friend request?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              setShowCancelDialog(false);
+              setRequestToCancel(null);
+            }}>
+              No, Keep It
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleCancelRequest} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Yes, Cancel Request
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

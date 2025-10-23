@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Trophy, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -56,6 +56,7 @@ export function CompletionCongratulationsModal({
           }
         }}
       >
+        <DialogTitle className="sr-only">100% Completion Achievement</DialogTitle>
         <div className="flex flex-col items-center justify-center py-8 space-y-6">
           {/* Animated Trophy */}
           <div className="relative">
