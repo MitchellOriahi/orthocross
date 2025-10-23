@@ -264,7 +264,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             </div>
 
 
-            <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
+            <div className="bg-white dark:bg-black border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
               <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
               <div className="relative">
                 {getArmorEmblem(island.awardPiece)}
