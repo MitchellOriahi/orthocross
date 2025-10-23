@@ -38,43 +38,44 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <MusicProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <TutorialIntro />
-          <BrowserRouter>
-            <AuthProvider>
-              <NotificationManager />
-              <Routes>
-              <Route path="/" element={<Auth />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/index" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/reading" element={<ProtectedRoute><Reading /></ProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-              <Route path="/church-resources" element={<ProtectedRoute><ChurchResources /></ProtectedRoute>} />
-               <Route path="/orthodox-history" element={<ProtectedRoute><OrthodoxHistory /></ProtectedRoute>} />
-                <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
-                <Route path="/friends/:friendId" element={<ProtectedRoute><FriendProfile /></ProtectedRoute>} />
-               <Route path="/admin/import" element={<ProtectedRoute><AdminRoute><AdminImport /></AdminRoute></ProtectedRoute>} />
-              <Route path="/admin/scripture-import" element={<ProtectedRoute><AdminRoute><ScriptureImport /></AdminRoute></ProtectedRoute>} />
-              <Route path="/crop-icons" element={<CropIcons />} />
-              <Route path="/support" element={<Support />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/data-safety" element={<DataSafety />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AuthProvider>
-          </BrowserRouter>
-        </TooltipProvider>
-      </MusicProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <MusicProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <TutorialIntro />
+            <BrowserRouter>
+              <AuthProvider>
+                <NotificationManager />
+                <Routes>
+                  <Route path="/" element={<Auth />} />
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/index" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                  <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                  <Route path="/reading" element={<ProtectedRoute><Reading /></ProtectedRoute>} />
+                  <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                  <Route path="/church-resources" element={<ProtectedRoute><ChurchResources /></ProtectedRoute>} />
+                  <Route path="/orthodox-history" element={<ProtectedRoute><OrthodoxHistory /></ProtectedRoute>} />
+                  <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
+                  <Route path="/friends/:friendId" element={<ProtectedRoute><FriendProfile /></ProtectedRoute>} />
+                  <Route path="/admin/import" element={<ProtectedRoute><AdminRoute><AdminImport /></AdminRoute></ProtectedRoute>} />
+                  <Route path="/admin/scripture-import" element={<ProtectedRoute><AdminRoute><ScriptureImport /></AdminRoute></ProtectedRoute>} />
+                  <Route path="/crop-icons" element={<CropIcons />} />
+                  <Route path="/support" element={<Support />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/data-safety" element={<DataSafety />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AuthProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </MusicProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
