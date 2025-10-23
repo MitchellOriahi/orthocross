@@ -569,6 +569,7 @@ export type Database = {
           streak_visible: boolean
           updated_at: string
           username: string | null
+          voice_recording_enabled: boolean | null
           wednesday_notifications_enabled: boolean | null
         }
         Insert: {
@@ -585,6 +586,7 @@ export type Database = {
           streak_visible?: boolean
           updated_at?: string
           username?: string | null
+          voice_recording_enabled?: boolean | null
           wednesday_notifications_enabled?: boolean | null
         }
         Update: {
@@ -601,6 +603,7 @@ export type Database = {
           streak_visible?: boolean
           updated_at?: string
           username?: string | null
+          voice_recording_enabled?: boolean | null
           wednesday_notifications_enabled?: boolean | null
         }
         Relationships: []

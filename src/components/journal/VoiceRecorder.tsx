@@ -47,8 +47,11 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
 
       toast.success("Recording started");
     } catch (error) {
-      toast.error("Failed to access microphone");
-      console.error(error);
+      console.error('Microphone access error:', error);
+      toast.error(
+        "Microphone access denied. Voice recording is optional - you can enable it in Settings if you'd like to use this feature.",
+        { duration: 5000 }
+      );
     }
   };
 

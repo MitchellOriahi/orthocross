@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -272,6 +272,18 @@ const Settings = () => {
     toast.success(visible ? "Activity is now visible to friends" : "Activity is now hidden from friends");
   };
 
+  const handleToggleVoiceRecording = async (enabled: boolean) => {
+    if (!user) return;
+    
+    await supabase
+      .from('profiles')
+      .update({ voice_recording_enabled: enabled })
+      .eq('id', user.id);
+    
+    await refetchProfile();
+    toast.success(enabled ? "Voice recording enabled" : "Voice recording disabled");
+  };
+
   const handleReferFriend = async (method: 'native' | 'email' | 'sms') => {
     const appUrl = window.location.origin;
     const message = `Check out OrthoCross - a daily spiritual practice app with Bible reading streaks, fasting reminders, and Orthodox learning! ${appUrl}`;
@@ -512,6 +524,33 @@ const Settings = () => {
                 <Switch
                   checked={activityVisible}
                   onCheckedChange={handleToggleActivityVisibility}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Journal Features */}
+          <Card className="shadow-elevated">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mic className="w-5 h-5 text-primary" />
+                Journal Features
+              </CardTitle>
+              <CardDescription>
+                Enable or disable optional journal features
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="font-medium">Voice Recording</p>
+                  <p className="text-sm text-muted-foreground">
+                    Allow recording voice notes in your journal (requires microphone access)
+                  </p>
+                </div>
+                <Switch
+                  checked={(profile as any)?.voice_recording_enabled ?? false}
+                  onCheckedChange={handleToggleVoiceRecording}
                 />
               </div>
             </CardContent>
