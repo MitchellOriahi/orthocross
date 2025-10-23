@@ -434,15 +434,13 @@ const Settings = () => {
                 />
               </div>
               
-              {fastingNotificationsEnabled && (
-                <Button
-                  variant="outline"
-                  onClick={() => setShowFastingPreferencesDialog(true)}
-                  className="w-full"
-                >
-                  Configure Reminders
-                </Button>
-              )}
+              <Button
+                variant="outline"
+                onClick={() => setShowFastingPreferencesDialog(true)}
+                className="w-full"
+              >
+                Configure Reminders
+              </Button>
               
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="space-y-1">
@@ -457,15 +455,13 @@ const Settings = () => {
                 />
               </div>
               
-              {streakNotificationsEnabled && (
-                <Button
-                  variant="outline"
-                  onClick={() => setShowStreakReminderDialog(true)}
-                  className="w-full"
-                >
-                  Configure Reminders
-                </Button>
-              )}
+              <Button
+                variant="outline"
+                onClick={() => setShowStreakReminderDialog(true)}
+                className="w-full"
+              >
+                Configure Reminders
+              </Button>
 
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="space-y-1">
