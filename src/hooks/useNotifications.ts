@@ -3,15 +3,15 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { getVerseOfTheDay } from '@/lib/verseOfTheDay';
 
 export interface ReminderTime {
-  id: number;
+  id: string;
   hour: number;
   minute: number;
   enabled: boolean;
 }
 
 const DEFAULT_REMINDERS: ReminderTime[] = [
-  { id: 1, hour: 12, minute: 0, enabled: false }, // Verse of the day at noon (off by default)
-  { id: 2, hour: 18, minute: 0, enabled: true }, // Streak reminder at 6pm
+  { id: '1', hour: 12, minute: 0, enabled: false }, // Verse of the day at noon (off by default)
+  { id: '2', hour: 18, minute: 0, enabled: true }, // Streak reminder at 6pm
 ];
 
 export const useNotifications = () => {
@@ -101,7 +101,7 @@ export const useNotifications = () => {
           return {
             title,
             body,
-            id: 1000 + reminder.id,
+            id: parseInt(`1000${reminder.id}`, 10),
             schedule: {
               at: scheduledDate,
               repeats: true,

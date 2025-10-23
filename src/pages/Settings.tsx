@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useMusic } from "@/contexts/MusicContext";
 import { useNotifications, ReminderTime } from "@/hooks/useNotifications";
@@ -63,7 +64,7 @@ const Settings = () => {
     
     if (data) {
       const formattedReminders: ReminderTime[] = data.map(r => ({
-        id: parseInt(r.id.split('-')[0], 16), // Convert uuid to number for local id
+        id: r.id, // Use actual DB UUID
         hour: r.hour,
         minute: r.minute,
         enabled: r.enabled
@@ -73,62 +74,43 @@ const Settings = () => {
   };
 
 
-  const handleToggleReminder = async (id: number) => {
+  const handleToggleReminder = async (id: string) => {
     if (!user) return;
     
     const reminder = reminders.find(r => r.id === id);
     if (!reminder) return;
     
-    // Find the database record by matching hour and minute
-    const { data: dbReminders } = await supabase
+    await supabase
       .from('user_streak_reminders')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('hour', reminder.hour)
-      .eq('minute', reminder.minute)
-      .single();
+      .update({ enabled: !reminder.enabled })
+      .eq('id', id);
     
-    if (dbReminders) {
-      await supabase
-        .from('user_streak_reminders')
-        .update({ enabled: !reminder.enabled })
-        .eq('id', dbReminders.id);
-      
-      const updated = reminders.map(r => 
-        r.id === id ? { ...r, enabled: !r.enabled } : r
-      );
-      setReminders(updated);
-      toast.success("Reminder updated");
-    }
+    const updated = reminders.map(r => 
+      r.id === id ? { ...r, enabled: !r.enabled } : r
+    );
+    setReminders(updated);
+    await scheduleStreakReminders();
+    toast.success("Reminder updated");
   };
 
-  const handleTimeChange = async (id: number, hour: number, minute: number) => {
+  const handleTimeChange = async (id: string, hour: number, minute: number) => {
     if (!user) return;
     
-    const reminder = reminders.find(r => r.id === id);
-    if (!reminder) return;
+    // Validate hour and minute
+    const validHour = Math.max(0, Math.min(23, hour));
+    const validMinute = Math.max(0, Math.min(59, minute));
     
-    // Find the database record
-    const { data: dbReminders } = await supabase
+    await supabase
       .from('user_streak_reminders')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('hour', reminder.hour)
-      .eq('minute', reminder.minute)
-      .single();
+      .update({ hour: validHour, minute: validMinute })
+      .eq('id', id);
     
-    if (dbReminders) {
-      await supabase
-        .from('user_streak_reminders')
-        .update({ hour, minute })
-        .eq('id', dbReminders.id);
-      
-      const updated = reminders.map(r => 
-        r.id === id ? { ...r, hour, minute } : r
-      );
-      setReminders(updated);
-      toast.success("Reminder time updated");
-    }
+    const updated = reminders.map(r => 
+      r.id === id ? { ...r, hour: validHour, minute: validMinute } : r
+    );
+    setReminders(updated);
+    await scheduleStreakReminders();
+    toast.success("Reminder time updated");
   };
 
   const handleAddReminder = async () => {
@@ -156,31 +138,18 @@ const Settings = () => {
     }
   };
 
-  const handleDeleteReminder = async (id: number) => {
+  const handleDeleteReminder = async (id: string) => {
     if (!user) return;
     
-    const reminder = reminders.find(r => r.id === id);
-    if (!reminder) return;
-    
-    // Find and delete the database record
-    const { data: dbReminders } = await supabase
+    await supabase
       .from('user_streak_reminders')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('hour', reminder.hour)
-      .eq('minute', reminder.minute)
-      .single();
+      .delete()
+      .eq('id', id);
     
-    if (dbReminders) {
-      await supabase
-        .from('user_streak_reminders')
-        .delete()
-        .eq('id', dbReminders.id);
-      
-      const updated = reminders.filter(r => r.id !== id);
-      setReminders(updated);
-      toast.success("Reminder deleted");
-    }
+    const updated = reminders.filter(r => r.id !== id);
+    setReminders(updated);
+    await scheduleStreakReminders();
+    toast.success("Reminder deleted");
   };
 
   const handleToggleFastingNotifications = async (enabled: boolean) => {
@@ -450,30 +419,46 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="space-y-3">
                 <div className="space-y-1">
                   <p className="font-medium">Fasting Notifications</p>
                   <p className="text-sm text-muted-foreground">
                     Get notified about upcoming fasts and feasts
                   </p>
                 </div>
-                <Switch
-                  checked={fastingNotificationsEnabled}
-                  onCheckedChange={handleToggleFastingNotifications}
-                />
+                <Select 
+                  value={fastingNotificationsEnabled ? "on" : "off"}
+                  onValueChange={(value) => handleToggleFastingNotifications(value === "on")}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="off">Off</SelectItem>
+                    <SelectItem value="on">On - Configure Preferences</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
-              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+              <div className="space-y-3 pt-4 border-t border-border/50">
                 <div className="space-y-1">
                   <p className="font-medium">Streak Notifications</p>
                   <p className="text-sm text-muted-foreground">
                     Get reminders to maintain your reading streak
                   </p>
                 </div>
-                <Switch
-                  checked={streakNotificationsEnabled}
-                  onCheckedChange={handleToggleStreakNotifications}
-                />
+                <Select 
+                  value={streakNotificationsEnabled ? "on" : "off"}
+                  onValueChange={(value) => handleToggleStreakNotifications(value === "on")}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="off">Off</SelectItem>
+                    <SelectItem value="on">On - Configure Reminders</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-border/50">

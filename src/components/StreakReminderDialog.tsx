@@ -5,7 +5,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 interface ReminderTime {
-  id: number;
+  id: string;
   hour: number;
   minute: number;
   enabled: boolean;
@@ -16,9 +16,9 @@ interface StreakReminderDialogProps {
   onOpenChange: (open: boolean) => void;
   reminders: ReminderTime[];
   onAddReminder: () => void;
-  onDeleteReminder: (id: number) => void;
-  onToggleReminder: (id: number) => void;
-  onTimeChange: (id: number, hour: number, minute: number) => void;
+  onDeleteReminder: (id: string) => void;
+  onToggleReminder: (id: string) => void;
+  onTimeChange: (id: string, hour: number, minute: number) => void;
 }
 
 const StreakReminderDialog = ({ 
@@ -53,8 +53,13 @@ const StreakReminderDialog = ({
                   min="0"
                   max="23"
                   value={reminder.hour}
-                  onChange={(e) => onTimeChange(reminder.id, parseInt(e.target.value), reminder.minute)}
-                  className="w-16 px-2 py-1 border border-border rounded text-center bg-background"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '') return;
+                    const hour = Math.max(0, Math.min(23, parseInt(value) || 0));
+                    onTimeChange(reminder.id, hour, reminder.minute);
+                  }}
+                  className="w-16 px-2 py-1 border border-border rounded text-center bg-background text-foreground"
                   disabled={!reminder.enabled}
                 />
                 <span>:</span>
@@ -63,8 +68,13 @@ const StreakReminderDialog = ({
                   min="0"
                   max="59"
                   value={reminder.minute.toString().padStart(2, '0')}
-                  onChange={(e) => onTimeChange(reminder.id, reminder.hour, parseInt(e.target.value))}
-                  className="w-16 px-2 py-1 border border-border rounded text-center bg-background"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '') return;
+                    const minute = Math.max(0, Math.min(59, parseInt(value) || 0));
+                    onTimeChange(reminder.id, reminder.hour, minute);
+                  }}
+                  className="w-16 px-2 py-1 border border-border rounded text-center bg-background text-foreground"
                   disabled={!reminder.enabled}
                 />
               </div>
