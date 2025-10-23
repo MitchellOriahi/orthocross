@@ -27,7 +27,6 @@ import ScriptureImport from "./pages/ScriptureImport";
 import Support from "./pages/Support";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DataSafety from "./pages/DataSafety";
-import CommunityStandards from "./pages/CommunityStandards";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -67,7 +66,6 @@ const App = () => (
               <Route path="/support" element={<Support />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/data-safety" element={<DataSafety />} />
-              <Route path="/community-standards" element={<CommunityStandards />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
               </Routes>

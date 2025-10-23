@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X, ChevronDown, ChevronUp, MessageSquare } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -25,11 +25,6 @@ import { useFriendsData } from "@/hooks/useFriendsData";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Friend } from "@/hooks/useFriendsData";
-import { ConversationList } from "@/components/messaging/ConversationList";
-import { MessageThread } from "@/components/messaging/MessageThread";
-import { CreateConversationDialog } from "@/components/messaging/CreateConversationDialog";
-import type { Conversation } from "@/hooks/useMessaging";
-import { useCreateConversation } from "@/hooks/useMessaging";
 
 interface PodiumEntry {
   id: string;
@@ -51,7 +46,6 @@ export default function Friends() {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const queryClient = useQueryClient();
-  const createConversation = useCreateConversation();
   
   // Use the friends data hook
   const { 
@@ -74,11 +68,6 @@ export default function Friends() {
   const [showPodium, setShowPodium] = useState(false);
   const [podiumData, setPodiumData] = useState<PodiumEntry[]>([]);
   const [lastMonthName, setLastMonthName] = useState("");
-  
-  // Messaging state
-  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
-  const [showCreateConversation, setShowCreateConversation] = useState(false);
-  
   const [activityTabOpen, setActivityTabOpen] = useState(() => {
     const saved = localStorage.getItem('friendActivityTabOpen');
     return saved !== null ? JSON.parse(saved) : true;
@@ -628,32 +617,6 @@ export default function Friends() {
     return user?.email?.substring(0, 2).toUpperCase() || "U";
   };
 
-  const handleStartDM = async (friendId: string) => {
-    if (!user) return;
-    
-    try {
-      const conversationId = await createConversation.mutateAsync({
-        type: 'dm',
-        participantIds: [friendId]
-      });
-      
-      // Switch to messages tab and select the conversation
-      const tabTrigger = document.querySelector('[value="messages"]') as HTMLElement;
-      tabTrigger?.click();
-      
-      // Give time for the tab to switch, then find and select the conversation
-      setTimeout(() => {
-        const conversations = document.querySelectorAll('[data-conversation-id]');
-        const targetConvo = Array.from(conversations).find(
-          el => el.getAttribute('data-conversation-id') === conversationId
-        ) as HTMLElement;
-        targetConvo?.click();
-      }, 100);
-    } catch (error) {
-      console.error('Failed to start DM:', error);
-    }
-  };
-
   return (
     <div className="min-h-screen gradient-peaceful pb-20 overflow-x-hidden">
       {/* Header */}
@@ -696,14 +659,10 @@ export default function Friends() {
       <main className="container mx-auto px-4 py-8 space-y-4">
       
       <Tabs defaultValue="friends" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="friends">
             <Users className="h-4 w-4 mr-2" />
             Friends
-          </TabsTrigger>
-          <TabsTrigger value="messages">
-            <MessageSquare className="h-4 w-4 mr-2" />
-            Messages
           </TabsTrigger>
           <TabsTrigger value="leaderboard">
             <Trophy className="h-4 w-4 mr-2" />
@@ -880,17 +839,6 @@ export default function Friends() {
                               size="icon"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleStartDM(friend.id);
-                              }}
-                              className="hover:bg-primary/10"
-                            >
-                              <MessageSquare className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={(e) => {
-                                e.stopPropagation();
                                 setFriendToRemove(friend);
                                 setShowRemoveDialog(true);
                               }}
@@ -1030,32 +978,6 @@ export default function Friends() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="messages" className="space-y-4">
-          {selectedConversation ? (
-            <MessageThread 
-              conversation={selectedConversation}
-              onBack={() => setSelectedConversation(null)}
-            />
-          ) : (
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Messages</CardTitle>
-                  <Button onClick={() => setShowCreateConversation(true)}>
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    New Chat
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <ConversationList 
-                  onSelectConversation={setSelectedConversation}
-                />
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
         <TabsContent value="leaderboard" className="space-y-4">
           <Card>
             <CardHeader>
@@ -1133,15 +1055,6 @@ export default function Friends() {
         onClose={handlePodiumClose}
         topThree={podiumData}
         monthName={lastMonthName}
-      />
-
-      <CreateConversationDialog
-        open={showCreateConversation}
-        onClose={() => setShowCreateConversation(false)}
-        onConversationCreated={(conversationId) => {
-          setShowCreateConversation(false);
-          // Could optionally auto-select the conversation here
-        }}
       />
 
       <BottomNavigation />
