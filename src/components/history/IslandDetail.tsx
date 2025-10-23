@@ -14,12 +14,12 @@ import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import completionCross from "@/assets/completion-cross-hq.png";
-import swordEmblem from "@/assets/armor/sword-emblem-transparent.png";
-import shieldEmblem from "@/assets/armor/shield-emblem-transparent.png";
-import bootEmblem from "@/assets/armor/boot-emblem-transparent.png";
-import beltEmblem from "@/assets/armor/belt-emblem-transparent.png";
-import helmetEmblem from "@/assets/armor/helmet-emblem-transparent.png";
-import breastplateEmblem from "@/assets/armor/breastplate-emblem-transparent.png";
+import swordEmblem from "@/assets/armor/sword-emblem-final.png";
+import shieldEmblem from "@/assets/armor/shield-emblem-final.png";
+import bootEmblem from "@/assets/armor/boot-emblem-final.png";
+import beltEmblem from "@/assets/armor/belt-emblem-final.png";
+import helmetEmblem from "@/assets/armor/helmet-emblem-final.png";
+import breastplateEmblem from "@/assets/armor/breastplate-emblem-final.png";
 import easternArmorEmblem from "@/assets/armor/eastern-armor-preview.png";
 import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview.png";
 
@@ -60,8 +60,8 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const getArmorEmblem = (awardPiece: string) => {
     const normalizedPiece = awardPiece.toLowerCase().replace(/_/g, ' ');
     
-    // Common image classes with drop shadow for depth
-    const imgClasses = "w-32 h-32 mx-auto mb-4 object-contain drop-shadow-lg";
+    // Common image classes - filter for theme-appropriate coloring
+    const imgClasses = "w-32 h-32 mx-auto mb-4 object-contain dark:invert";
     
     switch (normalizedPiece) {
       case 'sword of spirit':
