@@ -418,7 +418,7 @@ export const Journal = () => {
   return (
     <>
       <Card 
-        className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow mt-10 safe-top"
+        className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow mt-10"
         onClick={() => !isFullScreen && setIsFullScreen(true)}
       >
         <div className={pinnedMediaUrl && pinnedMediaType ? "h-[300px] overflow-hidden" : "h-[200px] overflow-hidden"}>
