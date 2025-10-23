@@ -25,7 +25,7 @@ const Settings = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
-  const { updateStreakReminders, getStreakReminders, scheduleStreakReminders } = useNotifications();
+  const { updateStreakReminders, getStreakReminders, scheduleStreakReminders, scheduleAllFastingReminders } = useNotifications();
   const { user, signOut } = useAuth();
   const [reminders, setReminders] = useState<ReminderTime[]>([]);
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(false);
@@ -184,7 +184,10 @@ const Settings = () => {
       })
       .eq('id', user.id);
     
-    toast.success("Fasting notification preferences saved");
+    // Schedule all fasting notifications
+    await scheduleAllFastingReminders(user.id);
+    
+    toast.success("Fasting notification preferences saved and scheduled");
   };
 
   const handleToggleStreakNotifications = async (enabled: boolean) => {

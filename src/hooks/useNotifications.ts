@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { getVerseOfTheDay } from '@/lib/verseOfTheDay';
+import { supabase } from '@/integrations/supabase/client';
+import { getAllFastingEvents } from '@/data/fastingEvents';
 
 export interface ReminderTime {
   id: string;
@@ -215,10 +217,106 @@ export const useNotifications = () => {
     return saved ? JSON.parse(saved) : DEFAULT_REMINDERS;
   };
 
+  const scheduleAllFastingReminders = async (userId: string) => {
+    try {
+      // Get user's fasting preferences
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('fasting_reminder_days, fasting_notifications_enabled, wednesday_notifications_enabled')
+        .eq('id', userId)
+        .single();
+
+      if (!profile?.fasting_notifications_enabled) {
+        console.log('Fasting notifications disabled');
+        return;
+      }
+
+      // Get all fasting/feast events for the current year
+      const currentYear = new Date().getFullYear();
+      const events = getAllFastingEvents(currentYear);
+      
+      // Use all events (both Eastern and Oriental traditions)
+      const filteredEvents = events;
+
+      // Cancel existing fasting notifications (IDs 2000-2999)
+      const cancelIds = Array.from({ length: 1000 }, (_, i) => ({ id: 2000 + i }));
+      await LocalNotifications.cancel({ notifications: cancelIds });
+
+      // Schedule notifications for each major event
+      const majorEvents = filteredEvents.filter(e => e.isMajor);
+      
+      for (const event of majorEvents) {
+        const eventDate = new Date(currentYear, event.month - 1, event.day);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Only schedule if event is in the future
+        if (eventDate < today) continue;
+
+        // Schedule based on user's preference
+        const reminderDays = profile.fasting_reminder_days || [3, 0];
+        
+        for (const daysBefore of reminderDays) {
+          await scheduleFastingReminder(
+            event.name,
+            event.type,
+            event.tradition,
+            eventDate,
+            daysBefore
+          );
+        }
+      }
+
+      // Handle Wednesday fasting notifications if enabled
+      if (profile.wednesday_notifications_enabled) {
+        await scheduleWednesdayReminders();
+      }
+
+      console.log(`Scheduled fasting reminders for ${majorEvents.length} events`);
+    } catch (error) {
+      console.log('Error scheduling fasting reminders:', error);
+    }
+  };
+
+  const scheduleWednesdayReminders = async () => {
+    try {
+      // Schedule Wednesday fasting reminders for the next 12 weeks
+      const notifications = [];
+      const today = new Date();
+      
+      for (let i = 0; i < 12; i++) {
+        const nextWednesday = new Date(today);
+        nextWednesday.setDate(today.getDate() + ((3 - today.getDay() + 7) % 7) + (i * 7));
+        nextWednesday.setHours(8, 0, 0, 0); // 8 AM reminder
+        
+        if (nextWednesday > today) {
+          notifications.push({
+            title: "🕊️ Wednesday Fast",
+            body: "Today is Wednesday. Remember to observe the fast.",
+            id: 3000 + i,
+            schedule: { at: nextWednesday },
+            sound: 'default',
+            smallIcon: 'ic_stat_icon',
+            iconColor: '#8B4513',
+            channelId: 'orthocross-fasting',
+          });
+        }
+      }
+
+      if (notifications.length > 0) {
+        await LocalNotifications.schedule({ notifications });
+        console.log(`Scheduled ${notifications.length} Wednesday fast reminders`);
+      }
+    } catch (error) {
+      console.log('Error scheduling Wednesday reminders:', error);
+    }
+  };
+
   return { 
     scheduleNotification, 
     scheduleStreakReminders,
     scheduleFastingReminder,
+    scheduleAllFastingReminders,
     updateStreakReminders,
     getStreakReminders,
   };
