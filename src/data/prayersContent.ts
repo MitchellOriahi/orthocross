@@ -161,9 +161,9 @@ export const prayersContent: PrayerDetail[] = [
     title: "Ancient Egyptian Tradition",
     tradition: "Oriental",
     content: [
-      "Je Peniot etqen nivhoui, mareftobo nje pekran. Maresie nje tekmetouro. Petehnak marefshopi em-pka-hi nem qen tve. Penwik nte racti mhif nan emvoou. Ooh ka nevetoferi nan evol, em-efriti on enhwn enka na etetni evol. Ooh empertenen eqoun epirasmos, alla nahmen evol ha pipethwou. Qen Pixristos Iisous Penxois. Je qwk te timet-ouro nem tijim nem pi-oo-ou, shavenenh nte ni-eneh. Amiin.",
+      "Our Father who art in the heavens, hallowed be Your name. Your kingdom come. Your will be done on earth as it is in heaven. Give us this day our daily bread. And forgive us our trespasses as we forgive those who trespass against us. And lead us not into temptation, but deliver us from evil. Through Christ Jesus our Lord. For Yours is the kingdom and the power and the glory forever and ever. Amen.",
       
-      "This is the Lord's Prayer as preserved in the Coptic language, the last stage of the ancient Egyptian language written in Greek letters. The Coptic Orthodox Church maintains this ancient tradition of praying in the language of the early Egyptian Christians, directly descended from the tongue of the Pharaohs.",
+      "This is the Lord's Prayer as preserved in the Coptic language (Je Peniot etqen nivhoui, mareftobo nje pekran. Maresie nje tekmetouro. Petehnak marefshopi em-pka-hi nem qen tve. Penwik nte racti mhif nan emvoou. Ooh ka nevetoferi nan evol, em-efriti on enhwn enka na etetni evol. Ooh empertenen eqoun epirasmos, alla nahmen evol ha pipethwou. Qen Pixristos Iisous Penxois. Je qwk te timet-ouro nem tijim nem pi-oo-ou, shavenenh nte ni-eneh. Amiin), the last stage of the ancient Egyptian language written in Greek letters. The Coptic Orthodox Church maintains this ancient tradition of praying in the language of the early Egyptian Christians, directly descended from the tongue of the Pharaohs.",
       
       "The Coptic Church traces its origins to St. Mark the Evangelist, who brought Christianity to Alexandria around 42-48 AD. Within a few generations, the Christian faith had spread throughout Egypt. As Christianity took root, the Egyptian language adopted Greek letters plus seven additional characters from Demotic Egyptian to create the Coptic alphabet.",
       
@@ -240,9 +240,9 @@ export const prayersContent: PrayerDetail[] = [
     title: "Ancient Armenian Tradition",
     tradition: "Oriental",
     content: [
-      "Barekh, Asdvadz mer, barekh zkez. Ter, Ter mer Yesus Kristos, parakhemk u mek paytzar, vorov khndrenk zkez. Yes kam dzarraget ko Havdk, Ter, Ter im Yesus Kristos. Havitianorman antsi.",
-      
       "Blessed are You, O God our God, blessed are You. Lord, our Lord Jesus Christ, we beseech You to come and be revealed, that we may serve You. I desire to be a servant of Your faith, Lord, my Lord Jesus Christ. Amen to the believer.",
+      
+      "This prayer in classical Armenian (Barekh, Asdvadz mer, barekh zkez. Ter, Ter mer Yesus Kristos, parakhemk u mek paytzar, vorov khndrenk zkez. Yes kam dzarraget ko Havdk, Ter, Ter im Yesus Kristos. Havitianorman antsi) is part of the ancient Armenian liturgical tradition.",
       
       "The Armenian Apostolic Church has one of the longest continuous histories of any Christian community, traditionally tracing its origins to the evangelization of Armenia by the Apostles Bartholomew and Thaddeus in the first century. In 301 AD, Armenia became the first nation to officially adopt Christianity as its state religion under King Tiridates III and St. Gregory the Illuminator.",
       
@@ -269,9 +269,9 @@ export const prayersContent: PrayerDetail[] = [
     title: "Ancient Ethiopian Tradition",
     tradition: "Oriental",
     content: [
-      "Selam lek'i Mariyam, meliete mhret. Egzi'abher misilek'i. Kab dehrit setoch tiburkish. Wey bereke welde chbrek'ish Iyesus. Kidist Mariyam yehitatan inat egziabheren estewesniw, ahun, and besiwet giziw amen.",
-      
       "Hail Mary, full of grace. The Lord is with you. Blessed are you among women, and blessed is the fruit of your womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.",
+      
+      "This prayer in Ge'ez (Selam lek'i Mariyam, meliete mhret. Egzi'abher misilek'i. Kab dehrit setoch tiburkish. Wey bereke welde chbrek'ish Iyesus. Kidist Mariyam yehitatan inat egziabheren estewesniw, ahun, and besiwet giziw amen), the ancient Ethiopian liturgical language, has been prayed for over a millennium.",
       
       "The Ethiopian Orthodox Tewahedo Church traces its origins to the baptism of the Ethiopian eunuch by Philip the Deacon (Acts 8:26-40) and the subsequent evangelization of Ethiopia. According to tradition, Christianity was further established when the Syrian monks known as the 'Nine Saints' arrived in the 5th century, translating the Bible and liturgical texts into Ge'ez, the ancient Ethiopian liturgical language.",
       
@@ -298,9 +298,9 @@ export const prayersContent: PrayerDetail[] = [
     title: "Ancient Syriac Tradition",
     tradition: "Oriental",
     content: [
-      "Mar'yo dain lekhulhun basmaya war'o walmadnhoyo, hannan walrahamono dain lekhulhun methasnino bar'khmar. Barekhmar aloho abukhon dasmayo war'o. Hawaw meshab'hin lekhulhun madnhaye methasnino bar'khmar.",
-      
       "Lord, Judge of all in heaven and on earth, merciful and compassionate to all who implore, bless us. Blessed is God, your Father in heaven and on earth. Let us all glorify the Merciful One, bless us.",
+      
+      "This prayer in Syriac (Mar'yo dain lekhulhun basmaya war'o walmadnhoyo, hannan walrahamono dain lekhulhun methasnino bar'khmar. Barekhmar aloho abukhon dasmayo war'o. Hawaw meshab'hin lekhulhun madnhaye methasnino bar'khmar), a dialect of Aramaic - the language Jesus spoke - is part of the ancient Syriac Divine Liturgy.",
       
       "The Syriac Orthodox Church, also known as the Syrian Orthodox Church, traces its roots to the church established in Antioch where 'the disciples were first called Christians' (Acts 11:26). The Syriac liturgical tradition is one of the oldest continuous Christian liturgical traditions, with prayers and hymns dating back to the first and second centuries.",
       
