@@ -7,10 +7,12 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfileData } from "@/hooks/useProfileData";
 import { ImageCropper } from "./ImageCropper";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ProfilePictureUpload() {
   const { user } = useAuth();
   const { profile, refetch } = useProfileData();
+  const queryClient = useQueryClient();
   const [uploading, setUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -61,20 +63,23 @@ export default function ProfilePictureUpload() {
 
       if (uploadError) throw uploadError;
 
-      // Get public URL
+      // Get public URL with cache-busting timestamp
       const { data: { publicUrl } } = supabase.storage
         .from('profile-pictures')
         .getPublicUrl(filePath);
+      
+      const urlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
 
       // Update profile
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ profile_picture_url: publicUrl })
+        .update({ profile_picture_url: urlWithCacheBust })
         .eq('id', user.id);
 
       if (updateError) throw updateError;
 
-      await refetch();
+      // Invalidate all profile queries to update everywhere
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
       setSelectedImage(null);
       setSelectedFile(null);
       toast.success('Profile picture updated!');
@@ -113,15 +118,18 @@ export default function ProfilePictureUpload() {
       const { data: { publicUrl } } = supabase.storage
         .from('profile-pictures')
         .getPublicUrl(filePath);
+      
+      const urlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
 
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ profile_picture_url: publicUrl })
+        .update({ profile_picture_url: urlWithCacheBust })
         .eq('id', user.id);
 
       if (updateError) throw updateError;
 
-      await refetch();
+      // Invalidate all profile queries to update everywhere
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
       setSelectedImage(null);
       setSelectedFile(null);
       toast.success('Profile picture updated!');
