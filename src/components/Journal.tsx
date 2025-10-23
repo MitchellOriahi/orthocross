@@ -559,13 +559,10 @@ export const Journal = () => {
       </Card>
 
       <Sheet open={isFullScreen} onOpenChange={setIsFullScreen}>
-        <SheetContent 
-          side="bottom" 
-          className="journal-sheet w-screen p-0 max-w-none"
-        >
+        <SheetContent side="bottom" className="h-screen w-screen p-0 max-w-none">
           <SheetTitle className="sr-only">Journal Editor</SheetTitle>
           <div className="h-full flex flex-col">
-            <div className="journal-header border-b border-border p-2 flex items-center bg-card">
+            <div className="border-b border-border p-2 flex items-center bg-card">
               {isMobile && selectedNoteId && !showNotesList && (
                 <Button
                   variant="ghost"

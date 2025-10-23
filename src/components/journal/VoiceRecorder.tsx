@@ -47,13 +47,8 @@ export const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
 
       toast.success("Recording started");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      if (errorMessage.includes("Permission denied") || errorMessage.includes("NotAllowedError")) {
-        toast.error("Microphone access denied. Voice recording is optional - you can use other features instead.");
-      } else {
-        toast.error("Failed to access microphone. Voice recording is optional.");
-      }
-      console.error("Microphone error:", error);
+      toast.error("Failed to access microphone");
+      console.error(error);
     }
   };
 

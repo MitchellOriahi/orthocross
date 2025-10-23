@@ -506,7 +506,6 @@ export const JournalEditor = ({
             size="icon"
             onClick={handleHighlight}
             className="h-10 w-10"
-            title="Highlight text"
           >
             <Highlighter className="h-5 w-5" />
           </Button>
@@ -515,7 +514,6 @@ export const JournalEditor = ({
             size="icon"
             onClick={() => setShowDrawing(true)}
             className="h-10 w-10"
-            title="Draw"
           >
             <Pencil className="h-5 w-5" />
           </Button>
@@ -524,7 +522,6 @@ export const JournalEditor = ({
             size="icon"
             onClick={() => setShowAttachments(true)}
             className="h-10 w-10"
-            title="Insert images/videos"
           >
             <ImageIcon className="h-5 w-5" />
           </Button>
@@ -533,7 +530,6 @@ export const JournalEditor = ({
             size="icon"
             onClick={() => setShowVoiceRecorder(true)}
             className="h-10 w-10"
-            title="Record voice note (optional)"
           >
             <Mic className="h-5 w-5" />
           </Button>
