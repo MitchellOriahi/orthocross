@@ -41,7 +41,20 @@ serve(async (req) => {
     if (!response.ok) {
       const error = await response.text()
       console.error('OpenAI API error:', error)
-      throw new Error('Failed to generate speech')
+      
+      // Try to parse error for better messaging
+      try {
+        const errorData = JSON.parse(error)
+        if (errorData.error?.code === 'insufficient_quota') {
+          throw new Error('OpenAI quota exceeded. Please add credits to your OpenAI account.')
+        }
+        throw new Error(errorData.error?.message || 'Failed to generate speech')
+      } catch (e) {
+        if (e instanceof Error && e.message.includes('OpenAI')) {
+          throw e
+        }
+        throw new Error('Failed to generate speech')
+      }
     }
 
     const arrayBuffer = await response.arrayBuffer()
