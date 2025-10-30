@@ -14,6 +14,7 @@ import { ChapterSelector } from "@/components/ChapterSelector";
 import { bibleContent, BIBLE_BOOKS } from "@/data/bibleContent";
 import { useTheme } from "next-themes";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { TextToSpeechPlayer } from "@/components/TextToSpeechPlayer";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 
@@ -613,6 +614,9 @@ const Reading = () => {
             </div>
             
             <div className="flex items-center gap-1 sm:gap-2">
+              <TextToSpeechPlayer 
+                text={verses.map(v => v.text).join(' ')}
+              />
               <Button
                 variant={readingMode === "scroll" ? "default" : "outline"}
                 size="sm"

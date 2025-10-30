@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, Highlighter, BookOpen, Scroll } from "lucide
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { TextToSpeechPlayer } from "@/components/TextToSpeechPlayer";
 
 interface PaginatedReadingProps {
   content: string;
@@ -181,6 +182,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
       <div className="space-y-4 mb-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
+            <TextToSpeechPlayer text={content} />
             <div className="relative">
               <Button
                 variant="ghost"

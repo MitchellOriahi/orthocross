@@ -10,6 +10,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { TextToSpeechPlayer } from "@/components/TextToSpeechPlayer";
 
 interface PrayerDetailViewProps {
   name: string;
@@ -90,6 +91,9 @@ export const PrayerDetailView = ({ name, title, content, onClose, prayerId }: Pr
               <div className="border-t">
                 {/* View Mode Toggle */}
                 <div className="flex justify-end gap-2 p-4 border-b bg-card/50">
+                  <TextToSpeechPlayer 
+                    text={explanationContent.join('\n\n')}
+                  />
                   <Button
                     variant={viewMode === 'paginated' ? 'default' : 'outline'}
                     size="sm"
