@@ -18,7 +18,9 @@ const emailSchema = z.string().email('Invalid email address');
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
 const phoneSchema = z.string()
   .regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number format. Use international format (e.g., +1234567890)')
-  .min(10, 'Phone number must be at least 10 digits');
+  .min(10, 'Phone number must be at least 10 digits')
+  .optional()
+  .or(z.literal(''));
 const usernameSchema = z.string()
   .min(3, 'Username must be at least 3 characters')
   .max(20, 'Username must be at most 20 characters')
@@ -83,17 +85,19 @@ const Auth = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // Validate phone number with stricter rules
-    try {
-      phoneSchema.parse(phoneNumber);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast({
-          variant: 'destructive',
-          title: 'Invalid Phone Number',
-          description: error.errors[0].message,
-        });
-        return;
+    // Validate phone number only if provided
+    if (phoneNumber.trim()) {
+      try {
+        phoneSchema.parse(phoneNumber);
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          toast({
+            variant: 'destructive',
+            title: 'Invalid Phone Number',
+            description: error.errors[0].message,
+          });
+          return;
+        }
       }
     }
 
@@ -127,18 +131,20 @@ const Auth = () => {
     // Store phone number and username
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      // Update user metadata with phone number (securely stored in auth)
-      const { error: updateError } = await supabase.auth.updateUser({
-        data: { phone_number: phoneNumber }
-      });
-
-      if (updateError) {
-        console.error('Error storing phone number:', updateError);
-        toast({
-          variant: 'destructive',
-          title: 'Warning',
-          description: 'Account created but phone number not saved. Please contact support.',
+      // Update user metadata with phone number (securely stored in auth) only if provided
+      if (phoneNumber.trim()) {
+        const { error: updateError } = await supabase.auth.updateUser({
+          data: { phone_number: phoneNumber }
         });
+
+        if (updateError) {
+          console.error('Error storing phone number:', updateError);
+          toast({
+            variant: 'destructive',
+            title: 'Warning',
+            description: 'Account created but phone number not saved. Please contact support.',
+          });
+        }
       }
 
       // Store username in profile
@@ -296,18 +302,17 @@ const Auth = () => {
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-phone">Phone Number</Label>
+                  <Label htmlFor="signup-phone">Phone Number (Optional)</Label>
                   <Input
                     id="signup-phone"
                     type="tel"
                     placeholder="+1234567890"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    required
                     autoComplete="tel"
                   />
                   <p className="text-xs text-muted-foreground">
-                    For fast and feast notifications. Securely stored and only accessible to you.
+                    Optional: For fast and feast notifications. Securely stored and only accessible to you.
                   </p>
                 </div>
                 <div className="space-y-2">
