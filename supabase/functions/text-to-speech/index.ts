@@ -49,10 +49,12 @@ serve(async (req) => {
           throw new Error('OpenAI quota exceeded. Please add credits to your OpenAI account.')
         }
         throw new Error(errorData.error?.message || 'Failed to generate speech')
-      } catch (e) {
-        if (e instanceof Error && e.message.includes('OpenAI')) {
-          throw e
+      } catch (parseError) {
+        // If it's already our custom error message, rethrow it
+        if (parseError instanceof Error && parseError.message.includes('OpenAI quota')) {
+          throw parseError
         }
+        // Otherwise, return generic error
         throw new Error('Failed to generate speech')
       }
     }
