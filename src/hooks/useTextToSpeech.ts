@@ -3,10 +3,16 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAudioContext } from '@/contexts/AudioContext';
 
+// Simple in-memory cache for audio
+const audioCache = new Map<string, string>();
+
 export const useTextToSpeech = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentWordIndex, setCurrentWordIndex] = useState(-1);
+  const [words, setWords] = useState<string[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const wordTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
   const { setCurrentAudio, stopAll } = useAudioContext();
 
@@ -18,7 +24,33 @@ export const useTextToSpeech = () => {
         audioRef.current = null;
         setIsPlaying(false);
       }
+      if (wordTimerRef.current) {
+        clearInterval(wordTimerRef.current);
+      }
     };
+  }, []);
+
+  const startWordHighlighting = useCallback((text: string, duration: number) => {
+    const textWords = text.split(/\s+/).filter(w => w.length > 0);
+    setWords(textWords);
+    setCurrentWordIndex(0);
+    
+    if (wordTimerRef.current) {
+      clearInterval(wordTimerRef.current);
+    }
+    
+    const timePerWord = (duration * 1000) / textWords.length;
+    let index = 0;
+    
+    wordTimerRef.current = setInterval(() => {
+      index++;
+      if (index >= textWords.length) {
+        setCurrentWordIndex(-1);
+        if (wordTimerRef.current) clearInterval(wordTimerRef.current);
+      } else {
+        setCurrentWordIndex(index);
+      }
+    }, timePerWord);
   }, []);
 
   const speak = useCallback(async (text: string, voice: string = 'alloy') => {
@@ -33,41 +65,76 @@ export const useTextToSpeech = () => {
         audioRef.current.pause();
         audioRef.current = null;
       }
-
-      const { data, error } = await supabase.functions.invoke('text-to-speech', {
-        body: { text, voice }
-      });
-
-      if (error) throw error;
-
-      if (!data?.audioContent) {
-        throw new Error('No audio content received');
+      
+      if (wordTimerRef.current) {
+        clearInterval(wordTimerRef.current);
+        setCurrentWordIndex(-1);
       }
 
-      // Convert base64 to blob
-      const binaryString = atob(data.audioContent);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
+      // Check cache first
+      const cacheKey = `${text}-${voice}`;
+      let audioUrl = audioCache.get(cacheKey);
+      let audioDuration = 0;
+
+      if (!audioUrl) {
+        const { data, error } = await supabase.functions.invoke('text-to-speech', {
+          body: { text, voice }
+        });
+
+        if (error) throw error;
+
+        if (!data?.audioContent) {
+          throw new Error('No audio content received');
+        }
+
+        // Convert base64 to blob
+        const binaryString = atob(data.audioContent);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        audioUrl = URL.createObjectURL(blob);
+        
+        // Cache for future use (limit cache size)
+        if (audioCache.size > 20) {
+          const firstKey = audioCache.keys().next().value;
+          const oldUrl = audioCache.get(firstKey);
+          if (oldUrl) URL.revokeObjectURL(oldUrl);
+          audioCache.delete(firstKey);
+        }
+        audioCache.set(cacheKey, audioUrl);
       }
-      const blob = new Blob([bytes], { type: 'audio/mpeg' });
-      const audioUrl = URL.createObjectURL(blob);
 
       // Create and play audio
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
       setCurrentAudio(audio);
 
+      audio.onloadedmetadata = () => {
+        audioDuration = audio.duration;
+        startWordHighlighting(text, audioDuration);
+      };
+
       audio.onplay = () => setIsPlaying(true);
-      audio.onpause = () => setIsPlaying(false);
+      audio.onpause = () => {
+        setIsPlaying(false);
+        if (wordTimerRef.current) {
+          clearInterval(wordTimerRef.current);
+        }
+      };
       audio.onended = () => {
         setIsPlaying(false);
         setCurrentAudio(null);
-        URL.revokeObjectURL(audioUrl);
+        setCurrentWordIndex(-1);
+        if (wordTimerRef.current) {
+          clearInterval(wordTimerRef.current);
+        }
       };
       audio.onerror = () => {
         setIsPlaying(false);
         setCurrentAudio(null);
+        setCurrentWordIndex(-1);
         toast({
           variant: 'destructive',
           title: 'Playback Error',
@@ -75,6 +142,7 @@ export const useTextToSpeech = () => {
         });
       };
 
+      setIsLoading(false);
       await audio.play();
     } catch (error) {
       console.error('TTS Error:', error);
@@ -83,10 +151,9 @@ export const useTextToSpeech = () => {
         title: 'Text-to-Speech Error',
         description: error.message || 'Failed to generate speech',
       });
-    } finally {
       setIsLoading(false);
     }
-  }, [toast, stopAll, setCurrentAudio]);
+  }, [toast, stopAll, setCurrentAudio, startWordHighlighting]);
 
   const pause = useCallback(() => {
     if (audioRef.current && !audioRef.current.paused) {
@@ -107,6 +174,10 @@ export const useTextToSpeech = () => {
       setIsPlaying(false);
       setCurrentAudio(null);
     }
+    if (wordTimerRef.current) {
+      clearInterval(wordTimerRef.current);
+    }
+    setCurrentWordIndex(-1);
   }, [setCurrentAudio]);
 
   return {
@@ -116,5 +187,7 @@ export const useTextToSpeech = () => {
     stop,
     isPlaying,
     isLoading,
+    currentWordIndex,
+    words,
   };
 };
