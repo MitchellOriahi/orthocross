@@ -15,6 +15,7 @@ import { bibleContent, BIBLE_BOOKS } from "@/data/bibleContent";
 import { useTheme } from "next-themes";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { TextToSpeechPlayer } from "@/components/TextToSpeechPlayer";
+import { TextToSpeechWithHighlight } from "@/components/TextToSpeechWithHighlight";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 
@@ -683,7 +684,10 @@ const Reading = () => {
                         >
                           <span className="font-bold text-primary mr-2">{verse.number}</span>
                           {bookmarked && <Bookmark className="w-3 h-3 inline-block mr-1 fill-primary text-primary" />}
-                          <span>{verse.text}</span>
+                          <TextToSpeechWithHighlight 
+                            text={verse.text}
+                            className="inline"
+                          />
                           
                           {selectedVerse === verse.number && (
                             <div className="absolute right-2 top-2 flex gap-2">
@@ -784,7 +788,12 @@ const Reading = () => {
                               <Bookmark className="w-4 h-4 inline-block mr-2 fill-primary text-primary" />
                             )}
                           </div>
-                          <p className="leading-relaxed">{verses[currentVerseIndex].text}</p>
+                          <p className="leading-relaxed">
+                            <TextToSpeechWithHighlight 
+                              text={verses[currentVerseIndex].text}
+                              className="inline"
+                            />
+                          </p>
                           
                           {selectedVerse === verses[currentVerseIndex].number && (
                             <div className="flex justify-center gap-2 mt-4">
