@@ -1,18 +1,34 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAudioContext } from '@/contexts/AudioContext';
 
 export const useTextToSpeech = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
+  const { setCurrentAudio, stopAll } = useAudioContext();
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+        setIsPlaying(false);
+      }
+    };
+  }, []);
 
   const speak = useCallback(async (text: string, voice: string = 'alloy') => {
     try {
       setIsLoading(true);
       
-      // Stop any currently playing audio
+      // Stop all other audio globally
+      stopAll();
+      
+      // Stop any currently playing audio in this instance
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
@@ -40,15 +56,18 @@ export const useTextToSpeech = () => {
       // Create and play audio
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
+      setCurrentAudio(audio);
 
       audio.onplay = () => setIsPlaying(true);
       audio.onpause = () => setIsPlaying(false);
       audio.onended = () => {
         setIsPlaying(false);
+        setCurrentAudio(null);
         URL.revokeObjectURL(audioUrl);
       };
       audio.onerror = () => {
         setIsPlaying(false);
+        setCurrentAudio(null);
         toast({
           variant: 'destructive',
           title: 'Playback Error',
@@ -67,16 +86,16 @@ export const useTextToSpeech = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, [toast, stopAll, setCurrentAudio]);
 
   const pause = useCallback(() => {
-    if (audioRef.current) {
+    if (audioRef.current && !audioRef.current.paused) {
       audioRef.current.pause();
     }
   }, []);
 
   const resume = useCallback(() => {
-    if (audioRef.current) {
+    if (audioRef.current && audioRef.current.paused) {
       audioRef.current.play();
     }
   }, []);
@@ -86,8 +105,9 @@ export const useTextToSpeech = () => {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       setIsPlaying(false);
+      setCurrentAudio(null);
     }
-  }, []);
+  }, [setCurrentAudio]);
 
   return {
     speak,

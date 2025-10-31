@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { MusicProvider } from "@/contexts/MusicContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { AudioProvider } from "@/contexts/AudioContext";
 import Friends from "./pages/Friends";
 import FriendProfile from "./pages/FriendProfile";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -42,13 +43,14 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <MusicProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <TutorialIntro />
-          <BrowserRouter>
-            <AuthProvider>
-              <NotificationManager />
+        <AudioProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <TutorialIntro />
+            <BrowserRouter>
+              <AuthProvider>
+                <NotificationManager />
               <Routes>
               <Route path="/" element={<Auth />} />
               <Route path="/home" element={<Home />} />
@@ -72,6 +74,7 @@ const App = () => (
             </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
+        </AudioProvider>
       </MusicProvider>
     </ThemeProvider>
   </QueryClientProvider>

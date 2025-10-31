@@ -1,4 +1,4 @@
-import { Volume2, VolumeX, Loader2 } from 'lucide-react';
+import { Volume2, Pause, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 
@@ -8,11 +8,13 @@ interface TextToSpeechPlayerProps {
 }
 
 export const TextToSpeechPlayer = ({ text, voice = 'alloy' }: TextToSpeechPlayerProps) => {
-  const { speak, stop, isPlaying, isLoading } = useTextToSpeech();
+  const { speak, pause, isPlaying, isLoading } = useTextToSpeech();
 
   const handleToggle = () => {
     if (isPlaying) {
-      stop();
+      pause();
+    } else if (isLoading) {
+      return; // Don't allow clicking while loading
     } else {
       speak(text, voice);
     }
@@ -25,12 +27,12 @@ export const TextToSpeechPlayer = ({ text, voice = 'alloy' }: TextToSpeechPlayer
       onClick={handleToggle}
       disabled={isLoading}
       className="h-8 w-8"
-      title={isPlaying ? 'Stop reading' : 'Read aloud'}
+      title={isPlaying ? 'Pause reading' : 'Read aloud'}
     >
       {isLoading ? (
         <Loader2 className="h-4 w-4 animate-spin" />
       ) : isPlaying ? (
-        <VolumeX className="h-4 w-4" />
+        <Pause className="h-4 w-4" />
       ) : (
         <Volume2 className="h-4 w-4" />
       )}
