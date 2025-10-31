@@ -42,21 +42,20 @@ serve(async (req) => {
       const error = await response.text()
       console.error('OpenAI API error:', error)
       
-      // Try to parse error for better messaging
+      let errorMessage = 'Failed to generate speech'
+      
       try {
         const errorData = JSON.parse(error)
         if (errorData.error?.code === 'insufficient_quota') {
-          throw new Error('OpenAI quota exceeded. Please add credits to your OpenAI account.')
+          errorMessage = 'OpenAI quota exceeded. Please add credits to your OpenAI account.'
+        } else if (errorData.error?.message) {
+          errorMessage = errorData.error.message
         }
-        throw new Error(errorData.error?.message || 'Failed to generate speech')
-      } catch (parseError) {
-        // If it's already our custom error message, rethrow it
-        if (parseError instanceof Error && parseError.message.includes('OpenAI quota')) {
-          throw parseError
-        }
-        // Otherwise, return generic error
-        throw new Error('Failed to generate speech')
+      } catch {
+        // If JSON parsing fails, use the default error message
       }
+      
+      throw new Error(errorMessage)
     }
 
     const arrayBuffer = await response.arrayBuffer()
