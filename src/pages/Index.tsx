@@ -37,7 +37,7 @@ const Index = () => {
   const { toast } = useToast();
   const { theme } = useTheme();
   const [lastRead, setLastRead] = useState<ReadingProgress | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [bibleCompletion, setBibleCompletion] = useState(0);
   const [bookProgress, setBookProgress] = useState<Record<string, number>>({});
   const [hasScriptureData, setHasScriptureData] = useState(true);
@@ -54,6 +54,7 @@ const Index = () => {
 
   useEffect(() => {
     if (user) {
+      setLoading(true);
       loadLastRead();
       loadBibleCompletion();
       loadBookProgress();
@@ -64,8 +65,6 @@ const Index = () => {
       if (!hasSeenTutorial) {
         setShowTutorial(true);
       }
-    } else {
-      setLoading(false);
     }
   }, [user]);
 
