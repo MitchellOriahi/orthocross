@@ -30,7 +30,8 @@ const Dashboard = () => {
   const { theme } = useTheme();
   const { toast } = useToast();
   const { completionStatus, checkCompletion, resetAllProgress } = useCompletionTracking();
-  const [streakDays, setStreakDays] = useState(0);
+  const [streakDays, setStreakDays] = useState<number | null>(null);
+  const [loadingStreak, setLoadingStreak] = useState(true);
   const [hasAnyProgress, setHasAnyProgress] = useState(false);
   const [loadingReading, setLoadingReading] = useState(true);
   const [guardianAngelResult, setGuardianAngelResult] = useState<GuardianAngelResult | null>(null);
@@ -88,39 +89,48 @@ const Dashboard = () => {
   const fetchStreak = async () => {
     if (!user) return;
     
-    // First check if guardian angel needs to intervene
-    const angelResult = await checkStreakOnAppOpen(user.id);
+    setLoadingStreak(true);
     
-    if (angelResult) {
-      setGuardianAngelResult(angelResult);
-      setShowGuardianAngelDialog(true);
-      setStreakDays(angelResult.newStreak);
-      return;
-    }
-    
-    // Otherwise just fetch current streak
-    const { data } = await supabase
-      .from('user_streaks')
-      .select('current_streak')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    
-    if (data) {
-      const currentStreak = data.current_streak;
-      setStreakDays(currentStreak);
+    try {
+      // First check if guardian angel needs to intervene
+      const angelResult = await checkStreakOnAppOpen(user.id);
       
-      // Check if this is a milestone (increases by 25 days)
-      if (currentStreak > 0 && currentStreak % 25 === 0) {
-        const lastShownMilestone = localStorage.getItem(`milestone_shown_${user.id}`);
-        const lastShown = lastShownMilestone ? parseInt(lastShownMilestone) : 0;
-        
-        // Only show if this specific milestone hasn't been shown before
-        if (currentStreak > lastShown) {
-          setMilestoneStreak(currentStreak);
-          setShowMilestoneDialog(true);
-          localStorage.setItem(`milestone_shown_${user.id}`, currentStreak.toString());
-        }
+      if (angelResult) {
+        setGuardianAngelResult(angelResult);
+        setShowGuardianAngelDialog(true);
+        setStreakDays(angelResult.newStreak);
+        return;
       }
+      
+      // Otherwise just fetch current streak
+      const { data } = await supabase
+        .from('user_streaks')
+        .select('current_streak')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (data) {
+        const currentStreak = data.current_streak;
+        setStreakDays(currentStreak);
+        
+        // Check if this is a milestone (increases by 25 days)
+        if (currentStreak > 0 && currentStreak % 25 === 0) {
+          const lastShownMilestone = localStorage.getItem(`milestone_shown_${user.id}`);
+          const lastShown = lastShownMilestone ? parseInt(lastShownMilestone) : 0;
+          
+          // Only show if this specific milestone hasn't been shown before
+          if (currentStreak > lastShown) {
+            setMilestoneStreak(currentStreak);
+            setShowMilestoneDialog(true);
+            localStorage.setItem(`milestone_shown_${user.id}`, currentStreak.toString());
+          }
+        }
+      } else {
+        // No streak data yet, set to 0
+        setStreakDays(0);
+      }
+    } finally {
+      setLoadingStreak(false);
     }
   };
 
@@ -315,7 +325,17 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8 space-y-8">
         {/* Streak Section */}
         <section className="flex justify-center py-8">
-          <StreakFlame days={streakDays} size="lg" />
+          {loadingStreak ? (
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-20 h-20 rounded-full bg-muted animate-pulse" />
+              <div className="space-y-2 flex flex-col items-center">
+                <div className="h-8 w-16 bg-muted rounded animate-pulse" />
+                <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+              </div>
+            </div>
+          ) : (
+            streakDays !== null && <StreakFlame days={streakDays} size="lg" />
+          )}
         </section>
 
         {/* Continue Reading */}

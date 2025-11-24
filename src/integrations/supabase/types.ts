@@ -46,6 +46,44 @@ export type Database = {
           },
         ]
       }
+      attachments: {
+        Row: {
+          duration_ms: number | null
+          height: number | null
+          id: string
+          kind: Database["public"]["Enums"]["attachment_kind"]
+          message_id: string
+          url: string
+          width: number | null
+        }
+        Insert: {
+          duration_ms?: number | null
+          height?: number | null
+          id?: string
+          kind: Database["public"]["Enums"]["attachment_kind"]
+          message_id: string
+          url: string
+          width?: number | null
+        }
+        Update: {
+          duration_ms?: number | null
+          height?: number | null
+          id?: string
+          kind?: Database["public"]["Enums"]["attachment_kind"]
+          message_id?: string
+          url?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attachments_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bible_verses: {
         Row: {
           book: string
@@ -76,6 +114,27 @@ export type Database = {
         }
         Relationships: []
       }
+      blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
       completed_chapters: {
         Row: {
           book_key: string
@@ -100,6 +159,62 @@ export type Database = {
           created_at?: string
           id?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      conversation_participants: {
+        Row: {
+          conversation_id: string
+          id: string
+          joined_at: string
+          role: Database["public"]["Enums"]["participant_role"]
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          id?: string
+          joined_at?: string
+          role?: Database["public"]["Enums"]["participant_role"]
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          id?: string
+          joined_at?: string
+          role?: Database["public"]["Enums"]["participant_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          title: string | null
+          type: Database["public"]["Enums"]["conversation_type"]
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          title?: string | null
+          type: Database["public"]["Enums"]["conversation_type"]
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          title?: string | null
+          type?: Database["public"]["Enums"]["conversation_type"]
         }
         Relationships: []
       }
@@ -403,6 +518,108 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      message_reads: {
+        Row: {
+          id: string
+          message_id: string
+          read_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          message_id: string
+          read_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          message_id?: string
+          read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reads_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_reports: {
+        Row: {
+          created_at: string
+          id: string
+          message_id: string
+          note: string | null
+          reason: Database["public"]["Enums"]["report_reason"]
+          reporter_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_id: string
+          note?: string | null
+          reason: Database["public"]["Enums"]["report_reason"]
+          reporter_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_id?: string
+          note?: string | null
+          reason?: Database["public"]["Enums"]["report_reason"]
+          reporter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reports_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string | null
+          conversation_id: string
+          created_at: string
+          edited_at: string | null
+          id: string
+          is_deleted: boolean
+          sender_id: string
+        }
+        Insert: {
+          body?: string | null
+          conversation_id: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          is_deleted?: boolean
+          sender_id: string
+        }
+        Update: {
+          body?: string | null
+          conversation_id?: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          is_deleted?: boolean
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       monthly_leaderboard: {
         Row: {
@@ -907,6 +1124,12 @@ export type Database = {
       }
       create_notification_channels: { Args: never; Returns: undefined }
       delete_user_account: { Args: never; Returns: undefined }
+      find_dm_conversation: {
+        Args: { user_a: string; user_b: string }
+        Returns: {
+          id: string
+        }[]
+      }
       get_friend_request_profiles: {
         Args: { request_ids: string[] }
         Returns: {
@@ -933,6 +1156,18 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_conversation_admin: {
+        Args: { conversation_uuid: string; user_uuid: string }
+        Returns: boolean
+      }
+      is_conversation_participant: {
+        Args: { conversation_uuid: string; user_uuid: string }
+        Returns: boolean
+      }
+      is_user_blocked: {
+        Args: { user_a: string; user_b: string }
+        Returns: boolean
+      }
       search_user_for_friend_request: {
         Args: { search_term: string }
         Returns: string
@@ -940,6 +1175,10 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      attachment_kind: "image" | "audio" | "video"
+      conversation_type: "dm" | "group"
+      participant_role: "owner" | "admin" | "member"
+      report_reason: "abuse" | "spam" | "inappropriate" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1068,6 +1307,10 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      attachment_kind: ["image", "audio", "video"],
+      conversation_type: ["dm", "group"],
+      participant_role: ["owner", "admin", "member"],
+      report_reason: ["abuse", "spam", "inappropriate", "other"],
     },
   },
 } as const

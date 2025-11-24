@@ -47,6 +47,11 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
+  // Don't render auth form if user is already logged in
+  if (user) {
+    return null;
+  }
+
   const validateForm = () => {
     try {
       emailSchema.parse(email);
