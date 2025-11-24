@@ -2,17 +2,13 @@ import anthonyIcon from "@/assets/saints/anthony-icon.jpg";
 import athanasiusIcon from "@/assets/saints/athanasius-icon.jpg";
 import basilIcon from "@/assets/saints/basil-icon.jpg";
 import catherineIcon from "@/assets/saints/catherine-icon.jpg";
-import ephremIcon from "@/assets/saints/ephrem-icon.jpg";
 import georgeIcon from "@/assets/saints/george-icon.jpg";
-import gregoryNazianzusIcon from "@/assets/saints/gregory-nazianzus-icon.jpg";
 import johnChrysostomIcon from "@/assets/saints/john-chrysostom-icon.jpg";
 import markIcon from "@/assets/saints/mark-icon.jpg";
 import maryEgyptIcon from "@/assets/saints/mary-egypt-icon.jpg";
 import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
 import nicholasIcon from "@/assets/saints/nicholas-icon.jpg";
 import paisiosIcon from "@/assets/saints/paisios-icon.jpg";
-import photiniIcon from "@/assets/saints/photini-icon.jpg";
-import severusIcon from "@/assets/saints/severus-icon.jpg";
 import theotokosIcon from "@/assets/saints/theotokos-icon.jpg";
 
 export interface SaintDetail {
@@ -345,118 +341,6 @@ export const saintsContent: SaintDetail[] = [
       "Countless miracles and appearances have been attributed to the Theotokos throughout Church history. Her icons are considered particularly powerful sources of blessing and healing. The Orthodox faithful celebrate multiple feast days in her honor, including the Nativity of the Theotokos, the Presentation of the Theotokos, the Annunciation, and the Dormition.",
       
       "The depth of Orthodox devotion to the Mother of God is expressed in countless hymns, prayers, and liturgical services. She is called 'More honorable than the Cherubim and beyond compare more glorious than the Seraphim.' Her love, protection, and prayers continue to comfort and guide the faithful throughout the ages."
-    ]
-  },
-  {
-    id: "ephrem-syrian",
-    prefix: "St.",
-    name: "Ephrem",
-    epithet: "the Syrian",
-    shortDescription: "Harp of the Spirit",
-    tradition: "Eastern/Oriental",
-    iconUrl: ephremIcon,
-    content: [
-      "Ephrem was born around 306 AD in Nisibis, Mesopotamia (modern-day Turkey), into a Christian family. His father may have been a pagan priest who converted to Christianity, though accounts vary. From his youth, Ephrem showed extraordinary intelligence and a deep love for Scripture and theology.",
-      
-      "Ephrem was baptized as a young man and became a student of St. James of Nisibis, one of the 318 fathers at the Council of Nicaea. Under James's guidance, Ephrem flourished as both a scholar and ascetic. He was ordained a deacon but declined priestly ordination, considering himself unworthy. He would remain a deacon throughout his life.",
-      
-      "When Nisibis fell to the Persians in 363 AD, Ephrem fled with other Christians to Edessa (modern Urfa, Turkey). There he founded the famous 'School of the Persians,' which became a major center of Christian learning in the East. The school taught Scripture, theology, and especially hymnography, for which Ephrem had particular genius.",
-      
-      "Ephrem is called the 'Harp of the Holy Spirit' for his sublime hymns and poetry. He composed thousands of hymns in Syriac, setting profound theological truths to memorable melodies. His hymns were sung by women's choirs in churches, helping to combat heretical teachings that had also been set to music. His poetic brilliance made Orthodox truth accessible to all.",
-      
-      "His writings combated the heresies of his day, particularly Arianism, Marcionism, and Gnosticism. But his primary contribution was positive - expressing the faith through beauty and poetry rather than merely through argument. His commentaries on Scripture are marked by spiritual insight and deep reverence for the sacred text.",
-      
-      "Ephrem lived an extremely ascetic life. He ate only bread and vegetables, often going days without food. He slept on the ground in a cave or cell. Despite his fame as a teacher and writer, he maintained great humility, always referring to himself as a sinner in need of mercy. His tears of repentance were legendary.",
-      
-      "During the famine in Edessa in 372-373 AD, Ephrem emerged from his solitude to organize relief efforts. He arranged for the rich to donate money and personally cared for the sick and dying. His compassion and practical charity during this crisis saved countless lives and demonstrated that contemplation must lead to action.",
-      
-      "Ephrem reposed on June 9, 373 AD, leaving behind a vast literary legacy. His works include over 400 hymns, numerous biblical commentaries, theological treatises, and sermons. He is honored as a Doctor of the Church in both East and West. His feast day is celebrated on January 28th in the Eastern Church and June 9th in other traditions.",
-      
-      "St. Ephrem's influence on Syriac Christianity cannot be overstated. His hymns are still sung in Syriac churches today. His theological poetry shaped Eastern Christian spirituality, emphasizing the mystical and symbolic interpretation of Scripture. He showed that theology could be as much sung and prayed as studied, making him one of the most beloved and influential Church Fathers."
-    ]
-  },
-  {
-    id: "gregory-nazianzus",
-    prefix: "St.",
-    name: "Gregory",
-    epithet: "of Nazianzus",
-    shortDescription: "The Theologian",
-    tradition: "Eastern",
-    iconUrl: gregoryNazianzusIcon,
-    content: [
-      "Gregory was born around 329 AD in Arianzus near Nazianzus, Cappadocia, to a deeply Christian family. His father, Gregory the Elder, was Bishop of Nazianzus. His mother, Nonna, was a woman of exceptional piety who had converted her husband to Christianity. Gregory grew up in an atmosphere of learning and devotion.",
-      
-      "Gregory received the finest education available. He studied in Caesarea, Cappadocia, where he befriended Basil the Great, forming a friendship that would profoundly influence both their lives. They continued their studies in Athens, where they also met Julian (who would later become the apostate emperor) and where Gregory excelled in rhetoric and philosophy.",
-      
-      "After completing his education, Gregory was torn between his love of solitude and the demands of church service. His father ordained him a priest against his will in 362 AD. Gregory initially fled to join Basil in monastic life but eventually returned to assist his father. This tension between contemplation and active ministry marked his entire life.",
-      
-      "Together with Basil the Great and Gregory of Nyssa, he formed the 'Cappadocian Fathers,' who refined and defended Trinitarian theology. Gregory's theological contributions were immense, particularly his Five Theological Orations, which earned him the title 'the Theologian' - a designation given to only two other saints: John the Evangelist and Symeon the New Theologian.",
-      
-      "His theological orations, delivered in Constantinople in 380 AD, are masterpieces of Orthodox doctrine. He articulated the mystery of the Trinity with unprecedented clarity: one divine essence (ousia) in three distinct persons (hypostases). He defended the full divinity of the Holy Spirit when many still questioned it, declaring: 'What was the Holy Spirit? A creature? Or God? Or neither? Neither, you say? That's absurd!'",
-      
-      "In 379 AD, Gregory was called to Constantinople to revive the Orthodox cause in a city dominated by Arianism. He began preaching in a small private chapel called 'Anastasia' (Resurrection), prophetically named because Orthodoxy would be resurrected there. Despite persecution and mockery, his brilliant preaching gradually won the city back to Orthodoxy.",
-      
-      "At the Second Ecumenical Council in 381 AD, Gregory was appointed Patriarch of Constantinople. However, his episcopacy was brief and troubled. Disputes arose over the legitimacy of his election, and he faced constant opposition. Exhausted by controversy and longing for solitude, Gregory resigned after presiding over the council for only a few months.",
-      
-      "Gregory returned to his family estate in Cappadocia, where he spent his final years in contemplation and writing. He composed theological treatises, letters, poems, and his autobiography in verse. His letters reveal a sensitive soul, deeply hurt by the politics and controversies of church life, yet unshakeable in faith.",
-      
-      "He reposed around 390 AD at Arianzus. His writings profoundly influenced both Eastern and Western theology. His sermons on the Nativity and Theophany are considered among the greatest in Christian literature. Called 'the Christian Demosthenes' for his oratory, Gregory showed that theology is ultimately about encounter with the living God. His feast day is January 25th, and he remains a pillar of Orthodox theology."
-    ]
-  },
-  {
-    id: "photini-samaritan",
-    prefix: "St.",
-    name: "Photini",
-    epithet: "the Samaritan Woman",
-    shortDescription: "Equal-to-the-Apostles",
-    tradition: "Eastern/Oriental",
-    iconUrl: photiniIcon,
-    content: [
-      "St. Photini, whose name means 'the luminous one,' is the Samaritan woman whom Christ met at Jacob's Well, as recorded in John chapter 4. Before her conversion, she was simply known as the woman of Samaria, living a life marked by five failed marriages and a current illicit relationship. She came to the well at midday, avoiding other women who would come in the cooler hours.",
-      
-      "Christ's encounter with her at the well transformed her life forever. He asked her for water, breaking social conventions by speaking to a Samaritan woman. When she questioned this, He offered her 'living water' that would quench all thirst forever. Though initially confused, she was drawn by His words. When He revealed knowledge of her five husbands, she recognized Him as a prophet.",
-      
-      "The conversation deepened as Christ revealed profound truths about worship in spirit and truth, and finally disclosed His identity as the Messiah - a revelation He made to few others so directly. Leaving her water jar behind (symbolic of abandoning her old life), Photini ran to tell her townspeople: 'Come, see a man who told me everything I ever did. Could this be the Messiah?'",
-      
-      "Her testimony led many Samaritans to believe in Christ. They came out to meet Him and invited Him to stay. John records: 'And many more believed because of His word. They said to the woman, We no longer believe just because of what you said; now we have heard for ourselves, and we know that this man really is the Savior of the world.'",
-      
-      "According to tradition, after Pentecost, Photini was baptized by the Apostles, receiving the baptismal name meaning 'enlightened one.' She began preaching the Gospel with great boldness, traveling to Carthage and eventually to Rome. Her sons Joseph and Victor (from earlier marriages) and her sisters became Christians and joined her in missionary work.",
-      
-      "During the reign of Emperor Nero, Photini and her companions were arrested for their Christian faith. She was brought before Nero himself and boldly proclaimed Christ. No torture could make her deny her Lord. Her courage inspired many, including Nero's own daughter Domnina, who converted and was subsequently martyred.",
-      
-      "Photini was subjected to various tortures: she was thrown into a well for three days, cast into prison with her family, and finally thrown into a dry well where she was left to die. Throughout her sufferings, she continued to encourage other Christians and proclaim Christ. Her faith never wavered, even as her body weakened.",
-      
-      "She was finally martyred around 66 AD by being thrown down a well. Her sons and several companions were martyred with her. The Orthodox Church honors her with the title 'Equal-to-the-Apostles,' placing her among the greatest evangelists of the early Church. Her story demonstrates how Christ transforms the most unlikely people into His boldest witnesses.",
-      
-      "St. Photini's feast day is celebrated on March 20th in the Eastern Church, and she is remembered during the Sunday of the Samaritan Woman in the Paschal season. Her icon typically shows her at the well with Christ, holding a rope and bucket, symbols of her first encounter with the Living Water. She remains an inspiration to all who seek truth and redemption."
-    ]
-  },
-  {
-    id: "severus-antioch",
-    prefix: "St.",
-    name: "Severus",
-    epithet: "of Antioch",
-    shortDescription: "Pillar of Orthodoxy",
-    tradition: "Oriental",
-    iconUrl: severusIcon,
-    content: [
-      "Severus was born around 465 AD in Sozopolis, Pisidia (modern-day Turkey), to a distinguished pagan family. His grandfather had been a bishop of Sozopolis, but his immediate family had returned to paganism. Severus received an excellent classical education, studying grammar, rhetoric, and philosophy in Alexandria and Beirut.",
-      
-      "While studying law in Beirut, Severus experienced a profound spiritual awakening. He witnessed the holy life of monks and was deeply impressed by Christian teaching. Around 488 AD, he converted to Christianity and was baptized, abandoning his promising legal career to embrace monasticism. He gave away his wealth and joined a monastery near Gaza.",
-      
-      "Severus excelled in monastic life, combining rigorous asceticism with deep theological study. He mastered Scripture and studied the Church Fathers extensively, particularly Cyril of Alexandria. His brilliance became evident, and he was soon recognized as a leading theologian and defender of Orthodoxy against the Chalcedonian definition.",
-      
-      "In 508 AD, Severus went to Constantinople to advocate for the Oriental Orthodox position regarding the nature of Christ. His theological acumen and persuasive arguments made him a prominent figure in the christological controversies. He argued for the formula 'one nature of God the Word Incarnate,' following Cyril of Alexandria's teaching.",
-      
-      "In 512 AD, despite his reluctance, Severus was chosen as Patriarch of Antioch, one of the most important sees in Christendom. As patriarch, he worked tirelessly to maintain and spread the Oriental Orthodox faith. He wrote extensively, producing theological treatises, hymns, and homilies. His Cathedral Homilies are masterpieces of preaching and theology.",
-      
-      "Severus faced constant opposition from supporters of Chalcedon. When Emperor Justin I began persecuting non-Chalcedonians in 518 AD, Severus was forced to flee Antioch. He spent the remaining 20 years of his life in exile in Egypt, where he continued writing and defending Orthodox faith under the protection of Egyptian monastics.",
-      
-      "Even in exile, Severus remained incredibly productive. He wrote against various heresies, composed liturgical hymns, and maintained extensive correspondence with bishops and monks throughout the Oriental Orthodox world. His writings preserved and systematized Oriental Orthodox theology during a crucial period.",
-      
-      "Severus reposed on February 8, 538 AD, in Egypt. He is remembered as one of the greatest theologians and fathers of the Oriental Orthodox Church. His theological writings profoundly shaped Coptic, Syrian, Armenian, Ethiopian, and Eritrean Orthodox theology. He is called 'the Crown of the Syrians' and commemorated on February 8th.",
-      
-      "St. Severus's legacy endures in the Oriental Orthodox churches, where his liturgical compositions are still used, his theological writings are studied, and his defense of the faith is celebrated. He exemplifies faithful witness to Orthodox truth even in the face of exile and persecution, remaining steadfast in the faith until death."
     ]
   }
 ];
