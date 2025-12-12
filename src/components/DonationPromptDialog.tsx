@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Heart, X } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { DonationDialog } from "./DonationDialog";
+import { supabase } from "@/integrations/supabase/client";
 
 export const DonationPromptDialog = () => {
   const [showPrompt, setShowPrompt] = useState(false);
@@ -13,26 +14,45 @@ export const DonationPromptDialog = () => {
   useEffect(() => {
     if (!user) return;
 
-    const checkShouldShowPrompt = () => {
-      const lastDonation = localStorage.getItem(`last_donation_${user.id}`);
-      const promptDismissed = localStorage.getItem(`donation_prompt_dismissed_${user.id}`);
-
-      if (lastDonation) {
-        const lastDonationDate = new Date(lastDonation);
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
-        if (lastDonationDate > oneYearAgo) {
+    const checkShouldShowPrompt = async () => {
+      // Check if they're a monthly donor - never show prompt
+      const isMonthlyDonor = localStorage.getItem(`monthly_donor_${user.id}`);
+      if (isMonthlyDonor) {
+        // Verify with backend that they still have an active subscription
+        try {
+          const { data } = await supabase.functions.invoke("check-monthly-donation");
+          if (data?.hasActiveMonthlyDonation) {
+            return false;
+          } else {
+            // No longer a monthly donor, remove the flag
+            localStorage.removeItem(`monthly_donor_${user.id}`);
+          }
+        } catch (error) {
+          // If check fails, assume they're still a donor
           return false;
         }
       }
 
-      if (promptDismissed) {
-        const dismissedDate = new Date(promptDismissed);
+      // Check if they made a one-time donation in the last month
+      const lastOneTimeDonation = localStorage.getItem(`last_one_time_donation_${user.id}`);
+      if (lastOneTimeDonation) {
+        const lastDonationDate = new Date(lastOneTimeDonation);
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+        if (lastDonationDate > oneMonthAgo) {
+          return false;
+        }
+      }
+
+      // Check when prompt was last shown - show every 7 days
+      const lastPromptShown = localStorage.getItem(`donation_prompt_shown_${user.id}`);
+      if (lastPromptShown) {
+        const lastShownDate = new Date(lastPromptShown);
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-        if (dismissedDate > sevenDaysAgo) {
+        if (lastShownDate > sevenDaysAgo) {
           return false;
         }
       }
@@ -40,18 +60,22 @@ export const DonationPromptDialog = () => {
       return true;
     };
 
-    if (checkShouldShowPrompt()) {
-      const timer = setTimeout(() => {
-        setShowPrompt(true);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
+    const checkAndShow = async () => {
+      const shouldShow = await checkShouldShowPrompt();
+      if (shouldShow) {
+        // Mark that we're showing the prompt now
+        localStorage.setItem(`donation_prompt_shown_${user.id}`, new Date().toISOString());
+        // Small delay to ensure app is fully loaded
+        setTimeout(() => {
+          setShowPrompt(true);
+        }, 1500);
+      }
+    };
+
+    checkAndShow();
   }, [user]);
 
   const handleDismiss = () => {
-    if (user) {
-      localStorage.setItem(`donation_prompt_dismissed_${user.id}`, new Date().toISOString());
-    }
     setShowPrompt(false);
   };
 
