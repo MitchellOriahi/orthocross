@@ -54,7 +54,7 @@ const Index = () => {
 
   useEffect(() => {
     if (user) {
-      setLoading(true);
+      // Don't set loading to true - let UI render immediately
       loadLastRead();
       loadBibleCompletion();
       loadBookProgress();

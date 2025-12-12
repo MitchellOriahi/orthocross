@@ -36,19 +36,19 @@ const Auth = () => {
   const [showStreakDialog, setShowStreakDialog] = useState(false);
   const [fastingEnabled, setFastingEnabled] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const { scheduleStreakReminders } = useNotifications();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }
   }, [user, navigate]);
 
-  // Don't render auth form if user is already logged in
-  if (user) {
+  // Don't render auth form if still checking auth or user is already logged in
+  if (authLoading || user) {
     return null;
   }
 
