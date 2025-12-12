@@ -5,6 +5,8 @@ import { DailyReadingCard } from "@/components/DailyReadingCard";
 import { FastingCalendar } from "@/components/FastingCalendar";
 import { FastingCalendarView } from "@/components/FastingCalendarView";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { DonateButton } from "@/components/DonateButton";
+import { DonationPromptDialog } from "@/components/DonationPromptDialog";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDay } from "@/components/VerseOfTheDay";
 import { BottomNavigation } from "@/components/BottomNavigation";
@@ -321,7 +323,8 @@ const Dashboard = () => {
               </div>
               <h1 className="text-2xl font-bold">Dashboard</h1>
             </div>
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-1">
+              <DonateButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
@@ -503,6 +506,9 @@ const Dashboard = () => {
           }
         }}
       />
+
+      {/* Donation Prompt Dialog - shows every 7 days */}
+      <DonationPromptDialog />
     </div>
   );
 };

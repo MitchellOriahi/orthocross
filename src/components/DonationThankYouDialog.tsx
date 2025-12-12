@@ -13,9 +13,11 @@ export const DonationThankYouDialog = () => {
   useEffect(() => {
     if (!user) return;
 
-    const donationSuccess = searchParams.get("donation");
+    const donationResult = searchParams.get("donation");
     
-    if (donationSuccess === "success") {
+    if (donationResult === "success" || donationResult === "monthly_success") {
+      const isMonthly = donationResult === "monthly_success";
+      
       // Check if we've already shown thank you for this donation
       const lastThankYou = localStorage.getItem(`donation_thank_you_${user.id}`);
       
@@ -35,9 +37,15 @@ export const DonationThankYouDialog = () => {
       // Show thank you dialog
       setShowThankYou(true);
       
-      // Record the donation date
+      // Record the donation date based on type
       const donationDate = new Date().toISOString();
-      localStorage.setItem(`last_donation_${user.id}`, donationDate);
+      if (isMonthly) {
+        // Mark as monthly donor - permanently suppress prompt
+        localStorage.setItem(`monthly_donor_${user.id}`, 'true');
+      } else {
+        // One-time donation - suppress prompt for 1 month
+        localStorage.setItem(`last_one_time_donation_${user.id}`, donationDate);
+      }
       localStorage.setItem(`donation_thank_you_${user.id}`, donationDate);
       
       // Remove query param

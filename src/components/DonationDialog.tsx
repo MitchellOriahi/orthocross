@@ -3,11 +3,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { isIAPAvailable, purchaseDonation, getProductIdForAmount, restorePurchases } from "@/utils/inAppPurchases";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Heart, CalendarHeart } from "lucide-react";
 
 interface DonationDialogProps {
   open: boolean;
@@ -15,19 +16,20 @@ interface DonationDialogProps {
 }
 
 export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
-  const [amount, setAmount] = useState("5.00");
+  const [oneTimeAmount, setOneTimeAmount] = useState("5.00");
+  const [monthlyAmount, setMonthlyAmount] = useState("5.00");
   const [loading, setLoading] = useState(false);
   const [useIAP, setUseIAP] = useState(false);
+  const [donationType, setDonationType] = useState<"one-time" | "monthly">("one-time");
   const { toast } = useToast();
   const { user } = useAuth();
 
   useEffect(() => {
-    // Check if IAP is available when dialog opens
     setUseIAP(isIAPAvailable());
   }, [open]);
 
-  const handleDonate = async () => {
-    const amountValue = parseFloat(amount);
+  const handleOneTimeDonate = async () => {
+    const amountValue = parseFloat(oneTimeAmount);
     
     if (isNaN(amountValue) || amountValue < 0.50) {
       toast({
@@ -41,7 +43,6 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
     setLoading(true);
     
     try {
-      // Use IAP for iOS native app
       if (useIAP) {
         const productId = getProductIdForAmount(Math.round(amountValue));
         
@@ -58,7 +59,6 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
         const result = await purchaseDonation(productId);
         
         if (result.success) {
-          // Record donation in database
           if (user) {
             await supabase.from('donations').insert({
               user_id: user.id,
@@ -67,8 +67,9 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
               stripe_payment_intent_id: result.productIdentifier || 'iap',
             });
             
+            // Store one-time donation date - suppress prompt for 1 month
             const donationDate = new Date().toISOString();
-            localStorage.setItem(`last_donation_${user.id}`, donationDate);
+            localStorage.setItem(`last_one_time_donation_${user.id}`, donationDate);
           }
           
           toast({
@@ -80,7 +81,6 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
           throw new Error(result.error);
         }
       } else {
-        // Use Stripe for web
         const amountInCents = Math.round(amountValue * 100);
         
         const { data, error } = await supabase.functions.invoke("create-donation", {
@@ -89,13 +89,11 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
 
         if (error) throw error;
 
-        // Record donation locally before redirecting
         if (user) {
           const donationDate = new Date().toISOString();
-          localStorage.setItem(`last_donation_${user.id}`, donationDate);
+          localStorage.setItem(`last_one_time_donation_${user.id}`, donationDate);
         }
 
-        // Redirect to Stripe Checkout
         if (data?.url) {
           window.open(data.url, "_blank");
           onOpenChange(false);
@@ -106,6 +104,50 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
       toast({
         title: "Error",
         description: error.message || "Failed to process donation",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMonthlyDonate = async () => {
+    const amountValue = parseFloat(monthlyAmount);
+    
+    if (isNaN(amountValue) || amountValue < 5.00) {
+      toast({
+        title: "Invalid amount",
+        description: "Minimum monthly donation is $5.00",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const amountInCents = Math.round(amountValue * 100);
+      
+      const { data, error } = await supabase.functions.invoke("create-monthly-donation", {
+        body: { amount: amountInCents },
+      });
+
+      if (error) throw error;
+
+      if (user) {
+        // Mark as monthly subscriber - this will permanently suppress prompt
+        localStorage.setItem(`monthly_donor_${user.id}`, 'true');
+      }
+
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        onOpenChange(false);
+      }
+    } catch (error: any) {
+      console.error("Monthly donation error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to process monthly donation",
         variant: "destructive",
       });
     } finally {
@@ -137,7 +179,8 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
     }
   };
 
-  const presetAmounts = [5, 10, 25, 50];
+  const oneTimePresets = [5, 10, 25, 50];
+  const monthlyPresets = [5, 10, 20, 50];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -149,64 +192,120 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="amount">Donation Amount (USD)</Label>
-            <div className="flex gap-2 mb-3">
-              {presetAmounts.map((preset) => (
-                <Button
-                  key={preset}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setAmount(preset.toFixed(2))}
-                  className="flex-1"
-                >
-                  ${preset}
-                </Button>
-              ))}
+        <Tabs value={donationType} onValueChange={(v) => setDonationType(v as "one-time" | "monthly")} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="one-time" className="flex items-center gap-2">
+              <Heart className="w-4 h-4" />
+              One-Time
+            </TabsTrigger>
+            <TabsTrigger value="monthly" className="flex items-center gap-2">
+              <CalendarHeart className="w-4 h-4" />
+              Monthly
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="one-time" className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <Label htmlFor="one-time-amount">Donation Amount (USD)</Label>
+              <div className="flex gap-2 mb-3">
+                {oneTimePresets.map((preset) => (
+                  <Button
+                    key={preset}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setOneTimeAmount(preset.toFixed(2))}
+                    className="flex-1"
+                  >
+                    ${preset}
+                  </Button>
+                ))}
+              </div>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                <Input
+                  id="one-time-amount"
+                  type="number"
+                  step="0.01"
+                  min="0.50"
+                  value={oneTimeAmount}
+                  onChange={(e) => setOneTimeAmount(e.target.value)}
+                  className="pl-7"
+                  placeholder="5.00"
+                />
+              </div>
             </div>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-              <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                min="0.50"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="pl-7"
-                placeholder="5.00"
-              />
-            </div>
-          </div>
 
-          <Button 
-            onClick={handleDonate} 
-            disabled={loading}
-            className="w-full"
-            variant="sacred"
-          >
-            {loading ? "Processing..." : useIAP ? "Purchase Donation" : "Donate Now"}
-          </Button>
-
-          {useIAP && (
-            <Button
-              onClick={handleRestorePurchases}
+            <Button 
+              onClick={handleOneTimeDonate} 
               disabled={loading}
-              variant="outline"
               className="w-full"
+              variant="sacred"
             >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Restore Purchases
+              {loading ? "Processing..." : useIAP ? "Purchase Donation" : "Donate Now"}
             </Button>
-          )}
 
-          {useIAP && (
-            <p className="text-xs text-muted-foreground text-center">
-              Using Apple In-App Purchase. Select a preset amount above.
-            </p>
-          )}
-        </div>
+            {useIAP && (
+              <>
+                <Button
+                  onClick={handleRestorePurchases}
+                  disabled={loading}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Restore Purchases
+                </Button>
+                <p className="text-xs text-muted-foreground text-center">
+                  Using Apple In-App Purchase. Select a preset amount above.
+                </p>
+              </>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="monthly" className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <Label htmlFor="monthly-amount">Monthly Amount (USD)</Label>
+              <div className="flex gap-2 mb-3">
+                {monthlyPresets.map((preset) => (
+                  <Button
+                    key={preset}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setMonthlyAmount(preset.toFixed(2))}
+                    className="flex-1"
+                  >
+                    ${preset}
+                  </Button>
+                ))}
+              </div>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                <Input
+                  id="monthly-amount"
+                  type="number"
+                  step="1"
+                  min="5"
+                  value={monthlyAmount}
+                  onChange={(e) => setMonthlyAmount(e.target.value)}
+                  className="pl-7"
+                  placeholder="5.00"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                You can cancel your monthly donation at any time.
+              </p>
+            </div>
+
+            <Button 
+              onClick={handleMonthlyDonate} 
+              disabled={loading}
+              className="w-full"
+              variant="sacred"
+            >
+              {loading ? "Processing..." : "Start Monthly Donation"}
+            </Button>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

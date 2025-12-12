@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart } from "lucide-react";
+import { ShoppingBasket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DonationDialog } from "./DonationDialog";
 
@@ -14,7 +14,7 @@ export const DonateButton = () => {
         onClick={() => setIsOpen(true)}
         title="Support OrthoCross"
       >
-        <Heart className="h-5 w-5" />
+        <ShoppingBasket className="h-5 w-5" />
       </Button>
       <DonationDialog open={isOpen} onOpenChange={setIsOpen} />
     </>
