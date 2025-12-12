@@ -30,10 +30,14 @@ const Dashboard = () => {
   const { theme } = useTheme();
   const { toast } = useToast();
   const { completionStatus, checkCompletion, resetAllProgress } = useCompletionTracking();
-  const [streakDays, setStreakDays] = useState<number | null>(null);
-  const [loadingStreak, setLoadingStreak] = useState(true);
+  const [streakDays, setStreakDays] = useState<number | null>(() => {
+    // Try to get cached streak from sessionStorage for instant display
+    const cached = sessionStorage.getItem('cached_streak');
+    return cached ? parseInt(cached, 10) : null;
+  });
+  const [loadingStreak, setLoadingStreak] = useState(false);
   const [hasAnyProgress, setHasAnyProgress] = useState(false);
-  const [loadingReading, setLoadingReading] = useState(true);
+  const [loadingReading, setLoadingReading] = useState(false);
   const [guardianAngelResult, setGuardianAngelResult] = useState<GuardianAngelResult | null>(null);
   const [showGuardianAngelDialog, setShowGuardianAngelDialog] = useState(false);
   const [showMilestoneDialog, setShowMilestoneDialog] = useState(false);
@@ -89,7 +93,10 @@ const Dashboard = () => {
   const fetchStreak = async () => {
     if (!user) return;
     
-    setLoadingStreak(true);
+    // Only show loading if we don't have cached data
+    if (streakDays === null) {
+      setLoadingStreak(true);
+    }
     
     try {
       // First check if guardian angel needs to intervene
@@ -99,6 +106,7 @@ const Dashboard = () => {
         setGuardianAngelResult(angelResult);
         setShowGuardianAngelDialog(true);
         setStreakDays(angelResult.newStreak);
+        sessionStorage.setItem('cached_streak', angelResult.newStreak.toString());
         return;
       }
       
@@ -112,6 +120,7 @@ const Dashboard = () => {
       if (data) {
         const currentStreak = data.current_streak;
         setStreakDays(currentStreak);
+        sessionStorage.setItem('cached_streak', currentStreak.toString());
         
         // Check if this is a milestone (increases by 25 days)
         if (currentStreak > 0 && currentStreak % 25 === 0) {
@@ -128,6 +137,7 @@ const Dashboard = () => {
       } else {
         // No streak data yet, set to 0
         setStreakDays(0);
+        sessionStorage.setItem('cached_streak', '0');
       }
     } finally {
       setLoadingStreak(false);
