@@ -107,7 +107,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4 flex-1 overflow-hidden flex flex-col">
-          <div className="flex gap-2">
+          <div className="flex gap-2 px-0.5">
             <Input
               placeholder="Search by group name..."
               value={searchQuery}
