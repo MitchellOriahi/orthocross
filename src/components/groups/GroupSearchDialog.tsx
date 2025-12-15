@@ -99,7 +99,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md max-h-[80vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-[90vw] sm:max-w-md max-h-[70vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Search className="h-5 w-5" />
