@@ -102,11 +102,6 @@ export const TranslationSelector = ({
                             Default
                           </Badge>
                         )}
-                        {translation.license === 'public_domain' && (
-                          <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-green-600 border-green-300">
-                            Public Domain
-                          </Badge>
-                        )}
                       </div>
                       <p className="text-xs text-muted-foreground truncate">
                         {translation.fullName}
