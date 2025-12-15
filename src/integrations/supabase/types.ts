@@ -90,6 +90,7 @@ export type Database = {
           chapter: number
           created_at: string
           id: string
+          translation: string
           updated_at: string
           verse_number: number
           verse_text: string
@@ -99,6 +100,7 @@ export type Database = {
           chapter: number
           created_at?: string
           id?: string
+          translation?: string
           updated_at?: string
           verse_number: number
           verse_text: string
@@ -108,6 +110,7 @@ export type Database = {
           chapter?: number
           created_at?: string
           id?: string
+          translation?: string
           updated_at?: string
           verse_number?: number
           verse_text?: string

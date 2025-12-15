@@ -11,7 +11,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useMusic } from "@/contexts/MusicContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChapterSelector } from "@/components/ChapterSelector";
+import { TranslationSelector } from "@/components/TranslationSelector";
 import { bibleContent, BIBLE_BOOKS } from "@/data/bibleContent";
+import { 
+  BibleTranslation, 
+  getUserPreferredTranslation,
+} from "@/data/bibleTranslations";
 import { useTheme } from "next-themes";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
@@ -57,6 +62,9 @@ const Reading = () => {
     const saved = localStorage.getItem('readingMode');
     return (saved === 'scroll' || saved === 'page') ? saved : 'scroll';
   });
+  const [currentTranslation, setCurrentTranslation] = useState<BibleTranslation>(() => 
+    getUserPreferredTranslation()
+  );
   const [highlights, setHighlights] = useState<VerseHighlight[]>([]);
   const [bookmarks, setBookmarks] = useState<VerseBookmark[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
@@ -70,14 +78,16 @@ const Reading = () => {
   useEffect(() => {
     const loadVerses = async () => {
       setLoadingVerses(true);
+      const translationId = currentTranslation.id;
       
       try {
-        // First, try to load from database
+        // First, try to load from database with specific translation
         const { data: dbVerses, error: dbError } = await supabase
           .from('bible_verses')
           .select('verse_number, verse_text')
           .eq('book', book)
           .eq('chapter', chapter)
+          .eq('translation', translationId)
           .order('verse_number');
 
         if (!dbError && dbVerses && dbVerses.length > 0) {
@@ -90,32 +100,35 @@ const Reading = () => {
           return;
         }
 
-        // If not in database, check hardcoded content
-        const hardcodedVerses = bibleContent[book]?.[chapter];
-        if (hardcodedVerses && hardcodedVerses.length > 0) {
-          setVerses(hardcodedVerses);
-          
-          // Save hardcoded verses to database for future use
-          const versesToInsert = hardcodedVerses.map(v => ({
-            book,
-            chapter,
-            verse_number: v.number,
-            verse_text: v.text
-          }));
-          
-          await supabase
-            .from('bible_verses')
-            .upsert(versesToInsert, {
-              onConflict: 'book,chapter,verse_number'
-            });
-          
-          setLoadingVerses(false);
-          return;
+        // If not in database, check hardcoded content (only for OSB/default translation)
+        if (translationId === 'osb') {
+          const hardcodedVerses = bibleContent[book]?.[chapter];
+          if (hardcodedVerses && hardcodedVerses.length > 0) {
+            setVerses(hardcodedVerses);
+            
+            // Save hardcoded verses to database for future use
+            const versesToInsert = hardcodedVerses.map(v => ({
+              book,
+              chapter,
+              verse_number: v.number,
+              verse_text: v.text,
+              translation: translationId
+            }));
+            
+            await supabase
+              .from('bible_verses')
+              .upsert(versesToInsert, {
+                onConflict: 'book,chapter,verse_number,translation'
+              });
+            
+            setLoadingVerses(false);
+            return;
+          }
         }
 
-        // Finally, try fetching from Bible API
+        // Try fetching from Bible API with translation
         const { data, error } = await supabase.functions.invoke('fetch-bible-chapter', {
-          body: { book, chapter }
+          body: { book, chapter, translation: translationId }
         });
 
         if (error) throw error;
@@ -128,13 +141,14 @@ const Reading = () => {
             book,
             chapter,
             verse_number: v.number,
-            verse_text: v.text
+            verse_text: v.text,
+            translation: translationId
           }));
           
           await supabase
             .from('bible_verses')
             .upsert(versesToInsert, {
-              onConflict: 'book,chapter,verse_number'
+              onConflict: 'book,chapter,verse_number,translation'
             });
         } else {
           setVerses([]);
@@ -148,7 +162,7 @@ const Reading = () => {
     };
 
     loadVerses();
-  }, [book, chapter]);
+  }, [book, chapter, currentTranslation.id]);
 
   useEffect(() => {
     if (user) {
@@ -321,6 +335,16 @@ const Reading = () => {
     if (user) {
       await saveProgress(0);
     }
+  };
+
+  const handleTranslationChange = (translation: BibleTranslation) => {
+    setCurrentTranslation(translation);
+    setSelectedVerse(null);
+    setCurrentVerseIndex(0);
+    toast({
+      description: `Switched to ${translation.fullName}`,
+      duration: 2000,
+    });
   };
 
   const handleNextVerse = () => {
@@ -600,7 +624,7 @@ const Reading = () => {
 
           {/* Controls */}
           <div className="flex items-center justify-between mt-4 gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Type className="w-4 h-4 flex-shrink-0" />
               <Slider
                 value={fontSize}
@@ -608,8 +632,14 @@ const Reading = () => {
                 min={14}
                 max={24}
                 step={2}
-                className="w-24 sm:w-32"
+                className="w-20 sm:w-28"
               />
+              <div className="border-l border-border/50 pl-2 sm:pl-3">
+                <TranslationSelector
+                  currentTranslation={currentTranslation}
+                  onTranslationChange={handleTranslationChange}
+                />
+              </div>
             </div>
             
             <div className="flex items-center gap-1 sm:gap-2">

@@ -5,13 +5,24 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Map our translation IDs to bible-api.com translation codes
+const translationMap: Record<string, string> = {
+  'osb': 'kjv', // OSB not available in API, fallback to KJV
+  'kjv': 'kjv',
+  'nkjv': 'kjv', // NKJV not available, fallback to KJV
+  'rsv': 'kjv', // RSV not available in free API
+  'nrsv': 'kjv', // NRSV not available in free API
+  'esv': 'kjv', // ESV not available in free API (requires license)
+  'nasb': 'kjv', // NASB not available in free API
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { book, chapter } = await req.json();
+    const { book, chapter, translation = 'osb' } = await req.json();
 
     // Validate chapter parameter
     if (!chapter || typeof chapter !== 'number' || !Number.isInteger(chapter) || chapter < 1 || chapter > 150) {
@@ -61,8 +72,11 @@ serve(async (req) => {
       );
     }
 
+    // Get the API translation code
+    const apiTranslation = translationMap[translation] || 'kjv';
+
     // Fetch from bible-api.com (free, no auth required)
-    const response = await fetch(`https://bible-api.com/${apiBookName}${chapter}?translation=kjv`);
+    const response = await fetch(`https://bible-api.com/${apiBookName}${chapter}?translation=${apiTranslation}`);
     
     if (!response.ok) {
       throw new Error(`Bible API error: ${response.status}`);
@@ -77,7 +91,7 @@ serve(async (req) => {
     }));
 
     return new Response(
-      JSON.stringify({ verses }),
+      JSON.stringify({ verses, translation: apiTranslation }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
