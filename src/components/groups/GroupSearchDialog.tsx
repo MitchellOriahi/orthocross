@@ -106,16 +106,20 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
             Find Groups
           </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-4 flex-1 overflow-hidden flex flex-col">
-          <div className="flex gap-2 px-0.5">
+        <div className="space-y-4 py-4 flex-1 overflow-hidden flex flex-col px-1">
+          <div className="flex gap-2">
             <Input
               placeholder="Search by group name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="focus:ring-2 focus:ring-primary focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-primary"
+              className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             />
-            <Button onClick={handleSearch} disabled={isSearching}>
+            <Button 
+              onClick={handleSearch} 
+              disabled={isSearching}
+              className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
               {isSearching ? "..." : <Search className="h-4 w-4" />}
             </Button>
           </div>
