@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useLeaderboardNotifications } from '@/hooks/useLeaderboardNotifications';
 import { useFriendRequestNotifications } from '@/hooks/useFriendRequestNotifications';
+import { useGroupInvitationNotifications } from '@/hooks/useGroupInvitationNotifications';
 import { useNotificationSetup } from '@/hooks/useNotificationSetup';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,6 +12,7 @@ export const NotificationManager = () => {
   const { scheduleStreakReminders, scheduleAllFastingReminders } = useNotifications();
   useLeaderboardNotifications();
   useFriendRequestNotifications();
+  useGroupInvitationNotifications(user?.id);
   useNotificationSetup();
 
   useEffect(() => {
