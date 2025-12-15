@@ -99,7 +99,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[90vw] sm:max-w-md max-h-[70vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-[90vw] sm:max-w-md max-h-[70vh] overflow-hidden flex flex-col rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Search className="h-5 w-5" />
@@ -113,6 +113,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              className="focus:ring-2 focus:ring-primary focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-primary"
             />
             <Button onClick={handleSearch} disabled={isSearching}>
               {isSearching ? "..." : <Search className="h-4 w-4" />}
