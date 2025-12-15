@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X, ChevronDown, ChevronUp, UsersRound } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,8 +23,10 @@ import { useTheme } from "next-themes";
 import { formatDistanceToNow } from "date-fns";
 import { useFriendsData } from "@/hooks/useFriendsData";
 import { useProfileData } from "@/hooks/useProfileData";
+import { useGroupsData } from "@/hooks/useGroupsData";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Friend } from "@/hooks/useFriendsData";
+import { GroupsList } from "@/components/groups/GroupsList";
 
 interface PodiumEntry {
   id: string;
@@ -56,6 +58,14 @@ export default function Friends() {
     activities, 
     refetch 
   } = useFriendsData(user?.id);
+
+  // Use the groups data hook
+  const {
+    groups,
+    invitations: groupInvitations,
+    unreadInvitationCount: groupUnreadCount,
+    refetch: refetchGroups
+  } = useGroupsData(user?.id);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -663,10 +673,19 @@ export default function Friends() {
       <main className="container mx-auto px-4 py-8 space-y-4">
       
       <Tabs defaultValue="friends" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="friends">
             <Users className="h-4 w-4 mr-2" />
             Friends
+          </TabsTrigger>
+          <TabsTrigger value="groups">
+            <UsersRound className="h-4 w-4 mr-2" />
+            Groups
+            {groupUnreadCount > 0 && (
+              <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                {groupUnreadCount}
+              </Badge>
+            )}
           </TabsTrigger>
           <TabsTrigger value="leaderboard">
             <Trophy className="h-4 w-4 mr-2" />
@@ -983,6 +1002,21 @@ export default function Friends() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="groups" className="space-y-4">
+          <GroupsList
+            groups={groups}
+            invitations={groupInvitations}
+            unreadInvitationCount={groupUnreadCount}
+            userId={user?.id || ''}
+            onGroupClick={(groupId) => navigate(`/groups/${groupId}`)}
+            onRefresh={() => {
+              refetchGroups.groups();
+              refetchGroups.invitations();
+              refetchGroups.unreadCount();
+            }}
+          />
         </TabsContent>
 
         <TabsContent value="leaderboard" className="space-y-4">

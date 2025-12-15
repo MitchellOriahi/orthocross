@@ -391,6 +391,252 @@ export type Database = {
         }
         Relationships: []
       }
+      group_activities: {
+        Row: {
+          activity_data: Json
+          activity_type: string
+          created_at: string
+          group_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          activity_data?: Json
+          activity_type: string
+          created_at?: string
+          group_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          activity_data?: Json
+          activity_type?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_activities_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_invitation_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          invitation_id: string
+          read: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invitation_id: string
+          read?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invitation_id?: string
+          read?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_invitation_notifications_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "group_invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_invitations: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          invitee_id: string
+          inviter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          invitee_id: string
+          inviter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          invitee_id?: string
+          inviter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_invitations_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_join_requests: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_join_requests_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_monthly_rankings: {
+        Row: {
+          consecutive_rank_count: number
+          created_at: string
+          group_id: string
+          id: string
+          month_date: string
+          rank: number | null
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          consecutive_rank_count?: number
+          created_at?: string
+          group_id: string
+          id?: string
+          month_date: string
+          rank?: number | null
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          consecutive_rank_count?: number
+          created_at?: string
+          group_id?: string
+          id?: string
+          month_date?: string
+          rank?: number | null
+          total_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_monthly_rankings_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      groups: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_public: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       history_highlights: {
         Row: {
           campaign_id: string
