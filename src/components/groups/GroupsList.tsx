@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Plus, Search, ChevronRight, Globe, Lock, Crown } from "lucide-react";
+import { Users, Plus, Search, ChevronRight, Globe, Lock, Crown, Pin } from "lucide-react";
 import { CreateGroupDialog } from "./CreateGroupDialog";
 import { GroupSearchDialog } from "./GroupSearchDialog";
 import { GroupInvitationsList } from "./GroupInvitationsList";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import type { Group, GroupInvitation } from "@/hooks/useGroupsData";
 
 interface GroupsListProps {
@@ -27,6 +29,76 @@ export const GroupsList = ({
 }: GroupsListProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showSearchDialog, setShowSearchDialog] = useState(false);
+  const [pinnedGroupIds, setPinnedGroupIds] = useState<Set<string>>(new Set());
+  const { toast } = useToast();
+
+  // Load pinned groups
+  useEffect(() => {
+    if (!userId) return;
+    
+    const loadPinnedGroups = async () => {
+      const { data } = await supabase
+        .from('pinned_groups')
+        .select('group_id')
+        .eq('user_id', userId);
+      
+      if (data) {
+        setPinnedGroupIds(new Set(data.map(p => p.group_id)));
+      }
+    };
+    
+    loadPinnedGroups();
+  }, [userId]);
+
+  const handlePinGroup = async (e: React.MouseEvent, groupId: string) => {
+    e.stopPropagation();
+    if (!userId) {
+      toast({ description: "Please sign in to pin groups", variant: "destructive" });
+      return;
+    }
+
+    const isPinned = pinnedGroupIds.has(groupId);
+
+    if (isPinned) {
+      // Unpin
+      await supabase
+        .from('pinned_groups')
+        .delete()
+        .eq('user_id', userId)
+        .eq('group_id', groupId);
+      
+      const newPinned = new Set(pinnedGroupIds);
+      newPinned.delete(groupId);
+      setPinnedGroupIds(newPinned);
+      toast({ description: "Group unpinned!", duration: 1500 });
+    } else {
+      // Check limit (max 3 pinned groups)
+      if (pinnedGroupIds.size >= 3) {
+        toast({ description: "You can only pin up to 3 groups", variant: "destructive" });
+        return;
+      }
+
+      // Pin
+      await supabase
+        .from('pinned_groups')
+        .insert({ user_id: userId, group_id: groupId });
+      
+      const newPinned = new Set(pinnedGroupIds);
+      newPinned.add(groupId);
+      setPinnedGroupIds(newPinned);
+      toast({ description: "Group pinned to top!", duration: 1500 });
+    }
+  };
+
+  // Sort groups: pinned first, then by name
+  const sortedGroups = [...groups].sort((a, b) => {
+    const aIsPinned = pinnedGroupIds.has(a.id);
+    const bIsPinned = pinnedGroupIds.has(b.id);
+    
+    if (aIsPinned && !bIsPinned) return -1;
+    if (!aIsPinned && bIsPinned) return 1;
+    return a.name.localeCompare(b.name);
+  });
 
   return (
     <Card>
@@ -75,39 +147,56 @@ export const GroupsList = ({
           </div>
         ) : (
           <div className="space-y-2">
-            {groups.map((group) => (
-              <div
-                key={group.id}
-                className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 cursor-pointer hover:bg-muted/70 transition-colors"
-                onClick={() => onGroupClick(group.id)}
-              >
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium truncate">{group.name}</p>
-                    {group.user_role === 'owner' && (
-                      <Crown className="h-3 w-3 text-amber-400" />
-                    )}
+            {sortedGroups.map((group) => {
+              const isPinned = pinnedGroupIds.has(group.id);
+              return (
+                <div
+                  key={group.id}
+                  className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-muted/70 transition-colors ${
+                    isPinned ? 'bg-primary/5 border border-primary/20' : 'bg-muted/50'
+                  }`}
+                  onClick={() => onGroupClick(group.id)}
+                >
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Users className="h-5 w-5 text-primary" />
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    {group.is_public ? (
-                      <Globe className="h-3 w-3" />
-                    ) : (
-                      <Lock className="h-3 w-3" />
-                    )}
-                    <span>{group.member_count} members</span>
-                    {group.member_count < 3 && (
-                      <Badge variant="secondary" className="text-xs py-0">
-                        Need {3 - group.member_count} more
-                      </Badge>
-                    )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium truncate">{group.name}</p>
+                      {group.user_role === 'owner' && (
+                        <Crown className="h-3 w-3 text-amber-400" />
+                      )}
+                      {isPinned && (
+                        <Pin className="h-3 w-3 text-primary fill-primary" />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      {group.is_public ? (
+                        <Globe className="h-3 w-3" />
+                      ) : (
+                        <Lock className="h-3 w-3" />
+                      )}
+                      <span>{group.member_count} members</span>
+                      {group.member_count < 3 && (
+                        <Badge variant="secondary" className="text-xs py-0">
+                          Need {3 - group.member_count} more
+                        </Badge>
+                      )}
+                    </div>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`h-8 w-8 ${isPinned ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                    onClick={(e) => handlePinGroup(e, group.id)}
+                    title={isPinned ? "Unpin group" : "Pin group"}
+                  >
+                    <Pin className={`h-4 w-4 ${isPinned ? 'fill-primary' : ''}`} />
+                  </Button>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>
