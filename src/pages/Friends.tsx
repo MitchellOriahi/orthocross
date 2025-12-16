@@ -16,6 +16,7 @@ import { toast } from "@/hooks/use-toast";
 import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { DonateButton } from "@/components/DonateButton";
 import { MonthlyPodiumModal } from "@/components/MonthlyPodiumModal";
 import { StreakFlame } from "@/components/StreakFlame";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
@@ -643,7 +644,8 @@ export default function Friends() {
               </div>
               <h1 className="text-2xl font-bold">Friends</h1>
             </div>
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-1">
+              <DonateButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
@@ -673,14 +675,10 @@ export default function Friends() {
       <main className="container mx-auto px-4 py-8 space-y-4">
       
       <Tabs defaultValue="friends" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="friends">
             <Users className="h-4 w-4 mr-2" />
             Friends
-          </TabsTrigger>
-          <TabsTrigger value="groups">
-            <UsersRound className="h-4 w-4 mr-2" />
-            Groups
             {groupUnreadCount > 0 && (
               <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
                 {groupUnreadCount}
@@ -1002,9 +1000,8 @@ export default function Friends() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        <TabsContent value="groups" className="space-y-4">
+          {/* Groups Section - moved under Your Friends */}
           <GroupsList
             groups={groups}
             invitations={groupInvitations}

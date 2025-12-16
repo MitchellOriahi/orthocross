@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useMusic } from "@/contexts/MusicContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { DonateButton } from "@/components/DonateButton";
 import { ChapterSelector } from "@/components/ChapterSelector";
 import { TranslationSelector } from "@/components/TranslationSelector";
 import { bibleContent, BIBLE_BOOKS } from "@/data/bibleContent";
@@ -605,7 +606,8 @@ const Reading = () => {
                 Back
               </Button>
             </div>
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-1">
+              <DonateButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />

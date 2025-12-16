@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { DonateButton } from "@/components/DonateButton";
 import { useMusic } from "@/contexts/MusicContext";
 import { useNotifications, ReminderTime } from "@/hooks/useNotifications";
 import { useAuth } from "@/contexts/AuthContext";
@@ -295,7 +296,8 @@ const Settings = () => {
               </div>
               <h1 className="text-2xl font-bold">Settings</h1>
             </div>
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-1">
+              <DonateButton />
               <ThemeToggle />
             </nav>
           </div>

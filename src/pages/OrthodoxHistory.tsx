@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { DonateButton } from "@/components/DonateButton";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
@@ -200,7 +201,8 @@ const OrthodoxHistory = () => {
               </div>
               <h1 className="text-2xl font-bold">History</h1>
             </div>
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-1">
+              <DonateButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />
