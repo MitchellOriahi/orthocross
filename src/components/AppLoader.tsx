@@ -2,6 +2,8 @@ import { useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import orthodoxCross from '@/assets/orthodox-cross.jpg';
+import orthodoxCrossBlack from '@/assets/orthodox-cross-black-new.png';
+import orthodoxCrossWhite from '@/assets/orthodox-cross-white-new.png';
 
 interface AppLoaderProps {
   children: ReactNode;
@@ -122,6 +124,19 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
                     })
                   );
                 }
+
+                // Also preload the church cross images
+                const crossImages = [orthodoxCross, orthodoxCrossBlack, orthodoxCrossWhite];
+                crossImages.forEach(src => {
+                  imagePromises.push(
+                    new Promise<void>((resolve) => {
+                      const img = new Image();
+                      img.onload = () => resolve();
+                      img.onerror = () => resolve();
+                      img.src = src;
+                    })
+                  );
+                });
 
                 // Wait for images to load (with timeout)
                 await Promise.race([
