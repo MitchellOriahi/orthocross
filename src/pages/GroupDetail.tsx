@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { DonateButton } from "@/components/DonateButton";
 import { GroupMemberBadge } from "@/components/groups/GroupMemberBadge";
 import { GroupInviteDialog } from "@/components/groups/GroupInviteDialog";
 import { formatDistanceToNow } from "date-fns";
@@ -231,7 +232,8 @@ export default function GroupDetail() {
                 <p className="text-xs text-muted-foreground">{members.length} members</p>
               </div>
             </div>
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-1">
+              <DonateButton />
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
