@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -547,6 +547,28 @@ const Settings = () => {
                 >
                   <MessageSquare className="w-4 h-4 mr-3" />
                   Share via SMS
+                </Button>
+              </div>
+              
+              {/* Cancel Monthly Donation */}
+              <div className="pt-4 border-t border-border/50">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-destructive hover:text-destructive"
+                  onClick={async () => {
+                    try {
+                      const { data, error } = await supabase.functions.invoke("customer-portal");
+                      if (error) throw error;
+                      if (data?.url) {
+                        window.open(data.url, "_blank");
+                      }
+                    } catch (error: any) {
+                      toast.error(error.message || "Failed to open subscription management");
+                    }
+                  }}
+                >
+                  <XCircle className="w-4 h-4 mr-3" />
+                  Cancel Monthly Donation
                 </Button>
               </div>
             </CardContent>

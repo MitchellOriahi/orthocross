@@ -71,10 +71,10 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <CalendarHeart className="w-5 h-5 text-primary" />
-            Support OrthoCross Monthly
+            Support OrthoCross
           </DialogTitle>
           <DialogDescription>
-            Your monthly donation helps us spread the Gospel and maintain this free app for everyone.
+            Acts 20:35 - "It is more blessed to give than to receive."
           </DialogDescription>
         </DialogHeader>
         
@@ -107,9 +107,6 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
                 placeholder="5.00"
               />
             </div>
-            <p className="text-xs text-muted-foreground">
-              Minimum $1.00. You can cancel your monthly donation at any time.
-            </p>
           </div>
 
           <Button 
@@ -118,7 +115,7 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             className="w-full"
             variant="sacred"
           >
-            {loading ? "Processing..." : "Start Monthly Donation"}
+            {loading ? "Processing..." : "Donate"}
           </Button>
         </div>
       </DialogContent>
