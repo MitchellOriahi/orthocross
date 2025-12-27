@@ -552,12 +552,18 @@ export default function Friends() {
     const lastMonthDate = lastMonth.toISOString().slice(0, 7);
 
     // Check if user has seen this month's podium
-    const { data: viewedData } = await supabase
+    const { data: viewedData, error: viewedError } = await supabase
       .from('monthly_podium_views')
       .select('id')
       .eq('user_id', user.id)
       .eq('month_date', lastMonthDate)
+      .limit(1)
       .maybeSingle();
+
+    if (viewedError) {
+      console.error('Error checking podium view:', viewedError);
+      return;
+    }
 
     if (!viewedData) {
       // Load last month's top 3 (global now, not friends-only)
@@ -598,17 +604,13 @@ export default function Friends() {
     const lastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1);
     const lastMonthDate = lastMonth.toISOString().slice(0, 7);
 
-    // Use upsert to prevent duplicate key errors
+    // Insert a "viewed" record; if it already exists, ignore the unique-violation error.
     const { error } = await supabase
       .from('monthly_podium_views')
-      .upsert(
-        { user_id: user.id, month_date: lastMonthDate },
-        { onConflict: 'user_id,month_date', ignoreDuplicates: true }
-      );
+      .insert([{ user_id: user.id, month_date: lastMonthDate }]);
 
-    if (error) {
+    if (error && (error as any).code !== '23505') {
       console.error('Error saving podium view:', error);
-      // Still keep it closed even if save fails
     }
   };
 
@@ -1052,36 +1054,36 @@ export default function Friends() {
                   No donations yet. Be the first to support the community!
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {topDonators.map((donator, index) => {
-                    const getCardBackground = () => {
-                      if (index === 0) return "bg-rose-400/10";
-                      if (index === 1) return "bg-rose-300/10";
-                      if (index === 2) return "bg-rose-200/10";
-                      return "bg-muted/50";
-                    };
-                    
+                <div className="flex items-stretch gap-2">
+                  {topDonators.slice(0, 3).map((donator, index) => {
                     const getRankColors = () => {
                       if (index === 0) return "bg-rose-400/20 text-rose-400";
                       if (index === 1) return "bg-rose-300/20 text-rose-300";
-                      if (index === 2) return "bg-rose-200/20 text-rose-500";
-                      return "bg-primary/10 text-primary";
+                      return "bg-rose-200/20 text-rose-500";
                     };
-                    
+
                     return (
-                      <div key={donator.user_id} className={`flex items-center gap-3 p-3 rounded-lg ${getCardBackground()}`}>
-                        <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${getRankColors()}`}>
+                      <div
+                        key={donator.user_id}
+                        className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2 flex-1 min-w-0"
+                      >
+                        <div
+                          className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${getRankColors()}`}
+                        >
                           {index + 1}
                         </div>
-                        <Avatar>
+
+                        <Avatar className="h-7 w-7">
                           <AvatarImage src={donator.profile_picture_url || undefined} />
                           <AvatarFallback>{donator.username?.substring(0, 2).toUpperCase() || 'A'}</AvatarFallback>
                         </Avatar>
-                        <span className="font-medium flex-1">{donator.username}</span>
-                        <span className="text-sm text-muted-foreground flex items-center gap-1">
-                          <Heart className="h-3 w-3 text-rose-500" />
-                          ${(donator.total_donated / 100).toFixed(0)}
-                        </span>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-medium truncate">{donator.username}</div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            ${(donator.total_donated / 100).toFixed(0)} donated
+                          </div>
+                        </div>
                       </div>
                     );
                   })}
