@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import FastingPreferencesDialog from "@/components/FastingPreferencesDialog";
 import StreakReminderDialog from "@/components/StreakReminderDialog";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
+import { BottomNavigation } from "@/components/BottomNavigation";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -288,7 +289,13 @@ const Settings = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => navigate(-1)}
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    navigate(-1);
+                  } else {
+                    navigate('/dashboard');
+                  }
+                }}
                 className="shrink-0"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -647,6 +654,9 @@ const Settings = () => {
         onToggleReminder={handleToggleReminder}
         onTimeChange={handleTimeChange}
       />
+      
+      {/* Bottom Navigation */}
+      <BottomNavigation />
     </div>
   );
 };
