@@ -536,6 +536,17 @@ export default function Friends() {
   const checkMonthlyPodium = async () => {
     if (!user) return;
 
+    // Use a ref-like approach with localStorage to prevent multiple triggers
+    const podiumCheckKey = `podium_check_${user.id}`;
+    const lastCheck = localStorage.getItem(podiumCheckKey);
+    const now = Date.now();
+    
+    // Only check once per session (prevent multiple triggers)
+    if (lastCheck && now - parseInt(lastCheck) < 60000) {
+      return;
+    }
+    localStorage.setItem(podiumCheckKey, now.toString());
+
     const currentDate = new Date();
     const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
     const lastMonthDate = lastMonth.toISOString().slice(0, 7);
@@ -549,44 +560,31 @@ export default function Friends() {
       .maybeSingle();
 
     if (!viewedData) {
-      // Load last month's top 3
-      const { data: friendsData } = await supabase
-        .from('friends')
-        .select('user_id, friend_id')
-        .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+      // Load last month's top 3 (global now, not friends-only)
+      const { data: leaderboardData } = await supabase
+        .from('monthly_leaderboard')
+        .select('user_id, total_points')
+        .eq('month_date', lastMonthDate)
+        .order('total_points', { ascending: false })
+        .limit(3);
 
-      if (friendsData) {
-        const friendIds = friendsData.map(f => 
-          f.user_id === user.id ? f.friend_id : f.user_id
-        );
-        friendIds.push(user.id);
+      if (leaderboardData && leaderboardData.length > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, username, profile_picture_url')
+          .in('id', leaderboardData.map(l => l.user_id));
 
-        const { data: leaderboardData } = await supabase
-          .from('monthly_leaderboard')
-          .select('user_id, total_points')
-          .eq('month_date', lastMonthDate)
-          .in('user_id', friendIds)
-          .order('total_points', { ascending: false })
-          .limit(3);
+        const topThree = leaderboardData.map((entry, index) => ({
+          id: entry.user_id,
+          username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
+          profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
+          total_points: entry.total_points,
+          rank: index + 1
+        }));
 
-        if (leaderboardData && leaderboardData.length > 0) {
-          const { data: profilesData } = await supabase
-            .from('profiles')
-            .select('id, username, profile_picture_url')
-            .in('id', leaderboardData.map(l => l.user_id));
-
-          const topThree = leaderboardData.map((entry, index) => ({
-            id: entry.user_id,
-            username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
-            profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
-            total_points: entry.total_points,
-            rank: index + 1
-          }));
-
-          setPodiumData(topThree);
-          setLastMonthName(lastMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
-          setShowPodium(true);
-        }
+        setPodiumData(topThree);
+        setLastMonthName(lastMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
+        setShowPodium(true);
       }
     }
   };
@@ -594,14 +592,24 @@ export default function Friends() {
   const handlePodiumClose = async () => {
     if (!user) return;
 
+    // Close immediately to prevent glitching
+    setShowPodium(false);
+
     const lastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1);
     const lastMonthDate = lastMonth.toISOString().slice(0, 7);
 
-    await supabase
+    // Use upsert to prevent duplicate key errors
+    const { error } = await supabase
       .from('monthly_podium_views')
-      .insert({ user_id: user.id, month_date: lastMonthDate });
+      .upsert(
+        { user_id: user.id, month_date: lastMonthDate },
+        { onConflict: 'user_id,month_date', ignoreDuplicates: true }
+      );
 
-    setShowPodium(false);
+    if (error) {
+      console.error('Error saving podium view:', error);
+      // Still keep it closed even if save fails
+    }
   };
 
   const handleReaction = async (activityId: string, emoji: string) => {
@@ -1027,60 +1035,7 @@ export default function Friends() {
         </TabsContent>
 
         <TabsContent value="leaderboard" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-amber-500" />
-                Monthly Leaderboard
-              </CardTitle>
-              <CardDescription>
-                Top users for {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {leaderboard.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">
-                  No stats yet. Complete islands, chapters, or read about saints to appear on the leaderboard!
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {leaderboard.map((entry, index) => {
-                    const getCardBackground = () => {
-                      if (index === 0) return "bg-amber-400/10";
-                      if (index === 1) return "bg-slate-300/10";
-                      if (index === 2) return "bg-amber-700/10";
-                      return "bg-muted/50";
-                    };
-                    
-                    const getRankColors = () => {
-                      if (index === 0) return "bg-amber-400/20 text-amber-400";
-                      if (index === 1) return "bg-slate-300/20 text-slate-300";
-                      if (index === 2) return "bg-amber-700/20 text-amber-700";
-                      return "bg-primary/10 text-primary";
-                    };
-                    
-                    return (
-                      <div key={entry.id} className={`flex items-center gap-3 p-3 rounded-lg ${getCardBackground()}`}>
-                        <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${getRankColors()}`}>
-                          {index + 1}
-                        </div>
-                        <Avatar>
-                          <AvatarImage src={entry.profile_picture_url || undefined} />
-                          <AvatarFallback>{entry.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
-                        </Avatar>
-                        <span className="font-medium flex-1">{entry.username}</span>
-                        <span className="text-sm text-muted-foreground">
-                          {entry.books_completed} {entry.books_completed === 1 ? 'point' : 'points'}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Top Donators Section */}
+          {/* Top Donators Section - now first */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -1126,6 +1081,60 @@ export default function Friends() {
                         <span className="text-sm text-muted-foreground flex items-center gap-1">
                           <Heart className="h-3 w-3 text-rose-500" />
                           ${(donator.total_donated / 100).toFixed(0)}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Monthly Leaderboard Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-amber-500" />
+                Monthly Leaderboard
+              </CardTitle>
+              <CardDescription>
+                Top users for {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {leaderboard.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  No stats yet. Complete islands, chapters, or read about saints to appear on the leaderboard!
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {leaderboard.map((entry, index) => {
+                    const getCardBackground = () => {
+                      if (index === 0) return "bg-amber-400/10";
+                      if (index === 1) return "bg-slate-300/10";
+                      if (index === 2) return "bg-amber-700/10";
+                      return "bg-muted/50";
+                    };
+                    
+                    const getRankColors = () => {
+                      if (index === 0) return "bg-amber-400/20 text-amber-400";
+                      if (index === 1) return "bg-slate-300/20 text-slate-300";
+                      if (index === 2) return "bg-amber-700/20 text-amber-700";
+                      return "bg-primary/10 text-primary";
+                    };
+                    
+                    return (
+                      <div key={entry.id} className={`flex items-center gap-3 p-3 rounded-lg ${getCardBackground()}`}>
+                        <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${getRankColors()}`}>
+                          {index + 1}
+                        </div>
+                        <Avatar>
+                          <AvatarImage src={entry.profile_picture_url || undefined} />
+                          <AvatarFallback>{entry.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium flex-1">{entry.username}</span>
+                        <span className="text-sm text-muted-foreground">
+                          {entry.books_completed} {entry.books_completed === 1 ? 'point' : 'points'}
                         </span>
                       </div>
                     );
