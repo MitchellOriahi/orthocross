@@ -102,6 +102,7 @@ export default function Friends() {
     const saved = localStorage.getItem('friendsListOpen');
     return saved !== null ? JSON.parse(saved) : true;
   });
+  const [donatorsExpanded, setDonatorsExpanded] = useState(false);
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
@@ -1067,7 +1068,7 @@ export default function Friends() {
 
         <TabsContent value="leaderboard" className="space-y-4">
           {/* Donators Section */}
-          <Collapsible>
+          <Collapsible open={donatorsExpanded} onOpenChange={setDonatorsExpanded}>
             <Card>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
@@ -1083,8 +1084,17 @@ export default function Friends() {
                   {topDonators.length > 3 && (
                     <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
-                        <ChevronDown className="h-4 w-4 mr-1" />
-                        Show all
+                        {donatorsExpanded ? (
+                          <>
+                            <ChevronUp className="h-4 w-4 mr-1" />
+                            Show less
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="h-4 w-4 mr-1" />
+                            Show all
+                          </>
+                        )}
                       </Button>
                     </CollapsibleTrigger>
                   )}
