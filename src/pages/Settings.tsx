@@ -549,28 +549,39 @@ const Settings = () => {
                   Share via SMS
                 </Button>
               </div>
-              
-              {/* Cancel Monthly Donation */}
-              <div className="pt-4 border-t border-border/50">
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-destructive hover:text-destructive"
-                  onClick={async () => {
-                    try {
-                      const { data, error } = await supabase.functions.invoke("customer-portal");
-                      if (error) throw error;
-                      if (data?.url) {
-                        window.open(data.url, "_blank");
-                      }
-                    } catch (error: any) {
-                      toast.error(error.message || "Failed to open subscription management");
+            </CardContent>
+          </Card>
+
+          {/* Cancel Monthly Donation */}
+          <Card className="shadow-elevated">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <XCircle className="w-5 h-5 text-destructive" />
+                Cancel Monthly Donation
+              </CardTitle>
+              <CardDescription>
+                Manage or cancel your monthly donation subscription
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant="outline"
+                className="w-full justify-start text-destructive hover:text-destructive"
+                onClick={async () => {
+                  try {
+                    const { data, error } = await supabase.functions.invoke("customer-portal");
+                    if (error) throw error;
+                    if (data?.url) {
+                      window.open(data.url, "_blank");
                     }
-                  }}
-                >
-                  <XCircle className="w-4 h-4 mr-3" />
-                  Cancel Monthly Donation
-                </Button>
-              </div>
+                  } catch (error: any) {
+                    toast.error(error.message || "Failed to open subscription management");
+                  }
+                }}
+              >
+                <XCircle className="w-4 h-4 mr-3" />
+                Manage Subscription
+              </Button>
             </CardContent>
           </Card>
 
