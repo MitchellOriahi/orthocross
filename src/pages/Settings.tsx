@@ -20,6 +20,7 @@ import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import FastingPreferencesDialog from "@/components/FastingPreferencesDialog";
 import StreakReminderDialog from "@/components/StreakReminderDialog";
+import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const Settings = () => {
   const [fastingReminderDays, setFastingReminderDays] = useState<number[]>([3, 0]);
   const [wednesdayNotificationsEnabled, setWednesdayNotificationsEnabled] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [cancelDonationDialogOpen, setCancelDonationDialogOpen] = useState(false);
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
   const [activityVisible, setActivityVisible] = useState(true);
@@ -556,8 +558,8 @@ const Settings = () => {
           <Card className="shadow-elevated">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <XCircle className="w-5 h-5 text-destructive" />
-                Cancel Monthly Donation
+                <XCircle className="w-5 h-5" />
+                Manage Donation
               </CardTitle>
               <CardDescription>
                 Manage or cancel your monthly donation subscription
@@ -566,24 +568,19 @@ const Settings = () => {
             <CardContent>
               <Button
                 variant="outline"
-                className="w-full justify-start text-destructive hover:text-destructive"
-                onClick={async () => {
-                  try {
-                    const { data, error } = await supabase.functions.invoke("customer-portal");
-                    if (error) throw error;
-                    if (data?.url) {
-                      window.open(data.url, "_blank");
-                    }
-                  } catch (error: any) {
-                    toast.error(error.message || "Failed to open subscription management");
-                  }
-                }}
+                className="w-full justify-start"
+                onClick={() => setCancelDonationDialogOpen(true)}
               >
                 <XCircle className="w-4 h-4 mr-3" />
-                Manage Subscription
+                Cancel Monthly Donation
               </Button>
             </CardContent>
           </Card>
+
+          <CancelDonationDialog 
+            open={cancelDonationDialogOpen} 
+            onOpenChange={setCancelDonationDialogOpen} 
+          />
 
           {/* App Information */}
           <Card className="shadow-elevated">
