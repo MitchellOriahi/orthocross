@@ -1427,6 +1427,15 @@ export type Database = {
           username: string
         }[]
       }
+      get_top_donators: {
+        Args: { limit_count?: number }
+        Returns: {
+          profile_picture_url: string
+          total_donated: number
+          user_id: string
+          username: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
