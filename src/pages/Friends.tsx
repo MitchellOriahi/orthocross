@@ -44,6 +44,13 @@ interface LeaderboardEntry {
   profile_picture_url: string | null;
 }
 
+interface DonatorEntry {
+  user_id: string;
+  username: string;
+  total_donated: number;
+  profile_picture_url: string | null;
+}
+
 export default function Friends() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -74,6 +81,7 @@ export default function Friends() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [topDonators, setTopDonators] = useState<DonatorEntry[]>([]);
   const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
   const [requestToCancel, setRequestToCancel] = useState<string | null>(null);
@@ -258,39 +266,41 @@ export default function Friends() {
 
     const currentMonth = new Date().toISOString().slice(0, 7);
 
-    const { data: friendsData } = await supabase
-      .from('friends')
-      .select('user_id, friend_id')
-      .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+    // Load global leaderboard (all users, not just friends)
+    const { data: leaderboardData } = await supabase
+      .from('monthly_leaderboard')
+      .select('user_id, total_points')
+      .eq('month_date', currentMonth)
+      .order('total_points', { ascending: false })
+      .limit(50);
 
-    if (friendsData) {
-      const friendIds = friendsData.map(f => 
-        f.user_id === user.id ? f.friend_id : f.user_id
-      );
-      friendIds.push(user.id); // Include current user
+    if (leaderboardData && leaderboardData.length > 0) {
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('id, username, profile_picture_url')
+        .in('id', leaderboardData.map(l => l.user_id));
 
-      const { data: leaderboardData } = await supabase
-        .from('monthly_leaderboard')
-        .select('user_id, total_points')
-        .eq('month_date', currentMonth)
-        .in('user_id', friendIds)
-        .order('total_points', { ascending: false });
+      const leaderboardWithUsernames = leaderboardData.map(entry => ({
+        id: entry.user_id,
+        username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
+        profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
+        books_completed: entry.total_points || 0
+      }));
 
-      if (leaderboardData) {
-        const { data: profilesData } = await supabase
-          .from('profiles')
-          .select('id, username, profile_picture_url')
-          .in('id', leaderboardData.map(l => l.user_id));
+      setLeaderboard(leaderboardWithUsernames);
+    }
 
-        const leaderboardWithUsernames = leaderboardData.map(entry => ({
-          id: entry.user_id,
-          username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
-          profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
-          books_completed: entry.total_points || 0
-        }));
+    // Load top donators
+    const { data: donatorsData } = await supabase
+      .rpc('get_top_donators', { limit_count: 10 });
 
-        setLeaderboard(leaderboardWithUsernames);
-      }
+    if (donatorsData) {
+      setTopDonators(donatorsData.map((d: { user_id: string; total_donated: number; username: string | null; profile_picture_url: string | null }) => ({
+        user_id: d.user_id,
+        username: d.username || 'Anonymous',
+        total_donated: d.total_donated,
+        profile_picture_url: d.profile_picture_url
+      })));
     }
   };
 
@@ -1019,9 +1029,12 @@ export default function Friends() {
         <TabsContent value="leaderboard" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Monthly Leaderboard</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-amber-500" />
+                Monthly Leaderboard
+              </CardTitle>
               <CardDescription>
-                {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                Top users for {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1058,6 +1071,61 @@ export default function Friends() {
                         <span className="font-medium flex-1">{entry.username}</span>
                         <span className="text-sm text-muted-foreground">
                           {entry.books_completed} {entry.books_completed === 1 ? 'point' : 'points'}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Top Donators Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Heart className="h-5 w-5 text-rose-500" />
+                Top Donators
+              </CardTitle>
+              <CardDescription>
+                Generous supporters of the community
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {topDonators.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  No donations yet. Be the first to support the community!
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {topDonators.map((donator, index) => {
+                    const getCardBackground = () => {
+                      if (index === 0) return "bg-rose-400/10";
+                      if (index === 1) return "bg-rose-300/10";
+                      if (index === 2) return "bg-rose-200/10";
+                      return "bg-muted/50";
+                    };
+                    
+                    const getRankColors = () => {
+                      if (index === 0) return "bg-rose-400/20 text-rose-400";
+                      if (index === 1) return "bg-rose-300/20 text-rose-300";
+                      if (index === 2) return "bg-rose-200/20 text-rose-500";
+                      return "bg-primary/10 text-primary";
+                    };
+                    
+                    return (
+                      <div key={donator.user_id} className={`flex items-center gap-3 p-3 rounded-lg ${getCardBackground()}`}>
+                        <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${getRankColors()}`}>
+                          {index + 1}
+                        </div>
+                        <Avatar>
+                          <AvatarImage src={donator.profile_picture_url || undefined} />
+                          <AvatarFallback>{donator.username?.substring(0, 2).toUpperCase() || 'A'}</AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium flex-1">{donator.username}</span>
+                        <span className="text-sm text-muted-foreground flex items-center gap-1">
+                          <Heart className="h-3 w-3 text-rose-500" />
+                          ${(donator.total_donated / 100).toFixed(0)}
                         </span>
                       </div>
                     );
