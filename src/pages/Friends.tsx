@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X, ChevronDown, ChevronUp, UsersRound } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -1065,60 +1066,103 @@ export default function Friends() {
         </TabsContent>
 
         <TabsContent value="leaderboard" className="space-y-4">
-          {/* Top Donators Section - now first */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Heart className="h-5 w-5 text-rose-500" />
-                Top Donators
-              </CardTitle>
-              <CardDescription>
-                Generous supporters of the community
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {topDonators.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">
-                  No donations yet. Be the first to support the community!
+          {/* Donators Section */}
+          <Collapsible>
+            <Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Heart className="h-5 w-5 text-rose-500" />
+                      Donators
+                    </CardTitle>
+                    <CardDescription>
+                      Generous supporters of the community
+                    </CardDescription>
+                  </div>
+                  {topDonators.length > 3 && (
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
+                        <ChevronDown className="h-4 w-4 mr-1" />
+                        Show all
+                      </Button>
+                    </CollapsibleTrigger>
+                  )}
                 </div>
-              ) : (
-                <div className="flex items-stretch gap-2">
-                  {topDonators.slice(0, 3).map((donator, index) => {
-                    const getRankColors = () => {
-                      if (index === 0) return "bg-rose-400/20 text-rose-400";
-                      if (index === 1) return "bg-rose-300/20 text-rose-300";
-                      return "bg-rose-200/20 text-rose-500";
-                    };
+              </CardHeader>
+              <CardContent>
+                {topDonators.length === 0 ? (
+                  <div className="text-center text-muted-foreground py-8">
+                    No donations yet. Be the first to support the community!
+                  </div>
+                ) : (
+                  <>
+                    {/* Top 3 always visible */}
+                    <div className="flex items-stretch gap-2">
+                      {topDonators.slice(0, 3).map((donator, index) => {
+                        const getRankColors = () => {
+                          if (index === 0) return "bg-rose-400/20 text-rose-400";
+                          if (index === 1) return "bg-rose-300/20 text-rose-300";
+                          return "bg-rose-200/20 text-rose-500";
+                        };
 
-                    return (
-                      <div
-                        key={donator.user_id}
-                        className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2 flex-1 min-w-0"
-                      >
+                        return (
+                          <div
+                            key={donator.user_id}
+                            className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2 flex-1 min-w-0"
+                          >
+                            <div
+                              className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${getRankColors()}`}
+                            >
+                              {index + 1}
+                            </div>
+
+                            <Avatar className="h-7 w-7">
+                              <AvatarImage src={donator.profile_picture_url || undefined} />
+                              <AvatarFallback>{donator.username?.substring(0, 2).toUpperCase() || 'A'}</AvatarFallback>
+                            </Avatar>
+
+                            <div className="min-w-0 flex-1">
+                              <div className="text-sm font-medium truncate">{donator.username}</div>
+                              <div className="text-xs text-muted-foreground truncate">
+                                ${(donator.total_donated / 100).toFixed(0)} donated
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    
+                    {/* Expanded list for 4+ donators */}
+                    <CollapsibleContent className="mt-3 space-y-2">
+                      {topDonators.slice(3).map((donator, index) => (
                         <div
-                          className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${getRankColors()}`}
+                          key={donator.user_id}
+                          className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2"
                         >
-                          {index + 1}
-                        </div>
+                          <div className="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold bg-rose-100/20 text-rose-400">
+                            {index + 4}
+                          </div>
 
-                        <Avatar className="h-7 w-7">
-                          <AvatarImage src={donator.profile_picture_url || undefined} />
-                          <AvatarFallback>{donator.username?.substring(0, 2).toUpperCase() || 'A'}</AvatarFallback>
-                        </Avatar>
+                          <Avatar className="h-7 w-7">
+                            <AvatarImage src={donator.profile_picture_url || undefined} />
+                            <AvatarFallback>{donator.username?.substring(0, 2).toUpperCase() || 'A'}</AvatarFallback>
+                          </Avatar>
 
-                        <div className="min-w-0 flex-1">
-                          <div className="text-sm font-medium truncate">{donator.username}</div>
-                          <div className="text-xs text-muted-foreground truncate">
-                            ${(donator.total_donated / 100).toFixed(0)} donated
+                          <div className="min-w-0 flex-1">
+                            <div className="text-sm font-medium truncate">{donator.username}</div>
+                            <div className="text-xs text-muted-foreground truncate">
+                              ${(donator.total_donated / 100).toFixed(0)} donated
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                      ))}
+                    </CollapsibleContent>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </Collapsible>
 
           {/* Monthly Leaderboard Section */}
           <Card>
