@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export const DonationThankYouDialog = () => {
   const [showThankYou, setShowThankYou] = useState(false);
@@ -37,6 +38,9 @@ export const DonationThankYouDialog = () => {
       // Show thank you dialog
       setShowThankYou(true);
       
+      // Send thank you email
+      sendThankYouEmail(isMonthly);
+      
       // Record the donation date based on type
       const donationDate = new Date().toISOString();
       if (isMonthly) {
@@ -53,6 +57,17 @@ export const DonationThankYouDialog = () => {
       setSearchParams(searchParams, { replace: true });
     }
   }, [user, searchParams, setSearchParams]);
+
+  const sendThankYouEmail = async (isMonthly: boolean) => {
+    try {
+      await supabase.functions.invoke("send-donation-thank-you", {
+        body: { donationType: isMonthly ? "monthly" : "one-time" }
+      });
+      console.log("Thank you email sent successfully");
+    } catch (error) {
+      console.error("Failed to send thank you email:", error);
+    }
+  };
 
   const handleClose = () => {
     setShowThankYou(false);
@@ -75,6 +90,7 @@ export const DonationThankYouDialog = () => {
           <DialogDescription className="text-lg text-center">
             <p className="font-semibold text-foreground">Your generosity helps spread the Gospel.</p>
             <p className="text-primary font-medium mt-2">May God bless you abundantly! 🙏</p>
+            <p className="text-muted-foreground text-sm mt-3">A thank you email has been sent to you.</p>
           </DialogDescription>
         </DialogHeader>
 
