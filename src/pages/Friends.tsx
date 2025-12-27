@@ -265,42 +265,70 @@ export default function Friends() {
     if (!user) return;
 
     const currentMonth = new Date().toISOString().slice(0, 7);
+    console.log('Loading leaderboard for month:', currentMonth);
 
-    // Load global leaderboard (all users, not just friends)
-    const { data: leaderboardData } = await supabase
-      .from('monthly_leaderboard')
-      .select('user_id, total_points')
-      .eq('month_date', currentMonth)
-      .order('total_points', { ascending: false })
-      .limit(50);
+    try {
+      // Load global leaderboard (all users, not just friends)
+      const { data: leaderboardData, error: leaderboardError } = await supabase
+        .from('monthly_leaderboard')
+        .select('user_id, total_points')
+        .eq('month_date', currentMonth)
+        .order('total_points', { ascending: false })
+        .limit(50);
 
-    if (leaderboardData && leaderboardData.length > 0) {
-      const { data: profilesData } = await supabase
-        .from('profiles')
-        .select('id, username, profile_picture_url')
-        .in('id', leaderboardData.map(l => l.user_id));
+      if (leaderboardError) {
+        console.error('Error loading leaderboard:', leaderboardError);
+      }
 
-      const leaderboardWithUsernames = leaderboardData.map(entry => ({
-        id: entry.user_id,
-        username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
-        profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
-        books_completed: entry.total_points || 0
-      }));
+      console.log('Leaderboard data received:', leaderboardData);
 
-      setLeaderboard(leaderboardWithUsernames);
-    }
+      if (leaderboardData && leaderboardData.length > 0) {
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, username, profile_picture_url')
+          .in('id', leaderboardData.map(l => l.user_id));
 
-    // Load top donators
-    const { data: donatorsData } = await supabase
-      .rpc('get_top_donators', { limit_count: 10 });
+        if (profilesError) {
+          console.error('Error loading profiles:', profilesError);
+        }
 
-    if (donatorsData) {
-      setTopDonators(donatorsData.map((d: { user_id: string; total_donated: number; username: string | null; profile_picture_url: string | null }) => ({
-        user_id: d.user_id,
-        username: d.username || 'Anonymous',
-        total_donated: d.total_donated,
-        profile_picture_url: d.profile_picture_url
-      })));
+        console.log('Profiles data received:', profilesData);
+
+        const leaderboardWithUsernames = leaderboardData.map(entry => ({
+          id: entry.user_id,
+          username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
+          profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
+          books_completed: entry.total_points || 0
+        }));
+
+        setLeaderboard(leaderboardWithUsernames);
+      } else {
+        // Clear leaderboard if no data for current month
+        setLeaderboard([]);
+      }
+
+      // Load top donators
+      const { data: donatorsData, error: donatorsError } = await supabase
+        .rpc('get_top_donators', { limit_count: 10 });
+
+      if (donatorsError) {
+        console.error('Error loading top donators:', donatorsError);
+      }
+
+      console.log('Top donators data received:', donatorsData);
+
+      if (donatorsData && donatorsData.length > 0) {
+        setTopDonators(donatorsData.map((d: { user_id: string; total_donated: number; username: string | null; profile_picture_url: string | null }) => ({
+          user_id: d.user_id,
+          username: d.username || 'Anonymous',
+          total_donated: d.total_donated,
+          profile_picture_url: d.profile_picture_url
+        })));
+      } else {
+        setTopDonators([]);
+      }
+    } catch (error) {
+      console.error('Error in loadLeaderboard:', error);
     }
   };
 
