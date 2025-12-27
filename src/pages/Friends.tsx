@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X, ChevronDown, ChevronUp, UsersRound } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -54,9 +54,13 @@ interface DonatorEntry {
 
 export default function Friends() {
   const { user } = useAuth();
+  const userId = user?.id;
   const navigate = useNavigate();
   const { theme } = useTheme();
   const queryClient = useQueryClient();
+
+  // Coalesce/throttle leaderboard reloads to prevent rapid-fire fetch loops
+  const leaderboardFetchRef = useRef({ inFlight: false, pending: false, lastRun: 0 });
   
   // Use the friends data hook
   const { 
@@ -66,7 +70,7 @@ export default function Friends() {
     unreadNotificationCount: hookUnreadCount,
     activities, 
     refetch 
-  } = useFriendsData(user?.id);
+  } = useFriendsData(userId);
 
   // Use the groups data hook
   const {
@@ -74,7 +78,7 @@ export default function Friends() {
     invitations: groupInvitations,
     unreadInvitationCount: groupUnreadCount,
     refetch: refetchGroups
-  } = useGroupsData(user?.id);
+  } = useGroupsData(userId);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -132,12 +136,12 @@ export default function Friends() {
   }, [hookUnreadCount]);
 
   useEffect(() => {
-    if (user) {
+    if (userId) {
       loadLeaderboard();
       checkMonthlyPodium();
     }
 
-    if (!user) return;
+    if (!userId) return;
 
     // Set up comprehensive realtime subscriptions
     const friendRequestsChannel = supabase
@@ -148,11 +152,11 @@ export default function Friends() {
           event: '*',
           schema: 'public',
           table: 'friend_requests',
-          filter: `receiver_id=eq.${user.id}`
+          filter: `receiver_id=eq.${userId}`
         },
         () => {
-          queryClient.invalidateQueries({ queryKey: ['receivedRequests', user.id] });
-          queryClient.invalidateQueries({ queryKey: ['sentRequests', user.id] });
+          queryClient.invalidateQueries({ queryKey: ['receivedRequests', userId] });
+          queryClient.invalidateQueries({ queryKey: ['sentRequests', userId] });
         }
       )
       .on(
@@ -161,10 +165,10 @@ export default function Friends() {
           event: '*',
           schema: 'public',
           table: 'friend_request_notifications',
-          filter: `receiver_id=eq.${user.id}`
+          filter: `receiver_id=eq.${userId}`
         },
         () => {
-          queryClient.invalidateQueries({ queryKey: ['receivedRequests', user.id] });
+          queryClient.invalidateQueries({ queryKey: ['receivedRequests', userId] });
         }
       )
       .subscribe();
@@ -183,10 +187,10 @@ export default function Friends() {
           // Refetch if the current user is involved
           const newRecord = payload.new as any;
           const oldRecord = payload.old as any;
-          if (newRecord?.user_id === user.id || newRecord?.friend_id === user.id ||
-              oldRecord?.user_id === user.id || oldRecord?.friend_id === user.id) {
-            queryClient.invalidateQueries({ queryKey: ['friends', user.id] });
-            queryClient.invalidateQueries({ queryKey: ['friendActivities', user.id] });
+          if (newRecord?.user_id === userId || newRecord?.friend_id === userId ||
+              oldRecord?.user_id === userId || oldRecord?.friend_id === userId) {
+            queryClient.invalidateQueries({ queryKey: ['friends', userId] });
+            queryClient.invalidateQueries({ queryKey: ['friendActivities', userId] });
             loadLeaderboard();
           }
         }
@@ -205,7 +209,7 @@ export default function Friends() {
         },
         () => {
           // Force immediate refresh by invalidating the query
-          queryClient.invalidateQueries({ queryKey: ['friendActivities', user.id] });
+          queryClient.invalidateQueries({ queryKey: ['friendActivities', userId] });
         }
       )
       .subscribe();
@@ -221,7 +225,7 @@ export default function Friends() {
           table: 'activity_reactions',
         },
         () => {
-          queryClient.invalidateQueries({ queryKey: ['friendActivities', user.id] });
+          queryClient.invalidateQueries({ queryKey: ['friendActivities', userId] });
         }
       )
       .subscribe();
@@ -237,7 +241,7 @@ export default function Friends() {
           table: 'user_streaks',
         },
         () => {
-          queryClient.invalidateQueries({ queryKey: ['friends', user.id] });
+          queryClient.invalidateQueries({ queryKey: ['friends', userId] });
         }
       )
       .subscribe();
@@ -249,7 +253,7 @@ export default function Friends() {
       supabase.removeChannel(reactionsChannel);
       supabase.removeChannel(streaksChannel);
     };
-  }, [user, refetch]);
+  }, [userId, queryClient]);
 
   const markNotificationsAsRead = async () => {
     if (!user) return;
@@ -263,14 +267,30 @@ export default function Friends() {
     setUnreadNotificationCount(0);
   };
 
-  const loadLeaderboard = async () => {
-    if (!user) return;
+  async function loadLeaderboard() {
+    if (!userId) return;
 
-    const currentMonth = new Date().toISOString().slice(0, 7);
-    console.log('Loading leaderboard for month:', currentMonth);
+    const state = leaderboardFetchRef.current;
+    const now = Date.now();
+
+    // Throttle to avoid rapid-fire re-fetch loops that cause flicker/glitching
+    if (now - state.lastRun < 1500) {
+      state.pending = true;
+      return;
+    }
+
+    if (state.inFlight) {
+      state.pending = true;
+      return;
+    }
+
+    state.inFlight = true;
+    state.lastRun = now;
 
     try {
-      // Load global leaderboard (all users, not just friends)
+      const currentMonth = new Date().toISOString().slice(0, 7);
+
+      // Load global leaderboard
       const { data: leaderboardData, error: leaderboardError } = await supabase
         .from('monthly_leaderboard')
         .select('user_id, total_points')
@@ -278,61 +298,78 @@ export default function Friends() {
         .order('total_points', { ascending: false })
         .limit(50);
 
+      // If the request fails, do NOT clear UI (prevents flicker)
       if (leaderboardError) {
         console.error('Error loading leaderboard:', leaderboardError);
+        return;
       }
-
-      console.log('Leaderboard data received:', leaderboardData);
 
       if (leaderboardData && leaderboardData.length > 0) {
         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
           .select('id, username, profile_picture_url')
-          .in('id', leaderboardData.map(l => l.user_id));
+          .in('id', leaderboardData.map((l) => l.user_id));
 
         if (profilesError) {
           console.error('Error loading profiles:', profilesError);
+          return;
         }
 
-        console.log('Profiles data received:', profilesData);
-
-        const leaderboardWithUsernames = leaderboardData.map(entry => ({
+        const leaderboardWithUsernames = leaderboardData.map((entry) => ({
           id: entry.user_id,
-          username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
-          profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
-          books_completed: entry.total_points || 0
+          username: profilesData?.find((p) => p.id === entry.user_id)?.username || 'Unknown User',
+          profile_picture_url:
+            profilesData?.find((p) => p.id === entry.user_id)?.profile_picture_url || null,
+          books_completed: entry.total_points || 0,
         }));
 
         setLeaderboard(leaderboardWithUsernames);
       } else {
-        // Clear leaderboard if no data for current month
+        // Clear only on a successful request with no rows
         setLeaderboard([]);
       }
 
-      // Load top donators
+      // Load donators
       const { data: donatorsData, error: donatorsError } = await supabase
         .rpc('get_top_donators', { limit_count: 10 });
 
+      // If the request fails, do NOT clear UI (prevents flicker)
       if (donatorsError) {
         console.error('Error loading top donators:', donatorsError);
+        return;
       }
 
-      console.log('Top donators data received:', donatorsData);
-
       if (donatorsData && donatorsData.length > 0) {
-        setTopDonators(donatorsData.map((d: { user_id: string; total_donated: number; username: string | null; profile_picture_url: string | null }) => ({
-          user_id: d.user_id,
-          username: d.username || 'Anonymous',
-          total_donated: d.total_donated,
-          profile_picture_url: d.profile_picture_url
-        })));
+        setTopDonators(
+          donatorsData.map(
+            (d: {
+              user_id: string;
+              total_donated: number;
+              username: string | null;
+              profile_picture_url: string | null;
+            }) => ({
+              user_id: d.user_id,
+              username: d.username || 'Anonymous',
+              total_donated: d.total_donated,
+              profile_picture_url: d.profile_picture_url,
+            })
+          )
+        );
       } else {
         setTopDonators([]);
       }
     } catch (error) {
+      // Network drops during dev/hot reload can happen; avoid clearing UI
       console.error('Error in loadLeaderboard:', error);
+    } finally {
+      const next = leaderboardFetchRef.current;
+      next.inFlight = false;
+      if (next.pending) {
+        next.pending = false;
+        void loadLeaderboard();
+      }
     }
-  };
+  }
 
   const handleAddFriend = async () => {
     if (!searchQuery.trim()) {
