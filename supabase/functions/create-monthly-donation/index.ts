@@ -29,8 +29,8 @@ serve(async (req) => {
 
     const { amount } = await req.json();
     
-    if (!amount || amount < 500) {
-      throw new Error("Minimum monthly donation amount is $5.00");
+    if (!amount || amount < 100) {
+      throw new Error("Minimum monthly donation amount is $1.00");
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
