@@ -267,7 +267,7 @@ export default function GroupDetail() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <MoreVertical className="h-5 w-5" />
+                    <SettingsIcon className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-background">
@@ -349,6 +349,20 @@ export default function GroupDetail() {
             </CardContent>
           </Card>
         )}
+
+        {/* Invite Friends Section */}
+        <Card className="bg-primary/5 border-primary/20">
+          <CardContent className="py-4">
+            <Button
+              variant="outline"
+              className="w-full justify-center gap-2 border-primary/30 hover:bg-primary/10"
+              onClick={() => setShowInviteDialog(true)}
+            >
+              <UserPlus className="h-4 w-4" />
+              Invite Friends to Group
+            </Button>
+          </CardContent>
+        </Card>
 
         <Tabs defaultValue="ranking">
           <TabsList className="grid w-full grid-cols-2">
