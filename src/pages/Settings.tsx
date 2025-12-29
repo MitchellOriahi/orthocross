@@ -22,8 +22,8 @@ const Settings = () => {
   const { theme } = useTheme();
   const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
   const { user, signOut } = useAuth();
-  const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(false);
-  const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(false);
+  const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(true);
+  const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(true);
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
   const [cancelDonationDialogOpen, setCancelDonationDialogOpen] = useState(false);
   const { profile, refetch: refetchProfile } = useProfileData();
@@ -34,8 +34,8 @@ const Settings = () => {
     if (profile) {
       setStreakVisible(profile.streak_visible ?? true);
       setActivityVisible(profile.activity_visible ?? true);
-      setFastingNotificationsEnabled(profile.fasting_notifications_enabled || false);
-      setStreakNotificationsEnabled(profile.streak_notifications_enabled || false);
+      setFastingNotificationsEnabled(profile.fasting_notifications_enabled ?? true);
+      setStreakNotificationsEnabled(profile.streak_notifications_enabled ?? true);
       setFriendsNotificationsEnabled(profile.friends_notifications_enabled ?? true);
     }
   }, [user, profile]);
@@ -260,31 +260,31 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Fasting Notifications */}
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium">Fasting Notifications</p>
-                  <p className="text-sm text-muted-foreground">
-                    Reminded at 8pm the night before fasts and feasts
-                  </p>
-                </div>
-                <Switch
-                  checked={fastingNotificationsEnabled}
-                  onCheckedChange={handleToggleFastingNotifications}
-                />
-              </div>
-
               {/* Streak Notifications */}
-              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+              <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="font-medium">Streak Notifications</p>
                   <p className="text-sm text-muted-foreground">
-                    Reminded at 6pm if you haven't read today
+                    Remind me to read my Bible so I don't lose my streak
                   </p>
                 </div>
                 <Switch
                   checked={streakNotificationsEnabled}
                   onCheckedChange={handleToggleStreakNotifications}
+                />
+              </div>
+
+              {/* Fasting Notifications */}
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1">
+                  <p className="font-medium">Fasting Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Remind me of upcoming fast and feast days
+                  </p>
+                </div>
+                <Switch
+                  checked={fastingNotificationsEnabled}
+                  onCheckedChange={handleToggleFastingNotifications}
                 />
               </div>
 

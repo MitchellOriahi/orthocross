@@ -1,12 +1,7 @@
 import { useEffect } from 'react';
 import { useNotifications } from '@/hooks/useNotifications';
-import { useLeaderboardNotifications } from '@/hooks/useLeaderboardNotifications';
-import { useFriendRequestNotifications } from '@/hooks/useFriendRequestNotifications';
-import { useGroupInvitationNotifications } from '@/hooks/useGroupInvitationNotifications';
-import { useNotificationSetup } from '@/hooks/useNotificationSetup';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { OneSignalDebug } from './OneSignalDebug';
 
 export const NotificationManager = () => {
   const { user } = useAuth();
@@ -34,6 +29,5 @@ export const NotificationManager = () => {
     initializeNotifications();
   }, [user, scheduleStreakReminders, scheduleAllFastingReminders]);
 
-  // Render debug component (remove after testing)
-  return <OneSignalDebug />;
+  return null;
 };
