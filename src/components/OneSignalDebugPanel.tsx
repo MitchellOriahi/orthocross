@@ -56,6 +56,13 @@ export const OneSignalDebugPanel = () => {
     setLoginError(null);
 
     try {
+      // Wait for permission handling to ensure native bridge is ready
+      console.log('[OneSignal Debug] Waiting for permission handling...');
+      if (window.OneSignal?.Notifications?.requestPermission) {
+        await window.OneSignal.Notifications.requestPermission(false);
+        console.log('[OneSignal Debug] Permission handling complete');
+      }
+      
       console.log('[OneSignal Debug] Force calling login with:', user.id);
       await window.OneSignal.login(user.id);
       console.log('[OneSignal Debug] Force login succeeded');
