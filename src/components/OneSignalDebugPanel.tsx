@@ -11,12 +11,16 @@ export const OneSignalDebugPanel = () => {
   const [initialized, setInitialized] = useState(false);
   const [loginCalled, setLoginCalled] = useState(false);
   const [loginUserId, setLoginUserId] = useState<string | null>(null);
+  const [loginTypeOf, setLoginTypeOf] = useState<string>('unknown');
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [forcing, setForcing] = useState(false);
 
   useEffect(() => {
     // Check if OneSignal is initialized
     const checkInit = () => {
       if (window.OneSignal) {
         setInitialized(true);
+        setLoginTypeOf(typeof window.OneSignal?.login);
       }
     };
     
@@ -37,6 +41,36 @@ export const OneSignalDebugPanel = () => {
     window.addEventListener('onesignal-login-called', handleLogin as EventListener);
     return () => window.removeEventListener('onesignal-login-called', handleLogin as EventListener);
   }, []);
+
+  const handleForceLogin = async () => {
+    if (!user?.id) {
+      setLoginError('No user.id available');
+      return;
+    }
+    if (!window.OneSignal?.login) {
+      setLoginError('OneSignal.login is not available');
+      return;
+    }
+
+    setForcing(true);
+    setLoginError(null);
+
+    try {
+      console.log('[OneSignal Debug] Force calling login with:', user.id);
+      await window.OneSignal.login(user.id);
+      console.log('[OneSignal Debug] Force login succeeded');
+      setLoginCalled(true);
+      setLoginUserId(user.id);
+      window.dispatchEvent(
+        new CustomEvent('onesignal-login-called', { detail: { userId: user.id } })
+      );
+    } catch (err: any) {
+      console.error('[OneSignal Debug] Force login failed:', err);
+      setLoginError(err?.message || String(err));
+    } finally {
+      setForcing(false);
+    }
+  };
 
   return (
     <div className="fixed bottom-20 left-4 z-50 bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-xs shadow-lg border border-yellow-500">
@@ -65,6 +99,10 @@ export const OneSignalDebugPanel = () => {
           </span>
         </div>
         <div>
+          <span className="text-gray-400">typeof login:</span>{' '}
+          <span className="text-blue-400">{loginTypeOf}</span>
+        </div>
+        <div>
           <span className="text-gray-400">Login Called:</span>{' '}
           <span className={loginCalled ? 'text-green-400' : 'text-red-400'}>
             {loginCalled ? 'true ✓' : 'false ❌'}
@@ -76,6 +114,18 @@ export const OneSignalDebugPanel = () => {
             <span className="text-blue-400">{loginUserId.slice(0, 8)}...</span>
           </div>
         )}
+        {loginError && (
+          <div className="text-red-400 mt-1 break-words">
+            <span className="text-gray-400">Error:</span> {loginError}
+          </div>
+        )}
+        <button
+          onClick={handleForceLogin}
+          disabled={forcing || !initialized || !user?.id}
+          className="mt-2 w-full bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs py-1 px-2 rounded"
+        >
+          {forcing ? 'Forcing...' : 'Force OneSignal Login'}
+        </button>
       </div>
     </div>
   );
