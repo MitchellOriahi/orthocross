@@ -31,11 +31,9 @@ interface OneSignalInstance {
  *   3) OneSignal SDK initialized
  */
 export const useOneSignalUserLink = () => {
+  // All hooks MUST be at top level (unconditional)
   const { user, loading } = useAuth();
-
-  // NOTE: React dev mode can mount effects twice; this prevents double init.
   const initRef = useRef(false);
-
   const [sdkReady, setSdkReady] = useState(false);
   const [loginCalled, setLoginCalled] = useState(false);
 
