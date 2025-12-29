@@ -14,23 +14,36 @@ export const OneSignalDebugPanel = () => {
   const [loginTypeOf, setLoginTypeOf] = useState<string>('unknown');
   const [loginError, setLoginError] = useState<string | null>(null);
   const [forcing, setForcing] = useState(false);
+  const [enabling, setEnabling] = useState(false);
 
   // Step-by-step debug state for force flow
   const [permStatusBefore, setPermStatusBefore] = useState<string>('unknown');
   const [afterRequestPermission, setAfterRequestPermission] = useState(false);
   const [loginResult, setLoginResult] = useState<string>('');
+  
+  // Current permission state (polled)
+  const [currentPermission, setCurrentPermission] = useState<string>('unknown');
 
   useEffect(() => {
-    // Check if OneSignal is initialized
-    const checkInit = () => {
+    // Check if OneSignal is initialized and poll permission state
+    const checkInit = async () => {
       if (window.OneSignal) {
         setInitialized(true);
         setLoginTypeOf(typeof window.OneSignal?.login);
+        
+        // Poll current permission state
+        try {
+          const perm = (window.OneSignal?.Notifications as any)?.permission;
+          const value = typeof perm === 'function' ? await perm() : await Promise.resolve(perm);
+          setCurrentPermission(typeof value === 'string' ? value : JSON.stringify(value));
+        } catch (e: any) {
+          setCurrentPermission(`error: ${e?.message || String(e)}`);
+        }
       }
     };
     
     // Check periodically
-    const interval = setInterval(checkInit, 500);
+    const interval = setInterval(checkInit, 1000);
     checkInit();
     
     return () => clearInterval(interval);
@@ -171,6 +184,88 @@ export const OneSignalDebugPanel = () => {
     }
   };
 
+  const handleEnableNotifications = async () => {
+    if (!user?.id) {
+      setLoginError('No user.id available');
+      return;
+    }
+
+    setEnabling(true);
+    setLoginError(null);
+    setAfterRequestPermission(false);
+    setLoginResult('');
+
+    try {
+      const OneSignal = await getOneSignal();
+      setLoginTypeOf(typeof OneSignal?.login);
+
+      // Permission status BEFORE
+      const before = await readPermissionStatus(OneSignal);
+      setPermStatusBefore(before);
+      console.log('[OneSignal Debug] permStatusBefore:', before);
+
+      if (typeof OneSignal?.Notifications?.requestPermission !== 'function') {
+        throw new Error(
+          `OneSignal.Notifications.requestPermission is not available (got ${typeof OneSignal?.Notifications?.requestPermission})`
+        );
+      }
+      if (typeof OneSignal?.login !== 'function') {
+        throw new Error(`OneSignal.login is not a function (got ${typeof OneSignal?.login})`);
+      }
+
+      // Request permission with TRUE to show native iOS dialog
+      console.log('[OneSignal Debug] Awaiting requestPermission(true) - should show iOS dialog...');
+      await OneSignal.Notifications.requestPermission(true);
+      console.log('[OneSignal Debug] after requestPermission(true) resolved');
+      setAfterRequestPermission(true);
+
+      // Read permission after
+      const after = await readPermissionStatus(OneSignal);
+      setCurrentPermission(after);
+      console.log('[OneSignal Debug] permission after request:', after);
+
+      // Now call login
+      console.log('[OneSignal Debug] Calling login with:', user.id);
+      const loginAttempt = await withTimeout(
+        Promise.resolve(OneSignal.login(user.id)),
+        5000,
+        'OneSignal.login'
+      );
+
+      if (loginAttempt.ok) {
+        console.log('[OneSignal Debug] loginResult: success');
+        setLoginResult('success');
+        setLoginCalled(true);
+        setLoginUserId(user.id);
+        window.dispatchEvent(
+          new CustomEvent('onesignal-login-called', { detail: { userId: user.id } })
+        );
+      } else {
+        const reason = (loginAttempt as any).reason as 'timeout' | 'error' | undefined;
+        const errMsg = (loginAttempt as any).error as string | undefined;
+
+        if (reason === 'timeout') {
+          console.warn('[OneSignal Debug] loginResult: timeout');
+          setLoginResult('timeout');
+          setLoginCalled(false);
+          setLoginError('login timeout');
+        } else {
+          console.error('[OneSignal Debug] loginResult: error:', errMsg);
+          setLoginResult(`error: ${errMsg || 'unknown'}`);
+          setLoginCalled(false);
+          setLoginError(errMsg || 'Unknown login error');
+        }
+      }
+    } catch (err: any) {
+      console.error('[OneSignal Debug] Enable notifications failed:', err);
+      setLoginError(err?.message || String(err));
+      setLoginCalled(false);
+      setLoginResult(`error: ${err?.message || String(err)}`);
+    } finally {
+      setEnabling(false);
+    }
+  };
+
   return (
     <div className="fixed bottom-20 left-4 z-50 bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-xs shadow-lg border border-yellow-500">
       <div className="font-bold text-yellow-400 mb-2">🔧 OneSignal Debug</div>
@@ -200,6 +295,12 @@ export const OneSignalDebugPanel = () => {
         <div>
           <span className="text-gray-400">typeof login:</span>{' '}
           <span className="text-blue-400">{loginTypeOf}</span>
+        </div>
+        <div>
+          <span className="text-gray-400">Current Permission:</span>{' '}
+          <span className={currentPermission === 'true' || currentPermission === 'granted' ? 'text-green-400' : 'text-yellow-400'}>
+            {currentPermission}
+          </span>
         </div>
         <div>
           <span className="text-gray-400">permStatusBefore:</span>{' '}
@@ -243,9 +344,16 @@ export const OneSignalDebugPanel = () => {
           </div>
         )}
         <button
+          onClick={handleEnableNotifications}
+          disabled={enabling || !initialized || !user?.id}
+          className="mt-2 w-full bg-green-600 hover:bg-green-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs py-1 px-2 rounded"
+        >
+          {enabling ? 'Enabling...' : '📳 Enable Notifications'}
+        </button>
+        <button
           onClick={handleForceLogin}
           disabled={forcing || !initialized || !user?.id}
-          className="mt-2 w-full bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs py-1 px-2 rounded"
+          className="mt-1 w-full bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs py-1 px-2 rounded"
         >
           {forcing ? 'Forcing...' : 'Force OneSignal Login'}
         </button>
