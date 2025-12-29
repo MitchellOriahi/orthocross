@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { Calendar, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Church } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Calendar, ChevronLeft, ChevronRight, Bell, BellOff, ChevronDown, ChevronUp, Church } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useNotifications } from "@/hooks/useNotifications";
+import { toast } from "sonner";
 import { FastingCalendarView } from "./FastingCalendarView";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -26,8 +28,47 @@ interface FastingEvent {
 export const FastingCalendar = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [reminders, setReminders] = useState<Map<string, boolean>>(new Map());
   const [showCalendarView, setShowCalendarView] = useState(false);
   const [selectedTradition, setSelectedTradition] = useState<"Eastern Orthodox" | "Oriental Orthodox">("Eastern Orthodox");
+  const { scheduleFastingReminder } = useNotifications();
+
+  useEffect(() => {
+    loadReminders();
+  }, []);
+
+  const loadReminders = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      // Load from localStorage if not logged in
+      const saved = localStorage.getItem('fastingReminders');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setReminders(new Map(parsed.map((key: string) => [key, true])));
+      }
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('fasting_reminders')
+      .select('*')
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Error loading reminders:', error);
+      return;
+    }
+
+    if (data) {
+      const reminderMap = new Map(
+        data.map(r => [
+          `${r.event_name}-${r.event_date}-${r.event_tradition}`,
+          true
+        ])
+      );
+      setReminders(reminderMap);
+    }
+  };
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -76,6 +117,101 @@ export const FastingCalendar = () => {
       });
     
     return events;
+  };
+
+  const handleReminderClick = async (event: FastingEvent) => {
+    const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
+    
+    if (reminders.has(eventKey)) {
+      // Remove reminder
+      await removeReminder(event);
+    } else {
+      // Set reminder (fixed at 8pm night before)
+      await setReminder(event);
+    }
+  };
+
+  const removeReminder = async (event: FastingEvent) => {
+    const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
+    const newReminders = new Map(reminders);
+    
+    // Parse the event date
+    const [monthStr, dayStr] = event.startDate.split(' ');
+    const month = monthNames.indexOf(monthStr);
+    const day = parseInt(dayStr);
+    const eventDate = new Date(selectedYear, month, day);
+    const eventDateStr = eventDate.toISOString().split('T')[0];
+    
+    // Remove reminder
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user) {
+      // Remove from database if logged in
+      await supabase
+        .from('fasting_reminders')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('event_name', event.name)
+        .eq('event_date', eventDateStr)
+        .eq('event_tradition', event.tradition);
+    }
+
+    newReminders.delete(eventKey);
+    localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders.keys())));
+    setReminders(newReminders);
+    toast.success("Reminder removed");
+  };
+
+  const setReminder = async (event: FastingEvent) => {
+    const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
+    
+    // Parse the event date
+    const [monthStr, dayStr] = event.startDate.split(' ');
+    const month = monthNames.indexOf(monthStr);
+    const day = parseInt(dayStr);
+    const eventDate = new Date(selectedYear, month, day);
+    const eventDateStr = eventDate.toISOString().split('T')[0];
+    
+    // Check if date has passed
+    const notifDate = new Date(selectedYear, month, day, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (notifDate <= today) {
+      toast.error("Date has passed");
+      return;
+    }
+
+    // Schedule local notification (fixed at 8pm night before)
+    await scheduleFastingReminder(
+      event.name,
+      event.type,
+      event.tradition,
+      notifDate
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user) {
+      // Save to database if logged in
+      await supabase
+        .from('fasting_reminders')
+        .insert({
+          user_id: user.id,
+          event_name: event.name,
+          event_date: eventDateStr,
+          event_tradition: event.tradition,
+          event_type: event.type,
+          reminder_days_before: 1 // Fixed: reminder sent night before
+        });
+    }
+
+    const newReminders = new Map(reminders);
+    newReminders.set(eventKey, true);
+    localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders.keys())));
+    setReminders(newReminders);
+    
+    toast.success("Reminder set for 8pm the night before! 🔔");
   };
 
   const handlePreviousMonth = () => {
@@ -156,43 +292,69 @@ export const FastingCalendar = () => {
 
           {/* Events List */}
           {currentEvents.length > 0 ? (
-            currentEvents.map((event, index) => (
-              <div
-                key={index}
-                className={`p-4 rounded-lg mb-3 last:mb-0 ${
-                  event.type === "fast" 
-                    ? "bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900" 
-                    : "bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900"
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`font-semibold ${
+            currentEvents.map((event, index) => {
+              const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
+              const hasReminder = reminders.has(eventKey);
+              
+              return (
+                <div
+                  key={index}
+                  className={`p-4 rounded-lg mb-3 last:mb-0 ${
+                    event.type === "fast" 
+                      ? "bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900" 
+                      : "bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className={`font-semibold ${
+                        event.type === "fast" 
+                          ? "text-red-800 dark:text-red-200" 
+                          : "text-blue-800 dark:text-blue-200"
+                      }`}>
+                        {event.name}
+                      </span>
+                      <Badge 
+                        variant="secondary" 
+                        className={`text-xs ${
+                          event.type === "fast"
+                            ? "bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300"
+                            : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                        }`}
+                      >
+                        {event.type}
+                      </Badge>
+                    </div>
+                    {hasReminder ? (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => handleReminderClick(event)}
+                      >
+                        <BellOff className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => handleReminderClick(event)}
+                      >
+                        <Bell className="w-4 h-4 text-primary" />
+                      </Button>
+                    )}
+                  </div>
+                  <p className={`text-sm font-medium ${
                     event.type === "fast" 
                       ? "text-red-800 dark:text-red-200" 
                       : "text-blue-800 dark:text-blue-200"
                   }`}>
-                    {event.name}
-                  </span>
-                  <Badge 
-                    variant="secondary" 
-                    className={`text-xs ${
-                      event.type === "fast"
-                        ? "bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300"
-                        : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
-                    }`}
-                  >
-                    {event.type}
-                  </Badge>
+                    {event.endDate ? `${event.startDate} - ${event.endDate}` : event.startDate}
+                  </p>
                 </div>
-                <p className={`text-sm font-medium ${
-                  event.type === "fast" 
-                    ? "text-red-800 dark:text-red-200" 
-                    : "text-blue-800 dark:text-blue-200"
-                }`}>
-                  {event.endDate ? `${event.startDate} - ${event.endDate}` : event.startDate}
-                </p>
-              </div>
-            ))
+              );
+            })
           ) : (
             <p className="text-sm text-muted-foreground text-center py-4">
               No major fasts or feasts this month
