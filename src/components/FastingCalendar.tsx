@@ -6,7 +6,16 @@ import { Button } from "@/components/ui/button";
 import { useNotifications } from "@/hooks/useNotifications";
 import { toast } from "sonner";
 import { FastingCalendarView } from "./FastingCalendarView";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -28,9 +37,12 @@ interface FastingEvent {
 export const FastingCalendar = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [reminders, setReminders] = useState<Map<string, boolean>>(new Map());
+  const [reminders, setReminders] = useState<Map<string, number>>(new Map());
   const [showCalendarView, setShowCalendarView] = useState(false);
   const [selectedTradition, setSelectedTradition] = useState<"Eastern Orthodox" | "Oriental Orthodox">("Eastern Orthodox");
+  const [showReminderDialog, setShowReminderDialog] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<FastingEvent | null>(null);
+  const [reminderDaysBefore, setReminderDaysBefore] = useState<string>("0");
   const { scheduleFastingReminder } = useNotifications();
 
   useEffect(() => {
@@ -44,7 +56,7 @@ export const FastingCalendar = () => {
       const saved = localStorage.getItem('fastingReminders');
       if (saved) {
         const parsed = JSON.parse(saved);
-        setReminders(new Map(parsed.map((key: string) => [key, true])));
+        setReminders(new Map(parsed));
       }
       return;
     }
@@ -63,7 +75,7 @@ export const FastingCalendar = () => {
       const reminderMap = new Map(
         data.map(r => [
           `${r.event_name}-${r.event_date}-${r.event_tradition}`,
-          true
+          r.reminder_days_before || 0
         ])
       );
       setReminders(reminderMap);
@@ -75,17 +87,16 @@ export const FastingCalendar = () => {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  const getEventsForMonth = (month: number, year: number): FastingEvent[] => {
-    const allEvents = getAllFastingEvents(year);
+  const getMonthEvents = (month: number): FastingEvent[] => {
+    const allEvents = getAllFastingEvents(selectedYear);
+    const traditionFilter = selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental";
     
     const events = allEvents
+      .filter(event => event.tradition === traditionFilter)
       .filter(event => {
-        const eventTradition = selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental";
-        if (event.tradition !== eventTradition) return false;
-        if (!event.isMajor) return false;
-        
-        // Check if the event's start month matches
-        const isInMonth = event.month === month + 1;
+        // Check if event falls in the selected month
+        const isInMonth = event.month === month;
+        const endsInMonth = event.endMonth !== undefined && event.endMonth === month;
         
         // For multi-day events, check if month is in range
         if (event.endMonth !== undefined) {
@@ -119,15 +130,17 @@ export const FastingCalendar = () => {
     return events;
   };
 
-  const handleReminderClick = async (event: FastingEvent) => {
+  const handleReminderClick = (event: FastingEvent) => {
     const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
     
     if (reminders.has(eventKey)) {
       // Remove reminder
-      await removeReminder(event);
+      removeReminder(event);
     } else {
-      // Set reminder (fixed at 8pm night before)
-      await setReminder(event);
+      // Show dialog to select reminder preference
+      setSelectedEvent(event);
+      setReminderDaysBefore("0");
+      setShowReminderDialog(true);
     }
   };
 
@@ -157,16 +170,19 @@ export const FastingCalendar = () => {
     }
 
     newReminders.delete(eventKey);
-    localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders.keys())));
+    localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders)));
     setReminders(newReminders);
     toast.success("Reminder removed");
   };
 
-  const setReminder = async (event: FastingEvent) => {
-    const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
+  const confirmReminder = async () => {
+    if (!selectedEvent) return;
+
+    const eventKey = `${selectedEvent.name}-${selectedEvent.startDate}-${selectedEvent.tradition}`;
+    const daysBefore = parseInt(reminderDaysBefore);
     
     // Parse the event date
-    const [monthStr, dayStr] = event.startDate.split(' ');
+    const [monthStr, dayStr] = selectedEvent.startDate.split(' ');
     const month = monthNames.indexOf(monthStr);
     const day = parseInt(dayStr);
     const eventDate = new Date(selectedYear, month, day);
@@ -179,15 +195,17 @@ export const FastingCalendar = () => {
     
     if (notifDate <= today) {
       toast.error("Date has passed");
+      setShowReminderDialog(false);
       return;
     }
 
-    // Schedule local notification (fixed at 8pm night before)
+    // Schedule local notifications
     await scheduleFastingReminder(
-      event.name,
-      event.type,
-      event.tradition,
-      notifDate
+      selectedEvent.name,
+      selectedEvent.type,
+      selectedEvent.tradition,
+      notifDate,
+      daysBefore
     );
 
     const { data: { user } } = await supabase.auth.getUser();
@@ -198,20 +216,22 @@ export const FastingCalendar = () => {
         .from('fasting_reminders')
         .insert({
           user_id: user.id,
-          event_name: event.name,
+          event_name: selectedEvent.name,
           event_date: eventDateStr,
-          event_tradition: event.tradition,
-          event_type: event.type,
-          reminder_days_before: 1 // Fixed: reminder sent night before
+          event_tradition: selectedEvent.tradition,
+          event_type: selectedEvent.type,
+          reminder_days_before: daysBefore
         });
     }
 
     const newReminders = new Map(reminders);
-    newReminders.set(eventKey, true);
-    localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders.keys())));
+    newReminders.set(eventKey, daysBefore);
+    localStorage.setItem('fastingReminders', JSON.stringify(Array.from(newReminders)));
     setReminders(newReminders);
     
-    toast.success("Reminder set for 8pm the night before! 🔔");
+    const daysText = daysBefore === 0 ? "on the day" : daysBefore === 1 ? "1 day before" : `${daysBefore} days before`;
+    toast.success(`Reminder set ${daysText}! 🔔`);
+    setShowReminderDialog(false);
   };
 
   const handlePreviousMonth = () => {
@@ -232,116 +252,102 @@ export const FastingCalendar = () => {
     }
   };
 
-  const currentEvents = getEventsForMonth(selectedMonth, selectedYear);
+  const monthEvents = getMonthEvents(selectedMonth);
+  const displayMonthName = monthNames[selectedMonth];
 
   return (
     <div className="space-y-4">
-      <Card className="shadow-elevated">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-primary" />
-              Fasting Calendar
-            </CardTitle>
+      <Card className="shadow-elevated border-border/50">
+        <CardHeader className="pb-0">
+          <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Select 
-                value={selectedTradition} 
-                onValueChange={(value: "Eastern Orthodox" | "Oriental Orthodox") => setSelectedTradition(value)}
-              >
-                <SelectTrigger className="w-[180px] h-9">
-                  <Church className="w-4 h-4 mr-2" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Eastern Orthodox">
-                    <div className="flex items-center gap-2">
-                      Eastern Orthodox
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="Oriental Orthodox">
-                    <div className="flex items-center gap-2">
-                      Oriental Orthodox
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <Calendar className="w-5 h-5 text-primary" />
+              {displayMonthName} {selectedYear} Fasts & Feasts
             </div>
-          </div>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" onClick={handlePreviousMonth}>
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={handleNextMonth}>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          {/* Month Navigation */}
-          <div className="flex items-center justify-between mb-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handlePreviousMonth}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <span className="font-semibold">
-              {monthNames[selectedMonth]} {selectedYear}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleNextMonth}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {/* Events List */}
-          {currentEvents.length > 0 ? (
-            currentEvents.map((event, index) => {
+        
+        {/* Centered Tradition Selector */}
+        <div className="flex items-center justify-start py-4 px-4">
+          <RadioGroup
+            value={selectedTradition}
+            onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
+            className="flex flex-col gap-2 items-start"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Eastern Orthodox" id="eastern" />
+              <Label htmlFor="eastern" className="cursor-pointer whitespace-nowrap text-base sm:text-lg">
+                ⛪ Eastern Orthodox
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Oriental Orthodox" id="oriental" />
+              <Label htmlFor="oriental" className="cursor-pointer whitespace-nowrap text-base sm:text-lg">
+                ⛪ Oriental Orthodox
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+        <CardContent className="space-y-3 pt-4">
+          {monthEvents.length > 0 ? (
+            monthEvents.map((event, index) => {
               const eventKey = `${event.name}-${event.startDate}-${event.tradition}`;
               const hasReminder = reminders.has(eventKey);
+              const isEastern = event.tradition === "Eastern Orthodox";
               
               return (
-                <div
+                <div 
                   key={index}
-                  className={`p-4 rounded-lg mb-3 last:mb-0 ${
+                  className={`p-3 rounded-lg border-2 space-y-2 ${
                     event.type === "fast" 
-                      ? "bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900" 
-                      : "bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900"
+                      ? isEastern
+                        ? "bg-red-100 dark:bg-red-900/40 border-red-400 dark:border-red-700" 
+                        : "bg-red-50 dark:bg-red-950/30 border-red-300 dark:border-red-800"
+                      : isEastern
+                        ? "bg-blue-100 dark:bg-blue-900/40 border-blue-400 dark:border-blue-700"
+                        : "bg-blue-50 dark:bg-blue-950/30 border-blue-300 dark:border-blue-800"
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className={`font-semibold ${
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex flex-col gap-1">
+                      <h4 className={`font-semibold ${
                         event.type === "fast" 
-                          ? "text-red-800 dark:text-red-200" 
-                          : "text-blue-800 dark:text-blue-200"
+                          ? "text-red-900 dark:text-red-100" 
+                          : "text-blue-900 dark:text-blue-100"
                       }`}>
                         {event.name}
-                      </span>
+                      </h4>
                       <Badge 
-                        variant="secondary" 
-                        className={`text-xs ${
-                          event.type === "fast"
-                            ? "bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300"
-                            : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                        variant="outline" 
+                        className={`text-xs w-fit ${
+                          isEastern 
+                            ? "bg-amber-100 dark:bg-amber-900/40 border-amber-500 text-amber-900 dark:text-amber-100" 
+                            : "bg-purple-100 dark:bg-purple-900/40 border-purple-500 text-purple-900 dark:text-purple-100"
                         }`}
                       >
-                        {event.type}
+                        {isEastern ? "⛪ Eastern Orthodox" : "⛪ Oriental Orthodox"}
                       </Badge>
                     </div>
-                    {hasReminder ? (
+                    {event.isMajor && (
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8"
+                        className="h-6 w-6"
                         onClick={() => handleReminderClick(event)}
                       >
-                        <BellOff className="w-4 h-4 text-muted-foreground" />
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => handleReminderClick(event)}
-                      >
-                        <Bell className="w-4 h-4 text-primary" />
+                        {hasReminder ? (
+                          <Bell className="w-3 h-3" />
+                        ) : (
+                          <BellOff className="w-3 h-3" />
+                        )}
                       </Button>
                     )}
                   </div>
@@ -390,6 +396,39 @@ export const FastingCalendar = () => {
           selectedYear={selectedYear}
         />
       )}
+
+      {/* Reminder Preference Dialog */}
+      <Dialog open={showReminderDialog} onOpenChange={setShowReminderDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Set Reminder</DialogTitle>
+            <DialogDescription>
+              When would you like to be reminded about {selectedEvent?.name}?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Select value={reminderDaysBefore} onValueChange={setReminderDaysBefore}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose reminder timing" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">On the day of the {selectedEvent?.type}</SelectItem>
+                <SelectItem value="1">1 day before (daily reminders)</SelectItem>
+                <SelectItem value="2">2 days before (daily reminders)</SelectItem>
+                <SelectItem value="3">3 days before (daily reminders)</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setShowReminderDialog(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={confirmReminder} className="flex-1">
+                Set Reminder
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

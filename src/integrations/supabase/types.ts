@@ -1055,6 +1055,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           fasting_notifications_enabled: boolean | null
+          fasting_reminder_days: number[] | null
           friends_notifications_enabled: boolean | null
           id: string
           journal_view_mode: string | null
@@ -1064,12 +1065,14 @@ export type Database = {
           updated_at: string
           username: string | null
           voice_recording_enabled: boolean | null
+          wednesday_notifications_enabled: boolean | null
         }
         Insert: {
           activity_visible?: boolean | null
           created_at?: string
           display_name?: string | null
           fasting_notifications_enabled?: boolean | null
+          fasting_reminder_days?: number[] | null
           friends_notifications_enabled?: boolean | null
           id: string
           journal_view_mode?: string | null
@@ -1079,12 +1082,14 @@ export type Database = {
           updated_at?: string
           username?: string | null
           voice_recording_enabled?: boolean | null
+          wednesday_notifications_enabled?: boolean | null
         }
         Update: {
           activity_visible?: boolean | null
           created_at?: string
           display_name?: string | null
           fasting_notifications_enabled?: boolean | null
+          fasting_reminder_days?: number[] | null
           friends_notifications_enabled?: boolean | null
           id?: string
           journal_view_mode?: string | null
@@ -1094,6 +1099,7 @@ export type Database = {
           updated_at?: string
           username?: string | null
           voice_recording_enabled?: boolean | null
+          wednesday_notifications_enabled?: boolean | null
         }
         Relationships: []
       }
@@ -1231,6 +1237,36 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_streak_reminders: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          hour: number
+          id: string
+          minute: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          hour: number
+          id?: string
+          minute: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          hour?: number
+          id?: string
+          minute?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

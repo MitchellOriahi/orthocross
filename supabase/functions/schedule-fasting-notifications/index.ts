@@ -29,36 +29,31 @@ const handler = async (req: Request): Promise<Response> => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // This function should run at 8pm to notify users about tomorrow's fasts/feasts
-    const currentHour = new Date().getHours();
-    console.log('Current hour:', currentHour);
-
-    if (currentHour !== 20) {
-      console.log('Not 8pm yet, skipping fasting notifications');
-      return new Response(
-        JSON.stringify({ message: "Fasting notifications only run at 8pm", currentHour }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
-    console.log('Sending fasting notifications at 8pm for tomorrow\'s events');
-
-    // Get tomorrow's date (the night before)
+    // Get today's date
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayStr = today.toISOString().split('T')[0];
     
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    // Calculate dates for 1, 2, and 3 days from now
+    const oneDayFromNow = new Date(today);
+    oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
+    const oneDayStr = oneDayFromNow.toISOString().split('T')[0];
+    
+    const twoDaysFromNow = new Date(today);
+    twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
+    const twoDaysStr = twoDaysFromNow.toISOString().split('T')[0];
+    
+    const threeDaysFromNow = new Date(today);
+    threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
+    const threeDaysStr = threeDaysFromNow.toISOString().split('T')[0];
 
-    console.log('Checking fasting reminders for events on:', tomorrowStr);
+    console.log('Checking fasting reminders for:', todayStr, oneDayStr, twoDaysStr, threeDaysStr);
 
-    // Get all reminders for tomorrow with user preferences
+    // Get all reminders for today and next 3 days with user preferences
     const { data: reminders, error: remindersError } = await supabase
       .from("fasting_reminders")
-      .select("*, profiles!inner(fasting_notifications_enabled)")
-      .eq("event_date", tomorrowStr)
+      .select("*, profiles!inner(fasting_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled)")
+      .or(`event_date.eq.${todayStr},event_date.eq.${oneDayStr},event_date.eq.${twoDaysStr},event_date.eq.${threeDaysStr}`)
       .eq("profiles.fasting_notifications_enabled", true);
 
     if (remindersError) {
@@ -67,14 +62,14 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     if (!reminders || reminders.length === 0) {
-      console.log('No fasting events tomorrow');
+      console.log('No reminders for today');
       return new Response(
-        JSON.stringify({ message: "No fasting events tomorrow", date: tomorrowStr }),
+        JSON.stringify({ message: "No reminders for today", date: todayStr }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    console.log(`Found ${reminders.length} reminders for tomorrow's events`);
+    console.log(`Found ${reminders.length} reminders for today`);
 
     // Get phone numbers from auth metadata
     const userIds = [...new Set(reminders.map(r => r.user_id))];
@@ -103,10 +98,51 @@ const handler = async (req: Request): Promise<Response> => {
         continue;
       }
 
-      // Generate appropriate message for tomorrow's event
-      const message = reminder.event_type === "fast"
-        ? `🕊️ ${reminder.event_name} begins tomorrow (${reminder.event_tradition}). Prepare to observe the fast.`
-        : `✨ ${reminder.event_name} is tomorrow (${reminder.event_tradition}). Prepare for the feast!`;
+      // Calculate days until event
+      const eventDate = new Date(reminder.event_date);
+      const dayOfWeek = eventDate.getDay(); // 0 = Sunday, 1 = Monday, 3 = Wednesday
+      const daysUntil = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      
+      // Get user's fasting reminder preferences
+      const profileData = reminder.profiles as any;
+      const userReminderDays: number[] = profileData?.fasting_reminder_days || [3, 0];
+      const wednesdayNotificationsEnabled: boolean = profileData?.wednesday_notifications_enabled || false;
+      
+      // Check if event is on a Wednesday
+      const isWednesdayEvent = dayOfWeek === 3;
+      
+      // Skip Wednesday fasts/feasts if user hasn't opted in
+      if (isWednesdayEvent && !wednesdayNotificationsEnabled) {
+        console.log(`User hasn't opted in for Wednesday notifications, skipping: ${reminder.event_name}`);
+        continue;
+      }
+      
+      // Skip Monday/Wednesday fasts for advance notifications (only send same day)
+      const isMondayOrWednesdayFast = (dayOfWeek === 1 || dayOfWeek === 3) && reminder.event_type === "fast";
+      
+      if (daysUntil > 0 && isMondayOrWednesdayFast) {
+        console.log(`Skipping advance notification for Monday/Wednesday fast: ${reminder.event_name}`);
+        continue;
+      }
+      
+      // Check if user wants notifications for this number of days before
+      if (!userReminderDays.includes(daysUntil)) {
+        console.log(`User doesn't want ${daysUntil}-day advance notification for: ${reminder.event_name}`);
+        continue;
+      }
+
+      // Generate appropriate message
+      let message: string;
+      if (daysUntil === 0) {
+        message = reminder.event_type === "fast" 
+          ? `🕊️ ${reminder.event_name} begins today (${reminder.event_tradition}). Remember to observe the fast.`
+          : `✨ Today is ${reminder.event_name} (${reminder.event_tradition}). May you have a blessed feast day!`;
+      } else {
+        const daysText = daysUntil === 1 ? "tomorrow" : `in ${daysUntil} days`;
+        message = reminder.event_type === "fast"
+          ? `🕊️ ${reminder.event_name} begins ${daysText} (${reminder.event_tradition}). Prepare to observe the fast.`
+          : `✨ ${reminder.event_name} is ${daysText} (${reminder.event_tradition}). Prepare for the feast!`;
+      }
 
       console.log(`Sending SMS to ${phoneNumber} for event: ${reminder.event_name}`);
 
@@ -148,8 +184,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(
       JSON.stringify({ 
-        message: "Fasting notifications processed at 8pm",
-        date: tomorrowStr,
+        message: "Notifications processed",
+        date: todayStr,
         reminders_found: reminders.length,
         notifications_sent: notifications.filter(n => n.success).length,
         results: notifications,

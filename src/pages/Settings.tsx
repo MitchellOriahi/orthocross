@@ -1,19 +1,25 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, BellOff, LogOut, Share2, Mail, MessageSquare, UserX, XCircle } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, Plus, Trash2, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { useMusic } from "@/contexts/MusicContext";
+import { useNotifications, ReminderTime } from "@/hooks/useNotifications";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "next-themes";
+import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import { useProfileData } from "@/hooks/useProfileData";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
+import FastingPreferencesDialog from "@/components/FastingPreferencesDialog";
+import StreakReminderDialog from "@/components/StreakReminderDialog";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
 
@@ -21,10 +27,17 @@ const Settings = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
+  const { updateStreakReminders, getStreakReminders, scheduleStreakReminders, scheduleAllFastingReminders } = useNotifications();
   const { user, signOut } = useAuth();
-  const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(true);
-  const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(true);
+  const [reminders, setReminders] = useState<ReminderTime[]>([]);
+  const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(false);
+  const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(false);
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
+  const [showFastingPreferencesDialog, setShowFastingPreferencesDialog] = useState(false);
+  const [showStreakReminderDialog, setShowStreakReminderDialog] = useState(false);
+  const [fastingReminderDays, setFastingReminderDays] = useState<number[]>([3, 0]);
+  const [wednesdayNotificationsEnabled, setWednesdayNotificationsEnabled] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDonationDialogOpen, setCancelDonationDialogOpen] = useState(false);
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
@@ -34,40 +47,168 @@ const Settings = () => {
     if (profile) {
       setStreakVisible(profile.streak_visible ?? true);
       setActivityVisible(profile.activity_visible ?? true);
-      setFastingNotificationsEnabled(profile.fasting_notifications_enabled ?? true);
-      setStreakNotificationsEnabled(profile.streak_notifications_enabled ?? true);
+      setFastingNotificationsEnabled(profile.fasting_notifications_enabled || false);
+      setStreakNotificationsEnabled(profile.streak_notifications_enabled || false);
       setFriendsNotificationsEnabled(profile.friends_notifications_enabled ?? true);
+      setFastingReminderDays(profile.fasting_reminder_days || [3, 0]);
+      setWednesdayNotificationsEnabled(profile.wednesday_notifications_enabled || false);
     }
+    loadStreakReminders();
   }, [user, profile]);
+
+  const loadStreakReminders = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from('user_streak_reminders')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('hour', { ascending: true });
+    
+    if (data) {
+      const formattedReminders: ReminderTime[] = data.map(r => ({
+        id: r.id, // Use actual DB UUID
+        hour: r.hour,
+        minute: r.minute,
+        enabled: r.enabled
+      }));
+      setReminders(formattedReminders);
+    }
+  };
+
+
+  const handleToggleReminder = async (id: string) => {
+    if (!user) return;
+    
+    const reminder = reminders.find(r => r.id === id);
+    if (!reminder) return;
+    
+    await supabase
+      .from('user_streak_reminders')
+      .update({ enabled: !reminder.enabled })
+      .eq('id', id);
+    
+    const updated = reminders.map(r => 
+      r.id === id ? { ...r, enabled: !r.enabled } : r
+    );
+    setReminders(updated);
+    await scheduleStreakReminders();
+    toast.success("Reminder updated");
+  };
+
+  const handleTimeChange = async (id: string, hour: number, minute: number) => {
+    if (!user) return;
+    
+    // Validate hour and minute
+    const validHour = Math.max(0, Math.min(23, hour));
+    const validMinute = Math.max(0, Math.min(59, minute));
+    
+    await supabase
+      .from('user_streak_reminders')
+      .update({ hour: validHour, minute: validMinute })
+      .eq('id', id);
+    
+    const updated = reminders.map(r => 
+      r.id === id ? { ...r, hour: validHour, minute: validMinute } : r
+    );
+    setReminders(updated);
+    await scheduleStreakReminders();
+    toast.success("Reminder time updated");
+  };
+
+  const handleAddReminder = async () => {
+    if (!user) return;
+    
+    if (reminders.length >= 3) {
+      toast.error("Maximum 3 reminders allowed");
+      return;
+    }
+    
+    const { data, error } = await supabase
+      .from('user_streak_reminders')
+      .insert({ 
+        user_id: user.id, 
+        hour: 9, 
+        minute: 0, 
+        enabled: true 
+      })
+      .select()
+      .single();
+    
+    if (data && !error) {
+      await loadStreakReminders();
+      toast.success("Reminder added");
+    }
+  };
+
+  const handleDeleteReminder = async (id: string) => {
+    if (!user) return;
+    
+    await supabase
+      .from('user_streak_reminders')
+      .delete()
+      .eq('id', id);
+    
+    const updated = reminders.filter(r => r.id !== id);
+    setReminders(updated);
+    await scheduleStreakReminders();
+    toast.success("Reminder deleted");
+  };
 
   const handleToggleFastingNotifications = async (enabled: boolean) => {
     if (!user) return;
     
-    setFastingNotificationsEnabled(enabled);
+    if (enabled) {
+      // Show preferences dialog when enabling
+      setShowFastingPreferencesDialog(true);
+      setFastingNotificationsEnabled(true);
+    } else {
+      // Disable without showing dialog
+      setFastingNotificationsEnabled(false);
+      await supabase
+        .from('profiles')
+        .update({ fasting_notifications_enabled: false })
+        .eq('id', user.id);
+      toast.success("Fasting notifications disabled");
+    }
+  };
+
+  const handleSaveFastingPreferences = async (selectedDays: number[], wednesdayEnabled: boolean) => {
+    if (!user) return;
+    
+    setFastingReminderDays(selectedDays);
+    setWednesdayNotificationsEnabled(wednesdayEnabled);
     await supabase
       .from('profiles')
-      .update({ fasting_notifications_enabled: enabled })
+      .update({ 
+        fasting_notifications_enabled: true,
+        fasting_reminder_days: selectedDays,
+        wednesday_notifications_enabled: wednesdayEnabled
+      })
       .eq('id', user.id);
     
-    toast.success(enabled 
-      ? "Fasting notifications enabled - you'll be reminded at 8pm the night before fasts and feasts" 
-      : "Fasting notifications disabled"
-    );
+    // Schedule all fasting notifications
+    await scheduleAllFastingReminders(user.id);
+    
+    toast.success("Fasting notification preferences saved and scheduled");
   };
 
   const handleToggleStreakNotifications = async (enabled: boolean) => {
     if (!user) return;
     
-    setStreakNotificationsEnabled(enabled);
-    await supabase
-      .from('profiles')
-      .update({ streak_notifications_enabled: enabled })
-      .eq('id', user.id);
-    
-    toast.success(enabled 
-      ? "Streak notifications enabled - you'll be reminded at 6pm if you haven't read today" 
-      : "Streak notifications disabled"
-    );
+    if (enabled) {
+      // Show streak reminder dialog when enabling
+      setShowStreakReminderDialog(true);
+      setStreakNotificationsEnabled(true);
+    } else {
+      // Disable without showing dialog
+      setStreakNotificationsEnabled(false);
+      await supabase
+        .from('profiles')
+        .update({ streak_notifications_enabled: false })
+        .eq('id', user.id);
+      toast.success("Streak notifications disabled");
+    }
   };
 
   const handleToggleFriendsNotifications = async (enabled: boolean) => {
@@ -129,6 +270,13 @@ const Settings = () => {
       const body = encodeURIComponent(message);
       window.open(`sms:?body=${body}`);
     }
+  };
+
+  const getUserInitials = () => {
+    if (profile?.username) {
+      return profile.username.substring(0, 2).toUpperCase();
+    }
+    return user?.email?.substring(0, 2).toUpperCase() || "U";
   };
 
   return (
@@ -248,11 +396,35 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-          {/* Notifications Settings */}
+          {/* Streak Reminders - Only shown when enabled */}
+          {streakNotificationsEnabled && (
+            <Card className="shadow-elevated">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5 text-primary" />
+                  Streak Reminders
+                </CardTitle>
+                <CardDescription>
+                  Get notified to maintain your daily reading streak
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowStreakReminderDialog(true)}
+                  className="w-full"
+                >
+                  Configure Reminders
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Notifications Toggle */}
           <Card className="shadow-elevated">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-primary" />
+                <BellOff className="w-5 h-5 text-primary" />
                 Notification Settings
               </CardTitle>
               <CardDescription>
@@ -260,26 +432,11 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Streak Notifications */}
               <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium">Streak Notifications</p>
-                  <p className="text-sm text-muted-foreground">
-                    Remind me to read my Bible so I don't lose my streak
-                  </p>
-                </div>
-                <Switch
-                  checked={streakNotificationsEnabled}
-                  onCheckedChange={handleToggleStreakNotifications}
-                />
-              </div>
-
-              {/* Fasting Notifications */}
-              <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="space-y-1">
                   <p className="font-medium">Fasting Notifications</p>
                   <p className="text-sm text-muted-foreground">
-                    Remind me of upcoming fast and feast days
+                    Get notified about upcoming fasts and feasts
                   </p>
                 </div>
                 <Switch
@@ -287,8 +444,36 @@ const Settings = () => {
                   onCheckedChange={handleToggleFastingNotifications}
                 />
               </div>
+              
+              <Button
+                variant="outline"
+                onClick={() => setShowFastingPreferencesDialog(true)}
+                className="w-full"
+              >
+                Configure Reminders
+              </Button>
+              
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1">
+                  <p className="font-medium">Streak Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Get reminders to maintain your reading streak
+                  </p>
+                </div>
+                <Switch
+                  checked={streakNotificationsEnabled}
+                  onCheckedChange={handleToggleStreakNotifications}
+                />
+              </div>
+              
+              <Button
+                variant="outline"
+                onClick={() => setShowStreakReminderDialog(true)}
+                className="w-full"
+              >
+                Configure Reminders
+              </Button>
 
-              {/* Friends Notifications */}
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="space-y-1">
                   <p className="font-medium">Friends Notifications</p>
@@ -302,7 +487,6 @@ const Settings = () => {
                 />
               </div>
 
-              {/* Streak Visibility */}
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="space-y-1">
                   <p className="font-medium">Show Streak to Friends</p>
@@ -316,7 +500,6 @@ const Settings = () => {
                 />
               </div>
 
-              {/* Activity Visibility */}
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="space-y-1">
                   <p className="font-medium">Share Activity with Friends</p>
@@ -451,6 +634,26 @@ const Settings = () => {
           </Card>
         </div>
       </main>
+
+      {/* Fasting Preferences Dialog */}
+      <FastingPreferencesDialog
+        open={showFastingPreferencesDialog}
+        onOpenChange={setShowFastingPreferencesDialog}
+        onSave={handleSaveFastingPreferences}
+        currentPreferences={fastingReminderDays}
+        wednesdayNotificationsEnabled={wednesdayNotificationsEnabled}
+      />
+
+      {/* Streak Reminder Dialog */}
+      <StreakReminderDialog
+        open={showStreakReminderDialog}
+        onOpenChange={setShowStreakReminderDialog}
+        reminders={reminders}
+        onAddReminder={handleAddReminder}
+        onDeleteReminder={handleDeleteReminder}
+        onToggleReminder={handleToggleReminder}
+        onTimeChange={handleTimeChange}
+      />
       
       {/* Bottom Navigation */}
       <BottomNavigation />
