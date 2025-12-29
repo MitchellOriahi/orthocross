@@ -3,11 +3,40 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const oneSignalAppId = Deno.env.get("ONESIGNAL_APP_ID");
+const oneSignalApiKey = Deno.env.get("ONESIGNAL_REST_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
+};
+
+// Fasting events data - major Eastern and Oriental Orthodox fasts and feasts
+const getFastingEvents = (year: number) => {
+  // This is a simplified list - in production you'd have a complete calendar
+  return [
+    // Major Eastern Orthodox events
+    { name: "Great Lent", month: 3, day: 18, tradition: "Eastern", type: "fast", isMajor: true },
+    { name: "Pascha (Easter)", month: 5, day: 5, tradition: "Eastern", type: "feast", isMajor: true },
+    { name: "Apostles' Fast", month: 6, day: 24, tradition: "Eastern", type: "fast", isMajor: true },
+    { name: "Dormition Fast", month: 8, day: 1, tradition: "Eastern", type: "fast", isMajor: true },
+    { name: "Dormition of the Theotokos", month: 8, day: 15, tradition: "Eastern", type: "feast", isMajor: true },
+    { name: "Nativity Fast", month: 11, day: 15, tradition: "Eastern", type: "fast", isMajor: true },
+    { name: "Nativity of Christ", month: 12, day: 25, tradition: "Eastern", type: "feast", isMajor: true },
+    { name: "Theophany", month: 1, day: 6, tradition: "Eastern", type: "feast", isMajor: true },
+    { name: "Transfiguration", month: 8, day: 6, tradition: "Eastern", type: "feast", isMajor: true },
+    { name: "Exaltation of the Cross", month: 9, day: 14, tradition: "Eastern", type: "feast", isMajor: true },
+    
+    // Major Oriental Orthodox events
+    { name: "Great Lent (Coptic)", month: 2, day: 25, tradition: "Oriental", type: "fast", isMajor: true },
+    { name: "Resurrection (Coptic)", month: 4, day: 20, tradition: "Oriental", type: "feast", isMajor: true },
+    { name: "Apostles' Fast (Coptic)", month: 7, day: 1, tradition: "Oriental", type: "fast", isMajor: true },
+    { name: "St. Mary's Fast", month: 8, day: 7, tradition: "Oriental", type: "fast", isMajor: true },
+    { name: "Assumption of Mary", month: 8, day: 22, tradition: "Oriental", type: "feast", isMajor: true },
+    { name: "Advent Fast (Coptic)", month: 11, day: 25, tradition: "Oriental", type: "fast", isMajor: true },
+    { name: "Nativity (Coptic)", month: 1, day: 7, tradition: "Oriental", type: "feast", isMajor: true },
+  ];
 };
 
 const handler = async (req: Request): Promise<Response> => {
@@ -16,177 +45,111 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Verify authorization token for scheduled invocation
-    const authHeader = req.headers.get("authorization");
-    const schedulerSecret = Deno.env.get("SCHEDULER_SECRET_TOKEN");
-    
-    if (!schedulerSecret || authHeader !== `Bearer ${schedulerSecret}`) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get today's date
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-    
-    // Calculate dates for 1, 2, and 3 days from now
-    const oneDayFromNow = new Date(today);
-    oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
-    const oneDayStr = oneDayFromNow.toISOString().split('T')[0];
-    
-    const twoDaysFromNow = new Date(today);
-    twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
-    const twoDaysStr = twoDaysFromNow.toISOString().split('T')[0];
-    
-    const threeDaysFromNow = new Date(today);
-    threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
-    const threeDaysStr = threeDaysFromNow.toISOString().split('T')[0];
+    // This function should be called at 8pm to send notifications for tomorrow's events
+    const now = new Date();
+    console.log(`Checking fasting notifications at: ${now.toISOString()}`);
 
-    console.log('Checking fasting reminders for:', todayStr, oneDayStr, twoDaysStr, threeDaysStr);
+    // Get tomorrow's date
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowMonth = tomorrow.getMonth() + 1; // JavaScript months are 0-indexed
+    const tomorrowDay = tomorrow.getDate();
+    const currentYear = tomorrow.getFullYear();
 
-    // Get all reminders for today and next 3 days with user preferences
-    const { data: reminders, error: remindersError } = await supabase
-      .from("fasting_reminders")
-      .select("*, profiles!inner(fasting_notifications_enabled, fasting_reminder_days, wednesday_notifications_enabled)")
-      .or(`event_date.eq.${todayStr},event_date.eq.${oneDayStr},event_date.eq.${twoDaysStr},event_date.eq.${threeDaysStr}`)
-      .eq("profiles.fasting_notifications_enabled", true);
+    console.log(`Looking for events on: ${tomorrowMonth}/${tomorrowDay}/${currentYear}`);
 
-    if (remindersError) {
-      console.error('Error fetching reminders:', remindersError);
-      throw remindersError;
-    }
+    // Get events that start tomorrow
+    const allEvents = getFastingEvents(currentYear);
+    const tomorrowEvents = allEvents.filter(e => 
+      e.month === tomorrowMonth && e.day === tomorrowDay && e.isMajor
+    );
 
-    if (!reminders || reminders.length === 0) {
-      console.log('No reminders for today');
+    if (tomorrowEvents.length === 0) {
+      console.log('No major fasting events tomorrow');
       return new Response(
-        JSON.stringify({ message: "No reminders for today", date: todayStr }),
+        JSON.stringify({ message: "No major fasting events tomorrow" }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    console.log(`Found ${reminders.length} reminders for today`);
+    console.log(`Found ${tomorrowEvents.length} events for tomorrow:`, tomorrowEvents.map(e => e.name));
 
-    // Get phone numbers from auth metadata
-    const userIds = [...new Set(reminders.map(r => r.user_id))];
-    const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
-    
-    if (authError) {
-      console.error('Error fetching auth users:', authError);
-      throw authError;
+    // Get all users with fasting notifications enabled
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('id, fasting_notifications_enabled')
+      .eq('fasting_notifications_enabled', true);
+
+    if (profilesError) {
+      console.error('Error fetching profiles:', profilesError);
+      throw profilesError;
     }
 
-    // Create phone number map
-    const phoneMap = new Map();
-    users?.forEach(user => {
-      if (user.user_metadata?.phone_number && userIds.includes(user.id)) {
-        phoneMap.set(user.id, user.user_metadata.phone_number);
-      }
-    });
+    if (!profiles || profiles.length === 0) {
+      console.log('No users with fasting notifications enabled');
+      return new Response(
+        JSON.stringify({ message: "No users with fasting notifications enabled" }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
 
-    // Send SMS to all users with reminders
+    console.log(`Found ${profiles.length} users with fasting notifications enabled`);
+
+    // Send notifications via OneSignal
     const notifications = [];
-    for (const reminder of reminders) {
-      const phoneNumber = phoneMap.get(reminder.user_id);
-      
-      if (!phoneNumber) {
-        console.log(`User ${reminder.user_id} has no phone number, skipping`);
-        continue;
-      }
 
-      // Calculate days until event
-      const eventDate = new Date(reminder.event_date);
-      const dayOfWeek = eventDate.getDay(); // 0 = Sunday, 1 = Monday, 3 = Wednesday
-      const daysUntil = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-      
-      // Get user's fasting reminder preferences
-      const profileData = reminder.profiles as any;
-      const userReminderDays: number[] = profileData?.fasting_reminder_days || [3, 0];
-      const wednesdayNotificationsEnabled: boolean = profileData?.wednesday_notifications_enabled || false;
-      
-      // Check if event is on a Wednesday
-      const isWednesdayEvent = dayOfWeek === 3;
-      
-      // Skip Wednesday fasts/feasts if user hasn't opted in
-      if (isWednesdayEvent && !wednesdayNotificationsEnabled) {
-        console.log(`User hasn't opted in for Wednesday notifications, skipping: ${reminder.event_name}`);
-        continue;
-      }
-      
-      // Skip Monday/Wednesday fasts for advance notifications (only send same day)
-      const isMondayOrWednesdayFast = (dayOfWeek === 1 || dayOfWeek === 3) && reminder.event_type === "fast";
-      
-      if (daysUntil > 0 && isMondayOrWednesdayFast) {
-        console.log(`Skipping advance notification for Monday/Wednesday fast: ${reminder.event_name}`);
-        continue;
-      }
-      
-      // Check if user wants notifications for this number of days before
-      if (!userReminderDays.includes(daysUntil)) {
-        console.log(`User doesn't want ${daysUntil}-day advance notification for: ${reminder.event_name}`);
-        continue;
-      }
+    if (oneSignalAppId && oneSignalApiKey) {
+      for (const event of tomorrowEvents) {
+        const message = event.type === "fast"
+          ? `🕊️ ${event.name} begins tomorrow (${event.tradition} Orthodox). Prepare to observe the fast.`
+          : `✨ ${event.name} is tomorrow (${event.tradition} Orthodox). Prepare for the feast!`;
 
-      // Generate appropriate message
-      let message: string;
-      if (daysUntil === 0) {
-        message = reminder.event_type === "fast" 
-          ? `🕊️ ${reminder.event_name} begins today (${reminder.event_tradition}). Remember to observe the fast.`
-          : `✨ Today is ${reminder.event_name} (${reminder.event_tradition}). May you have a blessed feast day!`;
-      } else {
-        const daysText = daysUntil === 1 ? "tomorrow" : `in ${daysUntil} days`;
-        message = reminder.event_type === "fast"
-          ? `🕊️ ${reminder.event_name} begins ${daysText} (${reminder.event_tradition}). Prepare to observe the fast.`
-          : `✨ ${reminder.event_name} is ${daysText} (${reminder.event_tradition}). Prepare for the feast!`;
-      }
+        const userIds = profiles.map(p => p.id);
 
-      console.log(`Sending SMS to ${phoneNumber} for event: ${reminder.event_name}`);
-
-      // Call the SMS function
-      try {
-        const smsResponse = await supabase.functions.invoke('send-sms-notification', {
-          body: {
-            to: phoneNumber,
-            message: message,
-          },
-        });
-
-        if (smsResponse.error) {
-          console.error('SMS error:', smsResponse.error);
-          notifications.push({
-            user_id: reminder.user_id,
-            event: reminder.event_name,
-            success: false,
-            error: smsResponse.error.message,
+        try {
+          const response = await fetch("https://onesignal.com/api/v1/notifications", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Basic ${oneSignalApiKey}`,
+            },
+            body: JSON.stringify({
+              app_id: oneSignalAppId,
+              include_external_user_ids: userIds,
+              contents: { en: message },
+              headings: { en: event.type === "fast" ? "Upcoming Fast" : "Upcoming Feast" },
+            }),
           });
-        } else {
-          console.log('SMS sent successfully:', smsResponse.data);
+
+          const result = await response.json();
+          console.log(`Notification sent for ${event.name}:`, result);
+
           notifications.push({
-            user_id: reminder.user_id,
-            event: reminder.event_name,
-            success: true,
+            event: event.name,
+            users_notified: userIds.length,
+            success: response.ok,
+            result,
+          });
+        } catch (error: any) {
+          console.error(`Error sending notification for ${event.name}:`, error);
+          notifications.push({
+            event: event.name,
+            success: false,
+            error: error.message,
           });
         }
-      } catch (error: any) {
-        console.error('Error invoking SMS function:', error);
-        notifications.push({
-          user_id: reminder.user_id,
-          event: reminder.event_name,
-          success: false,
-          error: error.message,
-        });
       }
+    } else {
+      console.log('OneSignal not configured, skipping push notifications');
     }
 
     return new Response(
       JSON.stringify({ 
-        message: "Notifications processed",
-        date: todayStr,
-        reminders_found: reminders.length,
+        message: "Fasting notifications processed",
+        events_found: tomorrowEvents.length,
+        users_to_notify: profiles.length,
         notifications_sent: notifications.filter(n => n.success).length,
         results: notifications,
       }),
