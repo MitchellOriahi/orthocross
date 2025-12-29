@@ -275,7 +275,7 @@ const Settings = () => {
                 <div className="space-y-1">
                   <p className="font-medium">Fasting & Feast Notifications</p>
                   <p className="text-sm text-muted-foreground">
-                    Receive reminders at 8pm the day before fasts and feasts
+                    Receive reminders before every fast and feast day
                   </p>
                 </div>
                 <Switch
@@ -288,7 +288,7 @@ const Settings = () => {
                 <div className="space-y-1">
                   <p className="font-medium">Streak Notifications</p>
                   <p className="text-sm text-muted-foreground">
-                    Receive reminders at 6pm if you haven't completed any readings
+                    Receive reminders to read your Bible so you don't lose your streak
                   </p>
                 </div>
                 <Switch
