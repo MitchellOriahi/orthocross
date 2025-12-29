@@ -1,38 +1,17 @@
 import { useEffect } from 'react';
-import { useNotifications } from '@/hooks/useNotifications';
-import { useLeaderboardNotifications } from '@/hooks/useLeaderboardNotifications';
-import { useFriendRequestNotifications } from '@/hooks/useFriendRequestNotifications';
-import { useGroupInvitationNotifications } from '@/hooks/useGroupInvitationNotifications';
-import { useNotificationSetup } from '@/hooks/useNotificationSetup';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { useOneSignalUserLink } from '@/hooks/useOneSignalUserLink';
 import { OneSignalDebug } from './OneSignalDebug';
 
 export const NotificationManager = () => {
   const { user } = useAuth();
-  const { scheduleStreakReminders, scheduleAllFastingReminders } = useNotifications();
+  
+  // Initialize OneSignal user linking
+  useOneSignalUserLink();
 
-  useEffect(() => {
-    if (!user) return;
-
-    const initializeNotifications = async () => {
-      // Schedule streak reminders
-      await scheduleStreakReminders();
-      
-      // Check if fasting notifications are enabled and schedule them
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('fasting_notifications_enabled')
-        .eq('id', user.id)
-        .single();
-
-      if (profile?.fasting_notifications_enabled) {
-        await scheduleAllFastingReminders(user.id);
-      }
-    };
-
-    initializeNotifications();
-  }, [user, scheduleStreakReminders, scheduleAllFastingReminders]);
+  // The notification scheduling is now handled server-side via edge functions
+  // - Streak reminders: sent at 6pm if user hasn't completed any readings
+  // - Fasting reminders: sent at 8pm the day before fasts/feasts
 
   // Render debug component (remove after testing)
   return <OneSignalDebug />;

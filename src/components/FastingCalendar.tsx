@@ -199,13 +199,12 @@ export const FastingCalendar = () => {
       return;
     }
 
-    // Schedule local notifications
+    // Schedule local notifications (8pm day before is handled server-side)
     await scheduleFastingReminder(
       selectedEvent.name,
       selectedEvent.type,
       selectedEvent.tradition,
-      notifDate,
-      daysBefore
+      notifDate
     );
 
     const { data: { user } } = await supabase.auth.getUser();

@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { useNotifications } from '@/hooks/useNotifications';
+
 import { supabase } from '@/integrations/supabase/client';
 import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import { z } from 'zod';
@@ -38,7 +38,7 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const { scheduleStreakReminders } = useNotifications();
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -205,10 +205,7 @@ const Auth = () => {
         })
         .eq('id', user.id);
 
-      // Schedule streak reminders if enabled
-      if (enabled) {
-        await scheduleStreakReminders();
-      }
+      // Streak reminders are now handled server-side at 6pm
     }
   };
 

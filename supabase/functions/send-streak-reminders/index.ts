@@ -3,6 +3,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const oneSignalAppId = Deno.env.get("ONESIGNAL_APP_ID");
+const oneSignalApiKey = Deno.env.get("ONESIGNAL_REST_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,36 +18,25 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Verify authorization token for scheduled invocation
-    const authHeader = req.headers.get("authorization");
-    const schedulerSecret = Deno.env.get("SCHEDULER_SECRET_TOKEN");
-    
-    if (!schedulerSecret || authHeader !== `Bearer ${schedulerSecret}`) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log('Sending streak reminder notifications');
+    // Get current time
+    const now = new Date();
+    const currentHour = now.getUTCHours();
+    
+    // This function should be called at 6pm local time
+    // For simplicity, we check if it's around 18:00 (6pm) in common timezones
+    // In production, you'd want timezone-aware scheduling
+    console.log(`Sending streak reminder notifications at UTC hour: ${currentHour}`);
 
-    // Get current hour to determine which reminders to send
-    const currentHour = new Date().getHours();
-    console.log('Current hour:', currentHour);
+    // Get today's date
+    const today = new Date().toISOString().split('T')[0];
 
-    // Get all users with streak notifications enabled and active reminders at this hour
+    // Get all users with streak notifications enabled
     const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
-      .select(`
-        id, 
-        streak_notifications_enabled,
-        user_streak_reminders!inner(hour, minute, enabled)
-      `)
-      .eq('streak_notifications_enabled', true)
-      .eq('user_streak_reminders.enabled', true)
-      .eq('user_streak_reminders.hour', currentHour);
+      .select('id, streak_notifications_enabled')
+      .eq('streak_notifications_enabled', true);
 
     if (profilesError) {
       console.error('Error fetching profiles:', profilesError);
@@ -62,22 +53,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Found ${profiles.length} users with streak notifications enabled`);
 
-    // Get phone numbers from auth metadata
     const userIds = profiles.map(p => p.id);
-    const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
-    
-    if (authError) {
-      console.error('Error fetching auth users:', authError);
-      throw authError;
-    }
-
-    // Create phone number map
-    const phoneMap = new Map();
-    users?.forEach(user => {
-      if (user.user_metadata?.phone_number && userIds.includes(user.id)) {
-        phoneMap.set(user.id, user.user_metadata.phone_number);
-      }
-    });
 
     // Get streak data for these users
     const { data: streaks, error: streaksError } = await supabase
@@ -90,70 +66,112 @@ const handler = async (req: Request): Promise<Response> => {
       throw streaksError;
     }
 
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Send SMS to users who haven't completed their reading today and have a reminder at this hour
+    // Get completed chapters for today to check if user has done any reading
+    const { data: completedToday, error: completedError } = await supabase
+      .from("completed_chapters")
+      .select("user_id")
+      .gte("completed_at", `${today}T00:00:00.000Z`)
+      .lt("completed_at", `${today}T23:59:59.999Z`);
+
+    if (completedError) {
+      console.error('Error fetching completed chapters:', completedError);
+    }
+
+    // Get saints read today
+    const { data: saintsToday, error: saintsError } = await supabase
+      .from("saints_read")
+      .select("user_id")
+      .gte("read_at", `${today}T00:00:00.000Z`)
+      .lt("read_at", `${today}T23:59:59.999Z`);
+
+    if (saintsError) {
+      console.error('Error fetching saints read:', saintsError);
+    }
+
+    // Get history islands completed today
+    const { data: historyToday, error: historyError } = await supabase
+      .from("orthodox_history_progress")
+      .select("user_id")
+      .eq("completed", true)
+      .gte("completed_at", `${today}T00:00:00.000Z`)
+      .lt("completed_at", `${today}T23:59:59.999Z`);
+
+    if (historyError) {
+      console.error('Error fetching history progress:', historyError);
+    }
+
+    // Create a set of users who have completed ANY reading today
+    const usersWithReadingToday = new Set<string>();
+    completedToday?.forEach(c => usersWithReadingToday.add(c.user_id));
+    saintsToday?.forEach(s => usersWithReadingToday.add(s.user_id));
+    historyToday?.forEach(h => usersWithReadingToday.add(h.user_id));
+
+    // Filter to users who haven't completed any reading today
+    const usersToNotify = profiles.filter(p => !usersWithReadingToday.has(p.id));
+
+    if (usersToNotify.length === 0) {
+      console.log('All users have completed readings today');
+      return new Response(
+        JSON.stringify({ message: "All users have completed readings today" }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log(`${usersToNotify.length} users haven't completed any reading today`);
+
+    // Send notifications via OneSignal
     const notifications = [];
-    for (const profile of profiles) {
-      const phoneNumber = phoneMap.get(profile.id);
-      
-      if (!phoneNumber) {
-        console.log(`User ${profile.id} has no phone number, skipping`);
-        continue;
-      }
+    
+    if (oneSignalAppId && oneSignalApiKey) {
+      for (const profile of usersToNotify) {
+        const userStreak = streaks?.find(s => s.user_id === profile.id);
+        const currentStreak = userStreak?.current_streak || 0;
+        
+        const message = currentStreak > 0
+          ? `🔥 Keep Your ${currentStreak}-Day Streak! Don't forget your daily reading to maintain your streak!`
+          : `📖 Start Your Reading Streak! Complete a reading today to begin your streak.`;
 
-      const userStreak = streaks?.find(s => s.user_id === profile.id);
-      const lastActivityDate = userStreak?.last_activity_date;
-      
-      // Only send if they haven't completed reading today
-      if (lastActivityDate === today) {
-        console.log(`User ${profile.id} already completed reading today, skipping`);
-        continue;
-      }
+        try {
+          const response = await fetch("https://onesignal.com/api/v1/notifications", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Basic ${oneSignalApiKey}`,
+            },
+            body: JSON.stringify({
+              app_id: oneSignalAppId,
+              include_external_user_ids: [profile.id],
+              contents: { en: message },
+              headings: { en: "OrthoCross Reminder" },
+            }),
+          });
 
-      const currentStreak = userStreak?.current_streak || 0;
-      const message = currentStreak > 0
-        ? `🔥 Keep Your ${currentStreak}-Day Streak! Don't forget your daily Bible reading to maintain your streak! - OrthoCross App`
-        : `📖 Start Your Reading Streak! Complete your daily Bible reading today. - OrthoCross App`;
-
-      console.log(`Sending SMS to ${phoneNumber}`);
-
-      try {
-        const smsResponse = await supabase.functions.invoke('send-sms-notification', {
-          body: {
-            to: phoneNumber,
-            message: message,
-          },
-        });
-
-        if (smsResponse.error) {
-          console.error('SMS error:', smsResponse.error);
+          const result = await response.json();
+          console.log(`Notification sent to ${profile.id}:`, result);
+          
+          notifications.push({
+            user_id: profile.id,
+            success: response.ok,
+            result,
+          });
+        } catch (error: any) {
+          console.error(`Error sending notification to ${profile.id}:`, error);
           notifications.push({
             user_id: profile.id,
             success: false,
-            error: smsResponse.error.message,
-          });
-        } else {
-          console.log('SMS sent successfully:', smsResponse.data);
-          notifications.push({
-            user_id: profile.id,
-            success: true,
+            error: error.message,
           });
         }
-      } catch (error: any) {
-        console.error('Error invoking SMS function:', error);
-        notifications.push({
-          user_id: profile.id,
-          success: false,
-          error: error.message,
-        });
       }
+    } else {
+      console.log('OneSignal not configured, skipping push notifications');
     }
 
     return new Response(
       JSON.stringify({ 
         message: "Streak reminders processed",
         users_checked: profiles.length,
+        users_with_reading_today: usersWithReadingToday.size,
         notifications_sent: notifications.filter(n => n.success).length,
         results: notifications,
       }),
