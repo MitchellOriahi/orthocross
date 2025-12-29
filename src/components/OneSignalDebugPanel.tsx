@@ -42,13 +42,17 @@ export const OneSignalDebugPanel = () => {
     return () => window.removeEventListener('onesignal-login-called', handleLogin as EventListener);
   }, []);
 
+  const getOneSignal = (): Promise<any> => {
+    return new Promise((resolve) => {
+      if (window.OneSignal) return resolve(window.OneSignal);
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      window.OneSignalDeferred.push((OneSignal) => resolve(OneSignal));
+    });
+  };
+
   const handleForceLogin = async () => {
     if (!user?.id) {
       setLoginError('No user.id available');
-      return;
-    }
-    if (!window.OneSignal?.login) {
-      setLoginError('OneSignal.login is not available');
       return;
     }
 
@@ -56,29 +60,25 @@ export const OneSignalDebugPanel = () => {
     setLoginError(null);
 
     try {
-      // Try permission handling but don't block on errors
-      console.log('[OneSignal Debug] Attempting permission handling...');
-      try {
-        if (window.OneSignal?.Notifications?.requestPermission) {
-          await window.OneSignal.Notifications.requestPermission(false);
-          console.log('[OneSignal Debug] Permission handling complete');
-        } else {
-          console.log('[OneSignal Debug] requestPermission not available, skipping');
-        }
-      } catch (permErr) {
-        console.warn('[OneSignal Debug] Permission handling failed, continuing anyway:', permErr);
+      const OneSignal = await getOneSignal();
+      setLoginTypeOf(typeof OneSignal?.login);
+
+      if (typeof OneSignal?.Notifications?.requestPermission !== 'function') {
+        throw new Error(`OneSignal.Notifications.requestPermission is not available (got ${typeof OneSignal?.Notifications?.requestPermission})`);
       }
-      
-      // Now attempt login
-      console.log('[OneSignal Debug] Force calling login with:', user.id);
-      console.log('[OneSignal Debug] OneSignal object keys:', Object.keys(window.OneSignal || {}));
-      
-      if (typeof window.OneSignal?.login !== 'function') {
-        throw new Error(`login is not a function, got: ${typeof window.OneSignal?.login}`);
+      if (typeof OneSignal?.login !== 'function') {
+        throw new Error(`OneSignal.login is not a function (got ${typeof OneSignal?.login})`);
       }
-      
-      await window.OneSignal.login(user.id);
-      console.log('[OneSignal Debug] Force login succeeded');
+
+      // REQUIRED sequence: ensure permission handling is resolved BEFORE login
+      console.log('[OneSignal Debug] Awaiting permission handling...');
+      await OneSignal.Notifications.requestPermission(false);
+      console.log('[OneSignal Debug] Permission handling resolved');
+
+      console.log('[OneSignal Debug] Calling login with:', user.id);
+      await OneSignal.login(user.id);
+
+      console.log('[OneSignal Debug] login() succeeded');
       setLoginCalled(true);
       setLoginUserId(user.id);
       window.dispatchEvent(
@@ -87,6 +87,8 @@ export const OneSignalDebugPanel = () => {
     } catch (err: any) {
       console.error('[OneSignal Debug] Force login failed:', err);
       setLoginError(err?.message || String(err));
+      // Ensure we do NOT flip loginCalled on failure
+      setLoginCalled(false);
     } finally {
       setForcing(false);
     }
