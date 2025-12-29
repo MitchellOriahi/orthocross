@@ -29,23 +29,25 @@ const handler = async (req: Request): Promise<Response> => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log('Sending streak reminder notifications');
-
-    // Get current hour to determine which reminders to send
+    // Get current hour - only run at 6pm (18:00)
     const currentHour = new Date().getHours();
     console.log('Current hour:', currentHour);
 
-    // Get all users with streak notifications enabled and active reminders at this hour
+    if (currentHour !== 18) {
+      console.log('Not 6pm yet, skipping streak reminders');
+      return new Response(
+        JSON.stringify({ message: "Streak reminders only run at 6pm", currentHour }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log('Sending streak reminder notifications at 6pm');
+
+    // Get all users with streak notifications enabled
     const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
-      .select(`
-        id, 
-        streak_notifications_enabled,
-        user_streak_reminders!inner(hour, minute, enabled)
-      `)
-      .eq('streak_notifications_enabled', true)
-      .eq('user_streak_reminders.enabled', true)
-      .eq('user_streak_reminders.hour', currentHour);
+      .select('id, streak_notifications_enabled')
+      .eq('streak_notifications_enabled', true);
 
     if (profilesError) {
       console.error('Error fetching profiles:', profilesError);
@@ -92,7 +94,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const today = new Date().toISOString().split('T')[0];
     
-    // Send SMS to users who haven't completed their reading today and have a reminder at this hour
+    // Send notification to users who haven't completed their reading today
     const notifications = [];
     for (const profile of profiles) {
       const phoneNumber = phoneMap.get(profile.id);
@@ -152,7 +154,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(
       JSON.stringify({ 
-        message: "Streak reminders processed",
+        message: "Streak reminders processed at 6pm",
         users_checked: profiles.length,
         notifications_sent: notifications.filter(n => n.success).length,
         results: notifications,
