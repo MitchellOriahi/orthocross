@@ -39,9 +39,17 @@ export const useOneSignalUserLink = () => {
   const initRef = useRef(false);
   const linkedUserIdRef = useRef<string | null>(null);
 
+  // Log on every render to confirm hook is running
+  console.log('[OneSignal Hook] Render - loading:', loading, 'user:', user?.id ?? 'null');
+
   // Initialize OneSignal SDK on mount (only once)
   useEffect(() => {
-    if (initRef.current) return;
+    console.log('[OneSignal] Init effect running, initRef:', initRef.current);
+    
+    if (initRef.current) {
+      console.log('[OneSignal] Already initialized, skipping');
+      return;
+    }
     initRef.current = true;
 
     console.log('[OneSignal] Initializing SDK with App ID:', ONESIGNAL_APP_ID);
