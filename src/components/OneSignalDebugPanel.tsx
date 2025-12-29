@@ -56,14 +56,27 @@ export const OneSignalDebugPanel = () => {
     setLoginError(null);
 
     try {
-      // Wait for permission handling to ensure native bridge is ready
-      console.log('[OneSignal Debug] Waiting for permission handling...');
-      if (window.OneSignal?.Notifications?.requestPermission) {
-        await window.OneSignal.Notifications.requestPermission(false);
-        console.log('[OneSignal Debug] Permission handling complete');
+      // Try permission handling but don't block on errors
+      console.log('[OneSignal Debug] Attempting permission handling...');
+      try {
+        if (window.OneSignal?.Notifications?.requestPermission) {
+          await window.OneSignal.Notifications.requestPermission(false);
+          console.log('[OneSignal Debug] Permission handling complete');
+        } else {
+          console.log('[OneSignal Debug] requestPermission not available, skipping');
+        }
+      } catch (permErr) {
+        console.warn('[OneSignal Debug] Permission handling failed, continuing anyway:', permErr);
       }
       
+      // Now attempt login
       console.log('[OneSignal Debug] Force calling login with:', user.id);
+      console.log('[OneSignal Debug] OneSignal object keys:', Object.keys(window.OneSignal || {}));
+      
+      if (typeof window.OneSignal?.login !== 'function') {
+        throw new Error(`login is not a function, got: ${typeof window.OneSignal?.login}`);
+      }
+      
       await window.OneSignal.login(user.id);
       console.log('[OneSignal Debug] Force login succeeded');
       setLoginCalled(true);
