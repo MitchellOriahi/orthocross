@@ -52,6 +52,22 @@ export const useOneSignalUserLink = () => {
 
         setSdkReady(true);
         console.log('[OneSignal] SDK initialized');
+
+        // If auth is already ready in this session, login immediately from the same callback.
+        if (!loading && user?.id) {
+          console.log('[OneSignal] Calling login() immediately after init with External User ID:', user.id);
+          await OneSignal.login(user.id);
+          setLoginCalled(true);
+
+          console.log('[OneSignal] login() succeeded. External User ID:', user.id);
+
+          // Keep debug panel working (dev-only)
+          window.dispatchEvent(
+            new CustomEvent('onesignal-login-called', {
+              detail: { userId: user.id },
+            })
+          );
+        }
       } catch (error) {
         setSdkReady(false);
         console.error('[OneSignal] Initialization error:', error);
