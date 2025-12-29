@@ -1,80 +1,109 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { ONESIGNAL_APP_ID } from '@/config/onesignal';
 
-declare global {
-  interface Window {
-    OneSignal?: {
-      login?: (externalId: string) => Promise<void>;
-      setExternalUserId?: (externalId: string) => void;
-      getExternalUserId?: () => Promise<string | null>;
-      User?: {
-        PushSubscription?: {
-          id?: string;
-        };
-      };
-    };
-  }
+// OneSignal Capacitor plugin types
+declare const OneSignal: {
+  initialize: (appId: string) => void;
+  login: (externalId: string) => Promise<void>;
+  logout: () => Promise<void>;
+} | undefined;
+
+interface OneSignalDebugState {
+  initialized: boolean;
+  currentUserId: string | null;
+  loginCalled: boolean;
 }
 
 /**
- * Hook to link the authenticated Supabase user to OneSignal for push notifications.
- * Runs on login and on app startup if a session already exists.
+ * Hook to initialize OneSignal and link the authenticated Supabase user.
+ * Uses the OneSignal Capacitor/Cordova plugin (NOT web SDK).
  */
 export const useOneSignalUserLink = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const linkedUserIdRef = useRef<string | null>(null);
+  const initializedRef = useRef(false);
+  
+  const [debugState, setDebugState] = useState<OneSignalDebugState>({
+    initialized: false,
+    currentUserId: null,
+    loginCalled: false,
+  });
 
+  // Initialize OneSignal once on app startup
   useEffect(() => {
-    const linkUserToOneSignal = async () => {
-      // Do nothing if no authenticated user
-      if (!user?.id) {
-        linkedUserIdRef.current = null;
+    if (initializedRef.current) return;
+
+    try {
+      if (typeof OneSignal !== 'undefined') {
+        OneSignal.initialize(ONESIGNAL_APP_ID);
+        initializedRef.current = true;
+        console.log('[OneSignal] init ok');
+        setDebugState(prev => ({ ...prev, initialized: true }));
+      } else {
+        console.log('[OneSignal] SDK not available (running in browser?)');
+      }
+    } catch (error) {
+      console.error('[OneSignal] init error:', error);
+    }
+  }, []);
+
+  // Handle login/logout based on auth state
+  useEffect(() => {
+    // Wait for auth to finish loading
+    if (loading) return;
+
+    const handleAuthChange = async () => {
+      // OneSignal not available (web browser)
+      if (typeof OneSignal === 'undefined') {
+        setDebugState(prev => ({ 
+          ...prev, 
+          currentUserId: user?.id || null,
+          loginCalled: false 
+        }));
         return;
       }
 
-      // Avoid duplicate calls if the same user is already linked
-      if (linkedUserIdRef.current === user.id) {
-        console.log('[OneSignal] User already linked:', user.id);
-        return;
-      }
+      // User logged in
+      if (user?.id) {
+        // Skip if already linked for this user
+        if (linkedUserIdRef.current === user.id) {
+          console.log('[OneSignal] already logged in as', user.id);
+          return;
+        }
 
-      // Wait for OneSignal to be available
-      if (!window.OneSignal) {
-        console.log('[OneSignal] SDK not loaded yet, will retry...');
-        // Retry after a short delay
-        const retryTimeout = setTimeout(() => {
-          linkUserToOneSignal();
-        }, 1000);
-        return () => clearTimeout(retryTimeout);
-      }
-
-      try {
-        const OneSignal = window.OneSignal;
-
-        // Prefer OneSignal.login if available (newer SDK)
-        if (typeof OneSignal.login === 'function') {
-          console.log('[OneSignal] Using login() to link user:', user.id);
+        try {
           await OneSignal.login(user.id);
           linkedUserIdRef.current = user.id;
-          console.log('[OneSignal] Successfully linked user via login():', user.id);
-        } 
-        // Fall back to setExternalUserId (older SDK)
-        else if (typeof OneSignal.setExternalUserId === 'function') {
-          console.log('[OneSignal] Using setExternalUserId() to link user:', user.id);
-          OneSignal.setExternalUserId(user.id);
-          linkedUserIdRef.current = user.id;
-          console.log('[OneSignal] Successfully linked user via setExternalUserId():', user.id);
-        } 
-        else {
-          console.warn('[OneSignal] Neither login() nor setExternalUserId() available');
+          console.log('[OneSignal] login', user.id);
+          setDebugState(prev => ({ 
+            ...prev, 
+            currentUserId: user.id,
+            loginCalled: true 
+          }));
+        } catch (error) {
+          console.error('[OneSignal] login error:', error);
         }
-      } catch (error) {
-        console.error('[OneSignal] Error linking user:', error);
+      } 
+      // User logged out
+      else if (linkedUserIdRef.current !== null) {
+        try {
+          await OneSignal.logout();
+          linkedUserIdRef.current = null;
+          console.log('[OneSignal] logout');
+          setDebugState(prev => ({ 
+            ...prev, 
+            currentUserId: null,
+            loginCalled: false 
+          }));
+        } catch (error) {
+          console.error('[OneSignal] logout error:', error);
+        }
       }
     };
 
-    linkUserToOneSignal();
-  }, [user?.id]);
+    handleAuthChange();
+  }, [user?.id, loading]);
 
-  return null;
+  return debugState;
 };

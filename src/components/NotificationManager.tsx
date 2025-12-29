@@ -4,18 +4,13 @@ import { useLeaderboardNotifications } from '@/hooks/useLeaderboardNotifications
 import { useFriendRequestNotifications } from '@/hooks/useFriendRequestNotifications';
 import { useGroupInvitationNotifications } from '@/hooks/useGroupInvitationNotifications';
 import { useNotificationSetup } from '@/hooks/useNotificationSetup';
-import { useOneSignalUserLink } from '@/hooks/useOneSignalUserLink';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { OneSignalDebug } from './OneSignalDebug';
 
 export const NotificationManager = () => {
   const { user } = useAuth();
   const { scheduleStreakReminders, scheduleAllFastingReminders } = useNotifications();
-  useLeaderboardNotifications();
-  useFriendRequestNotifications();
-  useGroupInvitationNotifications(user?.id);
-  useNotificationSetup();
-  useOneSignalUserLink(); // Link authenticated user to OneSignal for push notifications
 
   useEffect(() => {
     if (!user) return;
@@ -39,5 +34,6 @@ export const NotificationManager = () => {
     initializeNotifications();
   }, [user, scheduleStreakReminders, scheduleAllFastingReminders]);
 
-  return null;
+  // Render debug component (remove after testing)
+  return <OneSignalDebug />;
 };
