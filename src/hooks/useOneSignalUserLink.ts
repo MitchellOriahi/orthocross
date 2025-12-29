@@ -18,6 +18,9 @@ interface OneSignalInstance {
       id?: string;
     };
   };
+  Notifications?: {
+    requestPermission: (fallbackToSettings?: boolean) => Promise<void>;
+  };
 }
 
 /**
@@ -55,7 +58,15 @@ export const useOneSignalUserLink = () => {
 
         // If auth is already ready in this session, login immediately from the same callback.
         if (!loading && user?.id) {
-          console.log('[OneSignal] Calling login() immediately after init with External User ID:', user.id);
+          console.log('[OneSignal] Waiting for permission handling before login...');
+          
+          // Wait for permission handling to ensure native bridge is ready
+          if (OneSignal.Notifications?.requestPermission) {
+            await OneSignal.Notifications.requestPermission(false);
+            console.log('[OneSignal] Permission handling complete');
+          }
+          
+          console.log('[OneSignal] Calling login() with External User ID:', user.id);
           await OneSignal.login(user.id);
           setLoginCalled(true);
 
@@ -91,6 +102,14 @@ export const useOneSignalUserLink = () => {
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     window.OneSignalDeferred.push(async (OneSignal) => {
       try {
+        console.log('[OneSignal] Waiting for permission handling before login...');
+        
+        // Wait for permission handling to ensure native bridge is ready
+        if (OneSignal.Notifications?.requestPermission) {
+          await OneSignal.Notifications.requestPermission(false);
+          console.log('[OneSignal] Permission handling complete');
+        }
+        
         console.log('[OneSignal] Calling login() with External User ID:', user.id);
         await OneSignal.login(user.id);
 
