@@ -112,6 +112,11 @@ export const useOneSignalUserLink = () => {
         linkedUserIdRef.current = user.id;
         console.log('[OneSignal] Successfully linked user. External User ID:', user.id);
         console.log('[OneSignal] This user will now receive push notifications via include_external_user_ids');
+        
+        // Dispatch event for debug panel
+        window.dispatchEvent(new CustomEvent('onesignal-login-called', { 
+          detail: { userId: user.id } 
+        }));
       } catch (error) {
         console.error('[OneSignal] Error linking user:', error);
       }
