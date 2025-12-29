@@ -25,7 +25,6 @@ import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { useTheme } from "next-themes";
 import { populateInitialVerses } from "@/scripts/populateInitialVerses";
 import { checkStreakOnAppOpen, GuardianAngelResult } from "@/utils/streakManager";
-import { OneSignalDebugPanel } from "@/components/OneSignalDebugPanel";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -510,9 +509,6 @@ const Dashboard = () => {
 
       {/* Donation Prompt Dialog - shows every 7 days */}
       <DonationPromptDialog />
-
-      {/* DEV ONLY: OneSignal Debug Panel - Remove once External ID appears in OneSignal */}
-      <OneSignalDebugPanel />
     </div>
   );
 };

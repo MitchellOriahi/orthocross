@@ -1,133 +1,80 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { ONESIGNAL_APP_ID } from '@/config/onesignal';
 
 declare global {
   interface Window {
-    OneSignalDeferred?: Array<(OneSignal: OneSignalInstance) => void | Promise<void>>;
-    OneSignal?: OneSignalInstance;
+    OneSignal?: {
+      login?: (externalId: string) => Promise<void>;
+      setExternalUserId?: (externalId: string) => void;
+      getExternalUserId?: () => Promise<string | null>;
+      User?: {
+        PushSubscription?: {
+          id?: string;
+        };
+      };
+    };
   }
 }
 
-interface OneSignalInstance {
-  init: (config: { appId: string; allowLocalhostAsSecureOrigin?: boolean }) => Promise<void>;
-  login: (externalId: string) => Promise<void>;
-  logout: () => Promise<void>;
-  User?: {
-    PushSubscription?: {
-      id?: string;
-    };
-  };
-  Notifications?: {
-    requestPermission: (fallbackToSettings?: boolean) => Promise<void>;
-  };
-}
-
 /**
- * Hook to initialize OneSignal and link the authenticated user via External User ID.
- *
- * Guarantees:
- * - OneSignal SDK initializes once per runtime
- * - OneSignal.login(user.id) fires exactly once when ALL are true:
- *   1) auth loading === false
- *   2) user.id exists
- *   3) OneSignal SDK initialized
+ * Hook to link the authenticated Supabase user to OneSignal for push notifications.
+ * Runs on login and on app startup if a session already exists.
  */
 export const useOneSignalUserLink = () => {
-  // All hooks MUST be at top level (unconditional)
-  const { user, loading } = useAuth();
-  const initRef = useRef(false);
-  const [sdkReady, setSdkReady] = useState(false);
-  const [loginCalled, setLoginCalled] = useState(false);
+  const { user } = useAuth();
+  const linkedUserIdRef = useRef<string | null>(null);
 
-  // Initialize OneSignal SDK on mount (only once)
   useEffect(() => {
-    if (initRef.current) return;
-    initRef.current = true;
+    const linkUserToOneSignal = async () => {
+      // Do nothing if no authenticated user
+      if (!user?.id) {
+        linkedUserIdRef.current = null;
+        return;
+      }
 
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    window.OneSignalDeferred.push(async (OneSignal) => {
+      // Avoid duplicate calls if the same user is already linked
+      if (linkedUserIdRef.current === user.id) {
+        console.log('[OneSignal] User already linked:', user.id);
+        return;
+      }
+
+      // Wait for OneSignal to be available
+      if (!window.OneSignal) {
+        console.log('[OneSignal] SDK not loaded yet, will retry...');
+        // Retry after a short delay
+        const retryTimeout = setTimeout(() => {
+          linkUserToOneSignal();
+        }, 1000);
+        return () => clearTimeout(retryTimeout);
+      }
+
       try {
-        await OneSignal.init({
-          appId: ONESIGNAL_APP_ID,
-          allowLocalhostAsSecureOrigin: true,
-        });
+        const OneSignal = window.OneSignal;
 
-        setSdkReady(true);
-        console.log('[OneSignal] SDK initialized');
-
-        // If auth is already ready in this session, login immediately from the same callback.
-        if (!loading && user?.id) {
-          console.log('[OneSignal] Waiting for permission handling before login...');
-          
-          // Wait for permission handling to ensure native bridge is ready
-          if (OneSignal.Notifications?.requestPermission) {
-            await OneSignal.Notifications.requestPermission(false);
-            console.log('[OneSignal] Permission handling complete');
-          }
-          
-          console.log('[OneSignal] Calling login() with External User ID:', user.id);
+        // Prefer OneSignal.login if available (newer SDK)
+        if (typeof OneSignal.login === 'function') {
+          console.log('[OneSignal] Using login() to link user:', user.id);
           await OneSignal.login(user.id);
-          setLoginCalled(true);
-
-          console.log('[OneSignal] login() succeeded. External User ID:', user.id);
-
-          // Keep debug panel working (dev-only)
-          window.dispatchEvent(
-            new CustomEvent('onesignal-login-called', {
-              detail: { userId: user.id },
-            })
-          );
+          linkedUserIdRef.current = user.id;
+          console.log('[OneSignal] Successfully linked user via login():', user.id);
+        } 
+        // Fall back to setExternalUserId (older SDK)
+        else if (typeof OneSignal.setExternalUserId === 'function') {
+          console.log('[OneSignal] Using setExternalUserId() to link user:', user.id);
+          OneSignal.setExternalUserId(user.id);
+          linkedUserIdRef.current = user.id;
+          console.log('[OneSignal] Successfully linked user via setExternalUserId():', user.id);
+        } 
+        else {
+          console.warn('[OneSignal] Neither login() nor setExternalUserId() available');
         }
       } catch (error) {
-        setSdkReady(false);
-        console.error('[OneSignal] Initialization error:', error);
+        console.error('[OneSignal] Error linking user:', error);
       }
-    });
-  }, []);
+    };
 
-  // Login when BOTH auth + SDK are ready
-  useEffect(() => {
-    // REQUIRED CONDITIONS (no other gates):
-    // - auth loading === false
-    // - user.id exists
-    // - SDK initialized
-    if (loading) return;
-    if (!user?.id) return;
-    if (!sdkReady) return;
-
-    // Fire exactly once
-    if (loginCalled) return;
-
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    window.OneSignalDeferred.push(async (OneSignal) => {
-      try {
-        console.log('[OneSignal] Waiting for permission handling before login...');
-        
-        // Wait for permission handling to ensure native bridge is ready
-        if (OneSignal.Notifications?.requestPermission) {
-          await OneSignal.Notifications.requestPermission(false);
-          console.log('[OneSignal] Permission handling complete');
-        }
-        
-        console.log('[OneSignal] Calling login() with External User ID:', user.id);
-        await OneSignal.login(user.id);
-
-        setLoginCalled(true);
-
-        console.log('[OneSignal] login() succeeded. External User ID:', user.id);
-
-        // Keep debug panel working (dev-only)
-        window.dispatchEvent(
-          new CustomEvent('onesignal-login-called', {
-            detail: { userId: user.id },
-          })
-        );
-      } catch (error) {
-        console.error('[OneSignal] login() error:', error);
-      }
-    });
-  }, [loading, user?.id, sdkReady, loginCalled]);
+    linkUserToOneSignal();
+  }, [user?.id]);
 
   return null;
 };
