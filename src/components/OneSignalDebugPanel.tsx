@@ -15,6 +15,11 @@ export const OneSignalDebugPanel = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [forcing, setForcing] = useState(false);
 
+  // Step-by-step debug state for force flow
+  const [permStatusBefore, setPermStatusBefore] = useState<string>('unknown');
+  const [afterRequestPermission, setAfterRequestPermission] = useState(false);
+  const [loginResult, setLoginResult] = useState<string>('');
+
   useEffect(() => {
     // Check if OneSignal is initialized
     const checkInit = () => {
@@ -50,6 +55,45 @@ export const OneSignalDebugPanel = () => {
     });
   };
 
+  const readPermissionStatus = async (OneSignal: any): Promise<string> => {
+    try {
+      const perm = OneSignal?.Notifications?.permission;
+      // Some SDK builds expose permission as a value, others as a function/promise.
+      const value = typeof perm === 'function' ? await perm() : await Promise.resolve(perm);
+      return typeof value === 'string' ? value : JSON.stringify(value);
+    } catch (e: any) {
+      return `error: ${e?.message || String(e)}`;
+    }
+  };
+
+  const withTimeout = async <T,>(
+    promise: Promise<T>,
+    timeoutMs: number,
+    label: string
+  ): Promise<{ ok: true; value: T } | { ok: false; reason: 'timeout' | 'error'; error?: string }> => {
+    let timeoutId: number | undefined;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timeoutId = window.setTimeout(() => reject(new Error(`${label} timeout`)), timeoutMs);
+    });
+
+    try {
+      const value = await Promise.race([promise, timeoutPromise]);
+      if (timeoutId) window.clearTimeout(timeoutId);
+      return { ok: true as const, value: value as T };
+    } catch (e: any) {
+      if (timeoutId) window.clearTimeout(timeoutId);
+      const msg = e?.message || String(e);
+      if (String(msg).toLowerCase().includes('timeout')) {
+        return { ok: false as const, reason: 'timeout' as const };
+      }
+      return {
+        ok: false as const,
+        reason: 'error' as const,
+        error: msg,
+      };
+    }
+  };
+
   const handleForceLogin = async () => {
     if (!user?.id) {
       setLoginError('No user.id available');
@@ -58,37 +102,70 @@ export const OneSignalDebugPanel = () => {
 
     setForcing(true);
     setLoginError(null);
+    setAfterRequestPermission(false);
+    setLoginResult('');
 
     try {
       const OneSignal = await getOneSignal();
       setLoginTypeOf(typeof OneSignal?.login);
 
+      // Permission status BEFORE
+      const before = await readPermissionStatus(OneSignal);
+      setPermStatusBefore(before);
+      console.log('[OneSignal Debug] permStatusBefore:', before);
+
       if (typeof OneSignal?.Notifications?.requestPermission !== 'function') {
-        throw new Error(`OneSignal.Notifications.requestPermission is not available (got ${typeof OneSignal?.Notifications?.requestPermission})`);
+        throw new Error(
+          `OneSignal.Notifications.requestPermission is not available (got ${typeof OneSignal?.Notifications?.requestPermission})`
+        );
       }
       if (typeof OneSignal?.login !== 'function') {
         throw new Error(`OneSignal.login is not a function (got ${typeof OneSignal?.login})`);
       }
 
       // REQUIRED sequence: ensure permission handling is resolved BEFORE login
-      console.log('[OneSignal Debug] Awaiting permission handling...');
+      console.log('[OneSignal Debug] Awaiting requestPermission(false)...');
       await OneSignal.Notifications.requestPermission(false);
-      console.log('[OneSignal Debug] Permission handling resolved');
+      console.log('[OneSignal Debug] after requestPermission (resolved)');
+      setAfterRequestPermission(true);
 
       console.log('[OneSignal Debug] Calling login with:', user.id);
-      await OneSignal.login(user.id);
-
-      console.log('[OneSignal Debug] login() succeeded');
-      setLoginCalled(true);
-      setLoginUserId(user.id);
-      window.dispatchEvent(
-        new CustomEvent('onesignal-login-called', { detail: { userId: user.id } })
+      const loginAttempt = await withTimeout(
+        Promise.resolve(OneSignal.login(user.id)),
+        5000,
+        'OneSignal.login'
       );
+
+      if (loginAttempt.ok) {
+        console.log('[OneSignal Debug] loginResult: success');
+        setLoginResult('success');
+        setLoginCalled(true);
+        setLoginUserId(user.id);
+        window.dispatchEvent(
+          new CustomEvent('onesignal-login-called', { detail: { userId: user.id } })
+        );
+      } else {
+        // ok === false => we have reason/error available
+        const reason = (loginAttempt as any).reason as 'timeout' | 'error' | undefined;
+        const errMsg = (loginAttempt as any).error as string | undefined;
+
+        if (reason === 'timeout') {
+          console.warn('[OneSignal Debug] loginResult: timeout');
+          setLoginResult('timeout');
+          setLoginCalled(false);
+          setLoginError('login timeout');
+        } else {
+          console.error('[OneSignal Debug] loginResult: error:', errMsg);
+          setLoginResult(`error: ${errMsg || 'unknown'}`);
+          setLoginCalled(false);
+          setLoginError(errMsg || 'Unknown login error');
+        }
+      }
     } catch (err: any) {
       console.error('[OneSignal Debug] Force login failed:', err);
       setLoginError(err?.message || String(err));
-      // Ensure we do NOT flip loginCalled on failure
       setLoginCalled(false);
+      setLoginResult(`error: ${err?.message || String(err)}`);
     } finally {
       setForcing(false);
     }
@@ -123,6 +200,30 @@ export const OneSignalDebugPanel = () => {
         <div>
           <span className="text-gray-400">typeof login:</span>{' '}
           <span className="text-blue-400">{loginTypeOf}</span>
+        </div>
+        <div>
+          <span className="text-gray-400">permStatusBefore:</span>{' '}
+          <span className="text-blue-400">{permStatusBefore}</span>
+        </div>
+        <div>
+          <span className="text-gray-400">after requestPermission:</span>{' '}
+          <span className={afterRequestPermission ? 'text-green-400' : 'text-red-400'}>
+            {afterRequestPermission ? 'true ✓' : 'false ❌'}
+          </span>
+        </div>
+        <div>
+          <span className="text-gray-400">loginResult:</span>{' '}
+          <span className={
+            loginResult === 'success'
+              ? 'text-green-400'
+              : loginResult === 'timeout'
+                ? 'text-yellow-400'
+                : loginResult
+                  ? 'text-red-400'
+                  : 'text-gray-400'
+          }>
+            {loginResult || 'pending'}
+          </span>
         </div>
         <div>
           <span className="text-gray-400">Login Called:</span>{' '}
