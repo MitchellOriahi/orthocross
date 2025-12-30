@@ -12,11 +12,32 @@ verify_jwt = true
 [functions.process-zip-upload]
 verify_jwt = true
 
-[functions.schedule-fasting-notifications]
+[functions.send-notifications]
 verify_jwt = false
 
 [functions.send-sms-notification]
 verify_jwt = false
 
-[functions.send-streak-reminders]
+[functions.generate-streak-image]
+verify_jwt = false
+
+[functions.generate-campaign-achievement-image]
+verify_jwt = false
+
+[functions.generate-silhouette-avatar]
+verify_jwt = false
+
+[functions.create-monthly-donation]
+verify_jwt = false
+
+[functions.check-monthly-donation]
+verify_jwt = false
+
+[functions.customer-portal]
+verify_jwt = false
+
+[functions.send-donation-thank-you]
+verify_jwt = false
+
+[functions.send-cancellation-email]
 verify_jwt = false
