@@ -15,8 +15,6 @@ jobs:
           curl -X POST \
             "https://atjpjmhumzfpotrkefaz.supabase.co/functions/v1/send-notifications" \
             -H "Content-Type: application/json" \
-            -H "x-cron-secret: ${{ secrets.SCHEDULER_SECRET_TOKEN }}" \
+-H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
             --fail-with-body \
             --max-time 60
-        env:
-          SCHEDULER_SECRET_TOKEN: ${{ secrets.SCHEDULER_SECRET_TOKEN }}
