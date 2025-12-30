@@ -15,6 +15,9 @@ verify_jwt = true
 [functions.send-notifications]
 verify_jwt = false
 
+[functions.send-scheduled-reminders]
+verify_jwt = false
+
 [functions.send-sms-notification]
 verify_jwt = false
 

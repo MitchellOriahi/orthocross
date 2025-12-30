@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { ONESIGNAL_APP_ID } from '@/config/onesignal';
 
@@ -13,14 +13,9 @@ declare const OneSignal: {
   };
 } | undefined;
 
-interface OneSignalDebugState {
-  initialized: boolean;
-  currentUserId: string | null;
-  loginCalled: boolean;
-  loginSuccess: boolean;
-  permissionGranted: boolean;
-  retryCount: number;
-}
+// Enable dev logging only in development
+const DEV_MODE = import.meta.env.DEV;
+const log = (msg: string) => DEV_MODE && console.log(msg);
 
 // Retry delays in milliseconds: 0s, 2s, 5s
 const RETRY_DELAYS = [0, 2000, 5000];
@@ -42,15 +37,6 @@ export const useOneSignalUserLink = () => {
   const initializedRef = useRef(false);
   const loginAttemptRef = useRef(false);
   const retryTimeoutsRef = useRef<NodeJS.Timeout[]>([]);
-  
-  const [debugState, setDebugState] = useState<OneSignalDebugState>({
-    initialized: false,
-    currentUserId: null,
-    loginCalled: false,
-    loginSuccess: false,
-    permissionGranted: false,
-    retryCount: 0,
-  });
 
   // Clear any pending retry timeouts
   const clearRetryTimeouts = useCallback(() => {
@@ -64,16 +50,13 @@ export const useOneSignalUserLink = () => {
 
     try {
       if (typeof OneSignal !== 'undefined') {
-        console.log('[OneSignal] Initializing with app ID:', ONESIGNAL_APP_ID);
         OneSignal.initialize(ONESIGNAL_APP_ID);
         initializedRef.current = true;
-        console.log('[OneSignal] ✓ Initialization successful');
-        setDebugState(prev => ({ ...prev, initialized: true }));
-      } else {
-        console.log('[OneSignal] SDK not available (running in browser?)');
+        log('[OneSignal] init');
       }
     } catch (error) {
-      console.error('[OneSignal] ✗ Initialization error:', error);
+      // Silent fail in production
+      DEV_MODE && console.error('[OneSignal] init error:', error);
     }
   }, []);
 
@@ -81,36 +64,21 @@ export const useOneSignalUserLink = () => {
   const attemptLogin = useCallback(async (userId: string, retryIndex: number = 0): Promise<boolean> => {
     if (typeof OneSignal === 'undefined') return false;
     
-    console.log(`[OneSignal] Login attempt ${retryIndex + 1}/${RETRY_DELAYS.length} for user:`, userId);
-    setDebugState(prev => ({ ...prev, loginCalled: true, retryCount: retryIndex }));
-    
     try {
       await OneSignal.login(userId);
       linkedUserIdRef.current = userId;
-      console.log('[OneSignal] ✓ Login successful for user:', userId);
-      setDebugState(prev => ({ 
-        ...prev, 
-        currentUserId: userId,
-        loginSuccess: true,
-        retryCount: retryIndex,
-      }));
+      console.log(`[OneSignal] login ${userId.substring(0, 8)}...`);
       return true;
     } catch (error) {
-      console.error(`[OneSignal] ✗ Login attempt ${retryIndex + 1} failed:`, error);
-      
       // Schedule retry if we haven't exhausted all attempts
       if (retryIndex < RETRY_DELAYS.length - 1) {
         const nextDelay = RETRY_DELAYS[retryIndex + 1];
-        console.log(`[OneSignal] Scheduling retry in ${nextDelay}ms...`);
-        
         const timeout = setTimeout(() => {
           attemptLogin(userId, retryIndex + 1);
         }, nextDelay);
-        
         retryTimeoutsRef.current.push(timeout);
       } else {
-        console.error('[OneSignal] ✗ All login attempts exhausted');
-        setDebugState(prev => ({ ...prev, loginSuccess: false }));
+        DEV_MODE && console.error('[OneSignal] login failed after retries');
       }
       return false;
     }
@@ -119,39 +87,19 @@ export const useOneSignalUserLink = () => {
   // Handle login/logout based on auth state
   useEffect(() => {
     // Wait for auth to finish loading
-    if (loading) {
-      console.log('[OneSignal] Waiting for auth to load...');
-      return;
-    }
+    if (loading) return;
 
     const handleAuthChange = async () => {
       // OneSignal not available (web browser)
-      if (typeof OneSignal === 'undefined') {
-        console.log('[OneSignal] SDK not available, skipping auth handling');
-        setDebugState(prev => ({ 
-          ...prev, 
-          currentUserId: user?.id || null,
-          loginCalled: false,
-          loginSuccess: false,
-        }));
-        return;
-      }
+      if (typeof OneSignal === 'undefined') return;
 
       // User logged in (session restored or fresh login)
       if (user?.id) {
-        console.log('[OneSignal] User authenticated:', user.id);
-        
         // Skip if already linked for this user
-        if (linkedUserIdRef.current === user.id) {
-          console.log('[OneSignal] Already linked for user:', user.id);
-          return;
-        }
+        if (linkedUserIdRef.current === user.id) return;
 
         // Prevent duplicate login attempts
-        if (loginAttemptRef.current) {
-          console.log('[OneSignal] Login already in progress, skipping');
-          return;
-        }
+        if (loginAttemptRef.current) return;
         
         loginAttemptRef.current = true;
         clearRetryTimeouts();
@@ -161,27 +109,20 @@ export const useOneSignalUserLink = () => {
           let hasPermission = false;
           try {
             hasPermission = OneSignal.Notifications.hasPermission();
-            console.log('[OneSignal] Current permission state:', hasPermission);
-            setDebugState(prev => ({ ...prev, permissionGranted: hasPermission }));
-          } catch (e) {
-            console.log('[OneSignal] Could not check permission state');
+            log(`[OneSignal] permission ${hasPermission ? 'granted' : 'denied'}`);
+          } catch {
+            // Ignore permission check errors
           }
 
           // Request permission if not granted
           if (!hasPermission) {
-            console.log('[OneSignal] Requesting notification permission...');
             try {
-              const granted = await OneSignal.Notifications.requestPermission(true);
-              console.log('[OneSignal] Permission request result:', granted);
-              setDebugState(prev => ({ ...prev, permissionGranted: granted }));
-              hasPermission = granted;
-            } catch (permError) {
-              console.log('[OneSignal] Permission request error (may already be decided):', permError);
+              hasPermission = await OneSignal.Notifications.requestPermission(true);
+              log(`[OneSignal] permission ${hasPermission ? 'granted' : 'denied'}`);
+            } catch {
               // Re-check permission after error
               try {
                 hasPermission = OneSignal.Notifications.hasPermission();
-                console.log('[OneSignal] Permission state after error:', hasPermission);
-                setDebugState(prev => ({ ...prev, permissionGranted: hasPermission }));
               } catch {
                 // Ignore
               }
@@ -190,34 +131,25 @@ export const useOneSignalUserLink = () => {
 
           // Proceed with login regardless of permission state
           // (External ID can be set even without push permission)
-          console.log('[OneSignal] Proceeding with login, permission:', hasPermission);
           await attemptLogin(user.id, 0);
           
-        } catch (error) {
-          console.error('[OneSignal] ✗ Auth handling error:', error);
+        } catch {
+          // Silent fail
         } finally {
           loginAttemptRef.current = false;
         }
       } 
       // User logged out
       else if (linkedUserIdRef.current !== null) {
-        console.log('[OneSignal] User logged out, clearing External ID...');
         clearRetryTimeouts();
         loginAttemptRef.current = false;
         
         try {
           await OneSignal.logout();
           linkedUserIdRef.current = null;
-          console.log('[OneSignal] ✓ Logout successful');
-          setDebugState(prev => ({ 
-            ...prev, 
-            currentUserId: null,
-            loginCalled: false,
-            loginSuccess: false,
-            retryCount: 0,
-          }));
-        } catch (error) {
-          console.error('[OneSignal] ✗ Logout error:', error);
+          console.log('[OneSignal] logout');
+        } catch {
+          // Silent fail
         }
       }
     };
@@ -231,6 +163,4 @@ export const useOneSignalUserLink = () => {
       clearRetryTimeouts();
     };
   }, [clearRetryTimeouts]);
-
-  return debugState;
 };
