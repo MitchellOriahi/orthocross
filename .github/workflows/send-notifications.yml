@@ -3,8 +3,8 @@ name: Send Notifications Cron
 on:
   schedule:
     # Run every 5 minutes
-    - cron: '*/5 * * * *'
-  workflow_dispatch: # Allow manual trigger for testing
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
 
 jobs:
   send-notifications:
@@ -12,9 +12,9 @@ jobs:
     steps:
       - name: Trigger notification edge function
         run: |
-          curl -X POST \
+          curl -sS -X POST \
             "https://atjpjmhumzfpotrkefaz.supabase.co/functions/v1/send-notifications" \
             -H "Content-Type: application/json" \
--H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
             --fail-with-body \
             --max-time 60
