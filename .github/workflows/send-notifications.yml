@@ -16,4 +16,3 @@ jobs:
             -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
             --fail-with-body \
             --max-time 60
-
