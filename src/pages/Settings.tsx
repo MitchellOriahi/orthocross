@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -33,6 +34,27 @@ const Settings = () => {
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
   const [activityVisible, setActivityVisible] = useState(true);
+  const [timezone, setTimezone] = useState('America/New_York');
+
+  // Common timezone options
+  const timezones = [
+    { value: 'America/New_York', label: 'Eastern Time (ET)' },
+    { value: 'America/Chicago', label: 'Central Time (CT)' },
+    { value: 'America/Denver', label: 'Mountain Time (MT)' },
+    { value: 'America/Los_Angeles', label: 'Pacific Time (PT)' },
+    { value: 'America/Anchorage', label: 'Alaska Time (AKT)' },
+    { value: 'Pacific/Honolulu', label: 'Hawaii Time (HST)' },
+    { value: 'Europe/London', label: 'London (GMT/BST)' },
+    { value: 'Europe/Paris', label: 'Central European (CET)' },
+    { value: 'Europe/Athens', label: 'Eastern European (EET)' },
+    { value: 'Europe/Moscow', label: 'Moscow (MSK)' },
+    { value: 'Africa/Cairo', label: 'Cairo (EET)' },
+    { value: 'Africa/Addis_Ababa', label: 'Addis Ababa (EAT)' },
+    { value: 'Asia/Jerusalem', label: 'Jerusalem (IST)' },
+    { value: 'Asia/Dubai', label: 'Dubai (GST)' },
+    { value: 'Asia/Kolkata', label: 'India (IST)' },
+    { value: 'Australia/Sydney', label: 'Sydney (AEST)' },
+  ];
 
   useEffect(() => {
     if (profile) {
@@ -41,6 +63,7 @@ const Settings = () => {
       setFastingNotificationsEnabled(profile.fasting_notifications_enabled ?? true);
       setStreakNotificationsEnabled(profile.streak_notifications_enabled ?? true);
       setFriendsNotificationsEnabled(profile.friends_notifications_enabled ?? true);
+      setTimezone(profile.timezone ?? 'America/New_York');
     }
   }, [user, profile]);
 
@@ -108,6 +131,18 @@ const Settings = () => {
       .eq('id', user.id);
     
     toast.success(visible ? "Activity is now visible to friends" : "Activity is now hidden from friends");
+  };
+
+  const handleTimezoneChange = async (newTimezone: string) => {
+    if (!user) return;
+    
+    setTimezone(newTimezone);
+    await supabase
+      .from('profiles')
+      .update({ timezone: newTimezone })
+      .eq('id', user.id);
+    
+    toast.success("Timezone updated");
   };
 
   const handleReferFriend = async (method: 'native' | 'email' | 'sms') => {
@@ -334,6 +369,30 @@ const Settings = () => {
                   checked={activityVisible}
                   onCheckedChange={handleToggleActivityVisibility}
                 />
+              </div>
+
+              <div className="pt-4 border-t border-border/50">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-muted-foreground" />
+                    <p className="font-medium">Timezone</p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Set your timezone for accurate notification timing (6pm streak, 8pm fasting)
+                  </p>
+                  <Select value={timezone} onValueChange={handleTimezoneChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select timezone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timezones.map((tz) => (
+                        <SelectItem key={tz.value} value={tz.value}>
+                          {tz.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </CardContent>
           </Card>
