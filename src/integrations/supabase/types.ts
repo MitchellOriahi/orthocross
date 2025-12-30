@@ -251,6 +251,30 @@ export type Database = {
         }
         Relationships: []
       }
+      fast_calendar: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          is_fast: boolean
+          label: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          is_fast?: boolean
+          label: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          is_fast?: boolean
+          label?: string
+        }
+        Relationships: []
+      }
       fasting_reminders: {
         Row: {
           created_at: string
@@ -930,6 +954,30 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_log: {
+        Row: {
+          id: string
+          local_date: string
+          sent_at: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          local_date: string
+          sent_at?: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          local_date?: string
+          sent_at?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       orthodox_history_progress: {
         Row: {
           campaign_id: string
@@ -1061,6 +1109,7 @@ export type Database = {
           profile_picture_url: string | null
           streak_notifications_enabled: boolean | null
           streak_visible: boolean
+          timezone: string | null
           updated_at: string
           username: string | null
           voice_recording_enabled: boolean | null
@@ -1076,6 +1125,7 @@ export type Database = {
           profile_picture_url?: string | null
           streak_notifications_enabled?: boolean | null
           streak_visible?: boolean
+          timezone?: string | null
           updated_at?: string
           username?: string | null
           voice_recording_enabled?: boolean | null
@@ -1091,6 +1141,7 @@ export type Database = {
           profile_picture_url?: string | null
           streak_notifications_enabled?: boolean | null
           streak_visible?: boolean
+          timezone?: string | null
           updated_at?: string
           username?: string | null
           voice_recording_enabled?: boolean | null
