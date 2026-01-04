@@ -9,12 +9,20 @@ jobs:
   send-notifications:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger notification edge function
+     - name: Trigger notification edge function
   run: |
-    curl -X POST "https://brqbipmeympcghrtkshi.supabase.co/functions/v1/send-streak-reminders" \
+    set -e
+    url="https://brqbipmeympcghrtkshi.supabase.co/functions/v1/send-streak-reminders"
+    echo "POST $url"
+
+    code=$(curl -sS -o response.txt -w "%{http_code}" -X POST "$url" \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
       -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
-      --fail-with-body \
-      --max-time 60
+      --max-time 60)
+
+    echo "HTTP status: $code"
+    echo "Response:"
+    cat response.txt
+    test "$code" -ge 200 -a "$code" -lt 300
 
