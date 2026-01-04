@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Trigger notification edge function
         run: |
-          curl -X POST "https://atjpmhmuzfpotrkefaz.supabase.co/functions/v1/send-notifications" \
+          https://<PROJECT_REF>.supabase.co/functions/v1/send-streak-reminders
             -H "Content-Type: application/json" \
             -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
             --fail-with-body \
