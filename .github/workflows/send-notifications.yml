@@ -10,20 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger notification edge function
-        shell: bash
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           set -euo pipefail
 
-          URL="https://brqibmeyvmpcghrtkshi.supabase.co/functions/v1/send-streak-reminders"
+          URL="https://brqbipmeympcghrtkshi.supabase.co/functions/v1/send-streak-reminders"
           echo "POST $URL"
 
-          HTTP_CODE=$(curl --show-error --fail-with-body -sS \
-            -o response.txt -w "%{http_code}" \
+          HTTP_CODE=$(curl -sS -o response.txt -w "%{http_code}" \
             -X POST "$URL" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "x-cron-secret: $CRON_SECRET" \
             -d '{}' \
             --max-time 60)
 
