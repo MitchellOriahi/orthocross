@@ -1,28 +1,29 @@
 name: Send Notifications Cron
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/5 * * * *"
-  workflow_dispatch:
 
 jobs:
   send-notifications:
     runs-on: ubuntu-latest
     steps:
-     - name: Trigger notification edge function
-  run: |
-    set -e
-    url="https://brqbipmeympcghrtkshi.supabase.co/functions/v1/send-streak-reminders"
-    echo "POST $url"
+      - name: Trigger notification edge function
+        run: |
+          set -e
 
-    code=$(curl -sS -o response.txt -w "%{http_code}" -X POST "$url" \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
-      -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
-      --max-time 60)
+          url="https://brqbipmeympcghrtkshi.supabase.co/functions/v1/send-streak-reminders"
+          echo "POST $url"
 
-    echo "HTTP status: $code"
-    echo "Response:"
-    cat response.txt
-    test "$code" -ge 200 -a "$code" -lt 300
+          code=$(curl -sS -o response.txt -w "%{http_code}" -X POST "$url" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            --max-time 60)
 
+          echo "HTTP status: $code"
+          echo "Response:"
+          cat response.txt
+
+          test "$code" -ge 200 -a "$code" -lt 300
