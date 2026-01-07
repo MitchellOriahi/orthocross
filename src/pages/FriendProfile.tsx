@@ -333,10 +333,18 @@ export default function FriendProfile() {
       // Add reaction
       const { error } = await supabase
         .from('activity_reactions')
-        .insert({ activity_id: activityId, user_id: user.id, emoji });
-
-      if (!error) {
-        loadActivities();
+ if (!error) {
+      loadActivities();
+      try {
+        await supabase.functions.invoke('send-reaction-notification', {
+          body: {
+            to_user_id: activity?.user_id,
+            from_user_name: user?.username ?? null,
+            achievement_title: activity?.activity_type ?? null,
+          },
+        });
+      } catch (invokeError) {
+        console.error('Error sending reaction notification:', invokeError);
       }
     }
   };
