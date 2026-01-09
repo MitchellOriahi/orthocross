@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProfileData } from "@/hooks/useProfileData";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { useTheme } from "next-themes";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -51,6 +52,7 @@ export default function FriendProfile() {
   const { friendId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { profile: currentUserProfile } = useProfileData();
   const { theme } = useTheme();
   const [friend, setFriend] = useState<FriendData | null>(null);
   const [bookProgress, setBookProgress] = useState<BookProgress[]>([]);
@@ -338,12 +340,17 @@ export default function FriendProfile() {
 
       if (!error) {
         loadActivities();
+        
+        // Send push notification for the reaction
+        const fromName = currentUserProfile?.display_name || currentUserProfile?.username || 'Someone';
+        const achievementTitle = activity?.activity_data?.title || activity?.activity_type || 'activity';
+        
         try {
           await supabase.functions.invoke('send-reaction-notification', {
             body: {
               to_user_id: activity?.user_id,
-              from_user_name: user?.id ?? null,
-              achievement_title: activity?.activity_type ?? null,
+              from_user_name: fromName,
+              achievement_title: achievementTitle,
             },
           });
         } catch (invokeError) {
