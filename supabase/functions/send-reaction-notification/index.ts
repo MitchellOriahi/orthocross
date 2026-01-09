@@ -61,11 +61,14 @@ serve(async (req) => {
       );
     }
 
-    const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID");
-    const ONESIGNAL_REST_API_KEY = Deno.env.get("ONESIGNAL_REST_API_KEY");
-    
-    console.log(`[reaction] OneSignal App ID exists: ${!!ONESIGNAL_APP_ID}, API Key exists: ${!!ONESIGNAL_REST_API_KEY}`);
-    
+    const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID")?.trim();
+    const ONESIGNAL_REST_API_KEY_RAW = Deno.env.get("ONESIGNAL_REST_API_KEY");
+    const ONESIGNAL_REST_API_KEY = ONESIGNAL_REST_API_KEY_RAW?.trim();
+
+    console.log(
+      `[reaction] OneSignal App ID exists: ${!!ONESIGNAL_APP_ID}, API Key exists: ${!!ONESIGNAL_REST_API_KEY}, key_len: ${ONESIGNAL_REST_API_KEY?.length ?? 0}`
+    );
+
     if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) {
       console.error("[reaction] Missing OneSignal credentials");
       return new Response(
@@ -96,21 +99,22 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
+        "Authorization": `Basic ${ONESIGNAL_REST_API_KEY}`,
       },
       body: JSON.stringify(notificationPayload),
     });
 
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const text = await response.text();
-      console.error("OneSignal error", text);
+      console.error("[reaction] OneSignal error", responseText);
       return new Response(
-        JSON.stringify({ ok: false, error: "Failed to send notification" }),
+        JSON.stringify({ ok: false, error: "Failed to send notification", onesignal: responseText }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const result = await response.json();
+    const result = responseText ? JSON.parse(responseText) : {};
     console.log(`[reaction] Sent to ${to_user_id.substring(0, 8)}... from ${from_user_name}`);
     
     return new Response(
