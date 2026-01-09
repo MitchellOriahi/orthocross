@@ -399,17 +399,29 @@ const Reading = () => {
       const { updateUserStreak } = await import('@/utils/streakManager');
       await updateUserStreak(user.id);
 
-      // Create friend activity for chapter completion
-      await supabase
+      // Create friend activity for chapter completion (only if not already created today)
+      const today = new Date().toISOString().slice(0, 10);
+      const { data: existingActivity } = await supabase
         .from('friend_activities')
-        .insert({
-          user_id: user.id,
-          activity_type: 'chapter_completed',
-          activity_data: {
-            book_key: book,
-            chapter: chapter
-          }
-        });
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('activity_type', 'chapter_completed')
+        .gte('created_at', today)
+        .contains('activity_data', { book_key: book, chapter: chapter })
+        .maybeSingle();
+
+      if (!existingActivity) {
+        await supabase
+          .from('friend_activities')
+          .insert({
+            user_id: user.id,
+            activity_type: 'chapter_completed',
+            activity_data: {
+              book_key: book,
+              chapter: chapter
+            }
+          });
+      }
 
       // Add point to monthly leaderboard for chapter completion
       const currentMonth = new Date().toISOString().slice(0, 7);
