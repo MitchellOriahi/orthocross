@@ -63,8 +63,15 @@ serve(async (req) => {
 
     const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID");
     const ONESIGNAL_REST_API_KEY = Deno.env.get("ONESIGNAL_REST_API_KEY");
+    
+    console.log(`[reaction] OneSignal App ID exists: ${!!ONESIGNAL_APP_ID}, API Key exists: ${!!ONESIGNAL_REST_API_KEY}`);
+    
     if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) {
-      throw new Error("Missing ONESIGNAL_APP_ID or ONESIGNAL_REST_API_KEY env var");
+      console.error("[reaction] Missing OneSignal credentials");
+      return new Response(
+        JSON.stringify({ ok: false, error: "OneSignal not configured" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     const content = achievement_title 
