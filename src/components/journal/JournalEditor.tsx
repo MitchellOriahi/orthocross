@@ -10,6 +10,15 @@ import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import DOMPurify from "dompurify";
+
+// DOMPurify configuration for safe HTML in journal
+const SANITIZE_CONFIG = {
+  ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'mark', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'img', 'audio', 'video', 'div', 'span', 'button', 'svg', 'path'],
+  ALLOWED_ATTR: ['class', 'src', 'alt', 'style', 'controls', 'data-pinned', 'title', 'href', 'xmlns', 'width', 'height', 'viewBox', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd'],
+  ADD_TAGS: ['audio', 'video'],
+  ADD_ATTR: ['controls'],
+};
 
 interface Attachment {
   type: 'drawing' | 'voice' | 'image';
@@ -77,13 +86,16 @@ export const JournalEditor = ({
   // Update content only when noteId changes (loading a different note)
   useEffect(() => {
     if (contentDivRef.current && !isUpdatingContent.current) {
-      contentDivRef.current.innerHTML = content;
+      // Sanitize content when loading to prevent XSS
+      contentDivRef.current.innerHTML = DOMPurify.sanitize(content, SANITIZE_CONFIG);
     }
   }, [noteId]);
 
   const handleContentInput = (e: React.FormEvent<HTMLDivElement>) => {
     isUpdatingContent.current = true;
-    onContentChange(e.currentTarget.innerHTML);
+    // Sanitize content on input to prevent stored XSS
+    const sanitizedContent = DOMPurify.sanitize(e.currentTarget.innerHTML, SANITIZE_CONFIG);
+    onContentChange(sanitizedContent);
     setTimeout(() => {
       isUpdatingContent.current = false;
     }, 0);
@@ -117,7 +129,9 @@ export const JournalEditor = ({
     if (!contentDivRef.current) return;
     
     const currentContent = contentDivRef.current.innerHTML || content;
-    const newContent = currentContent + html;
+    // Sanitize the new HTML before inserting
+    const sanitizedHtml = DOMPurify.sanitize(html, SANITIZE_CONFIG);
+    const newContent = currentContent + sanitizedHtml;
     
     contentDivRef.current.innerHTML = newContent;
     onContentChange(newContent);

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Mail, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface StreakMilestoneShareProps {
   open: boolean;
@@ -17,18 +18,15 @@ export const StreakMilestoneShare = ({ open, onOpenChange, streakDays }: StreakM
   const generateImage = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-streak-image`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ streakDays }),
+      // Use supabase.functions.invoke which automatically includes auth headers
+      const { data, error } = await supabase.functions.invoke('generate-streak-image', {
+        body: { streakDays },
       });
 
-      if (!response.ok) throw new Error('Failed to generate image');
-
-      const data = await response.json();
-      setImageUrl(data.imageUrl);
+      if (error) throw error;
+      if (data?.imageUrl) {
+        setImageUrl(data.imageUrl);
+      }
     } catch (error) {
       console.error('Error generating image:', error);
       toast.error("Failed to generate image. Please try again.");
@@ -36,6 +34,12 @@ export const StreakMilestoneShare = ({ open, onOpenChange, streakDays }: StreakM
       setIsGenerating(false);
     }
   };
+
+  useEffect(() => {
+    if (open && !imageUrl && !isGenerating) {
+      generateImage();
+    }
+  }, [open]);
 
   const handleDownload = () => {
     if (!imageUrl) return;
@@ -79,13 +83,6 @@ export const StreakMilestoneShare = ({ open, onOpenChange, streakDays }: StreakM
       toast.error("Sharing failed. Try downloading the image instead.");
     }
   };
-
-  // Generate image when dialog opens
-  useState(() => {
-    if (open && !imageUrl && !isGenerating) {
-      generateImage();
-    }
-  });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
