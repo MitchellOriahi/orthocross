@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Trigger notification edge function
         env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SCHEDULER_SECRET_TOKEN: ${{ secrets.SCHEDULER_SECRET_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -23,7 +23,7 @@ jobs:
           HTTP_CODE=$(curl -sS -o response.txt -w "%{http_code}" \
             -X POST "$URL" \
             -H "Content-Type: application/json" \
-            -H "x-cron-secret: $CRON_SECRET" \
+            -H "x-cron-secret: $SCHEDULER_SECRET_TOKEN" \
             -d '{}' \
             --max-time 120)
 
