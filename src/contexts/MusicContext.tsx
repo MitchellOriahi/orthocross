@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { Capacitor } from '@capacitor/core';
 
 interface MusicContextType {
   isPlaying: boolean;
@@ -58,25 +57,42 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   }, [isPlaying]);
 
   useEffect(() => {
-    // Only add Capacitor app state listener on native platforms
-    if (!Capacitor.isNativePlatform()) return;
-    
-    let removeListener: (() => void) | undefined;
-    
-    // Dynamically import Capacitor App to avoid issues in browser
-    import('@capacitor/app').then(({ App }) => {
-      App.addListener('appStateChange', ({ isActive }) => {
-        if (!isActive && audioRef.current) {
-          // App went to background - pause music
-          audioRef.current.pause();
+    // Use browser visibility API to pause music when app goes to background
+    const handleVisibilityChange = () => {
+      if (document.hidden && audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // For native apps, try to add Capacitor listener
+    const setupCapacitorListener = async () => {
+      try {
+        const { Capacitor } = await import('@capacitor/core');
+        if (Capacitor.isNativePlatform()) {
+          const { App } = await import('@capacitor/app');
+          const listener = await App.addListener('appStateChange', ({ isActive }) => {
+            if (!isActive && audioRef.current) {
+              audioRef.current.pause();
+            }
+          });
+          return () => listener.remove();
         }
-      }).then(listener => {
-        removeListener = () => listener.remove();
-      });
-    }).catch(console.error);
+      } catch (e) {
+        // Capacitor not available, ignore
+      }
+      return undefined;
+    };
+
+    let capacitorCleanup: (() => void) | undefined;
+    setupCapacitorListener().then(cleanup => {
+      capacitorCleanup = cleanup;
+    });
 
     return () => {
-      removeListener?.();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      capacitorCleanup?.();
     };
   }, []);
 
