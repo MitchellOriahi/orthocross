@@ -6,6 +6,7 @@ import { Check, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import type { Friend } from "@/hooks/useFriendsData";
+import { useProfileData } from "@/hooks/useProfileData";
 
 interface GroupInviteDialogProps {
   open: boolean;
@@ -31,6 +32,7 @@ export const GroupInviteDialog = ({
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [pendingInviteIds, setPendingInviteIds] = useState<string[]>([]);
+  const { profile } = useProfileData();
 
   // Filter out friends who are already members
   const availableFriends = friends.filter(f => !existingMemberIds.includes(f.id));
@@ -87,6 +89,22 @@ export const GroupInviteDialog = ({
         .insert(invitations);
 
       if (error) throw error;
+
+      // Send push notifications to all invited users
+      const inviterName = profile?.username || profile?.display_name || 'Someone';
+      for (const inviteeId of newInvites) {
+        try {
+          await supabase.functions.invoke('send-group-invitation-notification', {
+            body: {
+              to_user_id: inviteeId,
+              from_user_name: inviterName,
+              group_name: groupName,
+            },
+          });
+        } catch (notifError) {
+          console.log('Failed to send group invitation notification:', notifError);
+        }
+      }
 
       toast({
         title: "Invitations sent!",

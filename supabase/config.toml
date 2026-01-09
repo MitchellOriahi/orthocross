@@ -44,3 +44,15 @@ verify_jwt = false
 
 [functions.send-cancellation-email]
 verify_jwt = false
+
+[functions.send-group-invitation-notification]
+verify_jwt = false
+
+[functions.send-leaderboard-notification]
+verify_jwt = false
+
+[functions.send-reaction-notification]
+verify_jwt = false
+
+[functions.send-friend-request-notification]
+verify_jwt = false

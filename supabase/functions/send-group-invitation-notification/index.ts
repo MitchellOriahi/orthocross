@@ -2,11 +2,14 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
- * send-reaction-notification
+ * send-group-invitation-notification
  *
- * This edge function accepts a POST request containing the recipient user ID,
- * the name of the user who reacted and optionally the title of the achievement.
- * Uses external_user_ids (Supabase user UUID) for OneSignal targeting.
+ * Sends push notifications when a user is invited to a group.
+ *
+ * Request body:
+ * - to_user_id: UUID of the recipient
+ * - from_user_name: Display name of the inviter
+ * - group_name: Name of the group
  */
 
 const corsHeaders = {
@@ -21,12 +24,12 @@ serve(async (req) => {
   }
 
   try {
-    const { to_user_id, from_user_name, achievement_title } = await req.json();
+    const { to_user_id, from_user_name, group_name } = await req.json();
 
     // Validate input
-    if (!to_user_id || !from_user_name) {
+    if (!to_user_id || !from_user_name || !group_name) {
       return new Response(
-        JSON.stringify({ ok: false, error: "Missing to_user_id or from_user_name" }),
+        JSON.stringify({ ok: false, error: "Missing required parameters" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -41,7 +44,7 @@ serve(async (req) => {
     // Fetch the recipient's notification preferences
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("reaction_notifications_enabled")
+      .select("friends_notifications_enabled")
       .eq("id", to_user_id)
       .single();
 
@@ -53,10 +56,10 @@ serve(async (req) => {
       );
     }
 
-    if (profile.reaction_notifications_enabled === false) {
-      // Respect user's notification preferences
+    // Respect user's notification preferences (group invites fall under friends notifications)
+    if (profile.friends_notifications_enabled === false) {
       return new Response(
-        JSON.stringify({ ok: true, message: "Recipient has disabled reaction notifications" }),
+        JSON.stringify({ ok: true, message: "Recipient has disabled group notifications" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -67,24 +70,21 @@ serve(async (req) => {
       throw new Error("Missing ONESIGNAL_APP_ID or ONESIGNAL_REST_API_KEY env var");
     }
 
-    const content = achievement_title 
-      ? `${from_user_name} reacted to your achievement: ${achievement_title}!`
-      : `${from_user_name} reacted to your achievement!`;
+    const content = `${from_user_name} invited you to join "${group_name}"! Will you accept?`;
 
-    // Use external_user_ids (Supabase UUID) instead of player_ids
+    // Send via OneSignal using external user ID
     const notificationPayload = {
       app_id: ONESIGNAL_APP_ID,
       include_external_user_ids: [to_user_id],
-      headings: { en: "New Reaction 🎉" },
+      headings: { en: "Group Invitation 👀" },
       contents: { en: content },
       data: {
-        type: "reaction",
+        type: "group_invitation",
         from_user_name,
-        achievement_title: achievement_title ?? null,
+        group_name,
       },
     };
 
-    // Send the notification via OneSignal
     const response = await fetch("https://onesignal.com/api/v1/notifications", {
       method: "POST",
       headers: {
@@ -104,7 +104,7 @@ serve(async (req) => {
     }
 
     const result = await response.json();
-    console.log(`[reaction] Sent to ${to_user_id.substring(0, 8)}... from ${from_user_name}`);
+    console.log(`[group-invitation] Sent to ${to_user_id.substring(0, 8)}... for group "${group_name}"`);
     
     return new Response(
       JSON.stringify({ ok: true, recipients: result.recipients || 0 }),

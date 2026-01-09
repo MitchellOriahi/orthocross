@@ -1,21 +1,19 @@
 import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Capacitor } from '@capacitor/core';
-import { LocalNotifications } from '@capacitor/local-notifications';
+import { useAuth } from '@/contexts/AuthContext';
 
-const INVITATION_MESSAGES = [
-  "has invited you to join",
-  "wants you in the group",
-  "sent you a group invite for"
-];
-
+/**
+ * Hook to listen for group invitation events.
+ * Push notifications are sent via the group invite dialog when inviting.
+ * This hook handles real-time UI updates.
+ */
 export const useGroupInvitationNotifications = (userId: string | undefined) => {
+  const { user } = useAuth();
+
   useEffect(() => {
     if (!userId) return;
-    
-    // Skip on web
-    if (Capacitor.getPlatform() === 'web') return;
 
+    // Subscribe to group invitations for real-time UI updates
     const channel = supabase
       .channel('group-invitation-notifications')
       .on(
@@ -24,7 +22,7 @@ export const useGroupInvitationNotifications = (userId: string | undefined) => {
           event: 'INSERT',
           schema: 'public',
           table: 'group_invitations',
-          filter: `invitee_id=eq.${userId}`
+          filter: `invitee_id=eq.${userId}`,
         },
         async (payload) => {
           const invitation = payload.new as any;
@@ -45,25 +43,9 @@ export const useGroupInvitationNotifications = (userId: string | undefined) => {
 
           if (!inviter || !group) return;
 
-          // Check notification settings
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('friends_notifications_enabled')
-            .eq('id', userId)
-            .single();
-
-          if (!profile?.friends_notifications_enabled) return;
-
-          const message = INVITATION_MESSAGES[Math.floor(Math.random() * INVITATION_MESSAGES.length)];
-
-          await LocalNotifications.schedule({
-            notifications: [{
-              id: Math.floor(Math.random() * 100000),
-              title: "Group Invitation 👀",
-              body: `${inviter.username} ${message} "${group.name}"! Will you join?`,
-              schedule: { at: new Date(Date.now() + 1000) }
-            }]
-          });
+          console.log(`[GroupInvitation] ${inviter.username} invited you to "${group.name}"`);
+          
+          // Push notification will be sent from the inviter's side when they create the invitation
         }
       )
       .subscribe();
