@@ -1106,7 +1106,9 @@ export type Database = {
           friends_notifications_enabled: boolean | null
           id: string
           journal_view_mode: string | null
+          leaderboard_notifications_enabled: boolean | null
           profile_picture_url: string | null
+          reaction_notifications_enabled: boolean | null
           streak_notifications_enabled: boolean | null
           streak_visible: boolean
           timezone: string | null
@@ -1122,7 +1124,9 @@ export type Database = {
           friends_notifications_enabled?: boolean | null
           id: string
           journal_view_mode?: string | null
+          leaderboard_notifications_enabled?: boolean | null
           profile_picture_url?: string | null
+          reaction_notifications_enabled?: boolean | null
           streak_notifications_enabled?: boolean | null
           streak_visible?: boolean
           timezone?: string | null
@@ -1138,7 +1142,9 @@ export type Database = {
           friends_notifications_enabled?: boolean | null
           id?: string
           journal_view_mode?: string | null
+          leaderboard_notifications_enabled?: boolean | null
           profile_picture_url?: string | null
+          reaction_notifications_enabled?: boolean | null
           streak_notifications_enabled?: boolean | null
           streak_visible?: boolean
           timezone?: string | null

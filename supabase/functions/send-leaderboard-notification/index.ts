@@ -1,5 +1,5 @@
-import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.8.0";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
  * send-leaderboard-notification
@@ -9,19 +9,27 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.8.0";
  * user IDs that were passed (`passed_user_ids`), the current user's name
  * (`current_user_name`) and optionally the group's name (`group_name`).
  *
- * The function fetches the OneSignal player IDs for all passed users who
- * have not disabled leaderboard notifications, constructs a message and
- * sends a push notification via OneSignal. If no recipients have player IDs
- * or have disabled notifications, it returns early.
+ * Uses external_user_ids (Supabase user UUID) for OneSignal targeting.
  */
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
 serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
     const { passed_user_ids, current_user_name, group_name } = await req.json();
 
     if (!Array.isArray(passed_user_ids) || passed_user_ids.length === 0 || !current_user_name) {
       return new Response(
         JSON.stringify({ ok: false, error: "Missing required parameters" }),
-        { status: 400 },
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -32,31 +40,32 @@ serve(async (req) => {
     }
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // Fetch profiles for passed users
+    // Fetch profiles to check notification preferences
     const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
-      .select("id, onesignal_player_id, leaderboard_notifications_enabled")
+      .select("id, leaderboard_notifications_enabled")
       .in("id", passed_user_ids);
 
     if (profilesError) {
       console.error(profilesError);
       return new Response(
         JSON.stringify({ ok: false, error: "Failed to fetch profiles" }),
-        { status: 500 },
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
+    // Filter to users who have leaderboard notifications enabled
     const recipients: string[] = [];
     for (const p of profiles ?? []) {
-      if (p && p.onesignal_player_id && p.leaderboard_notifications_enabled !== false) {
-        recipients.push(p.onesignal_player_id);
+      if (p && p.leaderboard_notifications_enabled !== false) {
+        recipients.push(p.id);
       }
     }
 
     if (recipients.length === 0) {
       return new Response(
         JSON.stringify({ ok: true, message: "No recipients to notify" }),
-        { status: 200 },
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -66,14 +75,15 @@ serve(async (req) => {
       throw new Error("Missing ONESIGNAL_APP_ID or ONESIGNAL_REST_API_KEY env var");
     }
 
-    const message =
-      current_user_name + " just surpassed you" +
-      (group_name ? " in the " + group_name + " leaderboard" : "") +
-      "! Keep going!";
+    const message = group_name
+      ? `${current_user_name} just surpassed you in the ${group_name} leaderboard! Keep going!`
+      : `${current_user_name} just surpassed you on the leaderboard! Keep going!`;
+
+    // Use external_user_ids (Supabase UUID) instead of player_ids
     const payload = {
       app_id: ONESIGNAL_APP_ID,
-      include_player_ids: recipients,
-      headings: { en: "Leaderboard update" },
+      include_external_user_ids: recipients,
+      headings: { en: "Leaderboard Update 📊" },
       contents: { en: message },
       data: {
         type: "leaderboard_surpass",
@@ -86,7 +96,7 @@ serve(async (req) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Basic " + ONESIGNAL_REST_API_KEY,
+        Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
       },
       body: JSON.stringify(payload),
     });
@@ -96,15 +106,22 @@ serve(async (req) => {
       console.error("OneSignal error", text);
       return new Response(
         JSON.stringify({ ok: false, error: "Failed to send notifications" }),
-        { status: 500 },
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-    return new Response(JSON.stringify({ ok: true, count: recipients.length }), { status: 200 });
+
+    const result = await resp.json();
+    console.log(`[leaderboard] Sent to ${recipients.length} users for ${current_user_name}`);
+    
+    return new Response(
+      JSON.stringify({ ok: true, count: recipients.length, recipients: result.recipients || 0 }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   } catch (err) {
     console.error(err);
     return new Response(
       JSON.stringify({ ok: false, error: "Invalid request" }),
-      { status: 400 },
+      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

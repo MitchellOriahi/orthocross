@@ -2,17 +2,34 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
- * send-reaction-notification
+ * send-friend-request-notification
  *
- * This edge function accepts a POST request containing the recipient user ID,
- * the name of the user who reacted and optionally the title of the achievement.
- * Uses external_user_ids (Supabase user UUID) for OneSignal targeting.
+ * Sends push notifications when:
+ * 1. A user receives a friend request
+ * 2. A user's friend request is accepted
+ *
+ * Request body:
+ * - type: 'request' | 'accepted'
+ * - to_user_id: UUID of the recipient
+ * - from_user_name: Display name of the sender
  */
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+const FRIEND_REQUEST_MESSAGES = [
+  "wants to be your friend!",
+  "sent you a friend request!",
+  "wants to connect with you!",
+];
+
+const FRIEND_ACCEPTED_MESSAGES = [
+  "accepted your friend request!",
+  "is now your friend!",
+  "wants to read together!",
+];
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -21,12 +38,12 @@ serve(async (req) => {
   }
 
   try {
-    const { to_user_id, from_user_name, achievement_title } = await req.json();
+    const { type, to_user_id, from_user_name } = await req.json();
 
     // Validate input
-    if (!to_user_id || !from_user_name) {
+    if (!type || !to_user_id || !from_user_name) {
       return new Response(
-        JSON.stringify({ ok: false, error: "Missing to_user_id or from_user_name" }),
+        JSON.stringify({ ok: false, error: "Missing required parameters" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -41,7 +58,7 @@ serve(async (req) => {
     // Fetch the recipient's notification preferences
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("reaction_notifications_enabled")
+      .select("friends_notifications_enabled")
       .eq("id", to_user_id)
       .single();
 
@@ -53,10 +70,10 @@ serve(async (req) => {
       );
     }
 
-    if (profile.reaction_notifications_enabled === false) {
-      // Respect user's notification preferences
+    // Respect user's notification preferences
+    if (profile.friends_notifications_enabled === false) {
       return new Response(
-        JSON.stringify({ ok: true, message: "Recipient has disabled reaction notifications" }),
+        JSON.stringify({ ok: true, message: "Recipient has disabled friend notifications" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -67,24 +84,25 @@ serve(async (req) => {
       throw new Error("Missing ONESIGNAL_APP_ID or ONESIGNAL_REST_API_KEY env var");
     }
 
-    const content = achievement_title 
-      ? `${from_user_name} reacted to your achievement: ${achievement_title}!`
-      : `${from_user_name} reacted to your achievement!`;
+    // Select random message
+    const messages = type === 'accepted' ? FRIEND_ACCEPTED_MESSAGES : FRIEND_REQUEST_MESSAGES;
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    const heading = type === 'accepted' ? "Friend Request Accepted! 🎉" : "New Friend Request 👋";
+    const content = `${from_user_name} ${randomMessage}`;
 
-    // Use external_user_ids (Supabase UUID) instead of player_ids
+    // Send via OneSignal using external user ID
     const notificationPayload = {
       app_id: ONESIGNAL_APP_ID,
       include_external_user_ids: [to_user_id],
-      headings: { en: "New Reaction 🎉" },
+      headings: { en: heading },
       contents: { en: content },
       data: {
-        type: "reaction",
+        type: "friend_request",
+        subtype: type,
         from_user_name,
-        achievement_title: achievement_title ?? null,
       },
     };
 
-    // Send the notification via OneSignal
     const response = await fetch("https://onesignal.com/api/v1/notifications", {
       method: "POST",
       headers: {
@@ -104,7 +122,7 @@ serve(async (req) => {
     }
 
     const result = await response.json();
-    console.log(`[reaction] Sent to ${to_user_id.substring(0, 8)}... from ${from_user_name}`);
+    console.log(`[friend-request] Sent ${type} notification to ${to_user_id.substring(0, 8)}...`);
     
     return new Response(
       JSON.stringify({ ok: true, recipients: result.recipients || 0 }),

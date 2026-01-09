@@ -394,7 +394,7 @@ export default function Friends() {
 
     try {
       // Search for user using secure database function
-      const { data: userId, error: searchError } = await supabase
+      const { data: foundUserId, error: searchError } = await supabase
         .rpc('search_user_for_friend_request', { 
           search_term: searchQuery.trim() 
         });
@@ -404,7 +404,7 @@ export default function Friends() {
         throw searchError;
       }
 
-      if (!userId) {
+      if (!foundUserId) {
         toast({
           title: "User not found",
           description: "No user found with that username, display name, or phone number",
@@ -413,7 +413,7 @@ export default function Friends() {
         return;
       }
 
-      const profileData = { id: userId };
+      const profileData = { id: foundUserId };
 
 
       if (profileData.id === user.id) {
@@ -468,8 +468,25 @@ export default function Friends() {
 
       if (error) throw error;
 
+      // Send push notification to the receiver
+      try {
+        await supabase.functions.invoke('send-friend-request-notification', {
+          body: {
+            type: 'request',
+            to_user_id: profileData.id,
+            from_user_name: profile?.username || profile?.display_name || 'Someone',
+          },
+        });
+      } catch (notifError) {
+        console.log('Failed to send friend request notification:', notifError);
+      }
+
       setSearchQuery("");
       refetch.sentRequests();
+      toast({
+        title: "Request sent",
+        description: "Friend request has been sent!",
+      });
     } catch (error) {
       console.error("Error sending friend request:", error);
       toast({
@@ -516,16 +533,43 @@ export default function Friends() {
     if (!user) return;
 
     try {
+      // Get the sender ID before accepting
+      const { data: requestData } = await supabase
+        .from('friend_requests')
+        .select('sender_id')
+        .eq('id', requestId)
+        .single();
+
       const { error } = await supabase
         .rpc('accept_friend_request', { request_id: requestId });
 
       if (error) throw error;
+
+      // Send push notification to the original sender
+      if (requestData?.sender_id) {
+        try {
+          await supabase.functions.invoke('send-friend-request-notification', {
+            body: {
+              type: 'accepted',
+              to_user_id: requestData.sender_id,
+              from_user_name: profile?.username || profile?.display_name || 'Someone',
+            },
+          });
+        } catch (notifError) {
+          console.log('Failed to send friend accepted notification:', notifError);
+        }
+      }
 
       await markNotificationsAsRead();
       refetch.friends();
       refetch.receivedRequests();
       refetch.activities();
       loadLeaderboard();
+      
+      toast({
+        title: "Friend added!",
+        description: "You are now friends!",
+      });
     } catch (error) {
       console.error("Error accepting request:", error);
       toast({
