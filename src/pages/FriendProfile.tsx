@@ -273,11 +273,12 @@ export default function FriendProfile() {
       .order('completed_at', { ascending: false })
       .limit(20);
 
-    // Get friend activities (islands, saints, etc.)
+    // Get friend activities (islands, saints, etc.) - exclude chapter_completed since we get those from completed_chapters
     const { data: activitiesData } = await supabase
       .from('friend_activities')
       .select('*')
       .eq('user_id', friendId)
+      .neq('activity_type', 'chapter_completed')
       .order('created_at', { ascending: false })
       .limit(20);
 
