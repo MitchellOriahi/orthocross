@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 
 interface MusicContextType {
   isPlaying: boolean;
@@ -58,16 +58,25 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   }, [isPlaying]);
 
   useEffect(() => {
-    // Listen for app state changes
-    const listener = App.addListener('appStateChange', ({ isActive }) => {
-      if (!isActive && audioRef.current) {
-        // App went to background - pause music
-        audioRef.current.pause();
-      }
-    });
+    // Only add Capacitor app state listener on native platforms
+    if (!Capacitor.isNativePlatform()) return;
+    
+    let removeListener: (() => void) | undefined;
+    
+    // Dynamically import Capacitor App to avoid issues in browser
+    import('@capacitor/app').then(({ App }) => {
+      App.addListener('appStateChange', ({ isActive }) => {
+        if (!isActive && audioRef.current) {
+          // App went to background - pause music
+          audioRef.current.pause();
+        }
+      }).then(listener => {
+        removeListener = () => listener.remove();
+      });
+    }).catch(console.error);
 
     return () => {
-      listener.then(l => l.remove());
+      removeListener?.();
     };
   }, []);
 
