@@ -752,6 +752,22 @@ export default function Friends() {
 
       if (!error) {
         refetch.activities();
+        
+        // Send push notification for the reaction
+        const fromName = profile?.display_name || profile?.username || 'Someone';
+        const achievementTitle = activity?.activity_data?.title || activity?.activity_type || 'activity';
+        
+        try {
+          await supabase.functions.invoke('send-reaction-notification', {
+            body: {
+              to_user_id: activity?.user_id,
+              from_user_name: fromName,
+              achievement_title: achievementTitle,
+            },
+          });
+        } catch (invokeError) {
+          console.error('Error sending reaction notification:', invokeError);
+        }
       }
     }
   };

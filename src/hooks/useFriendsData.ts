@@ -27,6 +27,7 @@ export interface ReceivedRequest {
 
 export interface FriendActivity {
   id: string;
+  user_id: string;
   username: string;
   profile_picture_url: string | null;
   activity_type: string;
