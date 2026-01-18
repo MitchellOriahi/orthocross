@@ -17,7 +17,7 @@ jobs:
           set -euo pipefail
 
           # Use the correct Supabase project URL and function name
-          URL="https://atjpjmhumzfpotrkefaz.supabase.co/functions/v1/send-notifications"
+    URL="https://atjpjmhumzfpotrkefaz.supabase.co/functions/v1/send-scheduled-reminders"
           echo "POST $URL"
 
           HTTP_CODE=$(curl -sS -o response.txt -w "%{http_code}" \
