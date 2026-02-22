@@ -6,6 +6,7 @@ const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const oneSignalAppId = Deno.env.get("ONESIGNAL_APP_ID");
 const oneSignalApiKey = Deno.env.get("ONESIGNAL_REST_API_KEY");
 const cronSecret = Deno.env.get("CRON_SECRET") || Deno.env.get("SCHEDULER_SECRET_TOKEN");
+const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -107,10 +108,14 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Verify cron secret for security
+  // Verify authorization: accept x-cron-secret header OR valid Authorization bearer token
   const requestSecret = req.headers.get("x-cron-secret");
-  if (cronSecret && requestSecret !== cronSecret) {
-    console.log("[send-scheduled-reminders] Unauthorized - invalid cron secret");
+  const authHeader = req.headers.get("authorization");
+  const hasCronSecret = cronSecret && requestSecret === cronSecret;
+  const hasValidAuth = authHeader && supabaseAnonKey && authHeader === `Bearer ${supabaseAnonKey}`;
+  
+  if (!hasCronSecret && !hasValidAuth) {
+    console.log("[send-scheduled-reminders] Unauthorized - invalid credentials");
     return new Response(
       JSON.stringify({ error: "Unauthorized" }),
       { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
