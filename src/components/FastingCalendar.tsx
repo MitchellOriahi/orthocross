@@ -30,7 +30,7 @@ interface FastingEvent {
   startDate: string;
   endDate?: string;
   tradition: string;
-  type: "fast" | "feast";
+  type: "fast" | "feast" | "holiday";
   isMajor: boolean;
 }
 
@@ -92,7 +92,7 @@ export const FastingCalendar = () => {
     const traditionFilter = selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental";
     
     const events = allEvents
-      .filter(event => event.tradition === traditionFilter)
+      .filter(event => event.tradition === traditionFilter || event.tradition === "Both")
       .filter(event => {
         // Check if event falls in the selected month
         const isInMonth = event.month === month;
@@ -120,11 +120,8 @@ export const FastingCalendar = () => {
         isMajor: event.isMajor
       }))
       .sort((a, b) => {
-        // Sort by type (feasts first, then fasts)
-        if (a.type !== b.type) {
-          return a.type === "feast" ? -1 : 1;
-        }
-        return 0;
+        const order: Record<string, number> = { feast: 0, holiday: 1, fast: 2 };
+        return (order[a.type] ?? 3) - (order[b.type] ?? 3);
       });
     
     return events;
@@ -261,7 +258,7 @@ export const FastingCalendar = () => {
           <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-primary" />
-              {displayMonthName} {selectedYear} Fasts & Feasts
+              {displayMonthName} {selectedYear} Fasts, Feasts & Holidays
             </div>
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="icon" onClick={handlePreviousMonth}>
@@ -310,9 +307,13 @@ export const FastingCalendar = () => {
                       ? isEastern
                         ? "bg-red-100 dark:bg-red-900/40 border-red-400 dark:border-red-700" 
                         : "bg-red-50 dark:bg-red-950/30 border-red-300 dark:border-red-800"
-                      : isEastern
-                        ? "bg-blue-100 dark:bg-blue-900/40 border-blue-400 dark:border-blue-700"
-                        : "bg-blue-50 dark:bg-blue-950/30 border-blue-300 dark:border-blue-800"
+                      : event.type === "holiday"
+                        ? isEastern
+                          ? "bg-amber-100 dark:bg-amber-900/40 border-amber-400 dark:border-amber-700"
+                          : "bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800"
+                        : isEastern
+                          ? "bg-blue-100 dark:bg-blue-900/40 border-blue-400 dark:border-blue-700"
+                          : "bg-blue-50 dark:bg-blue-950/30 border-blue-300 dark:border-blue-800"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -320,7 +321,9 @@ export const FastingCalendar = () => {
                       <h4 className={`font-semibold ${
                         event.type === "fast" 
                           ? "text-red-900 dark:text-red-100" 
-                          : "text-blue-900 dark:text-blue-100"
+                          : event.type === "holiday"
+                            ? "text-amber-900 dark:text-amber-100"
+                            : "text-blue-900 dark:text-blue-100"
                       }`}>
                         {event.name}
                       </h4>
@@ -353,7 +356,9 @@ export const FastingCalendar = () => {
                   <p className={`text-sm font-medium ${
                     event.type === "fast" 
                       ? "text-red-800 dark:text-red-200" 
-                      : "text-blue-800 dark:text-blue-200"
+                      : event.type === "holiday"
+                        ? "text-amber-800 dark:text-amber-200"
+                        : "text-blue-800 dark:text-blue-200"
                   }`}>
                     {event.endDate ? `${event.startDate} - ${event.endDate}` : event.startDate}
                   </p>

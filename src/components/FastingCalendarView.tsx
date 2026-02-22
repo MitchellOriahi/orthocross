@@ -8,7 +8,7 @@ interface FastingEvent {
   date: Date;
   endDate?: Date; // For multi-day fasts
   tradition: string;
-  type: "fast" | "feast";
+  type: "fast" | "feast" | "holiday";
 }
 
 // Convert shared data to calendar format
@@ -78,7 +78,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
     const checkDate = new Date(currentYear, currentMonth, day);
     
     return fastingEvents.filter(event => {
-      const matchesTradition = event.tradition === (selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental");
+      const matchesTradition = event.tradition === (selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental") || event.tradition === "Both";
       
       if (!matchesTradition) return false;
       
@@ -108,6 +108,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
       const isWeeklyFast = weeklyFasts.includes(day);
       const hasFeast = events.some(e => e.type === "feast");
       const hasFast = events.some(e => e.type === "fast");
+      const hasHoliday = events.some(e => e.type === "holiday");
       
       days.push(
         <div
@@ -117,9 +118,11 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
               ? "bg-blue-200 dark:bg-blue-900/50" 
               : hasFast 
                 ? "bg-red-200 dark:bg-red-900/50"
-                : isWeeklyFast 
-                  ? "bg-purple-100 dark:bg-purple-950/30" 
-                  : "bg-background"
+                : hasHoliday
+                  ? "bg-amber-200 dark:bg-amber-900/50"
+                  : isWeeklyFast 
+                    ? "bg-purple-100 dark:bg-purple-950/30" 
+                    : "bg-background"
           }`}
         >
           <div className="font-semibold text-sm">{day}</div>
@@ -130,7 +133,9 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
                 className={`text-[10px] truncate font-medium ${
                   event.type === "feast" 
                     ? "text-blue-900 dark:text-blue-100" 
-                    : "text-red-900 dark:text-red-100"
+                    : event.type === "holiday"
+                      ? "text-amber-900 dark:text-amber-100"
+                      : "text-red-900 dark:text-red-100"
                 }`}
               >
                 {event.name}
@@ -167,6 +172,10 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
           <div className="flex items-center gap-1">
             <div className="w-4 h-4 bg-blue-200 dark:bg-blue-900/50 border border-blue-400 dark:border-blue-700" />
             <span>{traditionIcon} Feast Day</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 bg-amber-200 dark:bg-amber-900/50 border border-amber-400 dark:border-amber-700" />
+            <span>{traditionIcon} Holiday</span>
           </div>
         </div>
 
