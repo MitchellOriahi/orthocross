@@ -3,10 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
  * send-reaction-notification
- *
- * This edge function accepts a POST request containing the recipient user ID,
- * the name of the user who reacted and optionally the title of the achievement.
- * Uses external_user_ids (Supabase user UUID) for OneSignal targeting.
+ * Sends push via FCM when someone reacts to an achievement.
  */
 
 const corsHeaders = {
@@ -14,118 +11,97 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
-  // Handle CORS preflight
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+// ─── FCM helpers ────────────────────────────────────────────────────
+function base64urlEncode(data: Uint8Array): string {
+  let b = ""; for (const byte of data) b += String.fromCharCode(byte);
+  return btoa(b).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function createJwt(sa: { client_email: string; private_key: string }): Promise<string> {
+  const now = Math.floor(Date.now() / 1000);
+  const enc = new TextEncoder();
+  const h = base64urlEncode(enc.encode(JSON.stringify({ alg: "RS256", typ: "JWT" })));
+  const p = base64urlEncode(enc.encode(JSON.stringify({
+    iss: sa.client_email, scope: "https://www.googleapis.com/auth/firebase.messaging",
+    aud: "https://oauth2.googleapis.com/token", iat: now, exp: now + 3600,
+  })));
+  const unsigned = `${h}.${p}`;
+  const pem = sa.private_key.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\n/g, "");
+  const key = await crypto.subtle.importKey("pkcs8", Uint8Array.from(atob(pem), c => c.charCodeAt(0)),
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, enc.encode(unsigned));
+  return `${unsigned}.${base64urlEncode(new Uint8Array(sig))}`;
+}
+
+async function getFcmToken(sa: { client_email: string; private_key: string }): Promise<string> {
+  const jwt = await createJwt(sa);
+  const r = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
+  });
+  const d = await r.json();
+  if (!r.ok) throw new Error(`OAuth: ${JSON.stringify(d)}`);
+  return d.access_token;
+}
+
+async function sendToUser(supabase: any, accessToken: string, projectId: string, userId: string, title: string, body: string): Promise<number> {
+  const { data: tokens } = await supabase.from("push_tokens").select("id, token").eq("user_id", userId);
+  if (!tokens?.length) return 0;
+  let sent = 0;
+  for (const t of tokens) {
+    const r = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ message: { token: t.token, notification: { title, body } } }),
+    });
+    const res = await r.json();
+    if (r.ok) { sent++; } else {
+      const code = res?.error?.details?.[0]?.errorCode || "";
+      if (code === "UNREGISTERED" || code === "INVALID_ARGUMENT" || r.status === 404) {
+        await supabase.from("push_tokens").delete().eq("id", t.id);
+      }
+    }
   }
+  return sent;
+}
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const { to_user_id, from_user_name, achievement_title } = await req.json();
-
-    // Validate input
     if (!to_user_id || !from_user_name) {
-      return new Response(
-        JSON.stringify({ ok: false, error: "Missing to_user_id or from_user_name" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ ok: false, error: "Missing params" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
-    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-      throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env var");
-    }
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-    // Fetch the recipient's notification preferences
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("reaction_notifications_enabled")
-      .eq("id", to_user_id)
-      .single();
-
-    if (profileError || !profile) {
-      console.error("Profile lookup failed", profileError);
-      return new Response(
-        JSON.stringify({ ok: false, error: "Recipient not found" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    const { data: profile } = await supabase.from("profiles").select("reaction_notifications_enabled").eq("id", to_user_id).single();
+    if (profile?.reaction_notifications_enabled === false) {
+      return new Response(JSON.stringify({ ok: true, message: "Disabled" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    if (profile.reaction_notifications_enabled === false) {
-      // Respect user's notification preferences
-      return new Response(
-        JSON.stringify({ ok: true, message: "Recipient has disabled reaction notifications" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const FIREBASE_PROJECT_ID = Deno.env.get("FIREBASE_PROJECT_ID");
+    const FIREBASE_SA = Deno.env.get("FIREBASE_SERVICE_ACCOUNT_JSON");
+    if (!FIREBASE_PROJECT_ID || !FIREBASE_SA) throw new Error("Firebase not configured");
 
-    const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID")?.trim();
-    const ONESIGNAL_REST_API_KEY_RAW = Deno.env.get("ONESIGNAL_REST_API_KEY");
-    const ONESIGNAL_REST_API_KEY = ONESIGNAL_REST_API_KEY_RAW?.trim();
+    const sa = JSON.parse(FIREBASE_SA);
+    const accessToken = await getFcmToken(sa);
 
-    console.log(
-      `[reaction] OneSignal App ID exists: ${!!ONESIGNAL_APP_ID}, API Key exists: ${!!ONESIGNAL_REST_API_KEY}, key_len: ${ONESIGNAL_REST_API_KEY?.length ?? 0}`
-    );
-
-    if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) {
-      console.error("[reaction] Missing OneSignal credentials");
-      return new Response(
-        JSON.stringify({ ok: false, error: "OneSignal not configured" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const content = achievement_title 
+    const content = achievement_title
       ? `${from_user_name} reacted to your achievement: ${achievement_title}!`
       : `${from_user_name} reacted to your achievement!`;
 
-    // Use external_user_ids (Supabase UUID) instead of player_ids
-    const notificationPayload = {
-      app_id: ONESIGNAL_APP_ID,
-      include_external_user_ids: [to_user_id],
-      headings: { en: "New Reaction 🎉" },
-      contents: { en: content },
-      data: {
-        type: "reaction",
-        from_user_name,
-        achievement_title: achievement_title ?? null,
-      },
-    };
+    const sent = await sendToUser(supabase, accessToken, FIREBASE_PROJECT_ID, to_user_id, "New Reaction 🎉", content);
+    console.log(`[reaction] Sent to ${to_user_id.substring(0, 8)}... (${sent} devices)`);
 
-    // Send the notification via OneSignal
-    const response = await fetch("https://onesignal.com/api/v1/notifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Basic ${ONESIGNAL_REST_API_KEY}`,
-      },
-      body: JSON.stringify(notificationPayload),
-    });
-
-    const responseText = await response.text();
-
-    if (!response.ok) {
-      console.error("[reaction] OneSignal error", responseText);
-      return new Response(
-        JSON.stringify({ ok: false, error: "Failed to send notification", onesignal: responseText }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const result = responseText ? JSON.parse(responseText) : {};
-    console.log(`[reaction] Sent to ${to_user_id.substring(0, 8)}... from ${from_user_name}`);
-    
-    return new Response(
-      JSON.stringify({ ok: true, recipients: result.recipients || 0 }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ ok: true, sent }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err) {
     console.error(err);
-    return new Response(
-      JSON.stringify({ ok: false, error: "Invalid request" }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ ok: false, error: "Invalid request" }),
+      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
