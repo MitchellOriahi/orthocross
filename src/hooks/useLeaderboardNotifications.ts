@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 /**
  * Hook to listen for leaderboard position changes.
  * When someone passes the current user, this triggers a push notification via edge function.
- * The edge function handles OneSignal delivery.
+ * The edge function handles FCM delivery.
  */
 export const useLeaderboardNotifications = () => {
   const { user } = useAuth();
@@ -36,7 +36,7 @@ export const useLeaderboardNotifications = () => {
 
           const passedByName = profile?.display_name || profile?.username || 'Someone';
           
-          // Call edge function to send push notification via OneSignal
+          // Call edge function to send push notification via FCM
           try {
             await supabase.functions.invoke('send-leaderboard-notification', {
               body: {
