@@ -13,9 +13,8 @@ declare const OneSignal: {
   };
 } | undefined;
 
-// Enable dev logging only in development
-const DEV_MODE = import.meta.env.DEV;
-const log = (msg: string) => DEV_MODE && console.log(msg);
+// Always log OneSignal events for debugging push notification issues
+const log = (msg: string) => console.log(msg);
 
 // Retry delays in milliseconds: 0s, 2s, 5s
 const RETRY_DELAYS = [0, 2000, 5000];
@@ -56,29 +55,35 @@ export const useOneSignalUserLink = () => {
       }
     } catch (error) {
       // Silent fail in production
-      DEV_MODE && console.error('[OneSignal] init error:', error);
+      console.error('[OneSignal] init error:', error);
     }
   }, []);
 
   // Attempt to login with retry logic
   const attemptLogin = useCallback(async (userId: string, retryIndex: number = 0): Promise<boolean> => {
-    if (typeof OneSignal === 'undefined') return false;
+    if (typeof OneSignal === 'undefined') {
+      console.log('[OneSignal] login skipped - OneSignal undefined');
+      return false;
+    }
     
     try {
+      log(`[OneSignal] attempting login (attempt ${retryIndex + 1}) for ${userId.substring(0, 8)}...`);
       await OneSignal.login(userId);
       linkedUserIdRef.current = userId;
-      console.log(`[OneSignal] login ${userId.substring(0, 8)}...`);
+      log(`[OneSignal] login SUCCESS ${userId.substring(0, 8)}...`);
       return true;
-    } catch (error) {
+    } catch (error: any) {
+      console.error(`[OneSignal] login attempt ${retryIndex + 1} failed:`, error?.message || error);
       // Schedule retry if we haven't exhausted all attempts
       if (retryIndex < RETRY_DELAYS.length - 1) {
         const nextDelay = RETRY_DELAYS[retryIndex + 1];
+        log(`[OneSignal] retrying login in ${nextDelay}ms...`);
         const timeout = setTimeout(() => {
           attemptLogin(userId, retryIndex + 1);
         }, nextDelay);
         retryTimeoutsRef.current.push(timeout);
       } else {
-        DEV_MODE && console.error('[OneSignal] login failed after retries');
+        console.error('[OneSignal] login failed after all retries');
       }
       return false;
     }
