@@ -6,9 +6,8 @@ const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const cronSecret = Deno.env.get("CRON_SECRET") || Deno.env.get("SCHEDULER_SECRET_TOKEN");
 const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
 
-// Firebase credentials for FCM HTTP v1
-const FIREBASE_PROJECT_ID = Deno.env.get("FIREBASE_PROJECT_ID");
-const FIREBASE_SERVICE_ACCOUNT_JSON = Deno.env.get("FIREBASE_SERVICE_ACCOUNT_JSON");
+const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID");
+const ONESIGNAL_REST_API_KEY = Deno.env.get("ONESIGNAL_REST_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,162 +15,40 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-cron-secret",
 };
 
-// ─── FCM HTTP v1 helpers ────────────────────────────────────────────
+// ─── OneSignal helper ───────────────────────────────────────────────
 
-function base64urlEncode(data: Uint8Array): string {
-  let binary = "";
-  for (const byte of data) binary += String.fromCharCode(byte);
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-async function createJwt(serviceAccount: { client_email: string; private_key: string }): Promise<string> {
-  const header = { alg: "RS256", typ: "JWT" };
-  const now = Math.floor(Date.now() / 1000);
-  const payload = {
-    iss: serviceAccount.client_email,
-    scope: "https://www.googleapis.com/auth/firebase.messaging",
-    aud: "https://oauth2.googleapis.com/token",
-    iat: now,
-    exp: now + 3600,
-  };
-
-  const enc = new TextEncoder();
-  const headerB64 = base64urlEncode(enc.encode(JSON.stringify(header)));
-  const payloadB64 = base64urlEncode(enc.encode(JSON.stringify(payload)));
-  const unsignedToken = `${headerB64}.${payloadB64}`;
-
-  // Import RSA private key
-  const pemContents = serviceAccount.private_key
-    .replace(/-----BEGIN PRIVATE KEY-----/, "")
-    .replace(/-----END PRIVATE KEY-----/, "")
-    .replace(/\n/g, "");
-  const binaryKey = Uint8Array.from(atob(pemContents), (c) => c.charCodeAt(0));
-
-  const key = await crypto.subtle.importKey(
-    "pkcs8",
-    binaryKey,
-    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-
-  const signature = await crypto.subtle.sign(
-    "RSASSA-PKCS1-v1_5",
-    key,
-    enc.encode(unsignedToken)
-  );
-
-  const signatureB64 = base64urlEncode(new Uint8Array(signature));
-  return `${unsignedToken}.${signatureB64}`;
-}
-
-let cachedAccessToken: { token: string; expiresAt: number } | null = null;
-
-async function getFcmAccessToken(serviceAccount: { client_email: string; private_key: string }): Promise<string> {
-  // Return cached token if still valid (with 5 min buffer)
-  if (cachedAccessToken && Date.now() < cachedAccessToken.expiresAt - 300000) {
-    return cachedAccessToken.token;
-  }
-
-  const jwt = await createJwt(serviceAccount);
-  const response = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(`OAuth token error: ${JSON.stringify(data)}`);
-  }
-
-  cachedAccessToken = {
-    token: data.access_token,
-    expiresAt: Date.now() + data.expires_in * 1000,
-  };
-  return data.access_token;
-}
-
-async function sendFcmNotification(
-  accessToken: string,
-  projectId: string,
-  deviceToken: string,
+async function sendOneSignalNotification(
+  externalUserId: string,
   title: string,
   body: string,
   data: Record<string, string> = {}
-): Promise<{ success: boolean; error?: string; invalidToken?: boolean }> {
+): Promise<boolean> {
   try {
-    const response = await fetch(
-      `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: {
-            token: deviceToken,
-            notification: { title, body },
-            data,
-          },
-        }),
-      }
-    );
+    const response = await fetch("https://onesignal.com/api/v1/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
+      },
+      body: JSON.stringify({
+        app_id: ONESIGNAL_APP_ID,
+        include_external_user_ids: [externalUserId],
+        headings: { en: title },
+        contents: { en: body },
+        data,
+      }),
+    });
 
     const result = await response.json();
-    if (!response.ok) {
-      const errorCode = result?.error?.details?.[0]?.errorCode || result?.error?.code || "";
-      const isInvalid =
-        errorCode === "UNREGISTERED" ||
-        errorCode === "INVALID_ARGUMENT" ||
-        response.status === 404;
-      return { success: false, error: JSON.stringify(result.error), invalidToken: isInvalid };
+    if (!response.ok || result.errors?.length) {
+      console.error(`[OneSignal] Error for ${externalUserId.substring(0, 8)}:`, result.errors || result);
+      return false;
     }
-    return { success: true };
+    return (result.recipients || 0) > 0;
   } catch (error: any) {
-    return { success: false, error: error.message };
+    console.error(`[OneSignal] Fetch error:`, error.message);
+    return false;
   }
-}
-
-// ─── Send push to all tokens for a user ─────────────────────────────
-
-async function sendPushToUser(
-  supabase: any,
-  accessToken: string,
-  projectId: string,
-  userId: string,
-  title: string,
-  body: string,
-  data: Record<string, string> = {}
-): Promise<{ sent: number; failed: number }> {
-  const { data: tokens } = await supabase
-    .from("push_tokens")
-    .select("id, token")
-    .eq("user_id", userId);
-
-  if (!tokens || tokens.length === 0) {
-    return { sent: 0, failed: 0 };
-  }
-
-  let sent = 0;
-  let failed = 0;
-
-  for (const t of tokens) {
-    const result = await sendFcmNotification(accessToken, projectId, t.token, title, body, data);
-    if (result.success) {
-      sent++;
-    } else {
-      failed++;
-      // Remove invalid/unregistered tokens
-      if (result.invalidToken) {
-        await supabase.from("push_tokens").delete().eq("id", t.id);
-        console.log(`[FCM] Removed invalid token for ${userId.substring(0, 8)}...`);
-      }
-    }
-  }
-
-  return { sent, failed };
 }
 
 // ─── Time helpers ───────────────────────────────────────────────────
@@ -181,12 +58,8 @@ function getLocalTime(timezone: string): { hour: number; minute: number; dateStr
     const now = new Date();
     const formatter = new Intl.DateTimeFormat("en-US", {
       timeZone: timezone,
-      hour: "numeric",
-      minute: "numeric",
-      hour12: false,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+      hour: "numeric", minute: "numeric", hour12: false,
+      year: "numeric", month: "2-digit", day: "2-digit",
     });
 
     const parts = formatter.formatToParts(now);
@@ -211,13 +84,9 @@ function getTomorrowDate(timezone: string): string {
   try {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const formatter = new Intl.DateTimeFormat("en-CA", {
-      timeZone: timezone,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-    return formatter.format(tomorrow);
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit",
+    }).format(tomorrow);
   } catch {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -246,23 +115,18 @@ const handler = async (req: Request): Promise<Response> => {
     });
   }
 
-  // Check FCM config
-  if (!FIREBASE_PROJECT_ID || !FIREBASE_SERVICE_ACCOUNT_JSON) {
-    console.error("[send-scheduled-reminders] Firebase not configured");
+  if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) {
+    console.error("[send-scheduled-reminders] OneSignal not configured");
     return new Response(
-      JSON.stringify({ error: "Firebase not configured. Set FIREBASE_PROJECT_ID and FIREBASE_SERVICE_ACCOUNT_JSON secrets." }),
+      JSON.stringify({ error: "OneSignal not configured. Set ONESIGNAL_APP_ID and ONESIGNAL_REST_API_KEY secrets." }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
 
   try {
-    const serviceAccount = JSON.parse(FIREBASE_SERVICE_ACCOUNT_JSON);
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const startTime = Date.now();
     console.log(`[send-scheduled-reminders] Starting at ${new Date().toISOString()}`);
-
-    // Get FCM access token (cached)
-    const accessToken = await getFcmAccessToken(serviceAccount);
 
     const counters = {
       sentStreak: 0,
@@ -271,8 +135,7 @@ const handler = async (req: Request): Promise<Response> => {
       skippedCompleted: 0,
       skippedPrefsOff: 0,
       skippedDup: 0,
-      fcmFailed: 0,
-      invalidTokensRemoved: 0,
+      oneSignalFailed: 0,
     };
 
     const { data: profiles, error: profilesError } = await supabase
@@ -341,12 +204,9 @@ const handler = async (req: Request): Promise<Response> => {
               ? `🔥 Keep Your ${currentStreak}-Day Streak! Complete your daily reading now.`
               : `📖 Start Your Reading Streak! Complete a reading today to begin.`;
 
-            const result = await sendPushToUser(
-              supabase, accessToken, FIREBASE_PROJECT_ID, profile.id,
-              "OrthoCross Reminder", message
-            );
+            const sent = await sendOneSignalNotification(profile.id, "OrthoCross Reminder", message);
 
-            if (result.sent > 0) {
+            if (sent) {
               await supabase.from("notification_log").insert({
                 user_id: profile.id,
                 type: "streak_6pm",
@@ -355,7 +215,7 @@ const handler = async (req: Request): Promise<Response> => {
               counters.sentStreak++;
               console.log(`[streak] Sent to ${profile.id.substring(0, 8)}...`);
             } else {
-              counters.fcmFailed++;
+              counters.oneSignalFailed++;
             }
           }
         }
@@ -391,12 +251,13 @@ const handler = async (req: Request): Promise<Response> => {
               ? `🕊️ ${calendarEvent.label} begins tomorrow. Prepare to observe the fast.`
               : `✨ ${calendarEvent.label} is tomorrow. Prepare for the feast!`;
 
-            const result = await sendPushToUser(
-              supabase, accessToken, FIREBASE_PROJECT_ID, profile.id,
-              calendarEvent.is_fast ? "Upcoming Fast" : "Upcoming Feast", message
+            const sent = await sendOneSignalNotification(
+              profile.id,
+              calendarEvent.is_fast ? "Upcoming Fast" : "Upcoming Feast",
+              message
             );
 
-            if (result.sent > 0) {
+            if (sent) {
               await supabase.from("notification_log").insert({
                 user_id: profile.id,
                 type: "fasting_8pm",
@@ -405,7 +266,7 @@ const handler = async (req: Request): Promise<Response> => {
               counters.sentFasting++;
               console.log(`[fasting] Sent to ${profile.id.substring(0, 8)}... for ${calendarEvent.label}`);
             } else {
-              counters.fcmFailed++;
+              counters.oneSignalFailed++;
             }
           }
         }

@@ -1,12 +1,12 @@
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 
 export const NotificationManager = () => {
-  // Initialize native push notifications (FCM/APNs via Capacitor)
+  // Initialize OneSignal push notifications (native only)
   // This handles:
   // 1. Requesting notification permission on native platforms
-  // 2. Registering for push and capturing device token
-  // 3. Saving token to push_tokens table via edge function
-  // 4. Auto-cleanup of invalid tokens on the backend
+  // 2. Linking OneSignal external user ID with Supabase auth user
+  // 3. Logging out from OneSignal when user logs out
+  // 4. Retry logic for reliability
   usePushNotifications();
 
   return null;
