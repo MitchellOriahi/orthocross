@@ -7,8 +7,10 @@ const log = (msg: string) => console.log(msg);
 // Dynamically access OneSignal to avoid build errors on web
 const getOneSignal = async () => {
   try {
+    // Obfuscate path to prevent Vite's static import analysis from failing on web
+    const pluginPath = ['onesignal-cordova-plugin', 'www', 'OneSignalPlugin'].join('/');
     // @ts-ignore - OneSignal Cordova plugin dynamic import
-    const mod = await import('onesignal-cordova-plugin/www/OneSignalPlugin');
+    const mod = await import(/* @vite-ignore */ pluginPath);
     return mod.default;
   } catch {
     return null;
