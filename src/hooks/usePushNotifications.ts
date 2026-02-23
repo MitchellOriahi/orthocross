@@ -1,122 +1,77 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 
 const log = (msg: string) => console.log(msg);
 
+// Dynamically access OneSignal to avoid build errors on web
+const getOneSignal = async () => {
+  try {
+    // @ts-ignore - OneSignal Cordova plugin dynamic import
+    const mod = await import('onesignal-cordova-plugin/www/OneSignalPlugin');
+    return mod.default;
+  } catch {
+    return null;
+  }
+};
+
 /**
- * Hook to register for native push notifications using @capacitor/push-notifications.
- * 
- * Flow:
- * 1. Wait for auth to finish loading
- * 2. On native platforms, request permission and register
- * 3. On 'registration' event, save token to push_tokens table via edge function
- * 4. On logout, optionally clean up
+ * Hook to link OneSignal external user ID with Supabase auth user.
  */
 export const usePushNotifications = () => {
   const { user, loading } = useAuth();
-  const registeredRef = useRef(false);
-  const savedTokenRef = useRef<string | null>(null);
-
-  const saveToken = useCallback(async (token: string, userId: string) => {
-    if (savedTokenRef.current === token) return;
-
-    const platform = Capacitor.getPlatform() as 'ios' | 'android' | 'web';
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) {
-        console.error('[Push] No session for token registration');
-        return;
-      }
-
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/register-push-token`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({ token, platform }),
-        }
-      );
-
-      if (response.ok) {
-        savedTokenRef.current = token;
-        log(`[Push] Token saved for ${userId.substring(0, 8)}... (${platform})`);
-      } else {
-        const err = await response.json();
-        console.error('[Push] Failed to save token:', err);
-      }
-    } catch (error) {
-      console.error('[Push] Error saving token:', error);
-    }
-  }, []);
+  const linkedRef = useRef(false);
 
   useEffect(() => {
     if (loading) return;
     if (!user?.id) {
-      // User logged out - reset state
-      registeredRef.current = false;
-      savedTokenRef.current = null;
+      linkedRef.current = false;
+      if (Capacitor.isNativePlatform()) {
+        getOneSignal().then(OneSignal => {
+          if (OneSignal) {
+            OneSignal.logout();
+            log('[OneSignal] Logged out');
+          }
+        });
+      }
       return;
     }
 
-    // Only works on native platforms
     if (!Capacitor.isNativePlatform()) {
-      log('[Push] Skipping - not a native platform');
+      log('[OneSignal] Skipping - not a native platform');
       return;
     }
 
-    if (registeredRef.current) return;
-    registeredRef.current = true;
+    if (linkedRef.current) return;
+    linkedRef.current = true;
 
-    const setupPush = async () => {
+    const linkUser = async (attempt = 0) => {
       try {
-        // Dynamically import to avoid issues on web
-        const { PushNotifications } = await import('@capacitor/push-notifications');
-
-        // Request permission
-        const permResult = await PushNotifications.requestPermissions();
-        log(`[Push] Permission: ${permResult.receive}`);
-
-        if (permResult.receive !== 'granted') {
-          log('[Push] Permission denied');
+        const OneSignal = await getOneSignal();
+        if (!OneSignal) {
+          console.error('[OneSignal] Plugin not available');
           return;
         }
 
-        // Listen for registration success
-        await PushNotifications.addListener('registration', async (token) => {
-          log(`[Push] Registered token: ${token.value.substring(0, 20)}...`);
-          await saveToken(token.value, user.id);
-        });
+        OneSignal.Notifications.requestPermission(true);
+        log(`[OneSignal] Permission requested`);
 
-        // Listen for registration errors
-        await PushNotifications.addListener('registrationError', (error) => {
-          console.error('[Push] Registration error:', error);
-        });
+        const delays = [0, 2000, 5000];
+        const delay = delays[attempt] || 0;
+        if (delay > 0) {
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
 
-        // Listen for incoming notifications (foreground)
-        await PushNotifications.addListener('pushNotificationReceived', (notification) => {
-          log(`[Push] Received: ${notification.title}`);
-        });
-
-        // Listen for notification taps
-        await PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
-          log(`[Push] Tapped: ${action.notification.title}`);
-        });
-
-        // Register with FCM/APNs
-        await PushNotifications.register();
-        log('[Push] Registration initiated');
+        OneSignal.login(user.id);
+        log(`[OneSignal] Linked user ${user.id.substring(0, 8)}... (attempt ${attempt + 1})`);
       } catch (error) {
-        console.error('[Push] Setup error:', error);
+        console.error(`[OneSignal] Link error (attempt ${attempt + 1}):`, error);
+        if (attempt < 2) {
+          linkUser(attempt + 1);
+        }
       }
     };
 
-    setupPush();
-  }, [user?.id, loading, saveToken]);
+    linkUser();
+  }, [user?.id, loading]);
 };
