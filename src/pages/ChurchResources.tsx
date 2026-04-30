@@ -738,6 +738,28 @@ const ChurchResources = () => {
                 </CardTitle>
               </CardHeader>
             </Card>
+
+            {/* Orthodox Churches Near Me - spans full width */}
+            <Card
+              className="md:col-span-2 shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all p-4"
+              onClick={() => !locatingChurches && handleFindChurchesNearMe()}
+            >
+              <CardHeader className="p-2">
+                <CardTitle className="flex items-center justify-center gap-3">
+                  {locatingChurches ? (
+                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                  ) : (
+                    <MapPin className="w-10 h-10 text-primary" />
+                  )}
+                  <div className="text-center">
+                    <div className="text-2xl">Orthodox Churches Near Me</div>
+                    <div className="text-sm text-muted-foreground font-normal">
+                      {locatingChurches ? "Locating you…" : "Tap to find churches in your area"}
+                    </div>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+            </Card>
           </div>
         </div>
       </main>
