@@ -43,6 +43,36 @@ const ChurchResources = () => {
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
   const [showCongratulations, setShowCongratulations] = useState(false);
+  const [locatingChurches, setLocatingChurches] = useState(false);
+
+  const handleFindChurchesNearMe = () => {
+    if (!("geolocation" in navigator)) {
+      toast({ description: "Location services are not available on this device.", variant: "destructive" });
+      return;
+    }
+    setLocatingChurches(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
+        const query = encodeURIComponent("Orthodox Churches");
+        const url = isApple
+          ? `https://maps.apple.com/?q=${query}&sll=${latitude},${longitude}`
+          : `https://www.google.com/maps/search/${query}/@${latitude},${longitude},14z`;
+        window.open(url, "_blank");
+        setLocatingChurches(false);
+      },
+      (error) => {
+        setLocatingChurches(false);
+        const message =
+          error.code === error.PERMISSION_DENIED
+            ? "Location permission denied. Please enable location access in your settings."
+            : "Unable to retrieve your location. Please try again.";
+        toast({ description: message, variant: "destructive" });
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
 
   // Scroll to top when component mounts
   useEffect(() => {
