@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft } from "lucide-react";
+import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft, MapPin, Loader2 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,6 +43,36 @@ const ChurchResources = () => {
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
   const [showCongratulations, setShowCongratulations] = useState(false);
+  const [locatingChurches, setLocatingChurches] = useState(false);
+
+  const handleFindChurchesNearMe = () => {
+    if (!("geolocation" in navigator)) {
+      toast({ description: "Location services are not available on this device.", variant: "destructive" });
+      return;
+    }
+    setLocatingChurches(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
+        const query = encodeURIComponent("Orthodox Churches");
+        const url = isApple
+          ? `https://maps.apple.com/?q=${query}&sll=${latitude},${longitude}`
+          : `https://www.google.com/maps/search/${query}/@${latitude},${longitude},14z`;
+        window.open(url, "_blank");
+        setLocatingChurches(false);
+      },
+      (error) => {
+        setLocatingChurches(false);
+        const message =
+          error.code === error.PERMISSION_DENIED
+            ? "Location permission denied. Please enable location access in your settings."
+            : "Unable to retrieve your location. Please try again.";
+        toast({ description: message, variant: "destructive" });
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -704,6 +734,28 @@ const ChurchResources = () => {
                   <div>
                     <div className="text-3xl">Saints</div>
                     <div className="text-sm text-muted-foreground font-normal">Lives of Orthodox Saints</div>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+            </Card>
+
+            {/* Orthodox Churches Near Me - spans full width */}
+            <Card
+              className="md:col-span-2 shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all p-4"
+              onClick={() => !locatingChurches && handleFindChurchesNearMe()}
+            >
+              <CardHeader className="p-2">
+                <CardTitle className="flex items-center justify-center gap-3">
+                  {locatingChurches ? (
+                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                  ) : (
+                    <MapPin className="w-10 h-10 text-primary" />
+                  )}
+                  <div className="text-center">
+                    <div className="text-2xl">Orthodox Churches Near Me</div>
+                    <div className="text-sm text-muted-foreground font-normal">
+                      {locatingChurches ? "Locating you…" : "Tap to find churches in your area"}
+                    </div>
                   </div>
                 </CardTitle>
               </CardHeader>
