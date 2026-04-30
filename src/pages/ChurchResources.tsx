@@ -54,12 +54,9 @@ const ChurchResources = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
         const query = encodeURIComponent("Orthodox Churches");
-        const url = isApple
-          ? `https://maps.apple.com/?q=${query}&sll=${latitude},${longitude}`
-          : `https://www.google.com/maps/search/${query}/@${latitude},${longitude},14z`;
-        window.open(url, "_blank");
+        const url = `https://www.google.com/maps/search/${query}/@${latitude},${longitude},14z`;
+        window.open(url, "_blank", "noopener,noreferrer");
         setLocatingChurches(false);
       },
       (error) => {
