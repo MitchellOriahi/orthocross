@@ -40,7 +40,7 @@ export const FastingCalendar = () => {
   const [reminders, setReminders] = useState<Map<string, number>>(new Map());
   const [showCalendarView, setShowCalendarView] = useState(false);
   const [selectedTradition, setSelectedTradition] = useState<"Eastern Orthodox" | "Oriental Orthodox">("Eastern Orthodox");
-  const [calendarSystem, setCalendarSystem] = useState<CalendarSystem>("New");
+  const [calendarSystem, setCalendarSystem] = useState<CalendarSystem>("Gregorian");
   const [showReminderDialog, setShowReminderDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<FastingEvent | null>(null);
   const [reminderDaysBefore, setReminderDaysBefore] = useState<string>("0");
@@ -303,15 +303,15 @@ export const FastingCalendar = () => {
               className="flex flex-col gap-2 items-start"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="New" id="cal-new" />
-                <Label htmlFor="cal-new" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
-                  New Calendar (Revised Julian)
+                <RadioGroupItem value="Gregorian" id="cal-gregorian" />
+                <Label htmlFor="cal-gregorian" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
+                  Gregorian Calendar
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Julian" id="cal-julian" />
                 <Label htmlFor="cal-julian" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
-                  Old Calendar (Julian)
+                  Julian Calendar
                 </Label>
               </div>
             </RadioGroup>
