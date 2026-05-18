@@ -46,26 +46,40 @@ const ChurchResources = () => {
   const [locatingChurches, setLocatingChurches] = useState(false);
 
   const handleFindChurchesNearMe = () => {
+    // Open the tab synchronously inside the click handler so popup blockers
+    // don't kill it. Start with a generic "near me" search; if we get coords
+    // we'll refine the URL afterward.
+    const fallbackUrl = `https://www.google.com/maps/search/${encodeURIComponent("Orthodox churches near me")}`;
+    const newTab = window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+
     if (!("geolocation" in navigator)) {
-      toast({ description: "Location services are not available on this device.", variant: "destructive" });
-      return;
+      return; // Google Maps will use its own location detection
     }
+
     setLocatingChurches(true);
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        setLocatingChurches(false);
         const { latitude, longitude } = position.coords;
         const query = encodeURIComponent("Orthodox Churches");
-        const url = `https://www.google.com/maps/search/${query}/@${latitude},${longitude},14z`;
-        window.open(url, "_blank", "noopener,noreferrer");
-        setLocatingChurches(false);
+        const preciseUrl = `https://www.google.com/maps/search/${query}/@${latitude},${longitude},14z`;
+        // Try to refine the already-opened tab; ignore if blocked cross-origin.
+        try {
+          if (newTab && !newTab.closed) {
+            newTab.location.href = preciseUrl;
+          }
+        } catch {
+          /* cross-origin nav not allowed once Google Maps loaded — fine */
+        }
       },
       (error) => {
         setLocatingChurches(false);
-        const message =
-          error.code === error.PERMISSION_DENIED
-            ? "Location permission denied. Please enable location access in your settings."
-            : "Unable to retrieve your location. Please try again.";
-        toast({ description: message, variant: "destructive" });
+        if (error.code === error.PERMISSION_DENIED) {
+          toast({
+            description: "Location denied — showing a general nearby search instead.",
+          });
+        }
+        // The fallback tab is already open with "near me" search; nothing else to do.
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
