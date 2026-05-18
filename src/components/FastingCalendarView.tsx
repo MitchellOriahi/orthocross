@@ -60,7 +60,7 @@ interface FastingCalendarViewProps {
   calendarSystem?: CalendarSystem;
 }
 
-export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, calendarSystem = "New" }: FastingCalendarViewProps) => {
+export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, calendarSystem = "Gregorian" }: FastingCalendarViewProps) => {
   const currentMonth = selectedMonth;
   const currentYear = selectedYear;
 

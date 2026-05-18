@@ -200,7 +200,7 @@ const applyJulianShift = (
 
 export const getAllFastingEvents = (
   year: number,
-  calendarSystem: CalendarSystem = "New"
+  calendarSystem: CalendarSystem = "Gregorian"
 ): FastingEventData[] => {
   const base = [...fixedFastingEvents];
 
