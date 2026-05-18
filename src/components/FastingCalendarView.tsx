@@ -57,9 +57,10 @@ interface FastingCalendarViewProps {
   selectedTradition: "Eastern Orthodox" | "Oriental Orthodox";
   selectedMonth: number;
   selectedYear: number;
+  calendarSystem?: CalendarSystem;
 }
 
-export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear }: FastingCalendarViewProps) => {
+export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, calendarSystem = "New" }: FastingCalendarViewProps) => {
   const currentMonth = selectedMonth;
   const currentYear = selectedYear;
 
@@ -72,7 +73,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   
   const weeklyFasts = getWeeklyFastDays(currentMonth, currentYear);
-  const fastingEvents = getFixedFastingEvents(currentYear);
+  const fastingEvents = getFixedFastingEvents(currentYear, calendarSystem);
 
   const getEventsForDay = (day: number) => {
     const checkDate = new Date(currentYear, currentMonth, day);
