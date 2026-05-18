@@ -12,13 +12,15 @@ import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useTheme } from "next-themes";
-import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { ChapterMarkingDialog } from "@/components/ChapterMarkingDialog";
 import { BibleProgressTutorial } from "@/components/BibleProgressTutorial";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
+import { MascotCompanion } from "@/components/MascotCompanion";
+import { AnimatedProgress } from "@/components/AnimatedProgress";
+import { CelebrationOverlay } from "@/components/CelebrationOverlay";
 
 interface ReadingProgress {
   id: string;
@@ -45,6 +47,8 @@ const Index = () => {
   const [importing, setImporting] = useState(false);
   const [showChapterMarking, setShowChapterMarking] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [previousCompletion, setPreviousCompletion] = useState<number | null>(null);
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
@@ -267,6 +271,32 @@ const Index = () => {
 
   const lastReadScripture = getLastReadScripture();
 
+  useEffect(() => {
+    if (!user || bibleCompletion <= 0) return;
+
+    if (previousCompletion === null) {
+      setPreviousCompletion(bibleCompletion);
+      return;
+    }
+
+    if (bibleCompletion > previousCompletion) {
+      setShowCelebration(true);
+      window.setTimeout(() => setShowCelebration(false), 3200);
+    }
+
+    setPreviousCompletion(bibleCompletion);
+  }, [bibleCompletion, previousCompletion, user]);
+
+  const mascotMessage = bibleCompletion >= 75
+    ? "You are deep into the journey. Keep the streak alive."
+    : bibleCompletion >= 25
+      ? "Your Scripture habit is growing. One more chapter keeps the momentum going."
+      : lastReadScripture
+        ? `Welcome back. Continue ${lastReadScripture.bookName} when you are ready.`
+        : "Pick a book and start building your daily Scripture path.";
+
+  const mascotMood: "thinking" | "happy" | "cheering" = bibleCompletion >= 50 ? "cheering" : lastReadScripture ? "happy" : "thinking";
+
   // Calculate section completion percentage
   const calculateSectionProgress = (books: BookInfo[]) => {
     const totalChapters = books.reduce((sum, book) => sum + book.totalChapters, 0);
@@ -332,20 +362,43 @@ const Index = () => {
                   </Alert>
                 )}
 
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold">Scripture Library</h2>
-                  </div>
-                  <BookSelector 
-                    books={BIBLE_BOOKS}
-                    onSelectBook={startReading}
-                    currentBook={lastRead?.book_key}
-                  />
-                </div>
+                <Card className="duo-card overflow-hidden border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 animate-card-rise">
+                  <CardContent className="p-5 sm:p-6">
+                    <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-xs font-black uppercase tracking-[0.22em] text-primary/70">Daily path</p>
+                          <h2 className="text-3xl font-black tracking-tight">Scripture Library</h2>
+                        </div>
+                        <MascotCompanion
+                          mood={mascotMood}
+                          message={mascotMessage}
+                          size="md"
+                        />
+                        {lastReadScripture && (
+                          <Button
+                            onClick={continueReading}
+                            className="duo-button rounded-2xl px-5 font-bold shadow-elevated"
+                          >
+                            <Play className="mr-2 h-4 w-4" />
+                            Continue {lastReadScripture.bookName}
+                          </Button>
+                        )}
+                      </div>
+                      <div className="flex justify-start sm:justify-end">
+                        <BookSelector 
+                          books={BIBLE_BOOKS}
+                          onSelectBook={startReading}
+                          currentBook={lastRead?.book_key}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {/* Bible Completion Progress */}
                 {user && (
-                  <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10">
+                  <Card className="duo-card border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10">
                     <CardContent className="p-4">
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
@@ -362,11 +415,10 @@ const Index = () => {
                             </Button>
                           </div>
                         </div>
-                        <div className="w-full bg-muted rounded-full h-3">
-                          <div
-                            className="bg-primary rounded-full h-3 transition-all duration-500"
-                            style={{ width: `${bibleCompletion}%` }}
-                          />
+                        <AnimatedProgress value={bibleCompletion} />
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <span>Read chapters, earn momentum, and watch your path fill up.</span>
+                          <span className="rounded-full bg-primary/10 px-2 py-0.5 font-bold text-primary animate-soft-pulse">+25 XP/chapter</span>
                         </div>
                       </div>
                     </CardContent>
@@ -385,7 +437,7 @@ const Index = () => {
                 {showTutorial && <BibleProgressTutorial onComplete={handleTutorialComplete} />}
 
                 {/* OLD TESTAMENT */}
-                <Card className="border-orange-500/30 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20">
+                <Card className="duo-card border-orange-500/30 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20">
                   <CardContent className="p-6">
                     <h3 className="text-2xl font-bold mb-4 text-orange-700 dark:text-orange-400">Old Testament</h3>
                     <Accordion type="multiple" className="space-y-2">
@@ -400,7 +452,7 @@ const Index = () => {
                                   <div className="text-xs text-muted-foreground">({books.length} books)</div>
                                 </div>
                                 <div className="group-data-[state=open]:hidden">
-                                  <Progress value={sectionProgress} className="h-1.5" />
+                                  <AnimatedProgress value={sectionProgress} showSpark={false} />
                                 </div>
                               </div>
                             </AccordionTrigger>
@@ -410,7 +462,7 @@ const Index = () => {
                                 <button
                                   key={book.title}
                                   onClick={() => startReading(book)}
-                                  className={`p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
+                                  className={`duo-button p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
                                     lastRead?.book_key === book.title
                                       ? 'border-primary bg-primary/5'
                                       : 'border-border'
@@ -420,7 +472,7 @@ const Index = () => {
                                   <div className="text-xs text-muted-foreground">{book.totalChapters} Ch.</div>
                                   {bookProgress[book.title] > 0 && (
                                     <div className="mt-2 space-y-1">
-                                      <Progress value={bookProgress[book.title]} className="h-1.5" />
+                                      <AnimatedProgress value={bookProgress[book.title]} showSpark={false} />
                                       <div className="text-xs text-muted-foreground text-right">
                                         {bookProgress[book.title]}%
                                       </div>
@@ -438,7 +490,7 @@ const Index = () => {
                 </Card>
 
                 {/* NEW TESTAMENT */}
-                <Card className="border-blue-500/30 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20">
+                <Card className="duo-card border-blue-500/30 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20">
                   <CardContent className="p-6">
                     <h3 className="text-2xl font-bold mb-4 text-blue-700 dark:text-blue-400">New Testament</h3>
                     <Accordion type="multiple" className="space-y-2">
@@ -453,7 +505,7 @@ const Index = () => {
                                   <div className="text-xs text-muted-foreground">({books.length} books)</div>
                                 </div>
                                 <div className="group-data-[state=open]:hidden">
-                                  <Progress value={sectionProgress} className="h-1.5" />
+                                  <AnimatedProgress value={sectionProgress} showSpark={false} />
                                 </div>
                               </div>
                             </AccordionTrigger>
@@ -463,7 +515,7 @@ const Index = () => {
                                 <button
                                   key={book.title}
                                   onClick={() => startReading(book)}
-                                  className={`p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
+                                  className={`duo-button p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
                                     lastRead?.book_key === book.title
                                       ? 'border-primary bg-primary/5'
                                       : 'border-border'
@@ -473,7 +525,7 @@ const Index = () => {
                                   <div className="text-xs text-muted-foreground">{book.totalChapters} Ch.</div>
                                   {bookProgress[book.title] > 0 && (
                                     <div className="mt-2 space-y-1">
-                                      <Progress value={bookProgress[book.title]} className="h-1.5" />
+                                      <AnimatedProgress value={bookProgress[book.title]} showSpark={false} />
                                       <div className="text-xs text-muted-foreground text-right">
                                         {bookProgress[book.title]}%
                                       </div>
@@ -491,7 +543,7 @@ const Index = () => {
                 </Card>
 
                 {/* ADDITIONAL READINGS */}
-                <Card className="border-purple-500/30 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/20 dark:to-purple-900/20">
+                <Card className="duo-card border-purple-500/30 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/20 dark:to-purple-900/20">
                   <CardContent className="p-6">
                     <h3 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">Orthodox Additional Readings</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -499,7 +551,7 @@ const Index = () => {
                         <button
                           key={book.title}
                           onClick={() => startReading(book)}
-                          className={`p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
+                          className={`duo-button p-3 rounded-lg border transition-all text-left hover:border-primary hover:bg-accent ${
                             lastRead?.book_key === book.title
                               ? 'border-primary bg-primary/5'
                               : 'border-border'
@@ -509,7 +561,7 @@ const Index = () => {
                           <div className="text-xs text-muted-foreground">{book.totalChapters} Ch.</div>
                           {bookProgress[book.title] > 0 && (
                             <div className="mt-2 space-y-1">
-                              <Progress value={bookProgress[book.title]} className="h-1.5" />
+                              <AnimatedProgress value={bookProgress[book.title]} showSpark={false} />
                               <div className="text-xs text-muted-foreground text-right">
                                 {bookProgress[book.title]}%
                               </div>
@@ -532,6 +584,14 @@ const Index = () => {
           <p>© 2025 OrthoCross App. Building faith through daily practice.</p>
         </div>
       </footer>
+
+      <CelebrationOverlay
+        open={showCelebration}
+        title="Progress blessed!"
+        message="You moved your Scripture path forward. Come back tomorrow to keep the streak alive."
+        xp={25}
+        onClose={() => setShowCelebration(false)}
+      />
 
       <BottomNavigation />
     </div>
