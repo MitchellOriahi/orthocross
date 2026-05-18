@@ -71,7 +71,10 @@ serve(async (req) => {
     }
 
     // Get the API translation code
-    const apiTranslation = translationMap[translation] || 'kjv';
+    const requested = (translation || 'kjv').toLowerCase();
+    const apiTranslation = supportedTranslations.has(requested)
+      ? requested
+      : (translationFallback[requested] || 'kjv');
 
     // Fetch from bible-api.com (free, no auth required)
     const response = await fetch(`https://bible-api.com/${apiBookName}${chapter}?translation=${apiTranslation}`);
