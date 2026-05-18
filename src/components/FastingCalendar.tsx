@@ -303,15 +303,15 @@ export const FastingCalendar = () => {
               className="flex flex-col gap-2 items-start"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Gregorian" id="cal-new" />
-                <Label htmlFor="cal-new" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
-                  New Calendar (Revised Julian)
+                <RadioGroupItem value="Gregorian" id="cal-gregorian" />
+                <Label htmlFor="cal-gregorian" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
+                  Gregorian Calendar
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Julian" id="cal-julian" />
                 <Label htmlFor="cal-julian" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
-                  Old Calendar (Julian)
+                  Julian Calendar
                 </Label>
               </div>
             </RadioGroup>
