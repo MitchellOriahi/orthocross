@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getAllFastingEvents, formatEventDate } from "@/data/fastingEvents";
+import { getAllFastingEvents, formatEventDate, type CalendarSystem } from "@/data/fastingEvents";
 
 interface FastingEvent {
   name: string;
