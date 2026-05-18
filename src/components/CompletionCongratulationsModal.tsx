@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Trophy, Sparkles } from "lucide-react";
-import { MascotCompanion } from "@/components/MascotCompanion";
+import { useNavigate } from "react-router-dom";
 
 interface CompletionCongratulationsModalProps {
   open: boolean;
@@ -16,6 +16,8 @@ export function CompletionCongratulationsModal({
   onReset 
 }: CompletionCongratulationsModalProps) {
   const [canClose, setCanClose] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (open) {
       setCanClose(false);
@@ -56,15 +58,12 @@ export function CompletionCongratulationsModal({
       >
         <DialogTitle className="sr-only">100% Completion Achievement</DialogTitle>
         <div className="flex flex-col items-center justify-center py-8 space-y-6">
-          {/* Animated Trophy + mascot */}
-          <div className="relative flex items-center justify-center gap-2">
-            <MascotCompanion mood="cheering" size="md" compact />
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 opacity-50 blur-3xl animate-soft-pulse" />
-              <Trophy className="relative z-10 h-28 w-28 text-yellow-500 animate-mascot-cheer" />
-              <Sparkles className="absolute -right-2 -top-2 h-10 w-10 text-yellow-400 animate-reward-pop" />
-              <Sparkles className="absolute -bottom-1 -left-1 h-7 w-7 text-orange-400 animate-reward-pop" style={{ animationDelay: '180ms' }} />
-            </div>
+          {/* Animated Trophy */}
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur-3xl opacity-50 animate-pulse" />
+            <Trophy className="w-32 h-32 text-yellow-500 relative z-10 animate-bounce" />
+            <Sparkles className="w-12 h-12 text-yellow-400 absolute -top-2 -right-2 animate-spin" style={{ animationDuration: '3s' }} />
+            <Sparkles className="w-8 h-8 text-orange-400 absolute -bottom-1 -left-1 animate-spin" style={{ animationDuration: '4s' }} />
           </div>
 
           {/* Congratulations Text */}
@@ -101,14 +100,14 @@ export function CompletionCongratulationsModal({
               <Button
                 onClick={handleClose}
                 variant="outline"
-                className="duo-button flex-1 rounded-2xl font-bold"
+                className="flex-1"
               >
                 Continue
               </Button>
               <Button
                 onClick={handleReset}
                 variant="default"
-                className="duo-button flex-1 rounded-2xl font-bold"
+                className="flex-1"
               >
                 Reset Progress & Start Again
               </Button>
