@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { DoveMascot } from "./DoveMascot";
+import { MascotCompanion } from "@/components/MascotCompanion";
 import { StreakFlame } from "./StreakFlame";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
-import { useTheme } from "next-themes";
-import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
-import orthodoxCrossWhite from "@/assets/orthodox-cross-white-new.png";
 
 interface CongratulationsModalProps {
   isOpen: boolean;
@@ -28,10 +24,6 @@ export const CongratulationsModal = ({
   saintPrefix
 }: CongratulationsModalProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
-  const { theme } = useTheme();
-  
-  const crossLogo = theme === 'dark' ? orthodoxCrossWhite : orthodoxCrossBlack;
-
   useEffect(() => {
     if (isOpen) {
       setShowConfetti(true);
@@ -49,32 +41,33 @@ export const CongratulationsModal = ({
       >
         <DialogTitle className="sr-only">Reading Complete</DialogTitle>
         <div className="flex flex-col items-center justify-center py-8 px-4 space-y-6">
-          {/* Animated Cross Logo or Saint Icon */}
-          <div className="relative">
+          {/* Animated mascot / saint reward */}
+          <div className="relative grid place-items-center">
             {saintIcon ? (
-              <img 
-                src={saintIcon} 
-                alt={`${saintPrefix} ${saintName}`}
-                className="w-32 h-32 rounded-full object-cover shadow-lg"
-              />
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-primary/20 blur-2xl animate-soft-pulse" />
+                <img 
+                  src={saintIcon} 
+                  alt={`${saintPrefix} ${saintName}`}
+                  className="relative z-10 h-32 w-32 rounded-full object-cover shadow-elevated animate-mascot-cheer"
+                />
+              </div>
             ) : (
-              <img 
-                src={crossLogo} 
-                alt="Orthodox Cross"
-                className="w-32 h-32 object-contain animate-bounce"
+              <MascotCompanion
+                mood="cheering"
+                size="lg"
+                compact
               />
             )}
             {showConfetti && (
-              <div className="absolute inset-0 pointer-events-none">
-                {[...Array(12)].map((_, i) => (
-                  <Sparkles
+              <div className="pointer-events-none absolute -inset-16 overflow-hidden">
+                {Array.from({ length: 14 }).map((_, i) => (
+                  <span
                     key={i}
-                    className="absolute text-primary animate-ping"
+                    className="confetti-piece"
                     style={{
-                      top: `${Math.random() * 100}%`,
-                      left: `${Math.random() * 100}%`,
-                      animationDelay: `${i * 0.1}s`,
-                      animationDuration: "1s"
+                      left: `${10 + ((i * 37) % 80)}%`,
+                      animationDelay: `${i * 80}ms`,
                     }}
                   />
                 ))}
@@ -111,7 +104,7 @@ export const CongratulationsModal = ({
             variant="sacred" 
             size="lg" 
             onClick={onClose}
-            className="w-full"
+            className="duo-button w-full rounded-2xl font-bold shadow-elevated"
           >
             Continue
           </Button>
