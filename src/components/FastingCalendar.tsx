@@ -89,7 +89,7 @@ export const FastingCalendar = () => {
   ];
 
   const getMonthEvents = (month: number): FastingEvent[] => {
-    const allEvents = getAllFastingEvents(selectedYear);
+    const allEvents = getAllFastingEvents(selectedYear, calendarSystem);
     const traditionFilter = selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental";
     
     const events = allEvents
