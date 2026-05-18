@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getAllFastingEvents, createDateFromEvent } from "@/data/fastingEvents";
+import { getAllFastingEvents, createDateFromEvent, type CalendarSystem } from "@/data/fastingEvents";
 
 interface FastingEvent {
   name: string;
