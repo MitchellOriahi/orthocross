@@ -154,7 +154,7 @@ export const moveableFeastsOriental2026: FastingEventData[] = [
   { name: "Apostles' Fast", month: 4, day: 25, endMonth: 6, endDay: 11, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
 ];
 
-export type CalendarSystem = "New" | "Julian";
+export type CalendarSystem = "Gregorian" | "Julian";
 
 // Shift a month/day by `delta` days, returning the resulting month/day.
 // Year is used only for arithmetic (handles month-length variation); the
