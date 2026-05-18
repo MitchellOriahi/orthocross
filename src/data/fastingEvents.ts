@@ -154,17 +154,69 @@ export const moveableFeastsOriental2026: FastingEventData[] = [
   { name: "Apostles' Fast", month: 4, day: 25, endMonth: 6, endDay: 11, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
 ];
 
-export const getAllFastingEvents = (year: number): FastingEventData[] => {
+export type CalendarSystem = "New" | "Julian";
+
+// Shift a month/day by `delta` days, returning the resulting month/day.
+// Year is used only for arithmetic (handles month-length variation); the
+// returned month/day is treated as belonging to the same display year so the
+// shifted entry still appears under the selected year/month view.
+const shiftMonthDay = (
+  year: number,
+  month: number,
+  day: number,
+  delta: number
+): { month: number; day: number } => {
+  const d = new Date(year, month, day);
+  d.setDate(d.getDate() + delta);
+  return { month: d.getMonth(), day: d.getDate() };
+};
+
+// Under the Old (Julian) Calendar, fixed Eastern Orthodox feasts/fasts fall
+// 13 days later on the civil (Gregorian) calendar than under the New
+// (Revised Julian) Calendar. Moveable feasts already use the Julian
+// Paschalion in both calendars, so they are not shifted. Oriental Orthodox
+// (Coptic/Ethiopian/Armenian/Syriac) dates use their own calendars and are
+// not affected by this toggle.
+const applyJulianShift = (
+  event: FastingEventData,
+  year: number
+): FastingEventData => {
+  if (event.isMoveable) return event;
+  if (event.tradition !== "Eastern" && event.tradition !== "Both") return event;
+
+  const start = shiftMonthDay(year, event.month, event.day, 13);
+  let endMonth = event.endMonth;
+  let endDay = event.endDay;
+
+  if (event.endMonth !== undefined && event.endDay !== undefined) {
+    const endYearGuess = event.endMonth < event.month ? year + 1 : year;
+    const end = shiftMonthDay(endYearGuess, event.endMonth, event.endDay, 13);
+    endMonth = end.month;
+    endDay = end.day;
+  }
+
+  return { ...event, month: start.month, day: start.day, endMonth, endDay };
+};
+
+export const getAllFastingEvents = (
+  year: number,
+  calendarSystem: CalendarSystem = "New"
+): FastingEventData[] => {
   const base = [...fixedFastingEvents];
-  
+
+  let all: FastingEventData[];
   if (year === 2025) {
-    return [...base, ...moveableFeastsEastern2025, ...moveableFeastsOriental2025];
+    all = [...base, ...moveableFeastsEastern2025, ...moveableFeastsOriental2025];
+  } else if (year === 2026) {
+    all = [...base, ...moveableFeastsEastern2026, ...moveableFeastsOriental2026];
+  } else {
+    all = base;
   }
-  if (year === 2026) {
-    return [...base, ...moveableFeastsEastern2026, ...moveableFeastsOriental2026];
+
+  if (calendarSystem === "Julian") {
+    return all.map((e) => applyJulianShift(e, year));
   }
-  
-  return base;
+  return all;
 };
 
 export const formatEventDate = (month: number, day: number): string => {

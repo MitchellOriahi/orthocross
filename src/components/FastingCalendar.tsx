@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getAllFastingEvents, formatEventDate } from "@/data/fastingEvents";
+import { getAllFastingEvents, formatEventDate, type CalendarSystem } from "@/data/fastingEvents";
 
 interface FastingEvent {
   name: string;
@@ -40,6 +40,7 @@ export const FastingCalendar = () => {
   const [reminders, setReminders] = useState<Map<string, number>>(new Map());
   const [showCalendarView, setShowCalendarView] = useState(false);
   const [selectedTradition, setSelectedTradition] = useState<"Eastern Orthodox" | "Oriental Orthodox">("Eastern Orthodox");
+  const [calendarSystem, setCalendarSystem] = useState<CalendarSystem>("New");
   const [showReminderDialog, setShowReminderDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<FastingEvent | null>(null);
   const [reminderDaysBefore, setReminderDaysBefore] = useState<string>("0");
@@ -88,7 +89,7 @@ export const FastingCalendar = () => {
   ];
 
   const getMonthEvents = (month: number): FastingEvent[] => {
-    const allEvents = getAllFastingEvents(selectedYear);
+    const allEvents = getAllFastingEvents(selectedYear, calendarSystem);
     const traditionFilter = selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental";
     
     const events = allEvents
@@ -271,8 +272,8 @@ export const FastingCalendar = () => {
           </CardTitle>
         </CardHeader>
         
-        {/* Centered Tradition Selector */}
-        <div className="flex items-center justify-start py-4 px-4">
+        {/* Tradition + Calendar System Selectors */}
+        <div className="flex flex-col gap-4 py-4 px-4 sm:flex-row sm:items-start sm:justify-between">
           <RadioGroup
             value={selectedTradition}
             onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
@@ -291,6 +292,35 @@ export const FastingCalendar = () => {
               </Label>
             </div>
           </RadioGroup>
+
+          <div className="flex flex-col gap-2">
+            <Label className="text-sm font-semibold text-muted-foreground">
+              Calendar
+            </Label>
+            <RadioGroup
+              value={calendarSystem}
+              onValueChange={(value) => setCalendarSystem(value as CalendarSystem)}
+              className="flex flex-col gap-2 items-start"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="New" id="cal-new" />
+                <Label htmlFor="cal-new" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
+                  New Calendar (Revised Julian)
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Julian" id="cal-julian" />
+                <Label htmlFor="cal-julian" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
+                  Old Calendar (Julian)
+                </Label>
+              </div>
+            </RadioGroup>
+            {calendarSystem === "Julian" && selectedTradition === "Oriental Orthodox" && (
+              <p className="text-xs text-muted-foreground max-w-xs">
+                Oriental Orthodox traditions use their own calendars (Coptic, Ethiopian, etc.); the Julian shift only applies to Eastern Orthodox fixed feasts.
+              </p>
+            )}
+          </div>
         </div>
         <CardContent className="space-y-3 pt-4">
           {monthEvents.length > 0 ? (
@@ -398,6 +428,7 @@ export const FastingCalendar = () => {
           selectedTradition={selectedTradition}
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
+          calendarSystem={calendarSystem}
         />
       )}
 

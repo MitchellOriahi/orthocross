@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getAllFastingEvents, createDateFromEvent } from "@/data/fastingEvents";
+import { getAllFastingEvents, createDateFromEvent, type CalendarSystem } from "@/data/fastingEvents";
 
 interface FastingEvent {
   name: string;
@@ -12,8 +12,8 @@ interface FastingEvent {
 }
 
 // Convert shared data to calendar format
-const getFixedFastingEvents = (year: number): FastingEvent[] => {
-  const events = getAllFastingEvents(year);
+const getFixedFastingEvents = (year: number, calendarSystem: CalendarSystem): FastingEvent[] => {
+  const events = getAllFastingEvents(year, calendarSystem);
   
   return events.map(event => {
     const startDate = createDateFromEvent(year, event.month, event.day);
@@ -57,9 +57,10 @@ interface FastingCalendarViewProps {
   selectedTradition: "Eastern Orthodox" | "Oriental Orthodox";
   selectedMonth: number;
   selectedYear: number;
+  calendarSystem?: CalendarSystem;
 }
 
-export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear }: FastingCalendarViewProps) => {
+export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, calendarSystem = "New" }: FastingCalendarViewProps) => {
   const currentMonth = selectedMonth;
   const currentYear = selectedYear;
 
@@ -72,7 +73,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   
   const weeklyFasts = getWeeklyFastDays(currentMonth, currentYear);
-  const fastingEvents = getFixedFastingEvents(currentYear);
+  const fastingEvents = getFixedFastingEvents(currentYear, calendarSystem);
 
   const getEventsForDay = (day: number) => {
     const checkDate = new Date(currentYear, currentMonth, day);
