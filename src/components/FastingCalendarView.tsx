@@ -12,8 +12,8 @@ interface FastingEvent {
 }
 
 // Convert shared data to calendar format
-const getFixedFastingEvents = (year: number): FastingEvent[] => {
-  const events = getAllFastingEvents(year);
+const getFixedFastingEvents = (year: number, calendarSystem: CalendarSystem): FastingEvent[] => {
+  const events = getAllFastingEvents(year, calendarSystem);
   
   return events.map(event => {
     const startDate = createDateFromEvent(year, event.month, event.day);
