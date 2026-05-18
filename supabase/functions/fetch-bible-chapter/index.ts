@@ -5,15 +5,13 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Map our translation IDs to bible-api.com translation codes
-const translationMap: Record<string, string> = {
-  'osb': 'kjv', // OSB not available in API, fallback to KJV
-  'kjv': 'kjv',
-  'nkjv': 'kjv', // NKJV not available, fallback to KJV
-  'rsv': 'kjv', // RSV not available in free API
-  'nrsv': 'kjv', // NRSV not available in free API
-  'esv': 'kjv', // ESV not available in free API (requires license)
-  'nasb': 'kjv', // NASB not available in free API
+// Translations supported by bible-api.com (public domain only)
+const supportedTranslations = new Set([
+  'kjv', 'web', 'asv', 'bbe', 'dra', 'ylt', 'darby', 'webbe', 'oeb-us', 'oeb-cw', 'clementine'
+]);
+// OSB is not available via the public API; fall back to KJV for unimported chapters.
+const translationFallback: Record<string, string> = {
+  'osb': 'kjv',
 };
 
 serve(async (req) => {
@@ -73,7 +71,10 @@ serve(async (req) => {
     }
 
     // Get the API translation code
-    const apiTranslation = translationMap[translation] || 'kjv';
+    const requested = (translation || 'kjv').toLowerCase();
+    const apiTranslation = supportedTranslations.has(requested)
+      ? requested
+      : (translationFallback[requested] || 'kjv');
 
     // Fetch from bible-api.com (free, no auth required)
     const response = await fetch(`https://bible-api.com/${apiBookName}${chapter}?translation=${apiTranslation}`);
