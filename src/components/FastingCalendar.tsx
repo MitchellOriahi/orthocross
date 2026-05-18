@@ -40,6 +40,7 @@ export const FastingCalendar = () => {
   const [reminders, setReminders] = useState<Map<string, number>>(new Map());
   const [showCalendarView, setShowCalendarView] = useState(false);
   const [selectedTradition, setSelectedTradition] = useState<"Eastern Orthodox" | "Oriental Orthodox">("Eastern Orthodox");
+  const [calendarSystem, setCalendarSystem] = useState<CalendarSystem>("New");
   const [showReminderDialog, setShowReminderDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<FastingEvent | null>(null);
   const [reminderDaysBefore, setReminderDaysBefore] = useState<string>("0");
