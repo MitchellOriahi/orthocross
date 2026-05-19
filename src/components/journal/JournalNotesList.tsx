@@ -139,8 +139,8 @@ export const JournalNotesList = ({
     );
   };
 
-  const renderGalleryNote = (note: JournalNote) => {
-    const { title, preview, hasImage, imageSrc } = getPreviewText(note);
+  const renderGalleryNote = (note: JournalNote, titleOverride?: string) => {
+    const { title, preview, hasImage, imageSrc } = getPreviewText(note, titleOverride);
     return (
       <div
         key={note.id}
