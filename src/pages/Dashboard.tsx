@@ -213,7 +213,7 @@ const Dashboard = () => {
 
       const currentProgress = chapterProgress?.progress || 0;
 
-      setLastReading({
+      const reading = {
         title: bookName,
         passage: `${bookName} ${nextChapter}`,
         progress: currentProgress,
@@ -221,10 +221,12 @@ const Dashboard = () => {
         chapter: nextChapter,
         totalChapters: totalChapters,
         bookProgress: bookProgressPercentage
-      });
+      };
+      setLastReading(reading);
+      sessionStorage.setItem('cached_last_reading', JSON.stringify(reading));
     } else {
       // No completed chapters, set default
-      setLastReading({
+      const reading = {
         title: "Gospel of John",
         passage: "John 1",
         progress: 0,
@@ -232,7 +234,9 @@ const Dashboard = () => {
         chapter: 1,
         totalChapters: 21,
         bookProgress: 0
-      });
+      };
+      setLastReading(reading);
+      sessionStorage.setItem('cached_last_reading', JSON.stringify(reading));
     }
     
     setLoadingReading(false);
