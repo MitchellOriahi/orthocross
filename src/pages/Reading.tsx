@@ -86,8 +86,21 @@ const Reading = () => {
     return !sessionStorage.getItem(versesCacheKey);
   });
   const [noteVerse, setNoteVerse] = useState<{ number: number; text: string } | null>(null);
+  const [showLongPressHint, setShowLongPressHint] = useState(false);
+  const [hintCountdown, setHintCountdown] = useState(3);
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const longPressTriggeredRef = useRef(false);
+
+  useEffect(() => {
+    if (localStorage.getItem('seenLongPressHint')) return;
+    setShowLongPressHint(true);
+    setHintCountdown(3);
+    localStorage.setItem('seenLongPressHint', '1');
+    const interval = setInterval(() => {
+      setHintCountdown((c) => (c > 0 ? c - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const startLongPress = (verse: { number: number; text: string }) => {
     longPressTriggeredRef.current = false;
