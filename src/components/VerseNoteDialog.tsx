@@ -100,11 +100,12 @@ export const VerseNoteDialog = ({
     setSaving(true);
     try {
       const folderId = await ensureFolderId();
-      const title = `${bookName} ${chapter}:${verseNumber}`;
+      const title = bookName;
+      const heading = `${bookName} ${chapter}:${verseNumber}`;
       const today = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
       const verseBlock =
         `<div class="flex items-baseline justify-between mb-2">` +
-          `<h2 class="text-xl font-semibold text-primary m-0">${escapeHtml(title)}</h2>` +
+          `<h2 class="text-xl font-semibold text-primary m-0">${escapeHtml(heading)}</h2>` +
           `<span class="text-sm text-muted-foreground">${escapeHtml(today)}</span>` +
         `</div>` +
         `<hr class="border-t border-border my-2" />` +
