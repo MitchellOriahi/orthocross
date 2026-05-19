@@ -1105,9 +1105,7 @@ const Reading = () => {
           <DialogHeader>
             <DialogTitle>Tip: Take notes on any verse</DialogTitle>
             <DialogDescription>
-              Long press (press and hold) on any verse to create a note, voice
-              recording, or drawing about it. It will be instantly saved in your
-              Notes alongside the verse.
+              Long press any verse to save a note, voice recording, or drawing about it.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
