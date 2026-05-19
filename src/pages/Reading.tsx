@@ -777,8 +777,22 @@ const Reading = () => {
                           `}
                           onClick={(e) => {
                             e.stopPropagation();
+                            if (longPressTriggeredRef.current) {
+                              longPressTriggeredRef.current = false;
+                              return;
+                            }
                             handleVerseClick(verse.number);
                           }}
+                          onDoubleClick={(e) => {
+                            e.stopPropagation();
+                            openVerseNote(verse);
+                          }}
+                          onTouchStart={() => startLongPress(verse)}
+                          onTouchEnd={cancelLongPress}
+                          onTouchMove={cancelLongPress}
+                          onMouseDown={() => startLongPress(verse)}
+                          onMouseUp={cancelLongPress}
+                          onMouseLeave={cancelLongPress}
                         >
                           <span className="font-bold text-primary mr-2">{verse.number}</span>
                           {bookmarked && <Bookmark className="w-3 h-3 inline-block mr-1 fill-primary text-primary" />}
