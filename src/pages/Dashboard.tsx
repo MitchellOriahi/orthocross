@@ -158,7 +158,10 @@ const Dashboard = () => {
   const fetchLastReading = async () => {
     if (!user) return;
 
-    setLoadingReading(true);
+    // Only show loader if we don't have cached data
+    if (!sessionStorage.getItem('cached_last_reading')) {
+      setLoadingReading(true);
+    }
     
     // Check if user has any completed chapters
     const { data: anyCompleted, count } = await supabase
