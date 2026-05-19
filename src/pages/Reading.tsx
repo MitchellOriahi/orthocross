@@ -93,7 +93,7 @@ const Reading = () => {
   const longPressTriggeredRef = useRef(false);
 
   useEffect(() => {
-    if (localStorage.getItem('seenLongPressHint')) return;
+    if (localStorage.getItem('seenLongPressHint_v2')) return;
     setShowLongPressHint(true);
     setHintCountdown(3);
     const interval = setInterval(() => {
@@ -110,7 +110,7 @@ const Reading = () => {
 
   useEffect(() => {
     if (showLongPressHint && hintCountdown === 0) {
-      localStorage.setItem('seenLongPressHint', '1');
+      localStorage.setItem('seenLongPressHint_v2', '1');
     }
   }, [showLongPressHint, hintCountdown]);
 
