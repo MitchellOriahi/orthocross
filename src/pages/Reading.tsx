@@ -1085,7 +1085,7 @@ const Reading = () => {
         }}
       >
         <DialogContent
-          className="sm:max-w-md"
+          className={`sm:max-w-md ${hintCountdown > 0 ? '[&>button]:hidden' : ''}`}
           onPointerDownOutside={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
           onEscapeKeyDown={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
           onInteractOutside={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
