@@ -1089,8 +1089,8 @@ const Reading = () => {
           onPointerDownOutside={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
           onEscapeKeyDown={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
           onInteractOutside={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
-          hideClose={hintCountdown > 0}
         >
+
           <DialogHeader>
             <DialogTitle>Tip: Take notes on any verse</DialogTitle>
             <DialogDescription>
