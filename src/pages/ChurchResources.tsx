@@ -750,9 +750,9 @@ const ChurchResources = () => {
               </CardHeader>
             </Card>
 
-            {/* Orthodox Churches Near Me - spans full width */}
+            {/* Orthodox Churches Near Me */}
             <Card
-              className="md:col-span-2 shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all p-8"
+              className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all p-8"
               onClick={() => !locatingChurches && handleFindChurchesNearMe()}
             >
               <CardHeader>
