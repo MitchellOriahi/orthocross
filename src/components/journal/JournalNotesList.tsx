@@ -298,14 +298,66 @@ export const JournalNotesList = ({
                 )}
               </div>
               
-              {unpinnedNotes.length > 0 && (
-                <div className={cn(viewMode === 'gallery' && "col-span-2")}>
-                  <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">All Notes</h4>
-                  <div className={cn(viewMode === 'list' ? "space-y-1" : "grid grid-cols-2 gap-2")}>
-                    {unpinnedNotes.map((note) => viewMode === 'list' ? renderListNote(note) : renderGalleryNote(note))}
+              {unpinnedNotes.length > 0 && (() => {
+                // Group unpinned notes by title to create stacks
+                const groups = new Map<string, JournalNote[]>();
+                const order: string[] = [];
+                for (const n of unpinnedNotes) {
+                  const key = (n.title || "Untitled").trim();
+                  if (!groups.has(key)) {
+                    groups.set(key, []);
+                    order.push(key);
+                  }
+                  groups.get(key)!.push(n);
+                }
+
+                const renderStackCard = (key: string, items: JournalNote[]) => {
+                  const isExpanded = expandedStacks.has(key);
+                  const latest = items[0];
+                  const { preview } = getPreviewText(latest);
+                  return (
+                    <div key={`stack-${key}`} className="relative">
+                      <button
+                        onClick={() => toggleStack(key)}
+                        className={cn(
+                          "w-full text-left p-3 rounded-lg transition-colors relative",
+                          "hover:bg-accent/50 bg-card border border-border",
+                          "shadow-[0_4px_0_-2px_hsl(var(--border)),0_8px_0_-4px_hsl(var(--border))]"
+                        )}
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          {isExpanded ? <ChevronDown className="h-3 w-3 text-muted-foreground" /> : <ChevronRight className="h-3 w-3 text-muted-foreground" />}
+                          <Layers className="h-3 w-3 text-muted-foreground" />
+                          <div className="font-medium text-sm truncate flex-1">{key}</div>
+                          <span className="text-xs text-muted-foreground bg-muted rounded-full px-2 py-0.5">{items.length}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground line-clamp-1 pl-5">{preview}</div>
+                      </button>
+                      {isExpanded && (
+                        <div className="mt-2 ml-4 pl-3 border-l-2 border-border space-y-1">
+                          {items.map((n) => viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                };
+
+                return (
+                  <div className={cn(viewMode === 'gallery' && "col-span-2")}>
+                    <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">All Notes</h4>
+                    <div className="space-y-2">
+                      {order.map((key) => {
+                        const items = groups.get(key)!;
+                        if (items.length === 1) {
+                          const n = items[0];
+                          return viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n);
+                        }
+                        return renderStackCard(key, items);
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
             </>
           )}
         </div>
