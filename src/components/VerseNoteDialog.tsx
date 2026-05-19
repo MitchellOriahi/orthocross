@@ -100,7 +100,8 @@ export const VerseNoteDialog = ({
     setSaving(true);
     try {
       const folderId = await ensureFolderId();
-      const title = `${bookName} ${chapter}:${verseNumber}`;
+      const title = bookName;
+      const heading = `${bookName} ${chapter}:${verseNumber}`;
       const today = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
       const verseBlock =
         `<div class="flex items-baseline justify-between mb-2">` +
