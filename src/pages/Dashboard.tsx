@@ -39,7 +39,6 @@ const Dashboard = () => {
   });
   const [loadingStreak, setLoadingStreak] = useState(false);
   const [hasAnyProgress, setHasAnyProgress] = useState(false);
-  const [loadingReading, setLoadingReading] = useState(false);
   const [guardianAngelResult, setGuardianAngelResult] = useState<GuardianAngelResult | null>(null);
   const [showGuardianAngelDialog, setShowGuardianAngelDialog] = useState(false);
   const [showMilestoneDialog, setShowMilestoneDialog] = useState(false);
@@ -53,7 +52,17 @@ const Dashboard = () => {
     chapter?: number;
     totalChapters?: number;
     bookProgress?: number;
-  } | null>(null);
+  } | null>(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_last_reading');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [loadingReading, setLoadingReading] = useState(() => {
+    return !sessionStorage.getItem('cached_last_reading');
+  });
 
   useEffect(() => {
     // Populate initial verses on first load
