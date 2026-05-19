@@ -49,8 +49,17 @@ export const JournalNotesList = ({
     });
   };
 
-  const getPreviewText = (note: JournalNote) => {
-    const title = note.title || "Untitled";
+  // Extract a verse reference like "Genesis 1:1" from a note (heading in content)
+  const getVerseRef = (note: JournalNote): string | null => {
+    const content = note.content || "";
+    const stripped = content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const m = stripped.match(/([1-3]?\s?[A-Za-z]+(?:\s[A-Za-z]+)?)\s+(\d+)\s*:\s*(\d+)/);
+    if (m) return `${m[1].trim()} ${m[2]}:${m[3]}`;
+    return null;
+  };
+
+  const getPreviewText = (note: JournalNote, titleOverride?: string) => {
+    const title = titleOverride ?? (note.title || "Untitled");
     const content = note.content || "";
     
     // Extract first image from content if exists
@@ -74,8 +83,8 @@ export const JournalNotesList = ({
   const pinnedNotes = notes.filter(n => n.pinned);
   const unpinnedNotes = notes.filter(n => !n.pinned);
 
-  const renderListNote = (note: JournalNote) => {
-    const { title, preview } = getPreviewText(note);
+  const renderListNote = (note: JournalNote, titleOverride?: string) => {
+    const { title, preview } = getPreviewText(note, titleOverride);
     return (
       <div
         key={note.id}
@@ -130,8 +139,8 @@ export const JournalNotesList = ({
     );
   };
 
-  const renderGalleryNote = (note: JournalNote) => {
-    const { title, preview, hasImage, imageSrc } = getPreviewText(note);
+  const renderGalleryNote = (note: JournalNote, titleOverride?: string) => {
+    const { title, preview, hasImage, imageSrc } = getPreviewText(note, titleOverride);
     return (
       <div
         key={note.id}
@@ -350,7 +359,10 @@ export const JournalNotesList = ({
                       </button>
                       {isExpanded && (
                         <div className="mt-2 ml-4 pl-3 border-l-2 border-border space-y-1">
-                          {items.map((n) => viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n))}
+                          {items.map((n) => {
+                            const ref = getVerseRef(n) ?? (n.title || "Untitled");
+                            return viewMode === 'list' ? renderListNote(n, ref) : renderGalleryNote(n, ref);
+                          })}
                         </div>
                       )}
                     </div>
