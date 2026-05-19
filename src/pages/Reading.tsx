@@ -23,6 +23,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { VerseNoteDialog } from "@/components/VerseNoteDialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 interface VerseHighlight {
   id: string;
@@ -86,8 +87,21 @@ const Reading = () => {
     return !sessionStorage.getItem(versesCacheKey);
   });
   const [noteVerse, setNoteVerse] = useState<{ number: number; text: string } | null>(null);
+  const [showLongPressHint, setShowLongPressHint] = useState(false);
+  const [hintCountdown, setHintCountdown] = useState(3);
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const longPressTriggeredRef = useRef(false);
+
+  useEffect(() => {
+    if (localStorage.getItem('seenLongPressHint')) return;
+    setShowLongPressHint(true);
+    setHintCountdown(3);
+    localStorage.setItem('seenLongPressHint', '1');
+    const interval = setInterval(() => {
+      setHintCountdown((c) => (c > 0 ? c - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const startLongPress = (verse: { number: number; text: string }) => {
     longPressTriggeredRef.current = false;
@@ -783,10 +797,8 @@ const Reading = () => {
                             }
                             handleVerseClick(verse.number);
                           }}
-                          onDoubleClick={(e) => {
-                            e.stopPropagation();
-                            openVerseNote(verse);
-                          }}
+
+
                           onTouchStart={() => startLongPress(verse)}
                           onTouchEnd={cancelLongPress}
                           onTouchMove={cancelLongPress}
@@ -893,10 +905,8 @@ const Reading = () => {
                           }
                           handleVerseClick(verses[currentVerseIndex].number);
                         }}
-                        onDoubleClick={(e) => {
-                          e.stopPropagation();
-                          openVerseNote(verses[currentVerseIndex]);
-                        }}
+
+
                         onTouchStart={() => startLongPress(verses[currentVerseIndex])}
                         onTouchEnd={cancelLongPress}
                         onTouchMove={cancelLongPress}
@@ -1068,6 +1078,38 @@ const Reading = () => {
           verseText={noteVerse.text}
         />
       )}
+      <Dialog
+        open={showLongPressHint}
+        onOpenChange={(o) => {
+          if (!o && hintCountdown === 0) setShowLongPressHint(false);
+        }}
+      >
+        <DialogContent
+          className={`sm:max-w-md ${hintCountdown > 0 ? '[&>button]:hidden' : ''}`}
+          onPointerDownOutside={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
+          onEscapeKeyDown={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
+          onInteractOutside={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
+        >
+
+          <DialogHeader>
+            <DialogTitle>Tip: Take notes on any verse</DialogTitle>
+            <DialogDescription>
+              Long press (press and hold) on any verse to create a note, voice
+              recording, or drawing about it. It will be instantly saved in your
+              Notes alongside the verse.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              disabled={hintCountdown > 0}
+              onClick={() => setShowLongPressHint(false)}
+              className="w-full"
+            >
+              {hintCountdown > 0 ? `Got it (${hintCountdown})` : "Got it"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
