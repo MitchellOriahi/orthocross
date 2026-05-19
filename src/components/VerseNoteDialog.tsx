@@ -101,7 +101,14 @@ export const VerseNoteDialog = ({
     try {
       const folderId = await ensureFolderId();
       const title = `${bookName} ${chapter}:${verseNumber}`;
-      const verseBlock = `<blockquote class="border-l-4 border-primary pl-3 my-2 italic text-muted-foreground"><strong>${escapeHtml(title)}</strong><br/>${escapeHtml(verseText)}</blockquote>`;
+      const today = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      const verseBlock =
+        `<div class="flex items-baseline justify-between mb-2">` +
+          `<h2 class="text-xl font-semibold text-primary m-0">${escapeHtml(title)}</h2>` +
+          `<span class="text-sm text-muted-foreground">${escapeHtml(today)}</span>` +
+        `</div>` +
+        `<hr class="border-t border-border my-2" />` +
+        `<p class="text-2xl leading-snug my-4">${escapeHtml(verseText)}</p>`;
 
       // Create note first (need id for storage path)
       const { data: note, error: noteErr } = await supabase
