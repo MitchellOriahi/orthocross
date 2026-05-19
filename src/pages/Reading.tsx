@@ -22,6 +22,7 @@ import { useTheme } from "next-themes";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
+import { VerseNoteDialog } from "@/components/VerseNoteDialog";
 
 interface VerseHighlight {
   id: string;
