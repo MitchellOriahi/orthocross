@@ -1,8 +1,9 @@
-import { Plus, Search, Trash2, Pin, PinOff, LayoutGrid, List } from "lucide-react";
+import { Plus, Search, Trash2, Pin, PinOff, LayoutGrid, List, Layers, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 
 interface JournalNote {
