@@ -22,6 +22,7 @@ import { useTheme } from "next-themes";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
+import { VerseNoteDialog } from "@/components/VerseNoteDialog";
 
 interface VerseHighlight {
   id: string;
@@ -84,6 +85,29 @@ const Reading = () => {
   const [loadingVerses, setLoadingVerses] = useState(() => {
     return !sessionStorage.getItem(versesCacheKey);
   });
+  const [noteVerse, setNoteVerse] = useState<{ number: number; text: string } | null>(null);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressTriggeredRef = useRef(false);
+
+  const startLongPress = (verse: { number: number; text: string }) => {
+    longPressTriggeredRef.current = false;
+    if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+    longPressTimerRef.current = setTimeout(() => {
+      longPressTriggeredRef.current = true;
+      setNoteVerse(verse);
+    }, 500);
+  };
+
+  const cancelLongPress = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  };
+
+  const openVerseNote = (verse: { number: number; text: string }) => {
+    setNoteVerse(verse);
+  };
 
   // Load verses from database first, then API, then fallback to hardcoded content
   useEffect(() => {
@@ -753,8 +777,22 @@ const Reading = () => {
                           `}
                           onClick={(e) => {
                             e.stopPropagation();
+                            if (longPressTriggeredRef.current) {
+                              longPressTriggeredRef.current = false;
+                              return;
+                            }
                             handleVerseClick(verse.number);
                           }}
+                          onDoubleClick={(e) => {
+                            e.stopPropagation();
+                            openVerseNote(verse);
+                          }}
+                          onTouchStart={() => startLongPress(verse)}
+                          onTouchEnd={cancelLongPress}
+                          onTouchMove={cancelLongPress}
+                          onMouseDown={() => startLongPress(verse)}
+                          onMouseUp={cancelLongPress}
+                          onMouseLeave={cancelLongPress}
                         >
                           <span className="font-bold text-primary mr-2">{verse.number}</span>
                           {bookmarked && <Bookmark className="w-3 h-3 inline-block mr-1 fill-primary text-primary" />}
@@ -849,8 +887,22 @@ const Reading = () => {
                         style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
                         onClick={(e) => {
                           e.stopPropagation();
+                          if (longPressTriggeredRef.current) {
+                            longPressTriggeredRef.current = false;
+                            return;
+                          }
                           handleVerseClick(verses[currentVerseIndex].number);
                         }}
+                        onDoubleClick={(e) => {
+                          e.stopPropagation();
+                          openVerseNote(verses[currentVerseIndex]);
+                        }}
+                        onTouchStart={() => startLongPress(verses[currentVerseIndex])}
+                        onTouchEnd={cancelLongPress}
+                        onTouchMove={cancelLongPress}
+                        onMouseDown={() => startLongPress(verses[currentVerseIndex])}
+                        onMouseUp={cancelLongPress}
+                        onMouseLeave={cancelLongPress}
                       >
                         <div className="text-center space-y-4">
                           <div>
@@ -1004,6 +1056,18 @@ const Reading = () => {
           </Card>
         </div>
       </main>
+
+      {noteVerse && (
+        <VerseNoteDialog
+          open={!!noteVerse}
+          onOpenChange={(o) => { if (!o) setNoteVerse(null); }}
+          book={book}
+          bookName={bookName}
+          chapter={chapter}
+          verseNumber={noteVerse.number}
+          verseText={noteVerse.text}
+        />
+      )}
     </div>
   );
 };
