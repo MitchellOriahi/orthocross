@@ -291,13 +291,13 @@ export default function Friends() {
     try {
       const currentMonth = new Date().toISOString().slice(0, 7);
 
-      // Load global leaderboard
+      // Load global leaderboard (top 15)
       const { data: leaderboardData, error: leaderboardError } = await supabase
         .from('monthly_leaderboard')
         .select('user_id, total_points')
         .eq('month_date', currentMonth)
         .order('total_points', { ascending: false })
-        .limit(50);
+        .limit(15);
 
       // If the request fails, do NOT clear UI (prevents flicker)
       if (leaderboardError) {
@@ -329,6 +329,46 @@ export default function Friends() {
         // Clear only on a successful request with no rows
         setLeaderboard([]);
       }
+
+      // Compute current user's rank if not in top 15
+      const inTop15 = leaderboardData?.some((l) => l.user_id === userId);
+      if (!inTop15) {
+        const { data: myEntry } = await supabase
+          .from('monthly_leaderboard')
+          .select('user_id, total_points')
+          .eq('month_date', currentMonth)
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        if (myEntry) {
+          const { count } = await supabase
+            .from('monthly_leaderboard')
+            .select('*', { count: 'exact', head: true })
+            .eq('month_date', currentMonth)
+            .gt('total_points', myEntry.total_points);
+
+          const { data: myProfile } = await supabase
+            .from('profiles')
+            .select('id, username, profile_picture_url')
+            .eq('id', userId)
+            .maybeSingle();
+
+          setCurrentUserRank({
+            entry: {
+              id: myEntry.user_id,
+              username: myProfile?.username || 'You',
+              profile_picture_url: myProfile?.profile_picture_url || null,
+              books_completed: myEntry.total_points || 0,
+            },
+            rank: (count || 0) + 1,
+          });
+        } else {
+          setCurrentUserRank(null);
+        }
+      } else {
+        setCurrentUserRank(null);
+      }
+
 
       // Load donators
       const { data: donatorsData, error: donatorsError } = await supabase
