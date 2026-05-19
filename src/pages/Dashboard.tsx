@@ -39,7 +39,6 @@ const Dashboard = () => {
   });
   const [loadingStreak, setLoadingStreak] = useState(false);
   const [hasAnyProgress, setHasAnyProgress] = useState(false);
-  const [loadingReading, setLoadingReading] = useState(false);
   const [guardianAngelResult, setGuardianAngelResult] = useState<GuardianAngelResult | null>(null);
   const [showGuardianAngelDialog, setShowGuardianAngelDialog] = useState(false);
   const [showMilestoneDialog, setShowMilestoneDialog] = useState(false);
@@ -53,7 +52,17 @@ const Dashboard = () => {
     chapter?: number;
     totalChapters?: number;
     bookProgress?: number;
-  } | null>(null);
+  } | null>(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_last_reading');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [loadingReading, setLoadingReading] = useState(() => {
+    return !sessionStorage.getItem('cached_last_reading');
+  });
 
   useEffect(() => {
     // Populate initial verses on first load
@@ -149,7 +158,10 @@ const Dashboard = () => {
   const fetchLastReading = async () => {
     if (!user) return;
 
-    setLoadingReading(true);
+    // Only show loader if we don't have cached data
+    if (!sessionStorage.getItem('cached_last_reading')) {
+      setLoadingReading(true);
+    }
     
     // Check if user has any completed chapters
     const { data: anyCompleted, count } = await supabase
@@ -201,7 +213,7 @@ const Dashboard = () => {
 
       const currentProgress = chapterProgress?.progress || 0;
 
-      setLastReading({
+      const reading = {
         title: bookName,
         passage: `${bookName} ${nextChapter}`,
         progress: currentProgress,
@@ -209,10 +221,12 @@ const Dashboard = () => {
         chapter: nextChapter,
         totalChapters: totalChapters,
         bookProgress: bookProgressPercentage
-      });
+      };
+      setLastReading(reading);
+      sessionStorage.setItem('cached_last_reading', JSON.stringify(reading));
     } else {
       // No completed chapters, set default
-      setLastReading({
+      const reading = {
         title: "Gospel of John",
         passage: "John 1",
         progress: 0,
@@ -220,7 +234,9 @@ const Dashboard = () => {
         chapter: 1,
         totalChapters: 21,
         bookProgress: 0
-      });
+      };
+      setLastReading(reading);
+      sessionStorage.setItem('cached_last_reading', JSON.stringify(reading));
     }
     
     setLoadingReading(false);
