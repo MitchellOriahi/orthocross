@@ -1056,6 +1056,18 @@ const Reading = () => {
           </Card>
         </div>
       </main>
+
+      {noteVerse && (
+        <VerseNoteDialog
+          open={!!noteVerse}
+          onOpenChange={(o) => { if (!o) setNoteVerse(null); }}
+          book={book}
+          bookName={bookName}
+          chapter={chapter}
+          verseNumber={noteVerse.number}
+          verseText={noteVerse.text}
+        />
+      )}
     </div>
   );
 };
