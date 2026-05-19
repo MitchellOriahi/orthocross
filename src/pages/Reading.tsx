@@ -96,12 +96,23 @@ const Reading = () => {
     if (localStorage.getItem('seenLongPressHint')) return;
     setShowLongPressHint(true);
     setHintCountdown(3);
-    localStorage.setItem('seenLongPressHint', '1');
     const interval = setInterval(() => {
-      setHintCountdown((c) => (c > 0 ? c - 1 : 0));
+      setHintCountdown((c) => {
+        if (c <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return c - 1;
+      });
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (showLongPressHint && hintCountdown === 0) {
+      localStorage.setItem('seenLongPressHint', '1');
+    }
+  }, [showLongPressHint, hintCountdown]);
 
   const startLongPress = (verse: { number: number; text: string }) => {
     longPressTriggeredRef.current = false;
@@ -1094,9 +1105,7 @@ const Reading = () => {
           <DialogHeader>
             <DialogTitle>Tip: Take notes on any verse</DialogTitle>
             <DialogDescription>
-              Long press (press and hold) on any verse to create a note, voice
-              recording, or drawing about it. It will be instantly saved in your
-              Notes alongside the verse.
+              Long press any verse to save a note, voice recording, or drawing about it.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
