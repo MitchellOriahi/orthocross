@@ -86,6 +86,7 @@ export default function Friends() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [currentUserRank, setCurrentUserRank] = useState<{ entry: LeaderboardEntry; rank: number } | null>(null);
   const [topDonators, setTopDonators] = useState<DonatorEntry[]>([]);
   const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
@@ -290,13 +291,13 @@ export default function Friends() {
     try {
       const currentMonth = new Date().toISOString().slice(0, 7);
 
-      // Load global leaderboard
+      // Load global leaderboard (top 15)
       const { data: leaderboardData, error: leaderboardError } = await supabase
         .from('monthly_leaderboard')
         .select('user_id, total_points')
         .eq('month_date', currentMonth)
         .order('total_points', { ascending: false })
-        .limit(50);
+        .limit(15);
 
       // If the request fails, do NOT clear UI (prevents flicker)
       if (leaderboardError) {
@@ -328,6 +329,46 @@ export default function Friends() {
         // Clear only on a successful request with no rows
         setLeaderboard([]);
       }
+
+      // Compute current user's rank if not in top 15
+      const inTop15 = leaderboardData?.some((l) => l.user_id === userId);
+      if (!inTop15) {
+        const { data: myEntry } = await supabase
+          .from('monthly_leaderboard')
+          .select('user_id, total_points')
+          .eq('month_date', currentMonth)
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        if (myEntry) {
+          const { count } = await supabase
+            .from('monthly_leaderboard')
+            .select('*', { count: 'exact', head: true })
+            .eq('month_date', currentMonth)
+            .gt('total_points', myEntry.total_points);
+
+          const { data: myProfile } = await supabase
+            .from('profiles')
+            .select('id, username, profile_picture_url')
+            .eq('id', userId)
+            .maybeSingle();
+
+          setCurrentUserRank({
+            entry: {
+              id: myEntry.user_id,
+              username: myProfile?.username || 'You',
+              profile_picture_url: myProfile?.profile_picture_url || null,
+              books_completed: myEntry.total_points || 0,
+            },
+            rank: (count || 0) + 1,
+          });
+        } else {
+          setCurrentUserRank(null);
+        }
+      } else {
+        setCurrentUserRank(null);
+      }
+
 
       // Load donators
       const { data: donatorsData, error: donatorsError } = await supabase
@@ -1320,8 +1361,32 @@ export default function Friends() {
                       </div>
                     );
                   })}
+
+                  {currentUserRank && (
+                    <>
+                      <div className="flex items-center gap-2 py-1">
+                        <div className="flex-1 border-t border-dashed border-border" />
+                        <span className="text-xs text-muted-foreground">Your rank</span>
+                        <div className="flex-1 border-t border-dashed border-border" />
+                      </div>
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/10 ring-1 ring-primary/30">
+                        <div className="min-w-8 h-8 px-2 flex items-center justify-center rounded-full font-bold bg-primary/20 text-primary">
+                          {currentUserRank.rank}
+                        </div>
+                        <Avatar>
+                          <AvatarImage src={currentUserRank.entry.profile_picture_url || undefined} />
+                          <AvatarFallback>{currentUserRank.entry.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium flex-1">{currentUserRank.entry.username} (You)</span>
+                        <span className="text-sm text-muted-foreground">
+                          {currentUserRank.entry.books_completed} {currentUserRank.entry.books_completed === 1 ? 'point' : 'points'}
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
+
             </CardContent>
           </Card>
         </TabsContent>
