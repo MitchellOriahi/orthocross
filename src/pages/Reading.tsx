@@ -887,8 +887,22 @@ const Reading = () => {
                         style={{ fontSize: `${fontSize[0]}px`, lineHeight: '1.8' }}
                         onClick={(e) => {
                           e.stopPropagation();
+                          if (longPressTriggeredRef.current) {
+                            longPressTriggeredRef.current = false;
+                            return;
+                          }
                           handleVerseClick(verses[currentVerseIndex].number);
                         }}
+                        onDoubleClick={(e) => {
+                          e.stopPropagation();
+                          openVerseNote(verses[currentVerseIndex]);
+                        }}
+                        onTouchStart={() => startLongPress(verses[currentVerseIndex])}
+                        onTouchEnd={cancelLongPress}
+                        onTouchMove={cancelLongPress}
+                        onMouseDown={() => startLongPress(verses[currentVerseIndex])}
+                        onMouseUp={cancelLongPress}
+                        onMouseLeave={cancelLongPress}
                       >
                         <div className="text-center space-y-4">
                           <div>
