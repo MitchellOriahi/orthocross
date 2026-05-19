@@ -85,6 +85,29 @@ const Reading = () => {
   const [loadingVerses, setLoadingVerses] = useState(() => {
     return !sessionStorage.getItem(versesCacheKey);
   });
+  const [noteVerse, setNoteVerse] = useState<{ number: number; text: string } | null>(null);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressTriggeredRef = useRef(false);
+
+  const startLongPress = (verse: { number: number; text: string }) => {
+    longPressTriggeredRef.current = false;
+    if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+    longPressTimerRef.current = setTimeout(() => {
+      longPressTriggeredRef.current = true;
+      setNoteVerse(verse);
+    }, 500);
+  };
+
+  const cancelLongPress = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  };
+
+  const openVerseNote = (verse: { number: number; text: string }) => {
+    setNoteVerse(verse);
+  };
 
   // Load verses from database first, then API, then fallback to hardcoded content
   useEffect(() => {
