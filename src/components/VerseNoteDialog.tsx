@@ -105,7 +105,7 @@ export const VerseNoteDialog = ({
       const verseBlock =
         `<h2 class="text-xl font-semibold text-primary m-0 mb-2">${escapeHtml(heading)}</h2>` +
         `<hr class="border-t border-border my-2" />` +
-        `<p class="text-2xl leading-snug my-4" style="color:#3b82f6;">${escapeHtml(verseText)}</p>`;
+        `<p class="journal-verse-text text-2xl leading-snug my-4">${escapeHtml(verseText)}</p>`;
 
       // Create note first (need id for storage path)
       const { data: note, error: noteErr } = await supabase
