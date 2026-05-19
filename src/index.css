@@ -267,3 +267,21 @@ All colors MUST be HSL.
 [contenteditable] .group:hover .media-delete-btn {
   display: flex !important;
 }
+
+/* Journal verse text color - orange in light mode, blue in dark mode */
+.journal-verse-text {
+  color: #f97316 !important;
+}
+
+.dark .journal-verse-text {
+  color: #3b82f6 !important;
+}
+
+/* Backward compatibility for existing notes with inline blue style */
+[contenteditable] p[style*="color:#3b82f6"] {
+  color: #f97316 !important;
+}
+
+.dark [contenteditable] p[style*="color:#3b82f6"] {
+  color: #3b82f6 !important;
+}
