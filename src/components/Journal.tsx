@@ -402,8 +402,7 @@ export const Journal = () => {
   };
 
   const pinnedNote = notes.find(n => n.pinned);
-  const mostRecentNote = notes.length > 0 ? notes[0] : null;
-  const displayNote = pinnedNote || mostRecentNote;
+  const displayNote = pinnedNote;
   const isPinned = displayNote?.pinned || false;
   const pinnedMediaUrl = displayNote?.pinned_media_url;
   const pinnedMediaType = displayNote?.pinned_media_type;
