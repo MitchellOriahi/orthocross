@@ -39,6 +39,16 @@ export const JournalNotesList = ({
   viewMode,
   onViewModeChange,
 }: JournalNotesListProps) => {
+  const [expandedStacks, setExpandedStacks] = useState<Set<string>>(new Set());
+
+  const toggleStack = (key: string) => {
+    setExpandedStacks((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  };
+
   const getPreviewText = (note: JournalNote) => {
     const title = note.title || "Untitled";
     const content = note.content || "";
