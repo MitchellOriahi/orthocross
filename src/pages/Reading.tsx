@@ -96,12 +96,23 @@ const Reading = () => {
     if (localStorage.getItem('seenLongPressHint')) return;
     setShowLongPressHint(true);
     setHintCountdown(3);
-    localStorage.setItem('seenLongPressHint', '1');
     const interval = setInterval(() => {
-      setHintCountdown((c) => (c > 0 ? c - 1 : 0));
+      setHintCountdown((c) => {
+        if (c <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return c - 1;
+      });
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (showLongPressHint && hintCountdown === 0) {
+      localStorage.setItem('seenLongPressHint', '1');
+    }
+  }, [showLongPressHint, hintCountdown]);
 
   const startLongPress = (verse: { number: number; text: string }) => {
     longPressTriggeredRef.current = false;
