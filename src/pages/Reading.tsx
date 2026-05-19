@@ -72,8 +72,18 @@ const Reading = () => {
   const [selectedColor, setSelectedColor] = useState('yellow');
   const [currentVerseIndex, setCurrentVerseIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [verses, setVerses] = useState<Array<{number: number; text: string}>>([]);
-  const [loadingVerses, setLoadingVerses] = useState(false);
+  const versesCacheKey = `cached_verses_${book}_${chapter}_${currentTranslation.id}`;
+  const [verses, setVerses] = useState<Array<{number: number; text: string}>>(() => {
+    try {
+      const cached = sessionStorage.getItem(versesCacheKey);
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [loadingVerses, setLoadingVerses] = useState(() => {
+    return !sessionStorage.getItem(versesCacheKey);
+  });
 
   // Load verses from database first, then API, then fallback to hardcoded content
   useEffect(() => {
