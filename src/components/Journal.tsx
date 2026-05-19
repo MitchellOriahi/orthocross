@@ -256,6 +256,27 @@ export const Journal = () => {
       }
     }
     
+    // Synchronously prime the editor with the selected note's content so it
+    // renders correctly on the first click (the editor only syncs innerHTML
+    // when noteId changes, so content must be ready by then).
+    const target = notes.find(n => n.id === noteId);
+    if (target) {
+      setCurrentTitle(target.title || "");
+      setCurrentContent(target.content || "");
+    } else {
+      // Fallback: fetch fresh from DB
+      const { data } = await (supabase as any)
+        .from('journal_entries')
+        .select('*')
+        .eq('id', noteId)
+        .single();
+      if (data) {
+        setCurrentTitle(data.title || "");
+        setCurrentContent(data.content || "");
+        setNotes((prev) => prev.some(n => n.id === data.id) ? prev : [data, ...prev]);
+      }
+    }
+
     setSelectedNoteId(noteId);
     setIsFullScreen(true);
     setIsNewUnmodifiedNote(false);

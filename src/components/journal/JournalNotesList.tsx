@@ -299,6 +299,13 @@ export const JournalNotesList = ({
               </div>
               
               {unpinnedNotes.length > 0 && (() => {
+                // Extract chapter/verse from a note's heading (e.g. "Genesis 1:1")
+                const getRef = (n: JournalNote): { ch: number; vs: number } => {
+                  const src = `${n.title || ""} ${n.content || ""}`;
+                  const m = src.match(/(\d+)\s*:\s*(\d+)/);
+                  return m ? { ch: parseInt(m[1], 10), vs: parseInt(m[2], 10) } : { ch: -1, vs: -1 };
+                };
+
                 // Group unpinned notes by title to create stacks
                 const groups = new Map<string, JournalNote[]>();
                 const order: string[] = [];
@@ -309,6 +316,14 @@ export const JournalNotesList = ({
                     order.push(key);
                   }
                   groups.get(key)!.push(n);
+                }
+                // Sort each group from furthest within the book to earliest
+                for (const key of order) {
+                  groups.get(key)!.sort((a, b) => {
+                    const ra = getRef(a), rb = getRef(b);
+                    if (rb.ch !== ra.ch) return rb.ch - ra.ch;
+                    return rb.vs - ra.vs;
+                  });
                 }
 
                 const renderStackCard = (key: string, items: JournalNote[]) => {
