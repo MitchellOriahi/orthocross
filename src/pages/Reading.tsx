@@ -1078,6 +1078,38 @@ const Reading = () => {
           verseText={noteVerse.text}
         />
       )}
+      <Dialog
+        open={showLongPressHint}
+        onOpenChange={(o) => {
+          if (!o && hintCountdown === 0) setShowLongPressHint(false);
+        }}
+      >
+        <DialogContent
+          className="sm:max-w-md"
+          onPointerDownOutside={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
+          onEscapeKeyDown={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
+          onInteractOutside={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
+          hideClose={hintCountdown > 0}
+        >
+          <DialogHeader>
+            <DialogTitle>Tip: Take notes on any verse</DialogTitle>
+            <DialogDescription>
+              Long press (press and hold) on any verse to create a note, voice
+              recording, or drawing about it. It will be instantly saved in your
+              Notes alongside the verse.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              disabled={hintCountdown > 0}
+              onClick={() => setShowLongPressHint(false)}
+              className="w-full"
+            >
+              {hintCountdown > 0 ? `Got it (${hintCountdown})` : "Got it"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
