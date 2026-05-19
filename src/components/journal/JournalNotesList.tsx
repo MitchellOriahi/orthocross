@@ -359,7 +359,10 @@ export const JournalNotesList = ({
                       </button>
                       {isExpanded && (
                         <div className="mt-2 ml-4 pl-3 border-l-2 border-border space-y-1">
-                          {items.map((n) => viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n))}
+                          {items.map((n) => {
+                            const ref = getVerseRef(n) ?? (n.title || "Untitled");
+                            return viewMode === 'list' ? renderListNote(n, ref) : renderGalleryNote(n, ref);
+                          })}
                         </div>
                       )}
                     </div>
