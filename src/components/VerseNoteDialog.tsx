@@ -126,7 +126,7 @@ export const VerseNoteDialog = ({
       let extra = "";
 
       if (noteText.trim()) {
-        extra += `<p>${escapeHtml(noteText).replace(/\n/g, "<br/>")}</p>`;
+        extra += `<blockquote class="border-l-4 border-destructive pl-3 my-3 text-base">${escapeHtml(noteText).replace(/\n/g, "<br/>")}</blockquote>`;
       }
 
       if (drawingDataUrl) {
