@@ -83,8 +83,8 @@ export const JournalNotesList = ({
   const pinnedNotes = notes.filter(n => n.pinned);
   const unpinnedNotes = notes.filter(n => !n.pinned);
 
-  const renderListNote = (note: JournalNote) => {
-    const { title, preview } = getPreviewText(note);
+  const renderListNote = (note: JournalNote, titleOverride?: string) => {
+    const { title, preview } = getPreviewText(note, titleOverride);
     return (
       <div
         key={note.id}
