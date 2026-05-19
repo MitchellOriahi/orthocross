@@ -783,10 +783,8 @@ const Reading = () => {
                             }
                             handleVerseClick(verse.number);
                           }}
-                          onDoubleClick={(e) => {
-                            e.stopPropagation();
-                            openVerseNote(verse);
-                          }}
+
+
                           onTouchStart={() => startLongPress(verse)}
                           onTouchEnd={cancelLongPress}
                           onTouchMove={cancelLongPress}
