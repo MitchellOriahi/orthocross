@@ -72,15 +72,46 @@ const Reading = () => {
   const [selectedColor, setSelectedColor] = useState('yellow');
   const [currentVerseIndex, setCurrentVerseIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [verses, setVerses] = useState<Array<{number: number; text: string}>>([]);
-  const [loadingVerses, setLoadingVerses] = useState(false);
+  const versesCacheKey = `cached_verses_${book}_${chapter}_${currentTranslation.id}`;
+  const [verses, setVerses] = useState<Array<{number: number; text: string}>>(() => {
+    try {
+      const cached = sessionStorage.getItem(versesCacheKey);
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [loadingVerses, setLoadingVerses] = useState(() => {
+    return !sessionStorage.getItem(versesCacheKey);
+  });
 
   // Load verses from database first, then API, then fallback to hardcoded content
   useEffect(() => {
     const loadVerses = async () => {
-      setLoadingVerses(true);
       const translationId = currentTranslation.id;
-      
+      const cacheKey = `cached_verses_${book}_${chapter}_${translationId}`;
+
+      // Use cached verses for instant display; only show loader if no cache
+      let hasCache = false;
+      try {
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setVerses(parsed);
+            hasCache = true;
+          }
+        }
+      } catch {}
+
+      if (!hasCache) {
+        setLoadingVerses(true);
+      }
+
+      const cacheVerses = (v: Array<{number: number; text: string}>) => {
+        try { sessionStorage.setItem(cacheKey, JSON.stringify(v)); } catch {}
+      };
+
       try {
         // First, try to load from database with specific translation
         const { data: dbVerses, error: dbError } = await supabase
@@ -97,6 +128,7 @@ const Reading = () => {
             text: v.verse_text
           }));
           setVerses(formattedVerses);
+          cacheVerses(formattedVerses);
           setLoadingVerses(false);
           return;
         }
@@ -106,7 +138,8 @@ const Reading = () => {
           const hardcodedVerses = bibleContent[book]?.[chapter];
           if (hardcodedVerses && hardcodedVerses.length > 0) {
             setVerses(hardcodedVerses);
-            
+            cacheVerses(hardcodedVerses);
+
             // Save hardcoded verses to database for future use
             const versesToInsert = hardcodedVerses.map(v => ({
               book,
@@ -115,13 +148,13 @@ const Reading = () => {
               verse_text: v.text,
               translation: translationId
             }));
-            
+
             await supabase
               .from('bible_verses')
               .upsert(versesToInsert, {
                 onConflict: 'book,chapter,verse_number,translation'
               });
-            
+
             setLoadingVerses(false);
             return;
           }
@@ -133,10 +166,11 @@ const Reading = () => {
         });
 
         if (error) throw error;
-        
+
         if (data?.verses && data.verses.length > 0) {
           setVerses(data.verses);
-          
+          cacheVerses(data.verses);
+
           // Save API verses to database for future use
           const versesToInsert = data.verses.map((v: {number: number, text: string}) => ({
             book,
@@ -145,18 +179,18 @@ const Reading = () => {
             verse_text: v.text,
             translation: translationId
           }));
-          
+
           await supabase
             .from('bible_verses')
             .upsert(versesToInsert, {
               onConflict: 'book,chapter,verse_number,translation'
             });
-        } else {
+        } else if (!hasCache) {
           setVerses([]);
         }
       } catch (error) {
         console.error('Error loading verses:', error);
-        setVerses([]);
+        if (!hasCache) setVerses([]);
       } finally {
         setLoadingVerses(false);
       }
@@ -164,6 +198,7 @@ const Reading = () => {
 
     loadVerses();
   }, [book, chapter, currentTranslation.id]);
+
 
   useEffect(() => {
     if (user) {
