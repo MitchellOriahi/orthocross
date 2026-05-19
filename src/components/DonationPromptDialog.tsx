@@ -45,14 +45,18 @@ export const DonationPromptDialog = () => {
         }
       }
 
-      // Check when prompt was last shown - show every 7 days
+      // Only show on Sundays
+      const today = new Date();
+      if (today.getDay() !== 0) {
+        return false;
+      }
+
+      // Only show once per Sunday
+      const todayKey = today.toISOString().slice(0, 10);
       const lastPromptShown = localStorage.getItem(`donation_prompt_shown_${user.id}`);
       if (lastPromptShown) {
-        const lastShownDate = new Date(lastPromptShown);
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-        if (lastShownDate > sevenDaysAgo) {
+        const lastShownKey = new Date(lastPromptShown).toISOString().slice(0, 10);
+        if (lastShownKey === todayKey) {
           return false;
         }
       }
