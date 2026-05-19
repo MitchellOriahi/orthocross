@@ -86,6 +86,7 @@ export default function Friends() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [currentUserRank, setCurrentUserRank] = useState<{ entry: LeaderboardEntry; rank: number } | null>(null);
   const [topDonators, setTopDonators] = useState<DonatorEntry[]>([]);
   const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
