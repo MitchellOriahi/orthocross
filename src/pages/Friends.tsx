@@ -1361,8 +1361,32 @@ export default function Friends() {
                       </div>
                     );
                   })}
+
+                  {currentUserRank && (
+                    <>
+                      <div className="flex items-center gap-2 py-1">
+                        <div className="flex-1 border-t border-dashed border-border" />
+                        <span className="text-xs text-muted-foreground">Your rank</span>
+                        <div className="flex-1 border-t border-dashed border-border" />
+                      </div>
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/10 ring-1 ring-primary/30">
+                        <div className="min-w-8 h-8 px-2 flex items-center justify-center rounded-full font-bold bg-primary/20 text-primary">
+                          {currentUserRank.rank}
+                        </div>
+                        <Avatar>
+                          <AvatarImage src={currentUserRank.entry.profile_picture_url || undefined} />
+                          <AvatarFallback>{currentUserRank.entry.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium flex-1">{currentUserRank.entry.username} (You)</span>
+                        <span className="text-sm text-muted-foreground">
+                          {currentUserRank.entry.books_completed} {currentUserRank.entry.books_completed === 1 ? 'point' : 'points'}
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
+
             </CardContent>
           </Card>
         </TabsContent>
