@@ -768,7 +768,7 @@ const ChurchResources = () => {
                       <div>Near Me</div>
                     </div>
                     <div className="text-sm text-muted-foreground font-normal">
-                      {locatingChurches ? "Locating you…" : "Find Orthodox churches"}
+                      {locatingChurches ? "Locating you…" : "Find an Orthodox church"}
                     </div>
                   </div>
                 </CardTitle>
