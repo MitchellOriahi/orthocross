@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Share2, Download, Mail, MessageSquare } from "lucide-react";
+import { Share2, Download, Mail, MessageSquare, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VerseShareDialogProps {
   open: boolean;
@@ -34,77 +35,105 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const loadImage = (src: string) =>
+    new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+
+  const drawTextOverlay = (
+    ctx: CanvasRenderingContext2D,
+    size: number,
+  ) => {
+    // Top darkening gradient for text legibility
+    const topShade = ctx.createLinearGradient(0, 0, 0, size);
+    topShade.addColorStop(0, "rgba(8, 12, 24, 0.78)");
+    topShade.addColorStop(0.55, "rgba(8, 12, 24, 0.35)");
+    topShade.addColorStop(1, "rgba(8, 12, 24, 0.55)");
+    ctx.fillStyle = topShade;
+    ctx.fillRect(0, 0, size, size);
+
+    // Subtle gold inner border
+    ctx.strokeStyle = "hsl(42 70% 70% / 0.35)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(40, 40, size - 80, size - 80);
+
+    const quote = `“${verseText}”`;
+    ctx.fillStyle = "hsl(0 0% 98%)";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.shadowColor = "rgba(0,0,0,0.85)";
+    ctx.shadowBlur = 18;
+
+    ctx.font = "500 56px Georgia, 'Times New Roman', serif";
+    const maxWidth = 880;
+    let lines = wrapCanvasText(ctx, quote, maxWidth);
+    if (lines.length > 8) {
+      ctx.font = "500 46px Georgia, 'Times New Roman', serif";
+      lines = wrapCanvasText(ctx, quote, maxWidth);
+    }
+    const lineHeight = lines.length > 7 ? 62 : 72;
+    const blockHeight = lines.length * lineHeight;
+    const startY = size * 0.36 - blockHeight / 2;
+    lines.forEach((line, index) => {
+      ctx.fillText(line, size / 2, startY + index * lineHeight);
+    });
+
+    ctx.fillStyle = "hsl(42 80% 78%)";
+    ctx.font = "italic 600 36px Georgia, serif";
+    ctx.fillText(`— ${verseReference}`, size / 2, startY + blockHeight + 56);
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "hsl(0 0% 96% / 0.85)";
+    ctx.font = "600 26px Inter, system-ui, sans-serif";
+    ctx.fillText("OrthoCross", size / 2, size - 70);
+  };
+
+  const drawFallbackBackground = (ctx: CanvasRenderingContext2D, size: number) => {
+    const bg = ctx.createLinearGradient(0, 0, size, size);
+    bg.addColorStop(0, "hsl(220 40% 8%)");
+    bg.addColorStop(0.6, "hsl(220 35% 14%)");
+    bg.addColorStop(1, "hsl(38 48% 22%)");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, size, size);
+    const glow = ctx.createRadialGradient(size * 0.5, size * 0.7, 60, size * 0.5, size * 0.7, 700);
+    glow.addColorStop(0, "hsl(42 72% 72% / 0.32)");
+    glow.addColorStop(1, "hsl(42 64% 28% / 0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, size, size);
+  };
+
   const generateImage = useCallback(async () => {
     setIsGenerating(true);
     try {
       await document.fonts?.ready;
-
-      const canvas = document.createElement("canvas");
       const size = 1080;
+      const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("Canvas is unavailable");
 
-      const background = ctx.createLinearGradient(0, 0, size, size);
-      background.addColorStop(0, "hsl(0 0% 2%)");
-      background.addColorStop(0.5, "hsl(0 0% 7%)");
-      background.addColorStop(1, "hsl(38 48% 16%)");
-      ctx.fillStyle = background;
-      ctx.fillRect(0, 0, size, size);
-
-      const glow = ctx.createRadialGradient(size * 0.5, size * 0.42, 40, size * 0.5, size * 0.42, 560);
-      glow.addColorStop(0, "hsl(42 72% 72% / 0.28)");
-      glow.addColorStop(0.45, "hsl(42 64% 42% / 0.1)");
-      glow.addColorStop(1, "hsl(42 64% 28% / 0)");
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, size, size);
-
-      ctx.strokeStyle = "hsl(42 70% 70% / 0.18)";
-      ctx.lineWidth = 3;
-      [92, 132, 888, 928].forEach((offset) => {
-        ctx.strokeRect(offset, offset, size - offset * 2, size - offset * 2);
-      });
-
-      ctx.save();
-      ctx.translate(size / 2, 190);
-      ctx.strokeStyle = "hsl(42 74% 74% / 0.78)";
-      ctx.lineWidth = 12;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(0, -54);
-      ctx.lineTo(0, 78);
-      ctx.moveTo(-42, -18);
-      ctx.lineTo(42, -18);
-      ctx.moveTo(-29, 24);
-      ctx.lineTo(29, 24);
-      ctx.stroke();
-      ctx.restore();
-
-      const quote = `“${verseText}”`;
-      ctx.fillStyle = "hsl(0 0% 96%)";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.font = "500 58px Georgia, 'Times New Roman', serif";
-      const maxWidth = 800;
-      let lines = wrapCanvasText(ctx, quote, maxWidth);
-      if (lines.length > 8) {
-        ctx.font = "500 50px Georgia, 'Times New Roman', serif";
-        lines = wrapCanvasText(ctx, quote, maxWidth);
+      let bgDrawn = false;
+      try {
+        const { data, error } = await supabase.functions.invoke("generate-verse-image", {
+          body: { verseText, verseReference },
+        });
+        if (error) throw error;
+        if (data?.imageUrl) {
+          const img = await loadImage(data.imageUrl);
+          ctx.drawImage(img, 0, 0, size, size);
+          bgDrawn = true;
+        }
+      } catch (err) {
+        console.warn("AI background failed, using fallback:", err);
       }
-      const lineHeight = lines.length > 7 ? 68 : 76;
-      const startY = size / 2 - ((lines.length - 1) * lineHeight) / 2;
-      lines.forEach((line, index) => {
-        ctx.fillText(line, size / 2, startY + index * lineHeight);
-      });
 
-      ctx.fillStyle = "hsl(42 70% 76%)";
-      ctx.font = "600 38px Inter, system-ui, sans-serif";
-      ctx.fillText(`— ${verseReference}`, size / 2, Math.min(850, startY + lines.length * lineHeight + 70));
-
-      ctx.fillStyle = "hsl(0 0% 88% / 0.78)";
-      ctx.font = "500 30px Inter, system-ui, sans-serif";
-      ctx.fillText("OrthoCross", size / 2, 970);
+      if (!bgDrawn) drawFallbackBackground(ctx, size);
+      drawTextOverlay(ctx, size);
 
       setImageUrl(canvas.toDataURL("image/png"));
     } catch (error) {
@@ -238,9 +267,20 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
             </div>
           </div>
 
-          <Button onClick={() => onOpenChange(false)} variant="default" className="w-full">
-            Close
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => { setImageUrl(null); generateImage(); }}
+              disabled={isGenerating}
+              variant="secondary"
+              className="flex-1 gap-2"
+            >
+              <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
+              New Image
+            </Button>
+            <Button onClick={() => onOpenChange(false)} variant="default" className="flex-1">
+              Close
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

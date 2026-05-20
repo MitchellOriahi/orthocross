@@ -47,18 +47,17 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const prompt = `Create a beautiful, shareable "Verse of the Day" image with an Orthodox Christian aesthetic:
-- Display this Bible verse text prominently and elegantly, centered, in clean readable serif typography, wrapped naturally on multiple lines: "${verseText}"
-- Below the verse, show the reference in smaller elegant text: "— ${verseReference}"
-- At the very bottom, in small refined letters: "OrthoCross"
-- Background: rich elegant gradient evoking reverence — deep midnight navy/black with subtle warm gold light, soft candlelit glow, faint Byzantine-inspired ornamental motifs in the corners (very subtle, low opacity)
-- Include a small, tasteful Orthodox cross motif as a decorative accent (not dominant)
-- Style: Sacred, contemplative, modern-minimalist with Orthodox iconographic warmth; gold and ivory accents on dark background
-- Typography: graceful serif for the verse, smaller refined sans or italic for the reference
-- Layout: Centered, generous breathing space, museum-quality composition
-- Aspect ratio: Square (1:1)
-- The text MUST be perfectly legible, no spelling errors, no text cut off
-- Overall feel: Peaceful, holy, share-worthy, beautiful enough for social media`;
+    const prompt = `Create a stunning 4K anime/Studio Ghibli-inspired illustration as a square (1:1) background image whose mood and scenery thematically match this Bible verse: "${verseText}" — ${verseReference}.
+
+Visual direction:
+- Cinematic anime key-visual quality, Makoto Shinkai / Studio Ghibli style — painterly clouds, volumetric light, lush detailed backgrounds, soft god-rays, glowing horizon
+- Reverent, peaceful, awe-inspiring atmosphere; sacred and contemplative
+- Compose with the TOP-CENTER area kept relatively calm and softly darkened so overlay text will be readable (sky, soft clouds, gentle gradient, no busy detail in the upper 60%)
+- Bottom of the image can feature beautiful detailed scenery thematically tied to the verse (mountains, sea, wheat fields, gardens, ancient stone paths, distant cathedral silhouettes, a lone wanderer with back turned, doves, olive trees, etc. — pick what fits the verse)
+- Warm gold + deep navy palette with soft ivory highlights; subtle Orthodox/Byzantine feel
+- IMPORTANT: Do NOT depict Jesus, God, saints, or any human faces. Show only scenery, symbolism, distant silhouettes from behind, or natural elements. No religious figures.
+- IMPORTANT: Do NOT include any text, letters, words, watermarks, signatures, or captions anywhere in the image.
+- Square aspect ratio 1:1, ultra-detailed, 4K, masterpiece quality`;
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
