@@ -183,7 +183,9 @@ export const JournalNotesList = ({
         key={note.id}
         className={cn(
           "group relative rounded-lg transition-all",
-          selectedNoteId === note.id ? "ring-2 ring-primary" : "hover:shadow-md"
+          selectedNoteId === note.id
+            ? "shadow-[0_0_0_2px_hsl(var(--primary)),0_0_18px_hsl(var(--primary)/0.45)]"
+            : "hover:shadow-md"
         )}
       >
         <button
