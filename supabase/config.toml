@@ -30,6 +30,9 @@ verify_jwt = false
 [functions.generate-silhouette-avatar]
 verify_jwt = false
 
+[functions.generate-verse-image]
+verify_jwt = false
+
 [functions.create-monthly-donation]
 verify_jwt = false
 
