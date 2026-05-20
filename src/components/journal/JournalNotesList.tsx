@@ -315,10 +315,15 @@ export const JournalNotesList = ({
                   return m ? { ch: parseInt(m[1], 10), vs: parseInt(m[2], 10) } : { ch: -1, vs: -1 };
                 };
 
-                // Group unpinned notes by title to create stacks
+                // A note is a "Bible note" if its content contains a verse reference
+                const isBibleNote = (n: JournalNote) => getVerseRef(n) !== null;
+                const bibleNotes = unpinnedNotes.filter(isBibleNote);
+                const personalNotes = unpinnedNotes.filter((n) => !isBibleNote(n));
+
+                // Group Bible notes by title (book name) to create stacks
                 const groups = new Map<string, JournalNote[]>();
                 const order: string[] = [];
-                for (const n of unpinnedNotes) {
+                for (const n of bibleNotes) {
                   const key = (n.title || "Untitled").trim();
                   if (!groups.has(key)) {
                     groups.set(key, []);
@@ -370,18 +375,32 @@ export const JournalNotesList = ({
                 };
 
                 return (
-                  <div className={cn(viewMode === 'gallery' && "col-span-2")}>
-                    <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">All Notes</h4>
-                    <div className="space-y-2">
-                      {order.map((key) => {
-                        const items = groups.get(key)!;
-                        if (items.length === 1) {
-                          const n = items[0];
-                          return viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n);
-                        }
-                        return renderStackCard(key, items);
-                      })}
-                    </div>
+                  <div className={cn(viewMode === 'gallery' && "col-span-2", "space-y-6")}>
+                    {personalNotes.length > 0 && (
+                      <div>
+                        <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1 uppercase tracking-wide">Personal Notes</h4>
+                        <div className={cn(viewMode === 'list' ? "space-y-1" : "grid grid-cols-2 gap-2")}>
+                          {personalNotes.map((n) => viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n))}
+                        </div>
+                      </div>
+                    )}
+
+                    {bibleNotes.length > 0 && (
+                      <div>
+                        <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1 uppercase tracking-wide">Bible Notes</h4>
+                        <div className="space-y-2">
+                          {order.map((key) => {
+                            const items = groups.get(key)!;
+                            if (items.length === 1) {
+                              const n = items[0];
+                              const ref = getVerseRef(n) ?? (n.title || "Untitled");
+                              return viewMode === 'list' ? renderListNote(n, ref) : renderGalleryNote(n, ref);
+                            }
+                            return renderStackCard(key, items);
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })()}
