@@ -50,8 +50,7 @@ export const JournalNotesList = ({
     });
   };
 
-  // Canonical list of Bible book names so we can classify a note by its title
-  const BIBLE_BOOKS = new Set<string>([
+  const BIBLE_BOOK_ORDER = [
     "Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth",
     "1 Samuel","2 Samuel","1 Kings","2 Kings","1 Chronicles","2 Chronicles",
     "Ezra","Nehemiah","Esther","Job","Psalms","Psalm","Proverbs","Ecclesiastes",
@@ -64,7 +63,10 @@ export const JournalNotesList = ({
     "Galatians","Ephesians","Philippians","Colossians","1 Thessalonians","2 Thessalonians",
     "1 Timothy","2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter",
     "1 John","2 John","3 John","Jude","Revelation",
-  ]);
+  ];
+
+  // Canonical list of Bible book names so we can classify a note by its title
+  const BIBLE_BOOKS = new Set<string>(BIBLE_BOOK_ORDER);
 
   // Extract a verse reference like "Genesis 1:1" from a note (heading in content)
   const getVerseRef = (note: JournalNote): string | null => {
