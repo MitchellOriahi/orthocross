@@ -50,6 +50,22 @@ export const JournalNotesList = ({
     });
   };
 
+  // Canonical list of Bible book names so we can classify a note by its title
+  const BIBLE_BOOKS = new Set<string>([
+    "Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth",
+    "1 Samuel","2 Samuel","1 Kings","2 Kings","1 Chronicles","2 Chronicles",
+    "Ezra","Nehemiah","Esther","Job","Psalms","Psalm","Proverbs","Ecclesiastes",
+    "Song of Solomon","Song of Songs","Isaiah","Jeremiah","Lamentations","Ezekiel",
+    "Daniel","Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk",
+    "Zephaniah","Haggai","Zechariah","Malachi","Tobit","Judith","Wisdom","Sirach",
+    "Baruch","1 Maccabees","2 Maccabees","3 Maccabees","1 Esdras","2 Esdras",
+    "Prayer of Manasseh",
+    "Matthew","Mark","Luke","John","Acts","Romans","1 Corinthians","2 Corinthians",
+    "Galatians","Ephesians","Philippians","Colossians","1 Thessalonians","2 Thessalonians",
+    "1 Timothy","2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter",
+    "1 John","2 John","3 John","Jude","Revelation",
+  ]);
+
   // Extract a verse reference like "Genesis 1:1" from a note (heading in content)
   const getVerseRef = (note: JournalNote): string | null => {
     const content = note.content || "";
@@ -58,6 +74,12 @@ export const JournalNotesList = ({
     if (m) return `${m[1].trim()} ${m[2]}:${m[3]}`;
     return null;
   };
+
+  const isBibleBookTitle = (note: JournalNote) => {
+    const t = (note.title || "").trim();
+    return BIBLE_BOOKS.has(t);
+  };
+
 
   const getPreviewText = (note: JournalNote, titleOverride?: string) => {
     const title = titleOverride ?? (note.title || "Untitled");
