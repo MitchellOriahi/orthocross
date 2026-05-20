@@ -182,13 +182,13 @@ export const JournalNotesList = ({
       <div
         key={note.id}
         className={cn(
-          "group relative rounded-lg overflow-hidden transition-all",
+          "group relative rounded-lg transition-all",
           selectedNoteId === note.id ? "ring-2 ring-primary" : "hover:shadow-md"
         )}
       >
         <button
           onClick={() => onNoteSelect(note.id)}
-          className="w-full text-left bg-card"
+          className="w-full text-left bg-card rounded-lg overflow-hidden block"
         >
           <div className="aspect-square bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center overflow-hidden">
             {hasImage && imageSrc ? (
@@ -199,12 +199,12 @@ export const JournalNotesList = ({
               />
             ) : (
               <div className="p-4 text-sm text-muted-foreground line-clamp-6 text-center">
-                {preview || "Empty note"}
+                {preview || ""}
               </div>
             )}
           </div>
           <div className="p-3">
-            <div className="font-medium text-sm truncate mb-1">
+            <div className="font-medium text-sm truncate mb-1 min-h-[1.25rem]">
               {title}
             </div>
             <div className="text-xs text-muted-foreground">
