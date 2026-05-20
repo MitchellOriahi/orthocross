@@ -413,8 +413,8 @@ export const JournalNotesList = ({
                     <div className="relative grid grid-cols-2 p-1 mb-3 bg-muted rounded-lg">
                       <div
                         className={cn(
-                          "absolute top-1 bottom-1 w-[calc(50%-0.25rem)] rounded-md bg-background shadow-sm transition-transform duration-300 ease-out",
-                          activeTab === 'bible' ? "translate-x-[calc(100%+0.25rem)]" : "translate-x-0"
+                          "absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-md bg-background shadow-sm transition-transform duration-300 ease-out",
+                          activeTab === 'bible' ? "translate-x-full" : "translate-x-0"
                         )}
                       />
                       <button
@@ -424,7 +424,7 @@ export const JournalNotesList = ({
                           activeTab === 'personal' ? "text-foreground" : "text-muted-foreground"
                         )}
                       >
-                        Personal
+                        Personal Notes
                       </button>
                       <button
                         onClick={() => setActiveTab('bible')}
@@ -433,7 +433,7 @@ export const JournalNotesList = ({
                           activeTab === 'bible' ? "text-foreground" : "text-muted-foreground"
                         )}
                       >
-                        Bible
+                        Bible Notes
                       </button>
                     </div>
 
