@@ -48,48 +48,58 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     ctx: CanvasRenderingContext2D,
     size: number,
   ) => {
-    // Top darkening gradient for text legibility
-    const topShade = ctx.createLinearGradient(0, 0, 0, size);
-    topShade.addColorStop(0, "rgba(8, 12, 24, 0.78)");
-    topShade.addColorStop(0.55, "rgba(8, 12, 24, 0.35)");
-    topShade.addColorStop(1, "rgba(8, 12, 24, 0.55)");
-    ctx.fillStyle = topShade;
-    ctx.fillRect(0, 0, size, size);
+    // Bottom gradient band — keeps artwork visible on top, text legible below
+    const bandTop = size * 0.5;
+    const band = ctx.createLinearGradient(0, bandTop, 0, size);
+    band.addColorStop(0, "rgba(8, 12, 24, 0)");
+    band.addColorStop(0.45, "rgba(8, 12, 24, 0.65)");
+    band.addColorStop(1, "rgba(8, 12, 24, 0.92)");
+    ctx.fillStyle = band;
+    ctx.fillRect(0, bandTop, size, size - bandTop);
 
-    // Subtle gold inner border
-    ctx.strokeStyle = "hsl(42 70% 70% / 0.35)";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(40, 40, size - 80, size - 80);
+    // Thin gold hairline frame
+    ctx.strokeStyle = "hsl(42 70% 70% / 0.45)";
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(28, 28, size - 56, size - 56);
+
+    // Small cross ornament above the verse
+    const crossY = size * 0.62;
+    ctx.fillStyle = "hsl(42 80% 75%)";
+    ctx.fillRect(size / 2 - 1.5, crossY - 14, 3, 28);
+    ctx.fillRect(size / 2 - 9, crossY - 1.5, 18, 3);
 
     const quote = `“${verseText}”`;
-    ctx.fillStyle = "hsl(0 0% 98%)";
+    ctx.fillStyle = "hsl(40 30% 96%)";
     ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.shadowColor = "rgba(0,0,0,0.85)";
-    ctx.shadowBlur = 18;
+    ctx.textBaseline = "top";
+    ctx.shadowColor = "rgba(0,0,0,0.9)";
+    ctx.shadowBlur = 16;
 
-    ctx.font = "500 56px Georgia, 'Times New Roman', serif";
+    ctx.font = "400 44px 'Cormorant Garamond', Georgia, 'Times New Roman', serif";
     const maxWidth = 880;
     let lines = wrapCanvasText(ctx, quote, maxWidth);
-    if (lines.length > 8) {
-      ctx.font = "500 46px Georgia, 'Times New Roman', serif";
+    if (lines.length > 6) {
+      ctx.font = "400 38px 'Cormorant Garamond', Georgia, serif";
       lines = wrapCanvasText(ctx, quote, maxWidth);
     }
-    const lineHeight = lines.length > 7 ? 62 : 72;
-    const blockHeight = lines.length * lineHeight;
-    const startY = size * 0.36 - blockHeight / 2;
+    const lineHeight = lines.length > 5 ? 50 : 58;
+    const startY = crossY + 28;
     lines.forEach((line, index) => {
       ctx.fillText(line, size / 2, startY + index * lineHeight);
     });
 
-    ctx.fillStyle = "hsl(42 80% 78%)";
-    ctx.font = "italic 600 36px Georgia, serif";
-    ctx.fillText(`— ${verseReference}`, size / 2, startY + blockHeight + 56);
+    // Reference in gold tracked caps
+    ctx.fillStyle = "hsl(42 78% 72%)";
+    ctx.font = "500 22px 'Inter', system-ui, sans-serif";
+    const refY = startY + lines.length * lineHeight + 24;
+    const refText = verseReference.toUpperCase().split("").join(" ");
+    ctx.fillText(refText, size / 2, refY);
 
+    // Signature
     ctx.shadowBlur = 0;
-    ctx.fillStyle = "hsl(0 0% 96% / 0.85)";
-    ctx.font = "600 26px Inter, system-ui, sans-serif";
-    ctx.fillText("OrthoCross", size / 2, size - 70);
+    ctx.fillStyle = "hsl(0 0% 92% / 0.7)";
+    ctx.font = "500 16px 'Inter', system-ui, sans-serif";
+    ctx.fillText("O R T H O C R O S S", size / 2, size - 56);
   };
 
   const drawFallbackBackground = (ctx: CanvasRenderingContext2D, size: number) => {
