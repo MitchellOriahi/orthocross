@@ -339,7 +339,7 @@ export const JournalNotesList = ({
                 };
 
                 // A note is a "Bible note" if its content contains a verse reference
-                const isBibleNote = (n: JournalNote) => getVerseRef(n) !== null;
+                const isBibleNote = (n: JournalNote) => getVerseRef(n) !== null || isBibleBookTitle(n);
                 const bibleNotes = unpinnedNotes.filter(isBibleNote);
                 const personalNotes = unpinnedNotes.filter((n) => !isBibleNote(n));
 
