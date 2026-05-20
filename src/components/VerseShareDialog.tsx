@@ -267,9 +267,20 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
             </div>
           </div>
 
-          <Button onClick={() => onOpenChange(false)} variant="default" className="w-full">
-            Close
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => { setImageUrl(null); generateImage(); }}
+              disabled={isGenerating}
+              variant="secondary"
+              className="flex-1 gap-2"
+            >
+              <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
+              New Image
+            </Button>
+            <Button onClick={() => onOpenChange(false)} variant="default" className="flex-1">
+              Close
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
