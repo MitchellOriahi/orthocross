@@ -389,6 +389,12 @@ export const JournalNotesList = ({
                   }
                   groups.get(key)!.push(n);
                 }
+                // Sort book groups by canonical Bible order
+                order.sort((a, b) => {
+                  const idxA = BIBLE_BOOK_ORDER.indexOf(a);
+                  const idxB = BIBLE_BOOK_ORDER.indexOf(b);
+                  return idxA - idxB;
+                });
                 // Sort each group from furthest within the book to earliest
                 for (const key of order) {
                   groups.get(key)!.sort((a, b) => {
