@@ -202,7 +202,7 @@ export const VerseNoteDialog = ({
           </TabsContent>
         </Tabs>
 
-        <DialogFooter>
+        <DialogFooter className="gap-3 sm:gap-3">
           <Button variant="outline" onClick={() => handleClose(false)} disabled={saving}>Cancel</Button>
           <Button onClick={handleSave} disabled={saving}>
             {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Saving...</> : "Save to Journal"}
