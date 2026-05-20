@@ -349,11 +349,28 @@ export const JournalNotesList = ({
                 const bibleNotes = unpinnedNotes.filter(isBibleNote);
                 const personalNotes = unpinnedNotes.filter((n) => !isBibleNote(n));
 
-                // Group Bible notes by title (book name) to create stacks
+                // Derive the canonical book name from a Bible note's title,
+                // so "Exodus 1:1" still groups under "Exodus".
+                const getBookKey = (n: JournalNote): string => {
+                  const raw = (n.title || "Untitled").trim();
+                  for (const book of BIBLE_BOOKS) {
+                    if (raw === book) return book;
+                    if (raw.startsWith(book + " ") || raw.startsWith(book + ":")) return book;
+                  }
+                  // Fall back to verse ref in content (e.g. "Exodus 1:1") then strip the numbers
+                  const ref = getVerseRef(n);
+                  if (ref) {
+                    const m = ref.match(/^([1-3]?\s?[A-Za-z]+(?:\s[A-Za-z]+)?)\s+\d+/);
+                    if (m) return m[1].trim();
+                  }
+                  return raw;
+                };
+
+                // Group Bible notes by book name to create stacks
                 const groups = new Map<string, JournalNote[]>();
                 const order: string[] = [];
                 for (const n of bibleNotes) {
-                  const key = (n.title || "Untitled").trim();
+                  const key = getBookKey(n);
                   if (!groups.has(key)) {
                     groups.set(key, []);
                     order.push(key);
