@@ -375,33 +375,78 @@ export const JournalNotesList = ({
                   );
                 };
 
-                return (
-                  <div className={cn(viewMode === 'gallery' && "col-span-2", "space-y-6")}>
-                    {personalNotes.length > 0 && (
-                      <div>
-                        <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1 uppercase tracking-wide">Personal Notes</h4>
-                        <div className={cn(viewMode === 'list' ? "space-y-1" : "grid grid-cols-2 gap-2")}>
-                          {personalNotes.map((n) => viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n))}
-                        </div>
+                const renderPersonal = () => (
+                  <div className={cn(viewMode === 'list' ? "space-y-1" : "grid grid-cols-2 gap-2")}>
+                    {personalNotes.length > 0 ? (
+                      personalNotes.map((n) => viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n))
+                    ) : (
+                      <div className={cn("text-center py-8 text-sm text-muted-foreground", viewMode === 'gallery' && "col-span-2")}>
+                        No personal notes yet
                       </div>
                     )}
+                  </div>
+                );
 
-                    {bibleNotes.length > 0 && (
-                      <div>
-                        <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1 uppercase tracking-wide">Bible Notes</h4>
-                        <div className="space-y-2">
-                          {order.map((key) => {
-                            const items = groups.get(key)!;
-                            if (items.length === 1) {
-                              const n = items[0];
-                              const ref = getVerseRef(n) ?? (n.title || "Untitled");
-                              return viewMode === 'list' ? renderListNote(n, ref) : renderGalleryNote(n, ref);
-                            }
-                            return renderStackCard(key, items);
-                          })}
-                        </div>
+                const renderBible = () => (
+                  <div className="space-y-2">
+                    {bibleNotes.length > 0 ? (
+                      order.map((key) => {
+                        const items = groups.get(key)!;
+                        if (items.length === 1) {
+                          const n = items[0];
+                          const ref = getVerseRef(n) ?? (n.title || "Untitled");
+                          return viewMode === 'list' ? renderListNote(n, ref) : renderGalleryNote(n, ref);
+                        }
+                        return renderStackCard(key, items);
+                      })
+                    ) : (
+                      <div className="text-center py-8 text-sm text-muted-foreground">
+                        No Bible notes yet
                       </div>
                     )}
+                  </div>
+                );
+
+                return (
+                  <div className={cn(viewMode === 'gallery' && "col-span-2")}>
+                    {/* Tab slider */}
+                    <div className="relative grid grid-cols-2 p-1 mb-3 bg-muted rounded-lg">
+                      <div
+                        className={cn(
+                          "absolute top-1 bottom-1 w-[calc(50%-0.25rem)] rounded-md bg-background shadow-sm transition-transform duration-300 ease-out",
+                          activeTab === 'bible' ? "translate-x-[calc(100%+0.25rem)]" : "translate-x-0"
+                        )}
+                      />
+                      <button
+                        onClick={() => setActiveTab('personal')}
+                        className={cn(
+                          "relative z-10 text-xs font-medium py-1.5 rounded-md transition-colors",
+                          activeTab === 'personal' ? "text-foreground" : "text-muted-foreground"
+                        )}
+                      >
+                        Personal
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('bible')}
+                        className={cn(
+                          "relative z-10 text-xs font-medium py-1.5 rounded-md transition-colors",
+                          activeTab === 'bible' ? "text-foreground" : "text-muted-foreground"
+                        )}
+                      >
+                        Bible
+                      </button>
+                    </div>
+
+                    {/* Sliding pane */}
+                    <div className="overflow-hidden">
+                      <div
+                        className="flex transition-transform duration-300 ease-out"
+                        style={{ transform: activeTab === 'bible' ? 'translateX(-100%)' : 'translateX(0)' }}
+                      >
+                        <div className="w-full shrink-0 pr-2">{renderPersonal()}</div>
+                        <div className="w-full shrink-0 pl-2">{renderBible()}</div>
+                      </div>
+                    </div>
                   </div>
                 );
               })()}
