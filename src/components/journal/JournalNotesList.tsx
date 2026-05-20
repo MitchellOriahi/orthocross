@@ -184,7 +184,7 @@ export const JournalNotesList = ({
         className={cn(
           "group relative rounded-lg transition-all",
           selectedNoteId === note.id
-            ? "shadow-[0_0_0_2px_hsl(var(--primary)),0_0_18px_hsl(var(--primary)/0.45)]"
+            ? "bg-accent/60"
             : "hover:shadow-md"
         )}
       >
