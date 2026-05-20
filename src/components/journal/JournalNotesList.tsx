@@ -409,7 +409,7 @@ export const JournalNotesList = ({
                         <div className="text-xs text-muted-foreground line-clamp-1 pl-5">{preview}</div>
                       </button>
                       {isExpanded && (
-                        <div className="mt-2 ml-4 pl-3 border-l-2 border-border space-y-1">
+                        <div className={cn("mt-2 space-y-1", viewMode === 'list' ? "ml-4 pl-3 border-l-2 border-border" : "")}>
                           {items.map((n) => {
                             const ref = getVerseRef(n) ?? (n.title || "Untitled");
                             return viewMode === 'list' ? renderListNote(n, ref) : renderGalleryNote(n, ref);
