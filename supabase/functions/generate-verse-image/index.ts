@@ -47,17 +47,33 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const prompt = `Create a stunning 4K anime/Studio Ghibli-inspired illustration as a square (1:1) background image whose mood and scenery thematically match this Bible verse: "${verseText}" — ${verseReference}.
+    // Vary the artistic style based on the verse so each share feels unique
+    const styles = [
+      "cinematic Makoto Shinkai anime key-visual — hyper-detailed painterly skies, volumetric god-rays, glowing horizon, lens flare",
+      "Studio Ghibli watercolor landscape — soft pastel washes, hand-painted clouds, gentle wind through grass, nostalgic warmth",
+      "ukiyo-e woodblock print reinterpreted with anime sensibility — bold flat color planes, stylized waves and clouds, gold leaf accents",
+      "moody anime oil-painting style — deep chiaroscuro, candle-warm highlights, baroque atmosphere, Caravaggio-inspired light",
+      "ethereal celestial anime art — nebulae, starfields, aurora, drifting petals or embers, dreamlike scale",
+      "serene Eastern Orthodox iconographic landscape reimagined as anime — gold-leaf sky, Byzantine ornament patterns subtly woven into clouds, deep jewel tones",
+      "minimalist anime ink-wash (sumi-e) with a single bold accent color — vast negative space, restrained brushwork, meditative silence",
+    ];
+    // Deterministic-ish pick from verse reference so the same verse trends toward similar style, but with variety across verses
+    const styleIndex = Math.abs([...verseReference].reduce((a, c) => a + c.charCodeAt(0), 0)) % styles.length;
+    const chosenStyle = styles[(styleIndex + Math.floor(Math.random() * 3)) % styles.length];
 
-Visual direction:
-- Cinematic anime key-visual quality, Makoto Shinkai / Studio Ghibli style — painterly clouds, volumetric light, lush detailed backgrounds, soft god-rays, glowing horizon
-- Reverent, peaceful, awe-inspiring atmosphere; sacred and contemplative
-- Compose with the TOP-CENTER area kept relatively calm and softly darkened so overlay text will be readable (sky, soft clouds, gentle gradient, no busy detail in the upper 60%)
-- Bottom of the image can feature beautiful detailed scenery thematically tied to the verse (mountains, sea, wheat fields, gardens, ancient stone paths, distant cathedral silhouettes, a lone wanderer with back turned, doves, olive trees, etc. — pick what fits the verse)
-- Warm gold + deep navy palette with soft ivory highlights; subtle Orthodox/Byzantine feel
-- IMPORTANT: Do NOT depict Jesus, God, saints, or any human faces. Show only scenery, symbolism, distant silhouettes from behind, or natural elements. No religious figures.
-- IMPORTANT: Do NOT include any text, letters, words, watermarks, signatures, or captions anywhere in the image.
-- Square aspect ratio 1:1, ultra-detailed, 4K, masterpiece quality`;
+    const prompt = `Create a stunning 4K square (1:1) background illustration whose imagery, mood, palette, and symbolism are derived SPECIFICALLY from this Bible verse: "${verseText}" — ${verseReference}.
+
+Artistic style for THIS image: ${chosenStyle}.
+
+Interpretation rules:
+- READ THE VERSE and choose scenery, weather, time of day, season, colors, and symbolic motifs that directly evoke its meaning. Different verses must produce visibly different images (a verse about light → dawn breaking; about waters → seas/rivers; about shepherds → green pastures; about refuge → mountains/strongholds; about harvest → wheat fields; about peace → still gardens; about fire → embers and warm glow; etc.).
+- Reverent, contemplative, awe-inspiring atmosphere with Orthodox/Byzantine spiritual undertone.
+- Compose so the UPPER-CENTER region is calmer and slightly darker (sky, soft gradient, gentle clouds, mist) to allow overlay text to remain readable. Place the richest detail in the lower two-thirds.
+- Acceptable elements: landscapes, seas, mountains, deserts, gardens, wheat, olive trees, doves, lanterns, ancient stone paths, distant cathedrals/monasteries, lone wanderer from behind, candles, open scrolls, vines, lambs, stars.
+- STRICTLY FORBIDDEN: any depiction of Jesus, God, angels with faces, saints, or any human face. No religious figures with visible features — only distant silhouettes from behind or symbolic objects.
+- STRICTLY FORBIDDEN: any text, letters, words, numerals, watermarks, signatures, calligraphy, or captions anywhere in the image.
+- Square 1:1, ultra-detailed, 4K, masterpiece quality, gallery-worthy.`;
+
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
