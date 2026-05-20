@@ -324,7 +324,7 @@ export const JournalNotesList = ({
               )}
               
               {/* New Note Button below Journal Cover */}
-              <div className={cn(viewMode === 'gallery' && "col-span-2", "mb-4")}>
+              <div className={cn(viewMode === 'gallery' && "", "mb-4")}>
                 {viewMode === 'list' ? (
                   <button
                     onClick={onNoteCreate}
