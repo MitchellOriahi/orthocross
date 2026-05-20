@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Mail, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 
 interface VerseShareDialogProps {
   open: boolean;
@@ -12,32 +11,115 @@ interface VerseShareDialogProps {
   verseReference: string;
 }
 
+const wrapCanvasText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let currentLine = "";
+
+  words.forEach((word) => {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    if (ctx.measureText(testLine).width > maxWidth && currentLine) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = testLine;
+    }
+  });
+
+  if (currentLine) lines.push(currentLine);
+  return lines;
+};
+
 export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference }: VerseShareDialogProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const generateImage = async () => {
+  const generateImage = useCallback(async () => {
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('generate-verse-image', {
-        body: { verseText, verseReference },
+      await document.fonts?.ready;
+
+      const canvas = document.createElement("canvas");
+      const size = 1080;
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas is unavailable");
+
+      const background = ctx.createLinearGradient(0, 0, size, size);
+      background.addColorStop(0, "hsl(0 0% 2%)");
+      background.addColorStop(0.5, "hsl(0 0% 7%)");
+      background.addColorStop(1, "hsl(38 48% 16%)");
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, size, size);
+
+      const glow = ctx.createRadialGradient(size * 0.5, size * 0.42, 40, size * 0.5, size * 0.42, 560);
+      glow.addColorStop(0, "hsl(42 72% 72% / 0.28)");
+      glow.addColorStop(0.45, "hsl(42 64% 42% / 0.1)");
+      glow.addColorStop(1, "hsl(42 64% 28% / 0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, size, size);
+
+      ctx.strokeStyle = "hsl(42 70% 70% / 0.18)";
+      ctx.lineWidth = 3;
+      [92, 132, 888, 928].forEach((offset) => {
+        ctx.strokeRect(offset, offset, size - offset * 2, size - offset * 2);
       });
-      if (error) throw error;
-      if (data?.imageUrl) setImageUrl(data.imageUrl);
+
+      ctx.save();
+      ctx.translate(size / 2, 190);
+      ctx.strokeStyle = "hsl(42 74% 74% / 0.78)";
+      ctx.lineWidth = 12;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(0, -54);
+      ctx.lineTo(0, 78);
+      ctx.moveTo(-42, -18);
+      ctx.lineTo(42, -18);
+      ctx.moveTo(-29, 24);
+      ctx.lineTo(29, 24);
+      ctx.stroke();
+      ctx.restore();
+
+      const quote = `“${verseText}”`;
+      ctx.fillStyle = "hsl(0 0% 96%)";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = "500 58px Georgia, 'Times New Roman', serif";
+      const maxWidth = 800;
+      let lines = wrapCanvasText(ctx, quote, maxWidth);
+      if (lines.length > 8) {
+        ctx.font = "500 50px Georgia, 'Times New Roman', serif";
+        lines = wrapCanvasText(ctx, quote, maxWidth);
+      }
+      const lineHeight = lines.length > 7 ? 68 : 76;
+      const startY = size / 2 - ((lines.length - 1) * lineHeight) / 2;
+      lines.forEach((line, index) => {
+        ctx.fillText(line, size / 2, startY + index * lineHeight);
+      });
+
+      ctx.fillStyle = "hsl(42 70% 76%)";
+      ctx.font = "600 38px Inter, system-ui, sans-serif";
+      ctx.fillText(`— ${verseReference}`, size / 2, Math.min(850, startY + lines.length * lineHeight + 70));
+
+      ctx.fillStyle = "hsl(0 0% 88% / 0.78)";
+      ctx.font = "500 30px Inter, system-ui, sans-serif";
+      ctx.fillText("OrthoCross", size / 2, 970);
+
+      setImageUrl(canvas.toDataURL("image/png"));
     } catch (error) {
       console.error('Error generating verse image:', error);
       toast.error("Failed to generate image. Please try again.");
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [verseReference, verseText]);
 
   useEffect(() => {
     if (open && !imageUrl && !isGenerating) {
       generateImage();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [generateImage, imageUrl, isGenerating, open]);
 
   // Reset when verse changes
   useEffect(() => {
