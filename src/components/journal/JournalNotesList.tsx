@@ -116,6 +116,10 @@ export const JournalNotesList = ({
 
   const renderListNote = (note: JournalNote, titleOverride?: string) => {
     const { title, preview } = getPreviewText(note, titleOverride);
+    // Apple-Notes style: if no title, use the first words of the note as the title,
+    // and skip showing the body line so it doesn't repeat.
+    const displayTitle = title || (preview ? preview.substring(0, 40) : "New Note");
+    const showBody = !!title && !!preview;
     return (
       <div
         key={note.id}
@@ -129,11 +133,13 @@ export const JournalNotesList = ({
           className="w-full text-left"
         >
           <div className="font-medium text-sm truncate mb-1 pr-16">
-            {title}
+            {displayTitle}
           </div>
-          <div className="text-xs text-muted-foreground line-clamp-2 mb-1">
-            {preview}
-          </div>
+          {showBody && (
+            <div className="text-xs text-muted-foreground line-clamp-2 mb-1">
+              {preview}
+            </div>
+          )}
           <div className="text-xs text-muted-foreground">
             {formatDistanceToNow(new Date(note.updated_at), { addSuffix: true })}
           </div>
