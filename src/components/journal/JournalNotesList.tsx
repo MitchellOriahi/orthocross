@@ -392,11 +392,6 @@ export const JournalNotesList = ({
                     {bibleNotes.length > 0 ? (
                       order.map((key) => {
                         const items = groups.get(key)!;
-                        if (items.length === 1) {
-                          const n = items[0];
-                          const ref = getVerseRef(n) ?? (n.title || "Untitled");
-                          return viewMode === 'list' ? renderListNote(n, ref) : renderGalleryNote(n, ref);
-                        }
                         return renderStackCard(key, items);
                       })
                     ) : (
