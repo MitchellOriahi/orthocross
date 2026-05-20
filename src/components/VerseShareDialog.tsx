@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Share2, Download, Mail, MessageSquare } from "lucide-react";
+import { Share2, Download, Mail, MessageSquare, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VerseShareDialogProps {
   open: boolean;
