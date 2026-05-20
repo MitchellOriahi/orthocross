@@ -40,6 +40,7 @@ export const JournalNotesList = ({
   onViewModeChange,
 }: JournalNotesListProps) => {
   const [expandedStacks, setExpandedStacks] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState<'personal' | 'bible'>('personal');
 
   const toggleStack = (key: string) => {
     setExpandedStacks((prev) => {
