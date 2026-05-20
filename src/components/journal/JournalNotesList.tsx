@@ -491,8 +491,8 @@ export const JournalNotesList = ({
                         className="flex transition-transform duration-300 ease-out"
                         style={{ transform: activeTab === 'bible' ? 'translateX(-100%)' : 'translateX(0)' }}
                       >
-                        <div className="w-full shrink-0 pr-2">{renderPersonal()}</div>
-                        <div className="w-full shrink-0 pl-2">{renderBible()}</div>
+                        <div className="w-full shrink-0">{renderPersonal()}</div>
+                        <div className="w-full shrink-0">{renderBible()}</div>
                       </div>
                     </div>
                   </div>
