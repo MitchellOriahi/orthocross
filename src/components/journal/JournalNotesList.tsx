@@ -77,7 +77,13 @@ export const JournalNotesList = ({
 
   const isBibleBookTitle = (note: JournalNote) => {
     const t = (note.title || "").trim();
-    return BIBLE_BOOKS.has(t);
+    if (BIBLE_BOOKS.has(t)) return true;
+    // Also match titles like "Exodus", "Exodus 1:1", "1 Samuel 3:10", etc.
+    for (const book of BIBLE_BOOKS) {
+      if (t === book) return true;
+      if (t.startsWith(book + " ") || t.startsWith(book + ":")) return true;
+    }
+    return false;
   };
 
 
