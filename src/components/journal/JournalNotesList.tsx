@@ -88,14 +88,13 @@ export const JournalNotesList = ({
 
 
   const getPreviewText = (note: JournalNote, titleOverride?: string) => {
-    const title = titleOverride ?? (note.title || "Untitled");
     const content = note.content || "";
-    
+
     // Extract first image from content if exists
     const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
     const hasImage = !!imgMatch;
     const imageSrc = imgMatch ? imgMatch[1] : null;
-    
+
     // Strip HTML tags for text preview, but don't show URLs
     const textContent = content
       .replace(/<img[^>]*>/g, '')
@@ -104,8 +103,11 @@ export const JournalNotesList = ({
       .replace(/<[^>]+>/g, '')
       .replace(/https?:\/\/[^\s]+/g, '') // Remove URLs
       .trim();
-    
+
     const preview = textContent.substring(0, 100);
+    // Raw title: use override, then stored title, otherwise empty (callers decide fallback)
+    const rawTitle = titleOverride ?? (note.title || "").trim();
+    const title = rawTitle;
     return { title, preview, hasImage, imageSrc };
   };
 
