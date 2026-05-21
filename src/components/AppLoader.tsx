@@ -144,9 +144,25 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
             sessionStorage.setItem(`history_progress_${userId}`, JSON.stringify(historyProgress));
           } catch {}
 
-          // Cache hasAnyProgress flag for Dashboard board progress bar
+          // Cache hasAnyProgress + Overall Bible Completion + per-book progress
           try {
-            sessionStorage.setItem('cached_has_any_progress', String((completedChaptersCountResult.count ?? 0) > 0));
+            const chapters = completedChaptersCountResult.data || [];
+            sessionStorage.setItem('cached_has_any_progress', String(chapters.length > 0));
+
+            const { BIBLE_BOOKS } = await import('@/data/bibleContent');
+            const progressByBook: Record<string, number> = {};
+            let totalCompleted = 0;
+            const totalBibleChapters = BIBLE_BOOKS.reduce((sum, b) => sum + b.totalChapters, 0);
+            BIBLE_BOOKS.forEach((book) => {
+              const done = chapters.filter((c: any) => c.book_key === book.title).length;
+              totalCompleted += done;
+              if (done > 0) {
+                progressByBook[book.title] = Math.round((done / book.totalChapters) * 100);
+              }
+            });
+            const completion = Math.round((totalCompleted / totalBibleChapters) * 1000) / 10;
+            sessionStorage.setItem('cached_bible_completion', String(completion));
+            sessionStorage.setItem('cached_book_progress', JSON.stringify(progressByBook));
           } catch {}
 
           // Resolve full user groups (with member counts) and seed React Query cache
