@@ -39,8 +39,18 @@ const Index = () => {
   const { theme } = useTheme();
   const [lastRead, setLastRead] = useState<ReadingProgress | null>(null);
   const [loading, setLoading] = useState(false);
-  const [bibleCompletion, setBibleCompletion] = useState(0);
-  const [bookProgress, setBookProgress] = useState<Record<string, number>>({});
+  const [bibleCompletion, setBibleCompletion] = useState<number>(() => {
+    const cached = sessionStorage.getItem('cached_bible_completion');
+    return cached ? parseFloat(cached) : 0;
+  });
+  const [bookProgress, setBookProgress] = useState<Record<string, number>>(() => {
+    try {
+      const cached = sessionStorage.getItem('cached_book_progress');
+      return cached ? JSON.parse(cached) : {};
+    } catch {
+      return {};
+    }
+  });
   const [hasScriptureData, setHasScriptureData] = useState(true);
   const [importing, setImporting] = useState(false);
   const [showChapterMarking, setShowChapterMarking] = useState(false);
@@ -204,6 +214,10 @@ const Index = () => {
       
       setBookProgress(progressByBook);
       setBibleCompletion(completion);
+      try {
+        sessionStorage.setItem('cached_bible_completion', String(completion));
+        sessionStorage.setItem('cached_book_progress', JSON.stringify(progressByBook));
+      } catch {}
     } catch (error) {
       console.error('Error loading Bible completion:', error);
     }
