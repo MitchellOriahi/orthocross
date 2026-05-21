@@ -32,7 +32,13 @@ const OrthodoxHistory = () => {
   const { theme } = useTheme();
   const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
-  const [progress, setProgress] = useState<UserProgress[]>([]);
+  const [progress, setProgress] = useState<UserProgress[]>(() => {
+    try {
+      const cached = user?.id ? sessionStorage.getItem(`history_progress_${user.id}`) : null;
+      if (cached) return JSON.parse(cached) as UserProgress[];
+    } catch {}
+    return [];
+  });
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [completedCampaignType, setCompletedCampaignType] = useState<"eastern" | "oriental" | null>(null);
 
@@ -43,6 +49,11 @@ const OrthodoxHistory = () => {
 
   useEffect(() => {
     if (user) {
+      // Hydrate from cache immediately when user becomes available (in case it wasn't ready on init)
+      try {
+        const cached = sessionStorage.getItem(`history_progress_${user.id}`);
+        if (cached) setProgress(JSON.parse(cached) as UserProgress[]);
+      } catch {}
       loadProgress();
     }
   }, [user]);
@@ -56,12 +67,14 @@ const OrthodoxHistory = () => {
       .eq('user_id', user.id);
 
     if (data) {
-      setProgress(data.map(item => ({
+      const mapped = data.map(item => ({
         campaignId: item.campaign_id,
         islandId: item.island_id,
         completed: item.completed,
         xpEarned: item.xp_earned
-      })));
+      }));
+      setProgress(mapped);
+      try { sessionStorage.setItem(`history_progress_${user.id}`, JSON.stringify(mapped)); } catch {}
     }
   };
 
