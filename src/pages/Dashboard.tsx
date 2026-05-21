@@ -38,7 +38,9 @@ const Dashboard = () => {
     return cached ? parseInt(cached, 10) : null;
   });
   const [loadingStreak, setLoadingStreak] = useState(false);
-  const [hasAnyProgress, setHasAnyProgress] = useState(false);
+  const [hasAnyProgress, setHasAnyProgress] = useState<boolean>(() => {
+    return sessionStorage.getItem('cached_has_any_progress') === 'true';
+  });
   const [guardianAngelResult, setGuardianAngelResult] = useState<GuardianAngelResult | null>(null);
   const [showGuardianAngelDialog, setShowGuardianAngelDialog] = useState(false);
   const [showMilestoneDialog, setShowMilestoneDialog] = useState(false);
