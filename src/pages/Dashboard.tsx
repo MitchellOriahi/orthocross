@@ -259,7 +259,9 @@ const Dashboard = () => {
             .eq('user_id', user.id)
             .limit(1);
           
-          setHasAnyProgress((count ?? 0) > 0);
+          const hasProgressV = (count ?? 0) > 0;
+          setHasAnyProgress(hasProgressV);
+          try { sessionStorage.setItem('cached_has_any_progress', String(hasProgressV)); } catch {}
 
           const { data: lastCompleted } = await supabase
             .from('completed_chapters')
