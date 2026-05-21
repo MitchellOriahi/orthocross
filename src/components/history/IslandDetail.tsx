@@ -266,30 +266,37 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             </div>
 
 
-            <div className="bg-white dark:bg-black border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
-              <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
-              <div className="relative">
-                {getArmorEmblem(island.awardPiece)}
-                <div className="absolute inset-0 pointer-events-none">
-                  {[...Array(12)].map((_, i) => (
-                    <Sparkles 
-                      key={i}
-                      className="absolute text-primary animate-ping"
-                      style={{
-                        top: `${Math.random() * 100}%`,
-                        left: `${Math.random() * 100}%`,
-                        animationDelay: `${i * 0.1}s`,
-                        animationDuration: "1s"
-                      }}
-                    />
-                  ))}
+            {island.awardPiece ? (
+              <div className="bg-white dark:bg-black border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
+                <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
+                <div className="relative">
+                  {getArmorEmblem(island.awardPiece)}
+                  <div className="absolute inset-0 pointer-events-none">
+                    {[...Array(12)].map((_, i) => (
+                      <Sparkles 
+                        key={i}
+                        className="absolute text-primary animate-ping"
+                        style={{
+                          top: `${Math.random() * 100}%`,
+                          left: `${Math.random() * 100}%`,
+                          animationDelay: `${i * 0.1}s`,
+                          animationDuration: "1s"
+                        }}
+                      />
+                    ))}
+                  </div>
+                <p className="text-2xl font-bold capitalize relative z-10">
+                  {island.awardPiece.replace(/_/g, ' ')}
+                  </p>
                 </div>
-              <p className="text-2xl font-bold capitalize relative z-10">
-                {island.awardPiece.replace(/_/g, ' ')}
-                </p>
+                <p className="text-sm text-muted-foreground mt-4">A piece of the Armor of God</p>
               </div>
-              <p className="text-sm text-muted-foreground mt-4">A piece of the Armor of God</p>
-            </div>
+            ) : (
+              <div className="bg-white dark:bg-black border-2 border-primary rounded-xl p-6 mb-6 shadow-lg">
+                <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">Chapter Complete</p>
+                <p className="text-lg font-semibold">Your journey through history continues. Keep going to earn the next piece of armor!</p>
+              </div>
+            )}
             
             <Button 
               onClick={() => {
