@@ -110,7 +110,7 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
               .eq('user_id', userId),
             supabase
               .from('completed_chapters')
-              .select('*', { count: 'exact', head: true })
+              .select('book_key, chapter')
               .eq('user_id', userId),
           ]);
 
