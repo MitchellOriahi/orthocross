@@ -10,13 +10,29 @@ interface AppLoaderProps {
   onAuthReady: (isAuthenticated: boolean, userId: string | null) => void;
 }
 
+// Module-level flag so the splash only ever runs once per session,
+// even if AppLoader is unmounted/remounted by an ancestor re-render.
+let hasInitialized = false;
+let cachedAuth: { isAuthenticated: boolean; userId: string | null } | null = null;
+
 export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!hasInitialized);
   const [fadeOut, setFadeOut] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     let mounted = true;
+
+    // If we already initialized once, just replay the auth callback synchronously
+    // and skip the splash entirely.
+    if (hasInitialized) {
+      if (cachedAuth) {
+        onAuthReady(cachedAuth.isAuthenticated, cachedAuth.userId);
+      }
+      return () => {
+        mounted = false;
+      };
+    }
 
     const initializeApp = async () => {
       try {
