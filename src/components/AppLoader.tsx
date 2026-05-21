@@ -178,22 +178,28 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
             }
           }
 
+          cachedAuth = { isAuthenticated: true, userId };
           if (mounted) {
             onAuthReady(true, userId);
           }
         } else {
           // Not authenticated - just a brief delay for smooth UX
           await new Promise(resolve => setTimeout(resolve, 500));
+          cachedAuth = { isAuthenticated: false, userId: null };
           if (mounted) {
             onAuthReady(false, null);
           }
         }
       } catch (error) {
         console.error('Error initializing app:', error);
+        cachedAuth = { isAuthenticated: false, userId: null };
         if (mounted) {
           onAuthReady(false, null);
         }
       }
+
+      hasInitialized = true;
+
 
       // Start fade out animation
       if (mounted) {
