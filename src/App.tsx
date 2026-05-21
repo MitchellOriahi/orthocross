@@ -54,6 +54,7 @@ const AppContent = () => {
     <AppLoader onAuthReady={handleAuthReady}>
       <AuthProvider>
         <NotificationManager />
+        <TutorialIntro />
         <Routes>
           {/* Root route - redirect based on auth state */}
           <Route 
@@ -92,10 +93,9 @@ const App = () => (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <MusicProvider>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <TutorialIntro />
           <BrowserRouter>
+            <Toaster />
+            <Sonner />
             <AppContent />
           </BrowserRouter>
         </TooltipProvider>
