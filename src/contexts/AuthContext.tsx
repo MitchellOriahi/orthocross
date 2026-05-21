@@ -14,6 +14,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+let cachedAuthState: {
+  user: User | null;
+  session: Session | null;
+} | null = null;
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -23,31 +28,35 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(() => cachedAuthState?.user ?? null);
+  const [session, setSession] = useState<Session | null>(() => cachedAuthState?.session ?? null);
+  const [loading, setLoading] = useState(() => !cachedAuthState);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for existing session FIRST (synchronously if possible)
     let mounted = true;
-    
-    supabase.auth.getSession().then(({ data: { session } }) => {
+
+    const applySession = (nextSession: Session | null) => {
+      cachedAuthState = {
+        session: nextSession,
+        user: nextSession?.user ?? null,
+      };
+
       if (mounted) {
-        setSession(session);
-        setUser(session?.user ?? null);
+        setSession(cachedAuthState.session);
+        setUser(cachedAuthState.user);
         setLoading(false);
       }
+    };
+    
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      applySession(session);
     });
 
     // Then set up auth state listener for future changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if (mounted) {
-          setSession(session);
-          setUser(session?.user ?? null);
-          setLoading(false);
-        }
+        applySession(session);
       }
     );
 
