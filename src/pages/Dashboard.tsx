@@ -172,7 +172,9 @@ const Dashboard = () => {
       .eq('user_id', user.id)
       .limit(1);
     
-    setHasAnyProgress((count ?? 0) > 0);
+    const hasProgress = (count ?? 0) > 0;
+    setHasAnyProgress(hasProgress);
+    try { sessionStorage.setItem('cached_has_any_progress', String(hasProgress)); } catch {}
 
     // Get the most recent completed chapter
     const { data: lastCompleted } = await supabase
