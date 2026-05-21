@@ -92,10 +92,9 @@ const App = () => (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <MusicProvider>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <TutorialIntro />
           <BrowserRouter>
+            <Toaster />
+            <Sonner />
             <AppContent />
           </BrowserRouter>
         </TooltipProvider>
