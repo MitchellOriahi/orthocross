@@ -203,6 +203,136 @@ export const historyContent = {
               correctAnswer: 0
             }
           ]
+        },
+        {
+          id: "eo_7",
+          title: "The Synodal Era & Imperial Russia (1701–1900 AD)",
+          awardPiece: "breastplate_of_righteousness",
+          iconUrl: rublevTheotokos,
+          reading: "In 1721, Tsar Peter the Great made huge changes to the Russian Orthodox Church. He abolished the Patriarchate of Moscow and replaced it with a 'Holy Synod' - a committee of bishops controlled by the government. Peter wanted to modernize Russia by copying Western Europe, and he didn't want a powerful Patriarch standing in his way. For nearly 200 years, the Russian Church was directly governed by the state.\n\nEven with these restrictions, the spiritual life of the Church continued. Great saints rose up to remind people of true Orthodoxy. St. Tikhon of Zadonsk wrote beautiful works on the Christian life. St. Paisius Velichkovsky traveled to Mount Athos, translated the writings of the Church Fathers into Slavonic, and brought the Jesus Prayer and hesychast tradition back to Russia. His disciples spread this renewal throughout Russian monasteries.\n\nOut of this revival came the Optina Elders - holy monks at Optina Monastery who guided thousands of pilgrims, including famous writers like Dostoevsky and Tolstoy. St. Seraphim of Sarov lived in the forest for years, prayed on a rock for 1,000 nights, and shone with the uncreated light of God. He greeted everyone with 'Christ is risen, my joy!' and taught that the goal of Christian life is acquiring the Holy Spirit.\n\nOrthodox missions also expanded in this era. St. Herman of Alaska and other Russian monks crossed the Bering Sea to bring Orthodoxy to the native peoples of Alaska. They learned native languages, defended the people against cruel Russian traders, and built the first Orthodox churches in North America. St. Innocent of Alaska translated the Bible and liturgy into native languages.\n\nMeanwhile, Orthodox peoples under Ottoman rule began winning their freedom. Greece gained independence in 1830, and the Church of Greece became autocephalous (self-governing). Serbia, Romania, and Bulgaria also won independence and re-established their own Orthodox churches. After centuries of Turkish rule, Orthodox nations were rising again.",
+          quiz: [
+            {
+              question: "Who abolished the Patriarchate of Moscow and created the Holy Synod?",
+              options: ["Tsar Peter the Great", "Catherine the Great", "Patriarch Nikon", "Ivan the Terrible"],
+              correctAnswer: 0
+            },
+            {
+              question: "St. Seraphim of Sarov taught that the goal of Christian life is:",
+              options: ["Acquiring the Holy Spirit", "Building monasteries", "Memorizing Scripture", "Political reform"],
+              correctAnswer: 0
+            },
+            {
+              question: "Who brought Orthodoxy to Alaska and the native peoples there?",
+              options: ["St. Herman and Russian monks", "Spanish missionaries", "Catholic Jesuits", "Anglican settlers"],
+              correctAnswer: 0
+            },
+            {
+              question: "Which Orthodox nation gained independence from the Ottomans in 1830?",
+              options: ["Greece", "Russia", "Egypt", "Armenia"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "eo_8",
+          title: "Revolution & the Russian Martyrs (1901–1945 AD)",
+          awardPiece: "",
+          iconUrl: rublevSavior,
+          reading: "The 20th century brought unimaginable suffering to the Orthodox world, especially in Russia. In 1917, the Bolshevik Revolution overthrew the tsar and brought a militantly atheist communist government to power. That same year - in a brief window of freedom - the Russian Church restored the Patriarchate after 200 years and elected St. Tikhon as Patriarch of Moscow.\n\nWhat followed was one of the most brutal persecutions of Christians in history. The Soviets killed bishops, priests, monks, and ordinary believers by the tens of thousands. Churches and monasteries were closed, dynamited, or turned into warehouses, museums, or even toilets. Sacred icons were burned, and ancient relics were desecrated. The famous Cathedral of Christ the Savior in Moscow was blown up in 1931.\n\nThe Royal Martyrs - Tsar Nicholas II, Tsarina Alexandra, and their five children - were murdered by the Bolsheviks in 1918. Though imperfect rulers, they died as Christians, praying together in a cellar in Yekaterinburg. They were later glorified as saints by the Russian Church.\n\nMillions of New Martyrs and Confessors arose during this dark time. St. Elizabeth the New Martyr, a grand duchess who became a nun caring for the poor, was thrown alive into a mineshaft. Metropolitan Benjamin of Petrograd and countless others were shot for their faith. Bishops like St. Luke the Surgeon were sent to the Gulag prison camps, where they continued to serve and even perform surgery on fellow prisoners.\n\nAfter the Russian Revolution, many bishops and faithful fled abroad and formed the Russian Orthodox Church Outside Russia (ROCOR) to preserve the Church free from Soviet control. They built parishes throughout Europe, the Americas, and Australia, keeping the pre-Revolutionary Russian tradition alive.\n\nIn other Orthodox lands, things were not much better. Greece suffered terribly during the Greco-Turkish War (1919-1922), and over a million Greek Orthodox Christians were violently expelled from their ancestral homes in Asia Minor. The Smyrna catastrophe of 1922 ended nearly two thousand years of Greek Christian presence in Anatolia.",
+          quiz: [
+            {
+              question: "When was the Russian Patriarchate restored after 200 years?",
+              options: ["1917", "1721", "1945", "1991"],
+              correctAnswer: 0
+            },
+            {
+              question: "What happened to Tsar Nicholas II and his family in 1918?",
+              options: ["They were murdered and later glorified as saints", "They fled to England", "They abdicated and joined a monastery", "They became Catholic"],
+              correctAnswer: 0
+            },
+            {
+              question: "ROCOR (Russian Orthodox Church Outside Russia) was formed to:",
+              options: ["Preserve the Church free from Soviet control", "Convert Western Europe", "Modernize Orthodox worship", "Replace the Ecumenical Patriarchate"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "eo_9",
+          title: "The Church Under Communism (1946–1990 AD)",
+          awardPiece: "shield_of_faith",
+          iconUrl: rublevApostles,
+          reading: "After World War II, communism spread far beyond Russia. The Soviet Union took control of Eastern Europe, and Orthodox countries like Romania, Bulgaria, Serbia, and parts of Ukraine and Belarus came under atheist regimes. Each country experienced persecution in its own way, but all of them suffered for the faith.\n\nIn Romania, the communist government imprisoned thousands of priests and monks. Saints like St. Arsenie Boca and Fr. Dumitru Stăniloae - one of the greatest Orthodox theologians of the 20th century - suffered prison and persecution. The Romanian Pitești prison became infamous for its 'reeducation' experiments designed to break Christians' faith through torture.\n\nIn Serbia, St. Justin Popović was banned from teaching at the university and forced to live in a monastery, where he wrote brilliant works defending Orthodox theology against modern errors. In Greece, which never fell to communism, the spiritual elder St. Porphyrios of Kavsokalyvia and St. Paisios of Mount Athos became beloved spiritual fathers who guided millions through their wisdom and miracles.\n\nMeanwhile, Orthodoxy planted deep roots in the West. Russian theologians who had fled the revolution - Fr. Sergius Bulgakov, Vladimir Lossky, Fr. Georges Florovsky, Fr. Alexander Schmemann, and Fr. John Meyendorff - became leading voices of Orthodox theology, teaching at seminaries in Paris and America. St. Vladimir's Orthodox Theological Seminary in New York and the Institut Saint-Serge in Paris trained a new generation of priests and theologians.\n\nIn America, Orthodox jurisdictions multiplied as immigrants arrived from many lands - Greek, Russian, Serbian, Antiochian, Romanian, Ukrainian, and others. In 1970, the Orthodox Church in America (OCA) received autocephaly (self-governance) from the Patriarchate of Moscow, becoming a fully American Orthodox Church. Converts to Orthodoxy also began arriving in significant numbers, drawn by the ancient faith and beautiful liturgy.\n\nBeneath the surface of persecution, the Church secretly continued. Underground priests baptized babies. Grandmothers taught children the Lord's Prayer in whispers. Pilgrims risked their freedom to visit holy sites. The faith was passed from one generation to the next through families, even when public worship was forbidden.",
+          quiz: [
+            {
+              question: "Which Romanian theologian and prison confessor wrote a major Dogmatic Theology?",
+              options: ["Fr. Dumitru Stăniloae", "Fr. Alexander Schmemann", "Fr. Sergius Bulgakov", "Vladimir Lossky"],
+              correctAnswer: 0
+            },
+            {
+              question: "When did the Orthodox Church in America receive autocephaly?",
+              options: ["1970", "1917", "1945", "1991"],
+              correctAnswer: 0
+            },
+            {
+              question: "St. Paisios of Mount Athos is known as:",
+              options: ["A beloved spiritual elder and miracle worker", "A communist informant", "The first Orthodox pope", "A Byzantine emperor"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "eo_10",
+          title: "Revival After Communism (1991–2010 AD)",
+          awardPiece: "",
+          iconUrl: rublevResurrection,
+          reading: "In 1991, the Soviet Union collapsed, and seventy years of brutal atheist rule came to an end. What followed was one of the greatest religious revivals in modern history. Across Russia, Ukraine, Belarus, Romania, Bulgaria, Serbia, and other formerly communist lands, Orthodox Christianity began to flourish again.\n\nChurches that had been turned into warehouses, swimming pools, or stables were reclaimed and restored. The Cathedral of Christ the Savior in Moscow, dynamited by Stalin in 1931, was rebuilt and reconsecrated in 2000. Thousands of new churches and monasteries were built or reopened. The bones of countless New Martyrs were uncovered and venerated as relics.\n\nIn 2000, the Russian Orthodox Church canonized over a thousand New Martyrs and Confessors of Russia in one of the largest glorifications of saints in Christian history. The Royal Martyrs were finally officially recognized as saints. The names of bishops, priests, monks, and laypeople who died for Christ under communism were inscribed in the Church's calendar.\n\nReconciliation also took place. In 2007, after decades of separation, the Russian Orthodox Church Outside Russia (ROCOR) reunited with the Moscow Patriarchate, healing the wound caused by the Revolution. Patriarch Alexy II and Metropolitan Laurus celebrated together in the rebuilt Christ the Savior Cathedral.\n\nIn the diaspora, Orthodoxy continued growing. Converts from Protestantism and Catholicism arrived in steady numbers, often drawn by the unchanged ancient faith. Antiochian Evangelical converts in the 1980s and 1990s brought thousands of former evangelicals into Orthodoxy. Books by Fr. Seraphim Rose, a convert and monk in California, helped many English speakers discover the depth of Orthodox spirituality.\n\nOrthodox missionary work also expanded dramatically. The Orthodox Christian Mission Center sent missionaries to Africa, Asia, and Latin America. The Patriarchate of Alexandria's mission in sub-Saharan Africa grew explosively, with hundreds of thousands of Africans embracing the ancient faith. New Orthodox churches and dioceses were established in places that had never heard the Orthodox witness.",
+          quiz: [
+            {
+              question: "When was the Cathedral of Christ the Savior in Moscow rebuilt?",
+              options: ["2000", "1991", "1955", "2020"],
+              correctAnswer: 0
+            },
+            {
+              question: "What major reconciliation happened in 2007?",
+              options: ["ROCOR reunited with the Moscow Patriarchate", "East and West reunited", "Orthodox merged with Catholics", "All jurisdictions merged in America"],
+              correctAnswer: 0
+            },
+            {
+              question: "After 1991, Orthodox mission work grew especially fast in:",
+              options: ["Sub-Saharan Africa", "Western Europe only", "Antarctica", "The Middle East"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "eo_11",
+          title: "Orthodoxy in the World Today (2011–Present Day)",
+          awardPiece: "sword_of_the_spirit",
+          iconUrl: rublevTrinity,
+          reading: "Today, Orthodox Christianity is a global faith with over 220 million believers on every continent. The ancient Church that began at Pentecost continues to grow and witness to Christ in the modern world. Yet the Church also faces serious challenges - both old and new.\n\nIn 2016, a 'Holy and Great Council' met in Crete, gathering bishops from many Orthodox churches for the first major council in modern history. Though several churches did not attend, the council addressed issues facing modern Orthodox Christians and showed the desire for conciliar unity.\n\nA painful split occurred over Ukraine. In 2018, the Ecumenical Patriarch granted independence (autocephaly) to a new Orthodox Church of Ukraine, separate from the Moscow Patriarchate. Moscow broke communion with Constantinople in response, and the conflict deepened tragically with the Russian invasion of Ukraine in 2022. Orthodox Christians on both sides have suffered and died, while the Church works and prays for peace and reconciliation.\n\nIn the Middle East, the Antiochian Orthodox Church continues to serve faithful Christians despite war, persecution, and exodus. Ancient communities in Syria, Lebanon, and Iraq have shrunk dramatically as Christians have fled violence. Yet the Church remains - serving the poor, sheltering refugees, and witnessing to Christ in a region where the faith was born.\n\nIn America and the West, Orthodoxy continues to grow through both immigration and conversion. Many young people raised without faith are discovering Orthodoxy and embracing its ancient liturgy, sacraments, and spiritual depth. Orthodox parishes, monasteries, and seminaries are growing. Saints continue to appear - St. John Maximovitch of Shanghai and San Francisco, glorified in 1994, is beloved by Orthodox of all backgrounds.\n\nThe Orthodox Church holds fast to the faith of the Apostles in a rapidly changing world. She continues to teach the unchanging Gospel of Jesus Christ, celebrate the same sacred Mysteries (sacraments) celebrated for 2,000 years, and call all people to repentance, prayer, fasting, and union with God through Jesus Christ. From the catacombs of Rome to monasteries in Alaska, from the ancient churches of Constantinople to new parishes in Africa, the same Holy Spirit who descended at Pentecost continues to fill the Church and lead her into all truth.",
+          quiz: [
+            {
+              question: "Approximately how many Orthodox Christians are there in the world today?",
+              options: ["Over 220 million", "About 10 million", "Around 1 billion", "Fewer than 1 million"],
+              correctAnswer: 0
+            },
+            {
+              question: "Where did the 'Holy and Great Council' meet in 2016?",
+              options: ["Crete", "Moscow", "Constantinople", "Jerusalem"],
+              correctAnswer: 0
+            },
+            {
+              question: "St. John Maximovitch is associated with which cities?",
+              options: ["Shanghai and San Francisco", "Moscow and Kiev", "Rome and Athens", "Antioch and Alexandria"],
+              correctAnswer: 0
+            },
+            {
+              question: "The Church continues to teach:",
+              options: ["The unchanging Gospel of Jesus Christ", "A new gospel for modern times", "Each generation invents its own faith", "Faith without sacraments"],
+              correctAnswer: 0
+            }
+          ]
         }
       ]
     },
