@@ -29,24 +29,32 @@ export const GroupsList = ({
 }: GroupsListProps) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showSearchDialog, setShowSearchDialog] = useState(false);
-  const [pinnedGroupIds, setPinnedGroupIds] = useState<Set<string>>(new Set());
+  const [pinnedGroupIds, setPinnedGroupIds] = useState<Set<string>>(() => {
+    try {
+      const cached = sessionStorage.getItem(`pinned_groups_${userId}`);
+      if (cached) return new Set(JSON.parse(cached) as string[]);
+    } catch {}
+    return new Set();
+  });
   const { toast } = useToast();
 
-  // Load pinned groups
+  // Refresh pinned groups in the background
   useEffect(() => {
     if (!userId) return;
-    
+
     const loadPinnedGroups = async () => {
       const { data } = await supabase
         .from('pinned_groups')
         .select('group_id')
         .eq('user_id', userId);
-      
+
       if (data) {
-        setPinnedGroupIds(new Set(data.map(p => p.group_id)));
+        const ids = data.map(p => p.group_id);
+        setPinnedGroupIds(new Set(ids));
+        try { sessionStorage.setItem(`pinned_groups_${userId}`, JSON.stringify(ids)); } catch {}
       }
     };
-    
+
     loadPinnedGroups();
   }, [userId]);
 

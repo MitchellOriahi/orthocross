@@ -38,7 +38,9 @@ const Dashboard = () => {
     return cached ? parseInt(cached, 10) : null;
   });
   const [loadingStreak, setLoadingStreak] = useState(false);
-  const [hasAnyProgress, setHasAnyProgress] = useState(false);
+  const [hasAnyProgress, setHasAnyProgress] = useState<boolean>(() => {
+    return sessionStorage.getItem('cached_has_any_progress') === 'true';
+  });
   const [guardianAngelResult, setGuardianAngelResult] = useState<GuardianAngelResult | null>(null);
   const [showGuardianAngelDialog, setShowGuardianAngelDialog] = useState(false);
   const [showMilestoneDialog, setShowMilestoneDialog] = useState(false);
@@ -170,7 +172,9 @@ const Dashboard = () => {
       .eq('user_id', user.id)
       .limit(1);
     
-    setHasAnyProgress((count ?? 0) > 0);
+    const hasProgress = (count ?? 0) > 0;
+    setHasAnyProgress(hasProgress);
+    try { sessionStorage.setItem('cached_has_any_progress', String(hasProgress)); } catch {}
 
     // Get the most recent completed chapter
     const { data: lastCompleted } = await supabase
@@ -255,7 +259,9 @@ const Dashboard = () => {
             .eq('user_id', user.id)
             .limit(1);
           
-          setHasAnyProgress((count ?? 0) > 0);
+          const hasProgressV = (count ?? 0) > 0;
+          setHasAnyProgress(hasProgressV);
+          try { sessionStorage.setItem('cached_has_any_progress', String(hasProgressV)); } catch {}
 
           const { data: lastCompleted } = await supabase
             .from('completed_chapters')
