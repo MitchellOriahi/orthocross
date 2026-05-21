@@ -72,24 +72,135 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
             queryClient.setQueryData(['profile', userId], profileResult.data);
           }
 
-          // Second batch: friends data (depends on user being authenticated)
-          const [friendsResult] = await Promise.all([
-            // Get friends list
+          // Second batch: friends + groups + history + completed-chapters (parallel)
+          const [
+            friendsResult,
+            membershipsResult,
+            groupInvitationsResult,
+            groupInvCountResult,
+            pinnedGroupsResult,
+            historyProgressResult,
+            completedChaptersCountResult,
+          ] = await Promise.all([
             supabase
               .from('friends')
               .select('friend_id')
               .or(`user_id.eq.${userId},friend_id.eq.${userId}`),
+            supabase
+              .from('group_members')
+              .select('group_id, role')
+              .eq('user_id', userId),
+            supabase
+              .from('group_invitations')
+              .select('*')
+              .eq('invitee_id', userId)
+              .eq('status', 'pending'),
+            supabase
+              .from('group_invitation_notifications')
+              .select('*', { count: 'exact', head: true })
+              .eq('user_id', userId)
+              .eq('read', false),
+            supabase
+              .from('pinned_groups')
+              .select('group_id')
+              .eq('user_id', userId),
+            supabase
+              .from('orthodox_history_progress')
+              .select('*')
+              .eq('user_id', userId),
+            supabase
+              .from('completed_chapters')
+              .select('*', { count: 'exact', head: true })
+              .eq('user_id', userId),
           ]);
+
+          // Seed group invitation count cache
+          queryClient.setQueryData(['groupInvitationCount', userId], groupInvCountResult.count || 0);
+          queryClient.setQueryData(['groupInvitations', userId], (groupInvitationsResult.data || []).map((inv: any) => ({
+            id: inv.id,
+            group_id: inv.group_id,
+            group_name: 'Unknown Group',
+            inviter_id: inv.inviter_id,
+            inviter_username: 'Unknown',
+            inviter_profile_picture_url: null,
+            status: inv.status,
+            created_at: inv.created_at,
+          })));
+
+          // Cache pinned groups for instant GroupsList render
+          try {
+            const pinnedIds = (pinnedGroupsResult.data || []).map((p: any) => p.group_id);
+            sessionStorage.setItem(`pinned_groups_${userId}`, JSON.stringify(pinnedIds));
+          } catch {}
+
+          // Cache history progress for instant OrthodoxHistory render
+          try {
+            const historyProgress = (historyProgressResult.data || []).map((item: any) => ({
+              campaignId: item.campaign_id,
+              islandId: item.island_id,
+              completed: item.completed,
+              xpEarned: item.xp_earned,
+            }));
+            sessionStorage.setItem(`history_progress_${userId}`, JSON.stringify(historyProgress));
+          } catch {}
+
+          // Cache hasAnyProgress flag for Dashboard board progress bar
+          try {
+            sessionStorage.setItem('cached_has_any_progress', String((completedChaptersCountResult.count ?? 0) > 0));
+          } catch {}
+
+          // Resolve full user groups (with member counts) and seed React Query cache
+          if (membershipsResult.data && membershipsResult.data.length > 0) {
+            const groupIds = membershipsResult.data.map((m: any) => m.group_id);
+            const { data: groupsRows } = await supabase
+              .from('groups')
+              .select('*')
+              .in('id', groupIds);
+
+            if (groupsRows) {
+              const groupsWithCounts = await Promise.all(
+                groupsRows.map(async (group: any) => {
+                  const { count } = await supabase
+                    .from('group_members')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('group_id', group.id);
+                  const membership = membershipsResult.data!.find((m: any) => m.group_id === group.id);
+                  return {
+                    id: group.id,
+                    name: group.name,
+                    description: group.description,
+                    is_public: group.is_public,
+                    created_by: group.created_by,
+                    created_at: group.created_at,
+                    member_count: count || 0,
+                    user_role: membership?.role as 'owner' | 'admin' | 'member',
+                  };
+                })
+              );
+              queryClient.setQueryData(['userGroups', userId], groupsWithCounts);
+            }
+          } else {
+            queryClient.setQueryData(['userGroups', userId], []);
+          }
+
+          // Always preload church cross images (not just when user has friends)
+          const crossImagePromises = [orthodoxCross, orthodoxCrossBlack, orthodoxCrossWhite].map(src =>
+            new Promise<void>((resolve) => {
+              const img = new Image();
+              img.onload = () => resolve();
+              img.onerror = () => resolve();
+              img.src = src;
+            })
+          );
 
           if (friendsResult.data && friendsResult.data.length > 0) {
             // Extract unique friend IDs
             const friendIds = [...new Set(
-              friendsResult.data.map(f => 
+              friendsResult.data.map(f =>
                 f.friend_id === userId ? null : f.friend_id
               ).filter(Boolean)
             )] as string[];
 
-            // Also get friends where current user is the friend_id
             const reverseResult = await supabase
               .from('friends')
               .select('user_id')
@@ -104,7 +215,6 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
             }
 
             if (friendIds.length > 0) {
-              // Preload friends' profiles and streaks in parallel
               const [friendProfilesResult, friendStreaksResult] = await Promise.all([
                 supabase
                   .from('profiles')
@@ -116,52 +226,31 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
                   .in('user_id', friendIds),
               ]);
 
-              // Preload profile picture images
               if (friendProfilesResult.data) {
                 const imagePromises = friendProfilesResult.data
                   .filter(p => p.profile_picture_url)
-                  .map(p => {
-                    return new Promise<void>((resolve) => {
-                      const img = new Image();
-                      img.onload = () => resolve();
-                      img.onerror = () => resolve();
-                      img.src = p.profile_picture_url!;
-                    });
-                  });
+                  .map(p => new Promise<void>((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve();
+                    img.src = p.profile_picture_url!;
+                  }));
 
-                // Also preload user's own profile picture
                 if (profileResult.data?.profile_picture_url) {
-                  imagePromises.push(
-                    new Promise<void>((resolve) => {
-                      const img = new Image();
-                      img.onload = () => resolve();
-                      img.onerror = () => resolve();
-                      img.src = profileResult.data.profile_picture_url!;
-                    })
-                  );
+                  imagePromises.push(new Promise<void>((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve();
+                    img.src = profileResult.data.profile_picture_url!;
+                  }));
                 }
 
-                // Also preload the church cross images
-                const crossImages = [orthodoxCross, orthodoxCrossBlack, orthodoxCrossWhite];
-                crossImages.forEach(src => {
-                  imagePromises.push(
-                    new Promise<void>((resolve) => {
-                      const img = new Image();
-                      img.onload = () => resolve();
-                      img.onerror = () => resolve();
-                      img.src = src;
-                    })
-                  );
-                });
-
-                // Wait for images to load (with timeout)
                 await Promise.race([
-                  Promise.all(imagePromises),
-                  new Promise(resolve => setTimeout(resolve, 2000)) // 2s timeout for images
+                  Promise.all([...imagePromises, ...crossImagePromises]),
+                  new Promise(resolve => setTimeout(resolve, 2000)),
                 ]);
               }
 
-              // Cache friends data in React Query for useFriendsData hook
               if (friendProfilesResult.data) {
                 const friendsData = friendProfilesResult.data.map(profile => {
                   const streak = friendStreaksResult.data?.find(s => s.user_id === profile.id);
@@ -176,6 +265,12 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
                 queryClient.setQueryData(['friends', userId], friendsData);
               }
             }
+          } else {
+            // No friends — still wait briefly for cross images
+            await Promise.race([
+              Promise.all(crossImagePromises),
+              new Promise(resolve => setTimeout(resolve, 1500)),
+            ]);
           }
 
           cachedAuth = { isAuthenticated: true, userId };
