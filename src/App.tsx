@@ -54,6 +54,7 @@ const AppContent = () => {
     <AppLoader onAuthReady={handleAuthReady}>
       <AuthProvider>
         <NotificationManager />
+        <TutorialIntro />
         <Routes>
           {/* Root route - redirect based on auth state */}
           <Route 
