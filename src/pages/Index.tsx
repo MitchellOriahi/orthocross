@@ -214,6 +214,10 @@ const Index = () => {
       
       setBookProgress(progressByBook);
       setBibleCompletion(completion);
+      try {
+        sessionStorage.setItem('cached_bible_completion', String(completion));
+        sessionStorage.setItem('cached_book_progress', JSON.stringify(progressByBook));
+      } catch {}
     } catch (error) {
       console.error('Error loading Bible completion:', error);
     }
