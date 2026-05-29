@@ -4,6 +4,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import orthodoxCrossBlack from '@/assets/orthodox-cross-black-new.png';
 import orthodoxCrossWhite from '@/assets/orthodox-cross-white-new.png';
+import beltEmblem from '@/assets/armor/belt-emblem-final.png';
+import bootEmblem from '@/assets/armor/boot-emblem-final.png';
+import breastplateEmblem from '@/assets/armor/breastplate-emblem-final.png';
+import helmetEmblem from '@/assets/armor/helmet-emblem-final.png';
+import shieldEmblem from '@/assets/armor/shield-emblem-final.png';
+import swordEmblem from '@/assets/armor/sword-emblem-final.png';
+
+const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem];
 
 interface AppLoaderProps {
   children: ReactNode;
@@ -198,6 +206,12 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
           } else {
             queryClient.setQueryData(['userGroups', userId], []);
           }
+
+          // Preload armor emblems (fire-and-forget, don't block splash)
+          [...ARMOR_IMAGES].forEach(src => {
+            const img = new Image();
+            img.src = src;
+          });
 
           // Always preload church cross images (not just when user has friends)
           const crossImagePromises = [orthodoxCross, orthodoxCrossBlack, orthodoxCrossWhite].map(src =>

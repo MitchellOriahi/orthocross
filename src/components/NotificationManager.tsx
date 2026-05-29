@@ -1,13 +1,16 @@
 import { usePushNotifications } from '@/hooks/usePushNotifications';
+import { useNotificationSetup } from '@/hooks/useNotificationSetup';
+import { useFriendRequestNotifications } from '@/hooks/useFriendRequestNotifications';
+import { useLeaderboardNotifications } from '@/hooks/useLeaderboardNotifications';
+import { useAppRating } from '@/hooks/useAppRating';
+import { AppRatingDialog } from '@/components/AppRatingDialog';
 
 export const NotificationManager = () => {
-  // Initialize OneSignal push notifications (native only)
-  // This handles:
-  // 1. Requesting notification permission on native platforms
-  // 2. Linking OneSignal external user ID with Supabase auth user
-  // 3. Logging out from OneSignal when user logs out
-  // 4. Retry logic for reliability
   usePushNotifications();
+  useNotificationSetup();
+  useFriendRequestNotifications();
+  useLeaderboardNotifications();
+  const { showRatingPrompt, dismissRatingPrompt } = useAppRating();
 
-  return null;
+  return <AppRatingDialog open={showRatingPrompt} onClose={dismissRatingPrompt} />;
 };

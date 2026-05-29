@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { MusicProvider } from "@/contexts/MusicContext";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -40,6 +40,27 @@ const queryClient = new QueryClient({
   },
 });
 
+const PageTransition = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+  const [visible, setVisible] = useState(true);
+  const prevPath = useRef(location.pathname);
+
+  useEffect(() => {
+    if (location.pathname !== prevPath.current) {
+      prevPath.current = location.pathname;
+      setVisible(false);
+      const t = setTimeout(() => setVisible(true), 10);
+      return () => clearTimeout(t);
+    }
+  }, [location.pathname]);
+
+  return (
+    <div className={`transition-opacity duration-150 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+      {children}
+    </div>
+  );
+};
+
 const AppContent = () => {
   const [authState, setAuthState] = useState<{
     isReady: boolean;
@@ -55,6 +76,7 @@ const AppContent = () => {
       <AuthProvider>
         <NotificationManager />
         <TutorialIntro />
+        <PageTransition>
         <Routes>
           {/* Root route - redirect based on auth state */}
           <Route 
@@ -83,6 +105,7 @@ const AppContent = () => {
           <Route path="/data-safety" element={<DataSafety />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </PageTransition>
       </AuthProvider>
     </AppLoader>
   );
