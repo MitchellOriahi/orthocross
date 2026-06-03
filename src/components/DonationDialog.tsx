@@ -42,11 +42,6 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
 
       if (error) throw error;
 
-      if (user) {
-        // Mark as monthly subscriber - this will permanently suppress prompt
-        localStorage.setItem(`monthly_donor_${user.id}`, 'true');
-      }
-
       if (data?.url) {
         window.open(data.url, "_blank");
         onOpenChange(false);
