@@ -45,7 +45,7 @@ export const initializeIAP = async (userId?: string) => {
 
 // Check if IAP is available on this platform
 export const isIAPAvailable = (): boolean => {
-  return Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios';
+  return Capacitor.isNativePlatform();
 };
 
 // Get available donation products
