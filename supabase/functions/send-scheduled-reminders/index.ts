@@ -162,7 +162,8 @@ const handler = async (req: Request): Promise<Response> => {
       const tomorrowDate = getTomorrowDate(timezone);
 
       // ========== STREAK NOTIFICATIONS at 18:00 (6pm) local time ==========
-      const isStreakTime = localTime.hour === 18 && localTime.minute < 5;
+      // Deduplication via notification_log prevents double-sending within the same hour
+      const isStreakTime = localTime.hour === 18;
 
       if (isStreakTime && profile.streak_notifications_enabled) {
         const { data: existingLog } = await supabase
@@ -224,7 +225,8 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       // ========== FASTING NOTIFICATIONS at 20:00 (8pm) local time ==========
-      const isFastingTime = localTime.hour === 20 && localTime.minute < 5;
+      // Deduplication via notification_log prevents double-sending within the same hour
+      const isFastingTime = localTime.hour === 20;
 
       if (isFastingTime && profile.fasting_notifications_enabled) {
         const { data: existingLog } = await supabase
