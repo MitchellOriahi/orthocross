@@ -202,6 +202,7 @@ const Auth = () => {
         .update({
           fasting_notifications_enabled: fastingEnabled,
           streak_notifications_enabled: enabled,
+          friends_notifications_enabled: true,
         })
         .eq('id', user.id);
 
