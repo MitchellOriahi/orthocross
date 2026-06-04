@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/core';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.b611f71fb22b4a938697f6b6fb41b6eb',
-  appName: 'orthodox-path-builder',
+  appId: 'com.lZASURkwsofX.OrthoCross',
+  appName: 'OrthoCross',
   webDir: 'dist',
   server: {
     url: 'https://b611f71f-b22b-4a93-8697-f6b6fb41b6eb.lovableproject.com?forceHideBadge=true',
