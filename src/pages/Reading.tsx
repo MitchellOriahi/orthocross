@@ -552,16 +552,14 @@ const Reading = () => {
           });
 
           if (allBooksComplete) {
-            await supabase
-              .from('friend_activities')
-              .insert({
-                user_id: user.id,
-                activity_type: 'bible_completed',
-                activity_data: {
-                  total_chapters: BIBLE_BOOKS.reduce((sum: number, book: any) => sum + book.totalChapters, 0)
-                }
-              });
+            await supabase.rpc('log_friend_activity', {
+              p_activity_type: 'bible_completed',
+              p_activity_data: {
+                total_chapters: BIBLE_BOOKS.reduce((sum: number, book: any) => sum + book.totalChapters, 0),
+              },
+            });
           }
+
         }
       }
       
