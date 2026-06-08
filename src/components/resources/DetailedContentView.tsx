@@ -93,34 +93,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
 
       // Add point to leaderboard only if first time this month
       if (isFirstTimeThisMonth) {
-        const { data: leaderboard } = await supabase
-          .from('monthly_leaderboard')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('month_date', currentMonth)
-          .maybeSingle();
-
-        if (leaderboard) {
-          await supabase
-            .from('monthly_leaderboard')
-            .update({
-              saints_read_count: (leaderboard.saints_read_count || 0) + 1,
-              total_points: (leaderboard.total_points || 0) + 1,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', leaderboard.id);
-        } else {
-          await supabase
-            .from('monthly_leaderboard')
-            .insert({
-              user_id: user.id,
-              month_date: currentMonth,
-              history_islands_completed: 0,
-              chapters_completed: 0,
-              saints_read_count: 1,
-              total_points: 1
-            });
-        }
+        await supabase.rpc('award_leaderboard_point', { p_activity: 'saint' });
       }
     }
 
@@ -130,16 +103,12 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
 
     // Create friend activity for saint completion
     if (saintMatch) {
-      await supabase
-        .from('friend_activities')
-        .insert({
-          user_id: user.id,
-          activity_type: 'saint_completed',
-          activity_data: {
-            saint_name: title
-          }
-        });
+      await supabase.rpc('log_friend_activity', {
+        p_activity_type: 'saint_completed',
+        p_activity_data: { saint_name: title },
+      });
     }
+
 
     if (onComplete) {
       onComplete();

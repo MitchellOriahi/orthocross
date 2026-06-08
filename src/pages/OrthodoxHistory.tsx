@@ -107,34 +107,7 @@ const OrthodoxHistory = () => {
 
     // Add point to leaderboard only if first time this month
     if (isFirstTimeThisMonth) {
-      const { data: leaderboard } = await supabase
-        .from('monthly_leaderboard')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('month_date', currentMonth)
-        .single();
-
-      if (leaderboard) {
-        await supabase
-          .from('monthly_leaderboard')
-          .update({
-            history_islands_completed: (leaderboard.history_islands_completed || 0) + 1,
-            total_points: (leaderboard.total_points || 0) + 1,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', leaderboard.id);
-      } else {
-        await supabase
-          .from('monthly_leaderboard')
-          .insert({
-            user_id: user.id,
-            month_date: currentMonth,
-            history_islands_completed: 1,
-            chapters_completed: 0,
-            saints_read_count: 0,
-            total_points: 1
-          });
-      }
+      await supabase.rpc('award_leaderboard_point', { p_activity: 'history_island' });
     }
 
     // Update streak immediately after completing activity
@@ -145,20 +118,18 @@ const OrthodoxHistory = () => {
     const island = historyContent.campaigns
       .find(c => c.id === campaignId)?.islands
       .find(i => i.id === islandId);
-    
+
     if (island) {
-      await supabase
-        .from('friend_activities')
-        .insert({
-          user_id: user.id,
-          activity_type: 'island_completed',
-          activity_data: {
-            campaign_id: campaignId,
-            island_id: islandId,
-            island_name: island.title
-          }
-        });
+      await supabase.rpc('log_friend_activity', {
+        p_activity_type: 'island_completed',
+        p_activity_data: {
+          campaign_id: campaignId,
+          island_id: islandId,
+          island_name: island.title,
+        },
+      });
     }
+
 
     await loadProgress();
     // Don't set selectedIsland to null here - let the modal show and user dismiss it manually

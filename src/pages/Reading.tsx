@@ -495,48 +495,15 @@ const Reading = () => {
         .maybeSingle();
 
       if (!existingActivity) {
-        await supabase
-          .from('friend_activities')
-          .insert({
-            user_id: user.id,
-            activity_type: 'chapter_completed',
-            activity_data: {
-              book_key: book,
-              chapter: chapter
-            }
-          });
+        await supabase.rpc('log_friend_activity', {
+          p_activity_type: 'chapter_completed',
+          p_activity_data: { book_key: book, chapter: chapter },
+        });
       }
 
-      // Add point to monthly leaderboard for chapter completion
-      const currentMonth = new Date().toISOString().slice(0, 7);
-      const { data: leaderboard } = await supabase
-        .from('monthly_leaderboard')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('month_date', currentMonth)
-        .maybeSingle();
+      // Award leaderboard point for chapter completion
+      await supabase.rpc('award_leaderboard_point', { p_activity: 'chapter' });
 
-      if (leaderboard) {
-        await supabase
-          .from('monthly_leaderboard')
-          .update({
-            chapters_completed: (leaderboard.chapters_completed || 0) + 1,
-            total_points: (leaderboard.total_points || 0) + 1,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', leaderboard.id);
-      } else {
-        await supabase
-          .from('monthly_leaderboard')
-          .insert({
-            user_id: user.id,
-            month_date: currentMonth,
-            history_islands_completed: 0,
-            chapters_completed: 1,
-            saints_read_count: 0,
-            total_points: 1
-          });
-      }
       
       toast({
         description: "Chapter completed! 🎉",
@@ -557,17 +524,12 @@ const Reading = () => {
       if (bookInfo && completedInBook && completedInBook.length === bookInfo.totalChapters) {
         // Book just completed! Create friend activity and play sound
         playSound('book');
-        
-        await supabase
-          .from('friend_activities')
-          .insert({
-            user_id: user.id,
-            activity_type: 'book_completed',
-            activity_data: {
-              book_key: book,
-              book_name: bookInfo.bookName
-            }
-          });
+
+        await supabase.rpc('log_friend_activity', {
+          p_activity_type: 'book_completed',
+          p_activity_data: { book_key: book, book_name: bookInfo.bookName },
+        });
+
 
         // Check if entire Bible is completed
         const { data: allCompleted } = await supabase
@@ -590,16 +552,14 @@ const Reading = () => {
           });
 
           if (allBooksComplete) {
-            await supabase
-              .from('friend_activities')
-              .insert({
-                user_id: user.id,
-                activity_type: 'bible_completed',
-                activity_data: {
-                  total_chapters: BIBLE_BOOKS.reduce((sum: number, book: any) => sum + book.totalChapters, 0)
-                }
-              });
+            await supabase.rpc('log_friend_activity', {
+              p_activity_type: 'bible_completed',
+              p_activity_data: {
+                total_chapters: BIBLE_BOOKS.reduce((sum: number, book: any) => sum + book.totalChapters, 0),
+              },
+            });
           }
+
         }
       }
       
