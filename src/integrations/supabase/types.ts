@@ -1448,6 +1448,11 @@ export type Database = {
         Args: { request_id: string }
         Returns: undefined
       }
+      apply_streak_loss_penalty: { Args: never; Returns: undefined }
+      award_leaderboard_point: {
+        Args: { p_activity: string }
+        Returns: undefined
+      }
       create_notification_channels: { Args: never; Returns: undefined }
       delete_user_account: { Args: never; Returns: undefined }
       find_dm_conversation: {
@@ -1462,6 +1467,15 @@ export type Database = {
           profile_picture_url: string
           receiver_id: string
           request_id: string
+          username: string
+        }[]
+      }
+      get_public_profiles_for_leaderboard: {
+        Args: { p_user_ids: string[] }
+        Returns: {
+          display_name: string
+          id: string
+          profile_picture_url: string
           username: string
         }[]
       }
@@ -1514,6 +1528,10 @@ export type Database = {
       is_user_blocked: {
         Args: { user_a: string; user_b: string }
         Returns: boolean
+      }
+      log_friend_activity: {
+        Args: { p_activity_data?: Json; p_activity_type: string }
+        Returns: string
       }
       search_user_for_friend_request: {
         Args: { search_term: string }
