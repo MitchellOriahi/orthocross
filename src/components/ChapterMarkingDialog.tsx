@@ -127,16 +127,13 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
             });
 
             // Create friend activity for book completion
-            await supabase
-              .from('friend_activities')
-              .insert({
-                user_id: user.id,
-                activity_type: 'book_completed',
-                activity_data: {
-                  book_key: bookInfo.title,
-                  book_name: bookInfo.bookName
-                }
-              });
+            await supabase.rpc('log_friend_activity', {
+              p_activity_type: 'book_completed',
+              p_activity_data: {
+                book_key: bookInfo.title,
+                book_name: bookInfo.bookName,
+              },
+            });
 
             // Check if entire Bible is completed
             const { data: allCompleted } = await supabase
@@ -162,17 +159,15 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
 
               if (allBooksComplete) {
                 // Create Bible completion activity
-                await supabase
-                  .from('friend_activities')
-                  .insert({
-                    user_id: user.id,
-                    activity_type: 'bible_completed',
-                    activity_data: {
-                      total_chapters: BIBLE_BOOKS.reduce((sum, book) => sum + book.totalChapters, 0)
-                    }
-                  });
+                await supabase.rpc('log_friend_activity', {
+                  p_activity_type: 'bible_completed',
+                  p_activity_data: {
+                    total_chapters: BIBLE_BOOKS.reduce((sum, book) => sum + book.totalChapters, 0),
+                  },
+                });
               }
             }
+
           }
         }
       }
