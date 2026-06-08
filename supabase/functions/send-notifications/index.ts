@@ -82,7 +82,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   const requestSecret = req.headers.get("x-cron-secret");
-  if (cronSecret && requestSecret !== cronSecret) {
+  if (!cronSecret || requestSecret !== cronSecret) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401, headers: { "Content-Type": "application/json", ...corsHeaders },
     });
