@@ -18,18 +18,11 @@ const FRIEND_ACCEPTED_MESSAGES = [
 ];
 
 async function sendOneSignalNotification(
-  appId: string,
-  apiKey: string,
-  externalUserId: string,
-  title: string,
-  body: string
+  appId: string, apiKey: string, externalUserId: string, title: string, body: string
 ): Promise<number> {
   const response = await fetch("https://onesignal.com/api/v1/notifications", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${apiKey}`,
-    },
+    headers: { "Content-Type": "application/json", Authorization: `Basic ${apiKey}` },
     body: JSON.stringify({
       app_id: appId,
       include_external_user_ids: [externalUserId],
@@ -45,15 +38,41 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { type, to_user_id, from_user_name } = await req.json();
-    if (!type || !to_user_id || !from_user_name) {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const authedClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+    const { data: claimsData, error: claimsErr } = await authedClient.auth.getClaims(
+      authHeader.replace("Bearer ", "")
+    );
+    if (claimsErr || !claimsData?.claims) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const senderId = claimsData.claims.sub as string;
+
+    const { type, to_user_id } = await req.json();
+    if (!type || !to_user_id || typeof to_user_id !== "string") {
       return new Response(JSON.stringify({ ok: false, error: "Missing required parameters" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-    const { data: profile } = await supabase.from("profiles").select("friends_notifications_enabled").eq("id", to_user_id).single();
+    // Resolve sender name server-side from authenticated user
+    const { data: senderProfile } = await admin.from("profiles")
+      .select("username, display_name").eq("id", senderId).single();
+    const from_user_name = senderProfile?.display_name || senderProfile?.username || "Someone";
+
+    const { data: profile } = await admin.from("profiles")
+      .select("friends_notifications_enabled").eq("id", to_user_id).single();
     if (profile?.friends_notifications_enabled === false) {
       return new Response(JSON.stringify({ ok: true, message: "Disabled" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -68,7 +87,6 @@ serve(async (req) => {
     const content = `${from_user_name} ${messages[Math.floor(Math.random() * messages.length)]}`;
 
     const sent = await sendOneSignalNotification(ONESIGNAL_APP_ID, ONESIGNAL_REST_API_KEY, to_user_id, heading, content);
-    console.log(`[friend-request] Sent ${type} to ${to_user_id.substring(0, 8)}... (${sent} recipients)`);
 
     return new Response(JSON.stringify({ ok: true, sent }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
