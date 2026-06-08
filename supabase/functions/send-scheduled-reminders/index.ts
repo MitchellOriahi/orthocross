@@ -101,13 +101,9 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Verify authorization
+  // Verify authorization — require a configured cron secret (fail closed)
   const requestSecret = req.headers.get("x-cron-secret");
-  const authHeader = req.headers.get("authorization");
-  const hasCronSecret = cronSecret && requestSecret === cronSecret;
-  const hasValidAuth = authHeader && supabaseAnonKey && authHeader === `Bearer ${supabaseAnonKey}`;
-
-  if (!hasCronSecret && !hasValidAuth) {
+  if (!cronSecret || requestSecret !== cronSecret) {
     console.log("[send-scheduled-reminders] Unauthorized");
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,

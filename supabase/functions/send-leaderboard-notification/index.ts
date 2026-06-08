@@ -7,18 +7,11 @@ const corsHeaders = {
 };
 
 async function sendOneSignalNotification(
-  appId: string,
-  apiKey: string,
-  externalUserIds: string[],
-  title: string,
-  body: string
+  appId: string, apiKey: string, externalUserIds: string[], title: string, body: string
 ): Promise<number> {
   const response = await fetch("https://onesignal.com/api/v1/notifications", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${apiKey}`,
-    },
+    headers: { "Content-Type": "application/json", Authorization: `Basic ${apiKey}` },
     body: JSON.stringify({
       app_id: appId,
       include_external_user_ids: externalUserIds,
@@ -34,15 +27,47 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { passed_user_ids, current_user_name, group_name } = await req.json();
-    if (!Array.isArray(passed_user_ids) || !passed_user_ids.length || !current_user_name) {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const authedClient = createClient(
+      Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+    const { data: claimsData, error: claimsErr } = await authedClient.auth.getClaims(
+      authHeader.replace("Bearer ", "")
+    );
+    if (claimsErr || !claimsData?.claims) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const senderId = claimsData.claims.sub as string;
+
+    const { passed_user_ids, group_id, group_name: client_group_name } = await req.json();
+    if (!Array.isArray(passed_user_ids) || !passed_user_ids.length ||
+        !passed_user_ids.every((x) => typeof x === "string")) {
       return new Response(JSON.stringify({ ok: false, error: "Missing required parameters" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-    const { data: profiles } = await supabase.from("profiles").select("id, leaderboard_notifications_enabled").in("id", passed_user_ids);
+    const { data: senderProfile } = await admin.from("profiles")
+      .select("username, display_name").eq("id", senderId).single();
+    const current_user_name = senderProfile?.display_name || senderProfile?.username || "Someone";
+
+    let group_name: string | null = null;
+    if (group_id && typeof group_id === "string") {
+      const { data: g } = await admin.from("groups").select("name").eq("id", group_id).single();
+      group_name = g?.name ?? null;
+    } else if (typeof client_group_name === "string") {
+      group_name = client_group_name.slice(0, 80);
+    }
+
+    const { data: profiles } = await admin.from("profiles")
+      .select("id, leaderboard_notifications_enabled").in("id", passed_user_ids);
     const recipients = (profiles ?? []).filter(p => p.leaderboard_notifications_enabled !== false).map(p => p.id);
 
     if (!recipients.length) {
@@ -60,7 +85,6 @@ serve(async (req) => {
 
     const sent = await sendOneSignalNotification(ONESIGNAL_APP_ID, ONESIGNAL_REST_API_KEY, recipients, "Leaderboard Update 📊", message);
 
-    console.log(`[leaderboard] Sent to ${recipients.length} users (${sent} recipients)`);
     return new Response(JSON.stringify({ ok: true, count: recipients.length, sent }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (err) {
