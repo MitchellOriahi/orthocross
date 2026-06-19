@@ -1449,6 +1449,7 @@ export type Database = {
         Returns: undefined
       }
       apply_streak_loss_penalty: { Args: never; Returns: undefined }
+      award_avatar_xp: { Args: { p_xp: number }; Returns: undefined }
       award_leaderboard_point: {
         Args: { p_activity: string }
         Returns: undefined
@@ -1532,6 +1533,23 @@ export type Database = {
       log_friend_activity: {
         Args: { p_activity_data?: Json; p_activity_type: string }
         Returns: string
+      }
+      process_streak_check: {
+        Args: never
+        Returns: {
+          current_streak: number
+          guardian_angel_percentage: number
+          guardian_angel_saves: number
+          saved: boolean
+        }[]
+      }
+      record_daily_activity: {
+        Args: never
+        Returns: {
+          current_streak: number
+          longest_streak: number
+          was_incremented: boolean
+        }[]
       }
       search_user_for_friend_request: {
         Args: { search_term: string }
