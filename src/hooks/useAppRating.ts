@@ -9,7 +9,8 @@ const MIN_OPENS = 3;
 
 // Fill in IOS_APP_STORE_URL after the app is published to the App Store
 const IOS_APP_STORE_URL = 'https://apps.apple.com/app/idYOUR_IOS_APP_ID';
-const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.lovable.b611f71fb22b4a938697f6b6fb41b6eb';
+// TODO: Confirm the exact package name from Google Play Console and update this URL
+const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.orthocross.myapp';
 
 export const openAppStoreForRating = () => {
   const platform = Capacitor.getPlatform();

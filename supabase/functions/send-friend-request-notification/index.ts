@@ -49,14 +49,12 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: authHeader } } }
     );
-    const { data: claimsData, error: claimsErr } = await authedClient.auth.getClaims(
-      authHeader.replace("Bearer ", "")
-    );
-    if (claimsErr || !claimsData?.claims) {
+    const { data: { user: authedUser }, error: claimsErr } = await authedClient.auth.getUser();
+    if (claimsErr || !authedUser) {
       return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    const senderId = claimsData.claims.sub as string;
+    const senderId = authedUser.id;
 
     const { type, to_user_id } = await req.json();
     if (!type || !to_user_id || typeof to_user_id !== "string") {

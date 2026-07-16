@@ -10,8 +10,10 @@ import breastplateEmblem from '@/assets/armor/breastplate-emblem-final.png';
 import helmetEmblem from '@/assets/armor/helmet-emblem-final.png';
 import shieldEmblem from '@/assets/armor/shield-emblem-final.png';
 import swordEmblem from '@/assets/armor/sword-emblem-final.png';
+import easternArmorPreview from '@/assets/armor/eastern-armor-preview.png';
+import orientalArmorPreview from '@/assets/armor/oriental-armor-preview.png';
 
-const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem];
+const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem, easternArmorPreview, orientalArmorPreview];
 
 interface AppLoaderProps {
   children: ReactNode;

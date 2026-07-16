@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Orthodox cross: vertical bar -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11,2 L13,2 L13,22 L11,22 Z" />
+    <!-- Orthodox cross: main horizontal bar -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M4,7 L20,7 L20,9 L4,9 Z" />
+    <!-- Orthodox cross: small upper crossbar -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M7,4 L17,4 L17,5.5 L7,5.5 Z" />
+    <!-- Orthodox cross: angled footrest (suppedaneum) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M6,16 L12,13 L18,16 L18,17.5 L12,14.5 L6,17.5 Z" />
+</vector>

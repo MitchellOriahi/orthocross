@@ -19,11 +19,15 @@ export const initializeIAP = async (userId?: string) => {
   }
 
   try {
-    // Get your RevenueCat API key from https://app.revenuecat.com
-    const REVENUECAT_API_KEY = import.meta.env.VITE_REVENUECAT_API_KEY;
-    
+    // Use platform-specific RevenueCat API keys
+    // Get these from app.revenuecat.com -> Project -> API Keys
+    const platform = Capacitor.getPlatform();
+    const REVENUECAT_API_KEY = platform === 'ios'
+      ? import.meta.env.VITE_REVENUECAT_API_KEY_IOS
+      : import.meta.env.VITE_REVENUECAT_API_KEY_ANDROID;
+
     if (!REVENUECAT_API_KEY) {
-      console.warn('RevenueCat API key not found');
+      console.warn(`RevenueCat API key not found for platform: ${platform}`);
       return false;
     }
 

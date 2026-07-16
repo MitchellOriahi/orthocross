@@ -92,7 +92,7 @@ const OrthodoxHistory = () => {
       .eq('campaign_id', campaignId)
       .eq('island_id', islandId)
       .gte('completed_at', `${currentMonth}-01`)
-      .single();
+      .maybeSingle();
 
     const isFirstTimeThisMonth = !existingProgress;
 

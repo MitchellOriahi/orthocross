@@ -8,7 +8,7 @@ import { CapacitorConfig } from '@capacitor/core';
 const useLiveReload = process.env.CAP_LIVE_RELOAD === '1';
 
 const config: CapacitorConfig = {
-  appId: 'com.lZASURkwsofX.OrthoCross',
+  appId: 'com.orthocross.myapp',
   appName: 'OrthoCross',
   webDir: 'dist',
   ...(useLiveReload
@@ -32,6 +32,7 @@ const config: CapacitorConfig = {
       NSPhotoLibraryUsageDescription: 'Allow OrthoCross to access your photos so you can choose an existing picture for your profile or add images to your journal (e.g., pick a recent photo).',
       NSPhotoLibraryAddUsageDescription: 'OrthoCross saves photos or videos you create (e.g., export a journal image) to your library when you ask it to.',
       NSMicrophoneUsageDescription: 'OrthoCross uses the microphone only when you record a video note for your journal (e.g., add a short spoken reflection).',
+      NSLocationWhenInUseUsageDescription: 'OrthoCross may use your location to provide relevant local Orthodox church information and community features near you.',
     },
   },
 };

@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Firebase - contains sensitive credentials, set per-environment
+android/app/google-services.json
+ios/App/GoogleService-Info.plist

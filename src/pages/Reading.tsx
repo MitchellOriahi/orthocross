@@ -321,8 +321,8 @@ const Reading = () => {
         .from('reading_progress')
         .upsert({
           user_id: user.id,
-          scripture_title: bookName,
-          scripture_passage: `${bookName} ${chapter}`,
+          scripture_title: book,
+          scripture_passage: `${book} ${chapter}`,
           progress: newProgress,
           completed: newProgress === 100,
           current_chapter: chapter,

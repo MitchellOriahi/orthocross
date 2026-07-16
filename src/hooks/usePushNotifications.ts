@@ -17,13 +17,45 @@ const getOneSignal = async () => {
   }
 };
 
+let oneSignalInitialized = false;
+
 /**
- * Hook to link OneSignal external user ID with Supabase auth user.
+ * Hook to initialize OneSignal and link the external user ID with Supabase auth user.
  */
 export const usePushNotifications = () => {
   const { user, loading } = useAuth();
   const linkedRef = useRef(false);
 
+  // Initialize OneSignal once on first native app launch
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    if (oneSignalInitialized) return;
+
+    const appId = import.meta.env.VITE_ONESIGNAL_APP_ID;
+    if (!appId) {
+      console.error('[OneSignal] VITE_ONESIGNAL_APP_ID is not set');
+      return;
+    }
+
+    const initialize = async () => {
+      const OneSignal = await getOneSignal();
+      if (!OneSignal) {
+        console.error('[OneSignal] Plugin not available');
+        return;
+      }
+      try {
+        OneSignal.initialize(appId);
+        oneSignalInitialized = true;
+        log('[OneSignal] Initialized');
+      } catch (error) {
+        console.error('[OneSignal] Initialization error:', error);
+      }
+    };
+
+    initialize();
+  }, []);
+
+  // Link/unlink Supabase user with OneSignal after initialization
   useEffect(() => {
     if (loading) return;
     if (!user?.id) {
