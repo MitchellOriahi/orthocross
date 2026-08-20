@@ -21,13 +21,14 @@ export const GuardianAngelDialog = ({
 }: GuardianAngelDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-md">
+      <AlertDialogContent className="w-[86vw] max-w-sm max-h-[80vh] overflow-y-auto rounded-2xl p-5 sm:p-6">
         <AlertDialogHeader>
-          <div className="flex justify-center mb-4">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-100 to-white flex items-center justify-center shadow-lg">
-              <Shield className="w-10 h-10 text-yellow-600" />
+          <div className="flex justify-center mb-3">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-100 to-white flex items-center justify-center shadow-lg">
+              <Shield className="w-8 h-8 text-yellow-600" />
             </div>
           </div>
+
           <AlertDialogTitle className="text-center text-2xl">
             {saved ? (
               <>
