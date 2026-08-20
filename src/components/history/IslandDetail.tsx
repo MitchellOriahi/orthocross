@@ -24,6 +24,11 @@ import breastplateEmblem from "@/assets/armor/breastplate-emblem-cut.png";
 import easternArmorEmblem from "@/assets/armor/eastern-armor-preview-cut.png";
 import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview-cut.png";
 
+const SPARKLES = Array.from({ length: 12 }, () => ({
+  top: Math.random() * 100,
+  left: Math.random() * 100,
+}));
+
 // Preload all completion-screen artwork once at module load so the
 // Congratulations dialog renders instantly with no image pop-in.
 const COMPLETION_IMAGES = [
@@ -155,11 +160,14 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
         const score = (correctCount / island.quiz.length) * 100;
         
-        // Play island completion sound
-        playSound('island');
-        
+        // Paint the completion screen first, then do the slow work
         setShowCompletionModal(true);
-        onComplete(campaignId, island.id, score);
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            playSound('island');
+            onComplete(campaignId, island.id, score);
+          }, 0);
+        });
       }
     } else {
       toast({
@@ -266,9 +274,16 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         </Card>
       </main>
 
+      {/* Off-screen warm-up so the completion artwork is already decoded
+          by the time the last question is answered. */}
+      <div aria-hidden className="pointer-events-none absolute opacity-0 w-0 h-0 overflow-hidden">
+        <img src={completionCross} alt="" decoding="sync" />
+        {island.awardPiece ? getArmorEmblem(island.awardPiece) : null}
+      </div>
+
       <Dialog open={showCompletionModal}>
         <DialogContent 
-          className="sm:max-w-md [&>button]:hidden"
+          className="sm:max-w-md [&>button]:hidden !duration-0 !animate-none"
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
@@ -296,13 +311,13 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
                 <div className="relative">
                   {getArmorEmblem(island.awardPiece)}
                   <div className="absolute inset-0 pointer-events-none">
-                    {[...Array(12)].map((_, i) => (
+                    {SPARKLES.map((s, i) => (
                       <Sparkles 
                         key={i}
                         className="absolute text-primary animate-ping"
                         style={{
-                          top: `${Math.random() * 100}%`,
-                          left: `${Math.random() * 100}%`,
+                          top: `${s.top}%`,
+                          left: `${s.left}%`,
                           animationDelay: `${i * 0.1}s`,
                           animationDuration: "1s"
                         }}
