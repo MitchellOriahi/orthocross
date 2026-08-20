@@ -76,18 +76,18 @@ export const TutorialIntro = () => {
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="sm:max-w-md [&>button]:hidden" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+      <DialogContent className="w-[92%] max-w-sm rounded-2xl sm:rounded-2xl [&>button]:hidden p-6" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
         <DialogTitle className="sr-only">App Tutorial</DialogTitle>
-        <div className="flex flex-col items-center text-center space-y-6 py-6">
+        <div className="flex flex-col items-center text-center justify-between min-h-[420px] py-2">
           {/* Icon */}
           <div className={`w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center ${slide.animation}`}>
             <Icon className="w-12 h-12 text-primary" />
           </div>
 
           {/* Content */}
-          <div className="space-y-3">
+          <div className="space-y-3 flex flex-col items-center">
             <h2 className="text-2xl font-bold">{slide.title}</h2>
-            <p className="text-muted-foreground max-w-xs mx-auto">
+            <p className="text-muted-foreground max-w-[16rem] mx-auto min-h-[4.5rem]">
               {slide.description}
             </p>
           </div>
