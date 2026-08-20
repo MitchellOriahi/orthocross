@@ -117,12 +117,19 @@ const Dashboard = () => {
       const angelResult = await checkStreakOnAppOpen(user.id);
       
       if (angelResult) {
-        setGuardianAngelResult(angelResult);
-        setShowGuardianAngelDialog(true);
+        // Only show the dialog once per streak-loss event
+        const eventKey = `guardian_angel_event_${user.id}`;
+        const eventId = `${new Date().toDateString()}|${angelResult.saved}|${angelResult.savesCount}|${angelResult.newStreak}`;
+        if (localStorage.getItem(eventKey) !== eventId) {
+          localStorage.setItem(eventKey, eventId);
+          setGuardianAngelResult(angelResult);
+          setShowGuardianAngelDialog(true);
+        }
         setStreakDays(angelResult.newStreak);
         sessionStorage.setItem('cached_streak', angelResult.newStreak.toString());
         return;
       }
+
       
       // Otherwise just fetch current streak
       const { data } = await supabase
