@@ -18,6 +18,23 @@ import armenianGenocideMemorial from "@/assets/history/armenian-genocide-memoria
 import stAnthonyMonastery from "@/assets/history/st-anthony-monastery-egypt.jpg";
 import armenianManuscript from "@/assets/history/armenian-illuminated-manuscript.jpg";
 
+// Every island icon, preloaded at module load so island artwork is already
+// in the browser cache before the user opens an island.
+export const HISTORY_ICONS: string[] = [
+  rublevTrinity, rublevSavior, rublevAnnunciation, rublevTheotokos, rublevApostles,
+  rublevResurrection, earlyCatacombs, byzantineJustinian, hagiaSophia, cyrilMethodius,
+  fallConstantinople, mountAthos, vladimirKiev, copticStMark, stCyrilCouncil,
+  ethiopianManuscript, armenianGenocideMemorial, stAnthonyMonastery, armenianManuscript,
+];
+
+if (typeof window !== "undefined") {
+  HISTORY_ICONS.forEach((src) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = src;
+  });
+}
+
 export const historyContent = {
   maxHearts: 5,
   xpPerReading: 10,
