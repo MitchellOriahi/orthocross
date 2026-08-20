@@ -24,6 +24,12 @@ import breastplateEmblem from "@/assets/armor/breastplate-emblem-cut.png";
 import easternArmorEmblem from "@/assets/armor/eastern-armor-preview-cut.png";
 import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview-cut.png";
 import orSword from "@/assets/armor/oriental-sword.png";
+import eaBelt from "@/assets/armor/eastern-belt.png";
+import eaBreastplate from "@/assets/armor/eastern-breastplate.png";
+import eaSandals from "@/assets/armor/eastern-sandals.png";
+import eaShield from "@/assets/armor/eastern-shield.png";
+import eaHelmet from "@/assets/armor/eastern-helmet.png";
+import eaSword from "@/assets/armor/eastern-sword.png";
 import orShield from "@/assets/armor/oriental-shield.png";
 import orSandals from "@/assets/armor/oriental-sandals.png";
 import orBelt from "@/assets/armor/oriental-belt.png";
@@ -59,6 +65,12 @@ const COMPLETION_IMAGES = [
   orMantle,
   orCenser,
   orFullArmor,
+  eaBelt,
+  eaBreastplate,
+  eaSandals,
+  eaShield,
+  eaHelmet,
+  eaSword,
 ];
 if (typeof window !== "undefined") {
   COMPLETION_IMAGES.forEach((src) => {
@@ -104,14 +116,32 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const { playSound } = useMusic();
 
   const isOriental = campaignId === 'oriental_orthodox_history';
+  const isEastern = campaignId === 'eastern_orthodox_history';
 
   const getArmorEmblem = (awardPiece: string) => {
     const normalizedPiece = awardPiece.toLowerCase().replace(/_/g, ' ');
 
     // Oriental emblems are full-colour artwork, so they must not be inverted.
-    const imgClasses = isOriental
+    const imgClasses = isOriental || isEastern
       ? "w-32 h-32 mx-auto mb-4 object-contain"
       : "w-32 h-32 mx-auto mb-4 object-contain dark:invert";
+
+    if (isEastern) {
+      const easternMap: Record<string, { src: string; alt: string }> = {
+        'belt of truth': { src: eaBelt, alt: 'Belt of Truth' },
+        'breastplate of righteousness': { src: eaBreastplate, alt: 'Breastplate of Righteousness' },
+        'sandals of gospel of peace': { src: eaSandals, alt: 'Sandals of the Gospel of Peace' },
+        'shoes of peace': { src: eaSandals, alt: 'Sandals of the Gospel of Peace' },
+        'shield of faith': { src: eaShield, alt: 'Shield of Faith' },
+        'helmet of salvation': { src: eaHelmet, alt: 'Helmet of Salvation' },
+        'sword of the spirit': { src: eaSword, alt: 'Sword of the Spirit' },
+        'sword of spirit': { src: eaSword, alt: 'Sword of the Spirit' },
+      };
+      const match = easternMap[normalizedPiece];
+      if (match) {
+        return <img src={match.src} alt={match.alt} className={imgClasses} loading="eager" decoding="sync" />;
+      }
+    }
 
     if (isOriental) {
       const orientalMap: Record<string, { src: string; alt: string }> = {
