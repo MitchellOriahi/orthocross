@@ -14,15 +14,37 @@ import { DonateButton } from "@/components/DonateButton";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
-import completionCross from "@/assets/completion-cross-hq.png";
-import swordEmblem from "@/assets/armor/sword-emblem-final.png";
-import shieldEmblem from "@/assets/armor/shield-emblem-final.png";
-import bootEmblem from "@/assets/armor/boot-emblem-final.png";
-import beltEmblem from "@/assets/armor/belt-emblem-final.png";
-import helmetEmblem from "@/assets/armor/helmet-emblem-final.png";
-import breastplateEmblem from "@/assets/armor/breastplate-emblem-final.png";
-import easternArmorEmblem from "@/assets/armor/eastern-armor-preview.png";
-import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview.png";
+import completionCross from "@/assets/completion-cross-cut.png";
+import swordEmblem from "@/assets/armor/sword-emblem-cut.png";
+import shieldEmblem from "@/assets/armor/shield-emblem-cut.png";
+import bootEmblem from "@/assets/armor/boot-emblem-cut.png";
+import beltEmblem from "@/assets/armor/belt-emblem-cut.png";
+import helmetEmblem from "@/assets/armor/helmet-emblem-cut.png";
+import breastplateEmblem from "@/assets/armor/breastplate-emblem-cut.png";
+import easternArmorEmblem from "@/assets/armor/eastern-armor-preview-cut.png";
+import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview-cut.png";
+
+// Preload all completion-screen artwork once at module load so the
+// Congratulations dialog renders instantly with no image pop-in.
+const COMPLETION_IMAGES = [
+  completionCross,
+  swordEmblem,
+  shieldEmblem,
+  bootEmblem,
+  beltEmblem,
+  helmetEmblem,
+  breastplateEmblem,
+  easternArmorEmblem,
+  orientalArmorEmblem,
+];
+if (typeof window !== "undefined") {
+  COMPLETION_IMAGES.forEach((src) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = src;
+  });
+}
+
 
 interface Quiz {
   question: string;
@@ -67,29 +89,29 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
     switch (normalizedPiece) {
       case 'sword of spirit':
       case 'sword of the spirit':
-        return <img src={swordEmblem} alt="Sword" className={imgClasses} />;
+        return <img src={swordEmblem} alt="Sword" className={imgClasses} loading="eager" decoding="sync" />;
       
       case 'shield of faith':
-        return <img src={shieldEmblem} alt="Shield" className={imgClasses} />;
+        return <img src={shieldEmblem} alt="Shield" className={imgClasses} loading="eager" decoding="sync" />;
       
       case 'sandals of gospel of peace':
       case 'shoes of peace':
-        return <img src={bootEmblem} alt="Boots" className={imgClasses} />;
+        return <img src={bootEmblem} alt="Boots" className={imgClasses} loading="eager" decoding="sync" />;
       
       case 'belt of truth':
-        return <img src={beltEmblem} alt="Belt" className={imgClasses} />;
+        return <img src={beltEmblem} alt="Belt" className={imgClasses} loading="eager" decoding="sync" />;
       
       case 'helmet of salvation':
-        return <img src={helmetEmblem} alt="Helmet" className={imgClasses} />;
+        return <img src={helmetEmblem} alt="Helmet" className={imgClasses} loading="eager" decoding="sync" />;
       
       case 'breastplate of righteousness':
-        return <img src={breastplateEmblem} alt="Breastplate" className={imgClasses} />;
+        return <img src={breastplateEmblem} alt="Breastplate" className={imgClasses} loading="eager" decoding="sync" />;
       
       case 'full eastern armor':
-        return <img src={easternArmorEmblem} alt="Full Eastern Armor" className={imgClasses} />;
+        return <img src={easternArmorEmblem} alt="Full Eastern Armor" className={imgClasses} loading="eager" decoding="sync" />;
       
       case 'full oriental armor':
-        return <img src={orientalArmorEmblem} alt="Full Oriental Armor" className={imgClasses} />;
+        return <img src={orientalArmorEmblem} alt="Full Oriental Armor" className={imgClasses} loading="eager" decoding="sync" />;
       
       default:
         return <Shield className="w-32 h-32 mx-auto mb-4 text-primary" />;
@@ -252,11 +274,13 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         >
           <Card className="p-8 text-center bg-gradient-to-br from-primary/20 to-primary/5 border-0 shadow-none">
             <div className="mb-6">
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-white dark:bg-black border-2 border-primary flex items-center justify-center p-4">
+              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-card border-2 border-primary flex items-center justify-center p-4">
                 <img 
                   src={completionCross} 
                   alt="Completion" 
                   className="w-full h-full object-contain dark:invert"
+                  loading="eager"
+                  decoding="sync"
                 />
               </div>
               <h2 className="text-4xl font-bold mb-2 text-foreground">
@@ -267,7 +291,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
 
 
             {island.awardPiece ? (
-              <div className="bg-white dark:bg-black border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
+              <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
                 <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
                 <div className="relative">
                   {getArmorEmblem(island.awardPiece)}
@@ -292,7 +316,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
                 <p className="text-sm text-muted-foreground mt-4">A piece of the Armor of God</p>
               </div>
             ) : (
-              <div className="bg-white dark:bg-black border-2 border-primary rounded-xl p-6 mb-6 shadow-lg">
+              <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg">
                 <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">Chapter Complete</p>
                 <p className="text-lg font-semibold">Your journey through history continues. Keep going to earn the next piece of armor!</p>
               </div>

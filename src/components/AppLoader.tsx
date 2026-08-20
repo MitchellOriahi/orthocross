@@ -4,16 +4,17 @@ import { useQueryClient } from '@tanstack/react-query';
 import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import orthodoxCrossBlack from '@/assets/orthodox-cross-black-new.png';
 import orthodoxCrossWhite from '@/assets/orthodox-cross-white-new.png';
-import beltEmblem from '@/assets/armor/belt-emblem-final.png';
-import bootEmblem from '@/assets/armor/boot-emblem-final.png';
-import breastplateEmblem from '@/assets/armor/breastplate-emblem-final.png';
-import helmetEmblem from '@/assets/armor/helmet-emblem-final.png';
-import shieldEmblem from '@/assets/armor/shield-emblem-final.png';
-import swordEmblem from '@/assets/armor/sword-emblem-final.png';
-import easternArmorPreview from '@/assets/armor/eastern-armor-preview.png';
-import orientalArmorPreview from '@/assets/armor/oriental-armor-preview.png';
+import completionCross from '@/assets/completion-cross-cut.png';
+import beltEmblem from '@/assets/armor/belt-emblem-cut.png';
+import bootEmblem from '@/assets/armor/boot-emblem-cut.png';
+import breastplateEmblem from '@/assets/armor/breastplate-emblem-cut.png';
+import helmetEmblem from '@/assets/armor/helmet-emblem-cut.png';
+import shieldEmblem from '@/assets/armor/shield-emblem-cut.png';
+import swordEmblem from '@/assets/armor/sword-emblem-cut.png';
+import easternArmorPreview from '@/assets/armor/eastern-armor-preview-cut.png';
+import orientalArmorPreview from '@/assets/armor/oriental-armor-preview-cut.png';
 
-const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem, easternArmorPreview, orientalArmorPreview];
+const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem, easternArmorPreview, orientalArmorPreview, completionCross];
 
 interface AppLoaderProps {
   children: ReactNode;
