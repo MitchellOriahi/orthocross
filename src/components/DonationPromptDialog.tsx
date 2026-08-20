@@ -91,14 +91,15 @@ export const DonationPromptDialog = () => {
   return (
     <>
       <Dialog open={showPrompt} onOpenChange={(open) => !open && handleDismiss()}>
-        <DialogContent className="sm:max-w-md" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
-          <DialogHeader className="text-center items-center space-y-4 pt-6">
+        <DialogContent className="w-[92%] max-w-sm rounded-2xl sm:rounded-2xl p-6" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+          <DialogHeader className="text-center items-center space-y-4 pt-2">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
               <Heart className="w-8 h-8 text-primary" />
             </div>
             <DialogTitle className="text-2xl">Support OrthoCross</DialogTitle>
-            <DialogDescription className="text-base">
-              Acts 20:35 - "It is more blessed to give than to receive."
+            <DialogDescription className="text-base flex flex-col items-center gap-1">
+              <span>"It is more blessed to give than to receive."</span>
+              <span className="text-muted-foreground">— Acts 20:35</span>
             </DialogDescription>
           </DialogHeader>
 
