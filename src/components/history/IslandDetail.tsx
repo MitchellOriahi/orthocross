@@ -123,8 +123,8 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
 
     // Oriental emblems are full-colour artwork, so they must not be inverted.
     const imgClasses = isOriental || isEastern
-      ? "w-32 h-32 mx-auto mb-4 object-contain"
-      : "w-32 h-32 mx-auto mb-4 object-contain dark:invert";
+      ? "w-32 h-32 object-contain"
+      : "w-32 h-32 object-contain dark:invert";
 
     if (isEastern) {
       const easternMap: Record<string, { src: string; alt: string }> = {
@@ -378,13 +378,13 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
 
 
             {island.awardPiece ? (
-              <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative">
+              <div className="bg-card border-2 border-primary rounded-xl p-6 mb-6 shadow-lg relative flex flex-col min-h-[280px]">
                 <p className="text-sm uppercase tracking-wide text-muted-foreground mb-2">You've Earned</p>
-                <div className="relative">
+                <div className="flex-1 flex items-center justify-center relative min-h-[140px] my-2">
                   {getArmorEmblem(island.awardPiece)}
                   <div className="absolute inset-0 pointer-events-none">
                     {SPARKLES.map((s, i) => (
-                      <Sparkles 
+                      <Sparkles
                         key={i}
                         className="absolute text-primary animate-ping"
                         style={{
@@ -396,10 +396,10 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
                       />
                     ))}
                   </div>
+                </div>
                 <p className="text-2xl font-bold capitalize relative z-10">
                   {island.awardPiece.replace(/_/g, ' ')}
-                  </p>
-                </div>
+                </p>
                 <p className="text-sm text-muted-foreground mt-4">A piece of the Armor of God</p>
               </div>
             ) : (
