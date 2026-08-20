@@ -253,7 +253,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
       {iconUrl && (
         <div className="flex justify-center mb-6">
           <div className="w-48 h-48 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
-            <img src={iconUrl} alt="Historical Icon" className="w-full h-full object-cover" />
+            <img src={iconUrl} alt="Historical Icon" className="w-full h-full object-cover" loading="eager" decoding="sync" fetchPriority="high" />
           </div>
         </div>
       )}
