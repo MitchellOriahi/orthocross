@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import orthodoxCrossBlack from '@/assets/orthodox-cross-black-new.png';
 import orthodoxCrossWhite from '@/assets/orthodox-cross-white-new.png';
+import completionCross from '@/assets/completion-cross-cut.png';
 import beltEmblem from '@/assets/armor/belt-emblem-cut.png';
 import bootEmblem from '@/assets/armor/boot-emblem-cut.png';
 import breastplateEmblem from '@/assets/armor/breastplate-emblem-cut.png';
@@ -13,7 +14,7 @@ import swordEmblem from '@/assets/armor/sword-emblem-cut.png';
 import easternArmorPreview from '@/assets/armor/eastern-armor-preview-cut.png';
 import orientalArmorPreview from '@/assets/armor/oriental-armor-preview-cut.png';
 
-const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem, easternArmorPreview, orientalArmorPreview];
+const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem, easternArmorPreview, orientalArmorPreview, completionCross];
 
 interface AppLoaderProps {
   children: ReactNode;
