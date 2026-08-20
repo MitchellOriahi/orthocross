@@ -507,6 +507,54 @@ export const historyContent = {
               correctAnswer: 0
             }
           ]
+        },
+        {
+          id: "oo_7",
+          title: "The Desert Flame: Fathers, Mothers & Monasteries (251–600 AD)",
+          awardPiece: "mantle_of_the_desert_fathers",
+          iconUrl: stAnthonyMonastery,
+          reading: "Long before there were monasteries in Europe, the deserts of Egypt were filled with men and women who gave everything to God. St. Anthony the Great went into the Egyptian desert around 271 AD to pray, fast, and struggle against temptation. He became so famous for his holiness that thousands followed him into the sand. This is why the Coptic Church is often called the mother of monasticism.\n\nSt. Pachomius took the next step. Instead of each monk living alone, he gathered them into communities with a shared rule: common prayer, common meals, common work. This 'cenobitic' way of life became the pattern for monasteries all over the world, from Ethiopia to Ireland.\n\nThe desert was not only for men. Ammas — desert mothers like St. Syncletica and St. Sarah — were spiritual teachers whose sayings were written down and treasured alongside those of the fathers. Pilgrims travelled for weeks just to hear one short word of guidance from them.\n\nThese monks wore a simple mantle, a rough woollen cloak marked with crosses. It reminded them that they had put off the world and put on Christ. The mantle was their armour: humility instead of pride, silence instead of argument, prayer instead of anger.\n\nSyrian monks added their own fire. St. Simeon the Stylite lived for decades on top of a pillar, praying and counselling the crowds below. Armenian and Ethiopian monks carved cells into cliffs and mountainsides. From these hidden places came the prayers that held up whole nations during centuries of hardship.\n\nThe wisdom of the desert was written down in the Sayings of the Desert Fathers — short, sharp, unforgettable lines about forgiveness, humility, and loving your neighbour. Christians of every tradition still read them today.",
+          quiz: [
+            {
+              question: "Who is often called the father of monasticism?",
+              options: ["St. Anthony the Great", "St. Mark", "St. Gregory the Illuminator", "St. Simeon the Stylite"],
+              correctAnswer: 0
+            },
+            {
+              question: "St. Pachomius is known for organizing monks into:",
+              options: ["Shared communities with a common rule", "Wandering preachers", "Warrior bands", "City parishes"],
+              correctAnswer: 0
+            },
+            {
+              question: "The desert mothers (ammas) were:",
+              options: ["Respected spiritual teachers whose sayings were preserved", "Forbidden to teach", "Only cooks for the monks", "A later legend"],
+              correctAnswer: 0
+            }
+          ]
+        },
+        {
+          id: "oo_8",
+          title: "Incense, Chant & Sacred Art: The Unceasing Prayer",
+          awardPiece: "censer_of_unceasing_prayer",
+          iconUrl: armenianManuscript,
+          reading: "Walk into a Coptic, Ethiopian, Syriac, or Armenian church and the first thing you notice is the smell of incense and the sound of chant. Worship in the Oriental Orthodox Churches engages the whole person: eyes, ears, nose, hands, and heart.\n\nThe censer is one of the oldest signs of prayer. Psalm 141 says, 'Let my prayer be set forth as incense before You.' In Coptic and Ethiopian churches the censer's chains carry small bells, and the rising smoke reminds worshippers that prayer is always ascending to God — day and night, in every generation, in every language.\n\nChant is just as ancient. Coptic melodies are believed to preserve tunes older than the Christian era itself, passed from cantor to cantor by ear. Ethiopian chant, organized by St. Yared in the 6th century, uses its own written notation and is accompanied by drums, sistrums, and holy dance. Syriac hymns of St. Ephrem the Syrian taught theology through poetry that ordinary people could sing. Armenian sharakans fill the church with haunting harmony.\n\nSacred art carried the same faith into colour. Armenian illuminated manuscripts glow with gold and lapis. Ethiopian icons use bold outlines and wide, gentle eyes. Coptic icons are simple and warm, full of light. None of this art was made to decorate — it was made to teach and to pray.\n\nThese traditions survived centuries when churches could not be built and bells could not be rung. Families kept the chants in their homes, monks kept the manuscripts safe, and mothers taught the hymns to children. The prayer never stopped — that is why the censer is a fitting sign of the Oriental Orthodox spirit: unceasing, fragrant, faithful.",
+          quiz: [
+            {
+              question: "Which Psalm compares prayer to rising incense?",
+              options: ["Psalm 141", "Psalm 1", "Psalm 23", "Psalm 100"],
+              correctAnswer: 0
+            },
+            {
+              question: "Who organized Ethiopian sacred chant?",
+              options: ["St. Yared", "St. Ephrem", "St. Mesrop Mashtots", "St. Pachomius"],
+              correctAnswer: 0
+            },
+            {
+              question: "St. Ephrem the Syrian is famous for teaching the faith through:",
+              options: ["Hymns and poetry", "Military campaigns", "Silent retreats only", "Legal codes"],
+              correctAnswer: 0
+            }
+          ]
         }
       ]
     }
