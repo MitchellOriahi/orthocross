@@ -23,6 +23,15 @@ import helmetEmblem from "@/assets/armor/helmet-emblem-cut.png";
 import breastplateEmblem from "@/assets/armor/breastplate-emblem-cut.png";
 import easternArmorEmblem from "@/assets/armor/eastern-armor-preview-cut.png";
 import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview-cut.png";
+import orSword from "@/assets/armor/oriental-sword.png";
+import orShield from "@/assets/armor/oriental-shield.png";
+import orSandals from "@/assets/armor/oriental-sandals.png";
+import orBelt from "@/assets/armor/oriental-belt.png";
+import orHelmet from "@/assets/armor/oriental-helmet.png";
+import orBreastplate from "@/assets/armor/oriental-breastplate.png";
+import orMantle from "@/assets/armor/oriental-mantle.png";
+import orCenser from "@/assets/armor/oriental-censer.png";
+import orFullArmor from "@/assets/armor/oriental-full-armor.png";
 
 const SPARKLES = Array.from({ length: 12 }, () => ({
   top: Math.random() * 100,
@@ -41,6 +50,15 @@ const COMPLETION_IMAGES = [
   breastplateEmblem,
   easternArmorEmblem,
   orientalArmorEmblem,
+  orSword,
+  orShield,
+  orSandals,
+  orBelt,
+  orHelmet,
+  orBreastplate,
+  orMantle,
+  orCenser,
+  orFullArmor,
 ];
 if (typeof window !== "undefined") {
   COMPLETION_IMAGES.forEach((src) => {
@@ -85,11 +103,35 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const { toast } = useToast();
   const { playSound } = useMusic();
 
+  const isOriental = campaignId === 'oriental_orthodox_history';
+
   const getArmorEmblem = (awardPiece: string) => {
     const normalizedPiece = awardPiece.toLowerCase().replace(/_/g, ' ');
-    
-    // Common image classes - filter for theme-appropriate coloring
-    const imgClasses = "w-32 h-32 mx-auto mb-4 object-contain dark:invert";
+
+    // Oriental emblems are full-colour artwork, so they must not be inverted.
+    const imgClasses = isOriental
+      ? "w-32 h-32 mx-auto mb-4 object-contain"
+      : "w-32 h-32 mx-auto mb-4 object-contain dark:invert";
+
+    if (isOriental) {
+      const orientalMap: Record<string, { src: string; alt: string }> = {
+        'belt of truth': { src: orBelt, alt: 'Belt of Truth' },
+        'breastplate of righteousness': { src: orBreastplate, alt: 'Breastplate of Righteousness' },
+        'sandals of gospel of peace': { src: orSandals, alt: 'Sandals of the Gospel of Peace' },
+        'shoes of peace': { src: orSandals, alt: 'Sandals of the Gospel of Peace' },
+        'shield of faith': { src: orShield, alt: 'Shield of Faith' },
+        'helmet of salvation': { src: orHelmet, alt: 'Helmet of Salvation' },
+        'sword of the spirit': { src: orSword, alt: 'Sword of the Spirit' },
+        'sword of spirit': { src: orSword, alt: 'Sword of the Spirit' },
+        'mantle of the desert fathers': { src: orMantle, alt: 'Mantle of the Desert Fathers' },
+        'censer of unceasing prayer': { src: orCenser, alt: 'Censer of Unceasing Prayer' },
+        'full oriental armor': { src: orFullArmor, alt: 'Full Oriental Armor' },
+      };
+      const match = orientalMap[normalizedPiece];
+      if (match) {
+        return <img src={match.src} alt={match.alt} className={imgClasses} loading="eager" decoding="sync" />;
+      }
+    }
     
     switch (normalizedPiece) {
       case 'sword of spirit':
