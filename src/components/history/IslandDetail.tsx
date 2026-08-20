@@ -274,6 +274,13 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         </Card>
       </main>
 
+      {/* Off-screen warm-up so the completion artwork is already decoded
+          by the time the last question is answered. */}
+      <div aria-hidden className="pointer-events-none absolute opacity-0 w-0 h-0 overflow-hidden">
+        <img src={completionCross} alt="" decoding="sync" />
+        {island.awardPiece ? getArmorEmblem(island.awardPiece) : null}
+      </div>
+
       <Dialog open={showCompletionModal}>
         <DialogContent 
           className="sm:max-w-md [&>button]:hidden !duration-0 !animate-none"
