@@ -14,15 +14,37 @@ import { DonateButton } from "@/components/DonateButton";
 import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
-import completionCross from "@/assets/completion-cross-hq.png";
-import swordEmblem from "@/assets/armor/sword-emblem-final.png";
-import shieldEmblem from "@/assets/armor/shield-emblem-final.png";
-import bootEmblem from "@/assets/armor/boot-emblem-final.png";
-import beltEmblem from "@/assets/armor/belt-emblem-final.png";
-import helmetEmblem from "@/assets/armor/helmet-emblem-final.png";
-import breastplateEmblem from "@/assets/armor/breastplate-emblem-final.png";
-import easternArmorEmblem from "@/assets/armor/eastern-armor-preview.png";
-import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview.png";
+import completionCross from "@/assets/completion-cross-cut.png";
+import swordEmblem from "@/assets/armor/sword-emblem-cut.png";
+import shieldEmblem from "@/assets/armor/shield-emblem-cut.png";
+import bootEmblem from "@/assets/armor/boot-emblem-cut.png";
+import beltEmblem from "@/assets/armor/belt-emblem-cut.png";
+import helmetEmblem from "@/assets/armor/helmet-emblem-cut.png";
+import breastplateEmblem from "@/assets/armor/breastplate-emblem-cut.png";
+import easternArmorEmblem from "@/assets/armor/eastern-armor-preview-cut.png";
+import orientalArmorEmblem from "@/assets/armor/oriental-armor-preview-cut.png";
+
+// Preload all completion-screen artwork once at module load so the
+// Congratulations dialog renders instantly with no image pop-in.
+const COMPLETION_IMAGES = [
+  completionCross,
+  swordEmblem,
+  shieldEmblem,
+  bootEmblem,
+  beltEmblem,
+  helmetEmblem,
+  breastplateEmblem,
+  easternArmorEmblem,
+  orientalArmorEmblem,
+];
+if (typeof window !== "undefined") {
+  COMPLETION_IMAGES.forEach((src) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = src;
+  });
+}
+
 
 interface Quiz {
   question: string;
