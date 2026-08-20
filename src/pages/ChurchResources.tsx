@@ -622,10 +622,16 @@ const ChurchResources = () => {
                           {saint.epithet && <div className="text-base font-bold leading-tight mt-0.5">{saint.epithet}</div>}
                           <div className="text-xs text-muted-foreground mt-1.5 leading-relaxed whitespace-pre-line">{saint.shortDescription}</div>
                         </div>
-                        <div className="absolute top-3 right-3 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-primary/10 text-primary font-medium whitespace-nowrap">
-                          {saint.tradition === "Oriental" && "Oriental"}
-                          {saint.tradition === "Eastern" && "Eastern"}
-                          {saint.tradition === "Eastern/Oriental" && "E/O"}
+                        <div className="absolute top-3 right-3 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-primary/10 font-medium whitespace-nowrap">
+                          {saint.tradition === "Oriental" && <span className="text-orange-500">Oriental</span>}
+                          {saint.tradition === "Eastern" && <span className="text-blue-500">Eastern</span>}
+                          {saint.tradition === "Eastern/Oriental" && (
+                            <>
+                              <span className="text-blue-500">E</span>
+                              <span className="text-primary">/</span>
+                              <span className="text-orange-500">O</span>
+                            </>
+                          )}
                         </div>
                       </button>
                     ))}
