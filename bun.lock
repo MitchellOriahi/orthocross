@@ -11,7 +11,7 @@
         "@capacitor/core": "^7.4.3",
         "@capacitor/ios": "^7.4.3",
         "@capacitor/local-notifications": "^7.0.3",
-        "@capacitor/push-notifications": "^8.0.1",
+        "@capacitor/push-notifications": "^7.0.1",
         "@hookform/resolvers": "^3.10.0",
         "@radix-ui/react-accordion": "^1.2.11",
         "@radix-ui/react-alert-dialog": "^1.1.14",
@@ -116,7 +116,7 @@
 
     "@capacitor/local-notifications": ["@capacitor/local-notifications@7.0.3", "", { "peerDependencies": { "@capacitor/core": ">=7.0.0" } }, "sha512-zVHZk5AYRiBwBDynaD7caPUROozgvwOG0L2SPFw1HBTWCscJvo0fsaE67NWW252jzel3PH0XogglJUYFx/jtHA=="],
 
-    "@capacitor/push-notifications": ["@capacitor/push-notifications@8.0.1", "", { "peerDependencies": { "@capacitor/core": ">=8.0.0" } }, "sha512-CDY6syMxdG81Epn+V4fCYRR4L9tVS72F1kVrTY2ka6umWy4BmwXOXPsxGxlE5PmHLOhmBwKpy3uOiIJtSpMhOw=="],
+    "@capacitor/push-notifications": ["@capacitor/push-notifications@7.0.7", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@capacitor/push-notifications/-/push-notifications-7.0.7.tgz", { "peerDependencies": { "@capacitor/core": ">=7.0.0" } }, "sha512-TgFsPV4uOez0RtFKsWPz3XCrLxc9th+UyAkillUY9vL6ezVKT35te9Sn4vGR0jeU2U0KUNU7Dt6oSCALnSiEKg=="],
 
     "@csstools/color-helpers": ["@csstools/color-helpers@5.1.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@csstools/color-helpers/-/color-helpers-5.1.0.tgz", {}, "sha512-S11EXWJyy0Mz5SYvRmY8nJYTFFd1LCNV+7cXyAgQtOOuzb4EsgfqDufL+9esx72/eLhsRdGZwaldu/h+E4t4BA=="],
 
