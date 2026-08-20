@@ -5,6 +5,16 @@ import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import orthodoxCrossBlack from '@/assets/orthodox-cross-black-new.png';
 import orthodoxCrossWhite from '@/assets/orthodox-cross-white-new.png';
 import completionCross from '@/assets/completion-cross-cut.png';
+import { HISTORY_ICONS } from '@/data/historyContent';
+import orBelt from '@/assets/armor/oriental-belt.png';
+import orBreastplate from '@/assets/armor/oriental-breastplate.png';
+import orSandals from '@/assets/armor/oriental-sandals.png';
+import orShield from '@/assets/armor/oriental-shield.png';
+import orHelmet from '@/assets/armor/oriental-helmet.png';
+import orSword from '@/assets/armor/oriental-sword.png';
+import orMantle from '@/assets/armor/oriental-mantle.png';
+import orCenser from '@/assets/armor/oriental-censer.png';
+import orFullArmor from '@/assets/armor/oriental-full-armor.png';
 import beltEmblem from '@/assets/armor/belt-emblem-cut.png';
 import bootEmblem from '@/assets/armor/boot-emblem-cut.png';
 import breastplateEmblem from '@/assets/armor/breastplate-emblem-cut.png';
@@ -14,7 +24,7 @@ import swordEmblem from '@/assets/armor/sword-emblem-cut.png';
 import easternArmorPreview from '@/assets/armor/eastern-armor-preview-cut.png';
 import orientalArmorPreview from '@/assets/armor/oriental-armor-preview-cut.png';
 
-const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem, easternArmorPreview, orientalArmorPreview, completionCross];
+const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem, easternArmorPreview, orientalArmorPreview, completionCross, orBelt, orBreastplate, orSandals, orShield, orHelmet, orSword, orMantle, orCenser, orFullArmor, ...HISTORY_ICONS];
 
 interface AppLoaderProps {
   children: ReactNode;
@@ -213,7 +223,10 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
           // Preload armor emblems (fire-and-forget, don't block splash)
           [...ARMOR_IMAGES].forEach(src => {
             const img = new Image();
+            img.decoding = 'async';
             img.src = src;
+            // Decode ahead of time so the first paint inside an island is instant.
+            if (typeof img.decode === 'function') img.decode().catch(() => {});
           });
 
           // Always preload church cross images (not just when user has friends)
