@@ -15,6 +15,12 @@ import orSword from '@/assets/armor/oriental-sword.png';
 import orMantle from '@/assets/armor/oriental-mantle.png';
 import orCenser from '@/assets/armor/oriental-censer.png';
 import orFullArmor from '@/assets/armor/oriental-full-armor.png';
+import eaBelt from '@/assets/armor/eastern-belt.png';
+import eaBreastplate from '@/assets/armor/eastern-breastplate.png';
+import eaSandals from '@/assets/armor/eastern-sandals.png';
+import eaShield from '@/assets/armor/eastern-shield.png';
+import eaHelmet from '@/assets/armor/eastern-helmet.png';
+import eaSword from '@/assets/armor/eastern-sword.png';
 import beltEmblem from '@/assets/armor/belt-emblem-cut.png';
 import bootEmblem from '@/assets/armor/boot-emblem-cut.png';
 import breastplateEmblem from '@/assets/armor/breastplate-emblem-cut.png';
@@ -24,7 +30,7 @@ import swordEmblem from '@/assets/armor/sword-emblem-cut.png';
 import easternArmorPreview from '@/assets/armor/eastern-armor-preview-cut.png';
 import orientalArmorPreview from '@/assets/armor/oriental-armor-preview-cut.png';
 
-const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem, easternArmorPreview, orientalArmorPreview, completionCross, orBelt, orBreastplate, orSandals, orShield, orHelmet, orSword, orMantle, orCenser, orFullArmor, ...HISTORY_ICONS];
+const ARMOR_IMAGES = [beltEmblem, bootEmblem, breastplateEmblem, helmetEmblem, shieldEmblem, swordEmblem, easternArmorPreview, orientalArmorPreview, completionCross, orBelt, orBreastplate, orSandals, orShield, orHelmet, orSword, orMantle, orCenser, orFullArmor, eaBelt, eaBreastplate, eaSandals, eaShield, eaHelmet, eaSword, ...HISTORY_ICONS];
 
 interface AppLoaderProps {
   children: ReactNode;
