@@ -1,20 +1,20 @@
 import { CapacitorConfig } from '@capacitor/core';
 
-// Set CAP_LIVE_RELOAD=1 in your shell before `npx cap sync` to enable
-// hot-reload from the Lovable sandbox during development.
+// Set CAP_LIVE_RELOAD to your dev server URL (e.g. http://192.168.1.10:8080)
+// before `npx cap sync` to hot-reload against a machine on your LAN.
 // For production / App Store / Play Store builds, leave it unset so the
 // app loads the bundled `dist/` (required by Apple, and prevents the
 // Android "crash before splash" caused by loading a remote URL).
-const useLiveReload = process.env.CAP_LIVE_RELOAD === '1';
+const liveReloadUrl = process.env.CAP_LIVE_RELOAD;
 
 const config: CapacitorConfig = {
   appId: 'com.orthocross.myapp',
   appName: 'OrthoCross',
   webDir: 'dist',
-  ...(useLiveReload
+  ...(liveReloadUrl
     ? {
         server: {
-          url: 'https://b611f71f-b22b-4a93-8697-f6b6fb41b6eb.lovableproject.com?forceHideBadge=true',
+          url: liveReloadUrl,
           cleartext: true,
         },
       }

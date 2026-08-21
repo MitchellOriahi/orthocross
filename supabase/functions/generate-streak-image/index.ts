@@ -37,11 +37,11 @@ serve(async (req) => {
 
     const { streakDays } = await req.json();
 
-    // Use Lovable AI to generate the streak image
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not configured");
     }
+    const model = Deno.env.get("GEMINI_IMAGE_MODEL") ?? "gemini-2.5-flash-image";
 
     const prompt = `Create a celebratory achievement image with the following specifications:
 - Main text: "I'm on a" followed by large number "${streakDays}" followed by "day Bible reading streak!"
@@ -55,23 +55,17 @@ serve(async (req) => {
 - Aspect ratio: Square (1:1)
 - The flame should be prominent and celebratory, similar to a streak counter flame`;
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        modalities: ["image", "text"],
-      }),
-    });
+    const aiResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ["TEXT", "IMAGE"] },
+        }),
+      }
+    );
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
@@ -80,7 +74,8 @@ serve(async (req) => {
     }
 
     const aiData = await aiResponse.json();
-    const imageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const inline = aiData.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData)?.inlineData;
+    const imageUrl = inline ? `data:${inline.mimeType};base64,${inline.data}` : undefined;
 
     if (!imageUrl) {
       throw new Error("No image generated from AI");
