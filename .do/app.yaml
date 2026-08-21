@@ -1,0 +1,39 @@
+name: orthocross
+region: nyc
+
+static_sites:
+  - name: web
+    github:
+      repo: MitchellOriahi/orthocross
+      branch: main
+      deploy_on_push: true
+
+    build_command: npm run build
+    output_dir: dist
+
+    index_document: index.html
+    # The app uses react-router BrowserRouter, so every unmatched path must be
+    # served index.html or deep links (/reading, /settings) 404 on refresh.
+    catchall_document: index.html
+
+    # All VITE_* vars are inlined into the bundle at build time, so they must be
+    # BUILD_TIME scope. Set the real values in the DigitalOcean dashboard.
+    envs:
+      - key: VITE_SUPABASE_URL
+        scope: BUILD_TIME
+        value: REPLACE_IN_DASHBOARD
+      - key: VITE_SUPABASE_PUBLISHABLE_KEY
+        scope: BUILD_TIME
+        value: REPLACE_IN_DASHBOARD
+      - key: VITE_SUPABASE_PROJECT_ID
+        scope: BUILD_TIME
+        value: REPLACE_IN_DASHBOARD
+      - key: VITE_ONESIGNAL_APP_ID
+        scope: BUILD_TIME
+        value: REPLACE_IN_DASHBOARD
+      - key: VITE_REVENUECAT_API_KEY_ANDROID
+        scope: BUILD_TIME
+        value: REPLACE_IN_DASHBOARD
+      - key: VITE_REVENUECAT_API_KEY_IOS
+        scope: BUILD_TIME
+        value: REPLACE_IN_DASHBOARD

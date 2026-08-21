@@ -26,3 +26,14 @@ dist-ssr
 # Firebase - contains sensitive credentials, set per-environment
 android/app/google-services.json
 ios/App/GoogleService-Info.plist
+
+# This project standardizes on npm. A second lock file makes the DigitalOcean
+# buildpack fail with "multiple lock files detected".
+bun.lock
+bun.lockb
+yarn.lock
+pnpm-lock.yaml
+
+# Android signing keys - publishing these to a remote is unrecoverable
+*.jks
+*.keystore
