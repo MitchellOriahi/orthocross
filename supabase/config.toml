@@ -1,4 +1,11 @@
-project_id = "atjpjmhumzfpotrkefaz"
+project_id = "uceqydqvjapkobqwrbxw"
+
+[auth]
+site_url = "https://orthocross-kzptz.ondigitalocean.app"
+additional_redirect_urls = [
+  "https://orthocross-kzptz.ondigitalocean.app",
+  "http://localhost:8080",
+]
 
 [functions.create-donation]
 verify_jwt = false
