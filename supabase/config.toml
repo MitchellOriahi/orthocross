@@ -7,6 +7,9 @@ additional_redirect_urls = [
   "http://localhost:8080",
 ]
 
+[functions.export-storage]
+verify_jwt = false
+
 [functions.create-donation]
 verify_jwt = false
 
