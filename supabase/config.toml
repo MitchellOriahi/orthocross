@@ -4,6 +4,7 @@ project_id = "uceqydqvjapkobqwrbxw"
 site_url = "https://orthocross-kzptz.ondigitalocean.app"
 additional_redirect_urls = [
   "https://orthocross-kzptz.ondigitalocean.app",
+  "https://app.orthocrossapp.com",
   "http://localhost:8080",
 ]
 
