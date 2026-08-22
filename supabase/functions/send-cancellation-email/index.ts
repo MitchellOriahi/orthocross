@@ -49,7 +49,7 @@ serve(async (req) => {
     logStep("Got user profile", { userName });
 
     const emailResponse = await resend.emails.send({
-      from: "OrthoCross <onboarding@resend.dev>",
+      from: Deno.env.get("RESEND_FROM") || "OrthoCross <onboarding@resend.dev>",
       to: [user.email],
       subject: "Thank You for Your Support - OrthoCross",
       html: `

@@ -160,7 +160,7 @@ serve(async (req) => {
       `;
 
       const emailResponse = await resend.emails.send({
-        from: "OrthoCross <onboarding@resend.dev>",
+        from: Deno.env.get("RESEND_FROM") || "OrthoCross <onboarding@resend.dev>",
         to: [user.email],
         subject: `Thank You for Your ${isMonthly ? "Monthly " : ""}Donation! ☦`,
         html: emailHtml,
