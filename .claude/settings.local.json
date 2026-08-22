@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git rm:*)",
+      "Bash(npx supabase secrets set:*)",
+      "Bash(npx supabase secrets list:*)",
+      "Bash(npx supabase functions deploy:*)",
+      "Bash(npx supabase functions delete:*)",
+      "Bash(npx supabase config push:*)"
+    ]
+  }
+}
