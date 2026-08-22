@@ -1,7 +1,7 @@
 project_id = "uceqydqvjapkobqwrbxw"
 
 [auth]
-site_url = "https://orthocross-kzptz.ondigitalocean.app"
+site_url = "https://app.orthocrossapp.com"
 additional_redirect_urls = [
   "https://orthocross-kzptz.ondigitalocean.app",
   "https://app.orthocrossapp.com",
