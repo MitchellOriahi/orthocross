@@ -4,6 +4,12 @@ Goal: build the OrthoCross iOS app from this repo (replacing the Natively wrappe
 and upload it to TestFlight so we can test on real iPhones. Everything scriptable
 is already done; your part is one script + a few Xcode clicks.
 
+Status (2026-08-22): the backend + web are fully migrated (backend: Supabase
+project `uceqydqvjapkobqwrbxw`; web live at https://app.orthocrossapp.com).
+The current iOS app is a Natively web wrapper pointed at that URL; this Capacitor
+build replaces it. Once your build is live on the App Store, the Natively
+subscription gets cancelled.
+
 ## Prerequisites (one-time)
 - A Mac with **Xcode** installed (open it once, accept the license, install components).
 - **CocoaPods**: `sudo gem install cocoapods` (or `brew install cocoapods`).
@@ -40,6 +46,10 @@ npx cap open ios
    process). Add yourself + Mitch as **internal testers** — no review wait.
 
 That's it — a working build on the new backend, installable via TestFlight.
+
+Sanity checks in the TestFlight build: log in with a real account (data should be
+there), record a voice note (mic permission should prompt), open Church Resources →
+"Find churches near me" (should open Apple Maps).
 
 ---
 
