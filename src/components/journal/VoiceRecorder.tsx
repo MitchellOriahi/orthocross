@@ -21,7 +21,23 @@ export const VoiceRecorder = ({ onRecordingComplete, onRecordingFinished }: Voic
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+
+      // Pick a container the current platform actually supports. iOS/WebView
+      // reject audio/webm, so fall back to mp4/aac before an empty default.
+      const candidates = [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/mp4",
+        "audio/aac",
+        "",
+      ];
+      const mimeType =
+        candidates.find(
+          (t) => t === "" || (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(t))
+        ) ?? "";
+      const mediaRecorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
       const chunks: Blob[] = [];
 
       mediaRecorder.ondataavailable = (e) => {
@@ -31,7 +47,8 @@ export const VoiceRecorder = ({ onRecordingComplete, onRecordingFinished }: Voic
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: "audio/webm" });
+        const type = mediaRecorder.mimeType || "audio/webm";
+        const blob = new Blob(chunks, { type });
         setAudioBlob(blob);
         onRecordingComplete?.(blob);
         stream.getTracks().forEach((track) => track.stop());

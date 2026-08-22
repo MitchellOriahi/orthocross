@@ -23,6 +23,7 @@ const BRUSH_COLORS = [
 export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasWrapRef = useRef<HTMLDivElement>(null);
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [isDrawing, setIsDrawing] = useState(true);
   const [selectedColor, setSelectedColor] = useState(BRUSH_COLORS[0].value);
@@ -30,15 +31,25 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    if (!canvasRef.current || !containerRef.current) return;
+    if (!canvasRef.current) return;
 
-    const updateCanvasSize = () => {
-      if (!containerRef.current) return;
-      const containerWidth = containerRef.current.offsetWidth;
-      const canvasWidth = Math.min(containerWidth - 32, 800);
-      const canvasHeight = isMobile ? 400 : 600;
+    let canvas: FabricCanvas | null = null;
+    let raf1 = 0;
+    let raf2 = 0;
 
-      const canvas = new FabricCanvas(canvasRef.current, {
+    const build = () => {
+      const wrap = canvasWrapRef.current;
+      if (!canvasRef.current || !wrap) return;
+
+      // Size the canvas to the space actually available inside the sheet, so it
+      // never exceeds the wrapper and gets clipped by overflow-hidden. Fall back
+      // to sensible defaults if layout hasn't settled yet.
+      const availWidth = wrap.clientWidth || (isMobile ? 320 : 640);
+      const availHeight = wrap.clientHeight || (isMobile ? 400 : 600);
+      const canvasWidth = Math.max(200, Math.min(availWidth - 16, 800));
+      const canvasHeight = Math.max(200, availHeight - 16);
+
+      canvas = new FabricCanvas(canvasRef.current, {
         width: canvasWidth,
         height: canvasHeight,
         backgroundColor: "#ffffff",
@@ -55,8 +66,8 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
         FabricImage.fromURL(initialImageUrl, { crossOrigin: 'anonymous' })
           .then((fabricImg) => {
             fabricImg.scaleToWidth(canvasWidth);
-            canvas.add(fabricImg);
-            canvas.renderAll();
+            canvas?.add(fabricImg);
+            canvas?.renderAll();
           })
           .catch((error) => {
             console.error('Error loading image:', error);
@@ -64,13 +75,16 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
       }
 
       setFabricCanvas(canvas);
-
-      return canvas;
     };
 
-    const canvas = updateCanvasSize();
+    // Defer to after the sheet's open animation so the wrapper has its real size.
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(build);
+    });
 
     return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
       canvas?.dispose();
     };
   }, [isMobile, initialImageUrl]);
@@ -167,7 +181,7 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
           </Button>
         )}
       </div>
-      <div className="border border-border rounded-lg overflow-hidden flex-1 flex items-center justify-center bg-muted/20">
+      <div ref={canvasWrapRef} className="border border-border rounded-lg overflow-hidden flex-1 flex items-center justify-center bg-muted/20">
         <canvas ref={canvasRef} className="max-w-full max-h-full" />
       </div>
     </div>

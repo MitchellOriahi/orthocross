@@ -46,14 +46,21 @@ const ChurchResources = () => {
   const [locatingChurches, setLocatingChurches] = useState(false);
 
   const handleFindChurchesNearMe = () => {
+    // Apple devices default to Apple Maps; everyone else gets Google Maps.
+    const isApple =
+      /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
     // Open the tab synchronously inside the click handler so popup blockers
     // don't kill it. Start with a generic "near me" search; if we get coords
     // we'll refine the URL afterward.
-    const fallbackUrl = `https://www.google.com/maps/search/${encodeURIComponent("Orthodox churches near me")}`;
+    const fallbackUrl = isApple
+      ? `https://maps.apple.com/?q=${encodeURIComponent("Orthodox churches near me")}`
+      : `https://www.google.com/maps/search/${encodeURIComponent("Orthodox churches near me")}`;
     const newTab = window.open(fallbackUrl, "_blank", "noopener,noreferrer");
 
     if (!("geolocation" in navigator)) {
-      return; // Google Maps will use its own location detection
+      return; // The maps app will use its own location detection
     }
 
     setLocatingChurches(true);
@@ -62,7 +69,9 @@ const ChurchResources = () => {
         setLocatingChurches(false);
         const { latitude, longitude } = position.coords;
         const query = encodeURIComponent("Orthodox Churches");
-        const preciseUrl = `https://www.google.com/maps/search/${query}/@${latitude},${longitude},14z`;
+        const preciseUrl = isApple
+          ? `https://maps.apple.com/?q=${query}&ll=${latitude},${longitude}&z=14`
+          : `https://www.google.com/maps/search/${query}/@${latitude},${longitude},14z`;
         // Try to refine the already-opened tab; ignore if blocked cross-origin.
         try {
           if (newTab && !newTab.closed) {

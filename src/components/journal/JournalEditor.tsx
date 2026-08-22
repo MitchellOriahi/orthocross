@@ -388,10 +388,18 @@ export const JournalEditor = ({
     
     setIsUploading(true);
     try {
-      const fileName = `${user.id}/${noteId}/voice-${Date.now()}.webm`;
+      // Derive the extension/content type from the actual recording format, since
+      // it may be mp4/aac on iOS rather than webm.
+      const audioType = audioBlob.type || "audio/webm";
+      const ext = audioType.includes("mp4") || audioType.includes("aac")
+        ? "m4a"
+        : audioType.includes("ogg")
+        ? "ogg"
+        : "webm";
+      const fileName = `${user.id}/${noteId}/voice-${Date.now()}.${ext}`;
       const { error: uploadError } = await supabase.storage
         .from('journal-attachments')
-        .upload(fileName, audioBlob);
+        .upload(fileName, audioBlob, { contentType: audioType });
       
       if (uploadError) throw uploadError;
       

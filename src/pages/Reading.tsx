@@ -1062,7 +1062,7 @@ const Reading = () => {
           onInteractOutside={(e) => { if (hintCountdown > 0) e.preventDefault(); }}
         >
 
-          <DialogHeader>
+          <DialogHeader className="sm:text-center">
             <DialogTitle>Tip: Take notes on any verse</DialogTitle>
             <DialogDescription>
               Long press any verse to save a note, voice recording, or drawing about it.

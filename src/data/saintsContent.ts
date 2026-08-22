@@ -344,3 +344,14 @@ export const saintsContent: SaintDetail[] = [
     ]
   }
 ];
+
+// Preload saint icons at module load (same pattern as HISTORY_ICONS) so they're
+// already in the browser cache before the Church Resources list renders them,
+// avoiding the split-second flash on first paint.
+if (typeof window !== "undefined") {
+  saintsContent.forEach((saint) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = saint.iconUrl;
+  });
+}
