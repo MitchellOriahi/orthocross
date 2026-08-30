@@ -239,11 +239,20 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
           const crossImagePromises = [orthodoxCross, orthodoxCrossBlack, orthodoxCrossWhite].map(src =>
             new Promise<void>((resolve) => {
               const img = new Image();
-              img.onload = () => resolve();
+              img.decoding = 'async';
               img.onerror = () => resolve();
               img.src = src;
+              // decode() (not just onload) so the first paint has no decode stall
+              if (typeof img.decode === 'function') img.decode().then(() => resolve()).catch(() => resolve());
+              else img.onload = () => resolve();
             })
           );
+          // Whatever branch runs below, never dismiss the splash with the
+          // crosses still undecoded (bounded so a slow network can't stall us).
+          const awaitCrosses = () => Promise.race([
+            Promise.all(crossImagePromises),
+            new Promise(resolve => setTimeout(resolve, 1500)),
+          ]);
 
           if (friendsResult.data && friendsResult.data.length > 0) {
             // Extract unique friend IDs
@@ -266,6 +275,9 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
               });
             }
 
+            if (friendIds.length === 0) {
+              await awaitCrosses();
+            }
             if (friendIds.length > 0) {
               const [friendProfilesResult, friendStreaksResult] = await Promise.all([
                 supabase
@@ -319,10 +331,7 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
             }
           } else {
             // No friends — still wait briefly for cross images
-            await Promise.race([
-              Promise.all(crossImagePromises),
-              new Promise(resolve => setTimeout(resolve, 1500)),
-            ]);
+            await awaitCrosses();
           }
 
           cachedAuth = { isAuthenticated: true, userId };

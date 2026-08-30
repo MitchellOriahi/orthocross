@@ -124,9 +124,10 @@ const handler = async (req: Request): Promise<Response> => {
     const startTime = Date.now();
     console.log(`[send-scheduled-reminders] Starting at ${new Date().toISOString()}`);
 
-    const counters = {
+    const counters: Record<string, number> = {
       sentStreak: 0,
       sentFasting: 0,
+      sentVerse: 0,
       skippedWrongTime: 0,
       skippedCompleted: 0,
       skippedPrefsOff: 0,
@@ -136,7 +137,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
-      .select("id, streak_notifications_enabled, fasting_notifications_enabled, timezone");
+      .select("id, streak_notifications_enabled, fasting_notifications_enabled, verse_notifications_enabled, timezone");
 
     if (profilesError) {
       console.error("[send-scheduled-reminders] Error fetching profiles:", profilesError);
@@ -151,6 +152,18 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`[send-scheduled-reminders] Processing ${profiles.length} users`);
+
+    // Verse of the day is identical for everyone sharing a local date, so
+    // resolve it once per distinct date (max ~2 across live timezones).
+    const verseByDate = new Map<string, { reference: string; verse_text: string } | null>();
+    const getVerseFor = async (dateStr: string) => {
+      if (!verseByDate.has(dateStr)) {
+        const { data, error } = await supabase.rpc("get_verse_of_the_day", { p_date: dateStr });
+        if (error) console.error("[verse] rpc error:", error);
+        verseByDate.set(dateStr, data && data.length > 0 ? data[0] : null);
+      }
+      return verseByDate.get(dateStr) ?? null;
+    };
 
     for (const profile of profiles) {
       const timezone = profile.timezone || "America/New_York";
@@ -269,6 +282,44 @@ const handler = async (req: Request): Promise<Response> => {
           }
         }
       } else if (isFastingTime && !profile.fasting_notifications_enabled) {
+        counters.skippedPrefsOff++;
+      }
+
+      // ========== VERSE OF THE DAY at 08:00 (8am) local time ==========
+      const isVerseTime = localTime.hour === 8;
+
+      if (isVerseTime && profile.verse_notifications_enabled !== false) {
+        const { data: existingLog } = await supabase
+          .from("notification_log")
+          .select("id")
+          .eq("user_id", profile.id)
+          .eq("type", "verse_8am")
+          .eq("local_date", localTime.dateStr)
+          .maybeSingle();
+
+        if (existingLog) {
+          counters.skippedDup++;
+        } else {
+          const verse = await getVerseFor(localTime.dateStr);
+          if (verse) {
+            const sent = await sendOneSignalNotification(
+              profile.id,
+              "Verse of the Day",
+              `"${verse.verse_text}" — ${verse.reference}`
+            );
+            if (sent) {
+              await supabase.from("notification_log").insert({
+                user_id: profile.id,
+                type: "verse_8am",
+                local_date: localTime.dateStr,
+              });
+              counters.sentVerse++;
+            } else {
+              counters.oneSignalFailed++;
+            }
+          }
+        }
+      } else if (isVerseTime && profile.verse_notifications_enabled === false) {
         counters.skippedPrefsOff++;
       }
     }

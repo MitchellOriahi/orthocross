@@ -136,11 +136,11 @@ export const JournalEditor = ({
     contentDivRef.current.innerHTML = newContent;
     onContentChange(newContent);
     
-    // Scroll to bottom and focus
+    // Scroll the inserted media into view without stealing focus (a
+    // programmatic focus on iOS auto-zooms and pops the keyboard).
     setTimeout(() => {
       if (contentDivRef.current) {
         contentDivRef.current.scrollTop = contentDivRef.current.scrollHeight;
-        contentDivRef.current.focus();
       }
     }, 100);
   };
@@ -505,9 +505,7 @@ export const JournalEditor = ({
               suppressContentEditableWarning
               onInput={handleContentInput}
               dir="ltr"
-              className={`resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none ${
-                isMobile ? 'text-sm' : 'text-base'
-              }`}
+              className="resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none text-base"
               style={{ minHeight: 'calc(100vh - 400px)' }}
               data-placeholder="Start writing..."
             />
@@ -521,7 +519,7 @@ export const JournalEditor = ({
         )}
 
         {/* Bottom Toolbar */}
-        <div className="border-t border-border p-2 flex items-center justify-around bg-card/50">
+        <div className="border-t border-border p-2 flex items-center justify-around bg-card/50 safe-bottom">
           <Button
             variant="ghost"
             size="icon"
@@ -567,7 +565,7 @@ export const JournalEditor = ({
       }}>
         <SheetContent side="bottom" className="h-[90vh] w-screen p-0 max-w-none">
           <SheetTitle className="sr-only">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</SheetTitle>
-          <div className="h-full p-4">
+          <div className="h-full p-4 safe-top">
             <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
           </div>
         </SheetContent>

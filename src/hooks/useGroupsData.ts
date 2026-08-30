@@ -1,3 +1,4 @@
+import { currentMonthKey } from '@/lib/month';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -113,36 +114,21 @@ const loadGroupMembers = async (groupId: string, monthDate: string): Promise<Gro
     .select('id, username, profile_picture_url')
     .in('id', userIds);
 
-  // Get rankings for this month
-  const { data: rankings } = await supabase
-    .from('group_monthly_rankings')
-    .select('*')
-    .eq('group_id', groupId)
-    .eq('month_date', monthDate)
-    .in('user_id', userIds)
-    .order('total_points', { ascending: false });
-
-  // Also get the global leaderboard points for members
+  // Group standings come straight from this month's leaderboard points.
+  // (group_monthly_rankings was a dead table nothing ever wrote to.)
   const { data: globalPoints } = await supabase
     .from('monthly_leaderboard')
     .select('user_id, total_points')
     .eq('month_date', monthDate)
     .in('user_id', userIds);
 
-  return members.map((member, index) => {
+  // Rank within the group by this month's points (ties share order of points sort).
+  const pointsFor = (userId: string) =>
+    globalPoints?.find(g => g.user_id === userId)?.total_points || 0;
+  const rankOrder = [...userIds].sort((a, b) => pointsFor(b) - pointsFor(a));
+
+  return members.map((member) => {
     const profile = profiles?.find(p => p.id === member.user_id);
-    const ranking = rankings?.find(r => r.user_id === member.user_id);
-    const global = globalPoints?.find(g => g.user_id === member.user_id);
-    
-    // Calculate rank based on total_points
-    let rank: number | null = null;
-    if (rankings && rankings.length > 0) {
-      const sortedRankings = [...rankings].sort((a, b) => (b.total_points || 0) - (a.total_points || 0));
-      const memberRankIndex = sortedRankings.findIndex(r => r.user_id === member.user_id);
-      if (memberRankIndex !== -1) {
-        rank = memberRankIndex + 1;
-      }
-    }
 
     return {
       id: member.id,
@@ -151,9 +137,9 @@ const loadGroupMembers = async (groupId: string, monthDate: string): Promise<Gro
       profile_picture_url: profile?.profile_picture_url || null,
       role: member.role as 'owner' | 'admin' | 'member',
       joined_at: member.joined_at,
-      total_points: global?.total_points || ranking?.total_points || 0,
-      rank,
-      consecutive_rank_count: ranking?.consecutive_rank_count || 1
+      total_points: pointsFor(member.user_id),
+      rank: rankOrder.indexOf(member.user_id) + 1,
+      consecutive_rank_count: 1
     };
   }).sort((a, b) => (b.total_points || 0) - (a.total_points || 0));
 };
@@ -266,7 +252,7 @@ const loadUnreadInvitationCount = async (userId: string): Promise<number> => {
 
 export const useGroupsData = (userId: string | undefined) => {
   const queryClient = useQueryClient();
-  const currentMonth = new Date().toISOString().slice(0, 7);
+  const currentMonth = currentMonthKey();
 
   const { data: groups = [], isLoading: groupsLoading, refetch: refetchGroups } = useQuery({
     queryKey: ['userGroups', userId],
@@ -303,7 +289,7 @@ export const useGroupsData = (userId: string | undefined) => {
 };
 
 export const useGroupDetail = (groupId: string | undefined, userId: string | undefined) => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
+  const currentMonth = currentMonthKey();
 
   const { data: members = [], isLoading: membersLoading, refetch: refetchMembers } = useQuery({
     queryKey: ['groupMembers', groupId, currentMonth],

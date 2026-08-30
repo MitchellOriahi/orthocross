@@ -579,7 +579,7 @@ export const Journal = () => {
       </Card>
 
       <Sheet open={isFullScreen} onOpenChange={setIsFullScreen}>
-        <SheetContent side="bottom" className="h-screen w-screen p-0 max-w-none">
+        <SheetContent side="bottom" className="inset-0 h-[100dvh] w-screen p-0 max-w-none">
           <SheetTitle className="sr-only">Journal Editor</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="border-b border-border p-2 flex items-center bg-card safe-top">

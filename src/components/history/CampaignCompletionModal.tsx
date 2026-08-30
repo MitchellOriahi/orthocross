@@ -38,7 +38,7 @@ export const CampaignCompletionModal = ({
 
   return (
     <>
-      <Dialog open={isOpen}>
+      <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
         <DialogContent 
           className="max-w-md [&>button]:hidden"
           onInteractOutside={(e) => e.preventDefault()}

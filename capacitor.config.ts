@@ -26,7 +26,8 @@ const config: CapacitorConfig = {
     },
   },
   ios: {
-    contentInset: 'always',
+    contentInset: 'never',
+    backgroundColor: '#000000',
     infoPlist: {
       NSCameraUsageDescription: 'OrthoCross uses the camera to (1) scan QR codes to join groups/events, (2) take a profile photo, and (3) add photos to your journal—for example, point at a group invite QR or snap a journal image.',
       NSPhotoLibraryUsageDescription: 'Allow OrthoCross to access your photos so you can choose an existing picture for your profile or add images to your journal (e.g., pick a recent photo).',

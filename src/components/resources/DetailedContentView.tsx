@@ -154,7 +154,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl pb-20">
+      <main className="container mx-auto px-4 py-8 max-w-4xl pb-nav">
         {/* Only show title/subtitle header if not on icon page or in scroll mode */}
         {(viewMode === 'scroll' || currentPage !== 0 || !iconUrl) && (
           <div className="mb-8">

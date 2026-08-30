@@ -25,7 +25,7 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasWrapRef = useRef<HTMLDivElement>(null);
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
-  const [isDrawing, setIsDrawing] = useState(true);
+  const [tool, setTool] = useState<'draw' | 'erase' | 'select'>('draw');
   const [selectedColor, setSelectedColor] = useState(BRUSH_COLORS[0].value);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const isMobile = useIsMobile();
@@ -92,10 +92,31 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
   useEffect(() => {
     if (!fabricCanvas) return;
     const brush = fabricCanvas.freeDrawingBrush as PencilBrush;
+    fabricCanvas.isDrawingMode = tool !== 'select';
+    fabricCanvas.selection = tool === 'select';
     if (brush) {
-      brush.color = selectedColor;
+      // The canvas background is a fixed #ffffff and the export is a flat
+      // PNG, so painting white is visually identical to erasing.
+      brush.color = tool === 'erase' ? '#ffffff' : selectedColor;
+      brush.width = tool === 'erase' ? 20 : 2;
     }
-  }, [selectedColor, fabricCanvas]);
+  }, [selectedColor, tool, fabricCanvas]);
+
+  // In select mode, Delete/Backspace removes the picked strokes.
+  useEffect(() => {
+    if (!fabricCanvas) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+      const active = fabricCanvas.getActiveObjects();
+      if (active.length === 0) return;
+      e.preventDefault();
+      active.forEach((obj) => fabricCanvas.remove(obj));
+      fabricCanvas.discardActiveObject();
+      fabricCanvas.renderAll();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [fabricCanvas]);
 
   const handleClear = () => {
     if (!fabricCanvas) return;
@@ -114,29 +135,33 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
     onSave(dataUrl);
   };
 
-  const toggleDrawingMode = () => {
-    if (!fabricCanvas) return;
-    fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode;
-    setIsDrawing(fabricCanvas.isDrawingMode);
-  };
-
   return (
     <div ref={containerRef} className="flex flex-col gap-4 h-full">
       <div className="flex gap-2 items-center flex-wrap">
         <Button
-          variant={isDrawing ? "default" : "outline"}
-          size="sm"
-          onClick={toggleDrawingMode}
+          variant={tool === 'draw' ? "default" : "outline"}
+          className="min-h-[44px]"
+          aria-pressed={tool === 'draw'}
+          onClick={() => setTool('draw')}
         >
           <Pencil className="h-4 w-4 mr-2" />
           Draw
         </Button>
         <Button
-          variant={!isDrawing ? "default" : "outline"}
-          size="sm"
-          onClick={toggleDrawingMode}
+          variant={tool === 'erase' ? "default" : "outline"}
+          className="min-h-[44px]"
+          aria-pressed={tool === 'erase'}
+          onClick={() => setTool('erase')}
         >
           <Eraser className="h-4 w-4 mr-2" />
+          Erase
+        </Button>
+        <Button
+          variant={tool === 'select' ? "default" : "outline"}
+          className="min-h-[44px]"
+          aria-pressed={tool === 'select'}
+          onClick={() => setTool('select')}
+        >
           Select
         </Button>
         <div className="relative">
@@ -160,12 +185,13 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
                     setSelectedColor(color.value);
                     setShowColorPicker(false);
                   }}
-                  className="w-8 h-8 rounded border-2 hover:scale-110 transition-transform"
+                  className="w-11 h-11 rounded border-2 hover:scale-110 transition-transform"
                   style={{
                     backgroundColor: color.value,
                     borderColor: selectedColor === color.value ? "#000" : "transparent",
                   }}
                   title={color.name}
+                  aria-label={`Brush color ${color.name}`}
                 />
               ))}
             </div>

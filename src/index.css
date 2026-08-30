@@ -106,9 +106,20 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    background: hsl(var(--background));
+  }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  /* WKWebView auto-zooms focused editables under 16px; pin them on iOS. */
+  @supports (-webkit-touch-callout: none) {
+    input, textarea, select, [contenteditable] {
+      font-size: 16px;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -139,11 +150,16 @@ All colors MUST be HSL.
 
   /* iOS Safe Area Support */
   .safe-top {
-    padding-top: max(env(safe-area-inset-top), 2.5rem);
+    padding-top: env(safe-area-inset-top);
   }
 
   .safe-bottom {
-    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Clears the fixed bottom nav plus the home-indicator inset. */
+  .pb-nav {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
   }
 
   .safe-left {

@@ -29,6 +29,11 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const sfxCtxRef = useRef<AudioContext | null>(null);
+  const isPlayingRef = useRef(isPlaying);
+  const volumeRef = useRef(volume);
+  useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
+  useEffect(() => { volumeRef.current = volume; }, [volume]);
 
   useEffect(() => {
     // Create audio element - Calm atmospheric ambient music for study/meditation (no vocals, no beats)
@@ -57,40 +62,55 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   }, [isPlaying]);
 
   useEffect(() => {
-    // Use browser visibility API to pause music when app goes to background
-    const handleVisibilityChange = () => {
-      if (document.hidden && audioRef.current) {
-        audioRef.current.pause();
+    // Pause on background, resume on foreground. iOS suspends audio on
+    // background and never un-suspends it for us, so both directions are
+    // handled explicitly, reading current state through refs (this effect
+    // registers its listeners exactly once).
+    const pauseAudio = () => {
+      audioRef.current?.pause();
+    };
+    const resumeAudio = () => {
+      sfxCtxRef.current?.resume().catch(() => {});
+      if (isPlayingRef.current && audioRef.current) {
+        audioRef.current.volume = volumeRef.current;
+        audioRef.current.play().catch(e => console.log('Audio resume failed:', e));
       }
     };
 
+    let cancelled = false;
+    let capacitorCleanup: (() => void) | undefined;
+    let usingNativeListener = false;
+
+    const handleVisibilityChange = () => {
+      if (usingNativeListener) return; // native appStateChange owns lifecycle
+      if (document.hidden) pauseAudio();
+      else resumeAudio();
+    };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // For native apps, try to add Capacitor listener
-    const setupCapacitorListener = async () => {
+    (async () => {
       try {
         const { Capacitor } = await import('@capacitor/core');
         if (Capacitor.isNativePlatform()) {
           const { App } = await import('@capacitor/app');
           const listener = await App.addListener('appStateChange', ({ isActive }) => {
-            if (!isActive && audioRef.current) {
-              audioRef.current.pause();
-            }
+            if (isActive) resumeAudio();
+            else pauseAudio();
           });
-          return () => listener.remove();
+          if (cancelled) {
+            listener.remove();
+          } else {
+            usingNativeListener = true;
+            capacitorCleanup = () => listener.remove();
+          }
         }
       } catch (e) {
         // Capacitor not available, ignore
       }
-      return undefined;
-    };
-
-    let capacitorCleanup: (() => void) | undefined;
-    setupCapacitorListener().then(cleanup => {
-      capacitorCleanup = cleanup;
-    });
+    })();
 
     return () => {
+      cancelled = true;
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       capacitorCleanup?.();
     };
@@ -117,9 +137,15 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const playSound = (soundType: 'chapter' | 'book' | 'island' | 'saint') => {
-    // Using different sound frequencies for church bell effects
-    // Create short audio clips using Web Audio API for reliability
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    // Using different sound frequencies for church bell effects.
+    // One shared AudioContext for the whole session: WebKit caps live
+    // contexts (~4), so creating one per sound silences SFX permanently
+    // after a few plays. Resume it in case iOS suspended it on background.
+    if (!sfxCtxRef.current) {
+      sfxCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    const audioContext = sfxCtxRef.current;
+    audioContext.resume().catch(() => {});
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
     

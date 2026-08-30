@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { currentMonthKey, previousMonthKey } from "@/lib/month";
 import { toast } from "@/hooks/use-toast";
 import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import { BottomNavigation } from "@/components/BottomNavigation";
@@ -289,7 +290,7 @@ export default function Friends() {
     state.lastRun = now;
 
     try {
-      const currentMonth = new Date().toISOString().slice(0, 7);
+      const currentMonth = currentMonthKey();
 
       // Load global leaderboard (top 15)
       const { data: leaderboardData, error: leaderboardError } = await supabase
@@ -699,9 +700,7 @@ export default function Friends() {
     }
     localStorage.setItem(podiumCheckKey, now.toString());
 
-    const currentDate = new Date();
-    const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
-    const lastMonthDate = lastMonth.toISOString().slice(0, 7);
+    const { key: lastMonthDate, label: lastMonthLabel } = previousMonthKey();
 
     // Check if user has seen this month's podium
     const { data: viewedData, error: viewedError } = await supabase
@@ -741,7 +740,7 @@ export default function Friends() {
         }));
 
         setPodiumData(topThree);
-        setLastMonthName(lastMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
+        setLastMonthName(lastMonthLabel);
         setShowPodium(true);
       }
     }
@@ -753,8 +752,7 @@ export default function Friends() {
     // Close immediately to prevent glitching
     setShowPodium(false);
 
-    const lastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1);
-    const lastMonthDate = lastMonth.toISOString().slice(0, 7);
+    const { key: lastMonthDate } = previousMonthKey();
 
     // Insert a "viewed" record; if it already exists, ignore the unique-violation error.
     const { error } = await supabase
@@ -821,7 +819,7 @@ export default function Friends() {
   };
 
   return (
-    <div className="min-h-screen gradient-peaceful pb-20 overflow-x-hidden">
+    <div className="min-h-screen gradient-peaceful pb-nav overflow-x-hidden">
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">
@@ -936,11 +934,11 @@ export default function Friends() {
                               <p className="font-medium truncate">{request.username}</p>
                               <p className="text-xs text-muted-foreground">wants to be friends</p>
                             </div>
-                            <div className="flex gap-1">
+                            <div className="flex gap-2">
                               <Button
                                 size="icon"
                                 variant="ghost"
-                                className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-100 dark:hover:bg-green-900/20"
+                                className="h-11 w-11 text-green-600 hover:text-green-700 hover:bg-green-100 dark:hover:bg-green-900/20"
                                 onClick={() => handleAcceptRequest(request.id)}
                               >
                                 <Check className="h-4 w-4" />
@@ -948,7 +946,7 @@ export default function Friends() {
                               <Button
                                 size="icon"
                                 variant="ghost"
-                                className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                                className="h-11 w-11 text-destructive hover:bg-destructive/10"
                                 onClick={() => handleDenyRequest(request.id)}
                               >
                                 <X className="h-4 w-4" />

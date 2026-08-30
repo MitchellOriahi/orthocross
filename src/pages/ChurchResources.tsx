@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
-import stBasilIcon from "@/assets/st-basil-icon.png";
 import { useTheme } from "next-themes";
 import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
 import orthodoxCrossWhite from "@/assets/orthodox-cross-white-new.png";
@@ -172,7 +171,7 @@ const ChurchResources = () => {
 
   if (selectedSaint) {
     return (
-      <div className="pb-20">
+      <div className="pb-nav">
         <DetailedContentView
           title={`${selectedSaint.prefix} ${selectedSaint.name}${selectedSaint.epithet ? ` ${selectedSaint.epithet}` : ''}`}
           subtitle={selectedSaint.shortDescription}
@@ -207,7 +206,7 @@ const ChurchResources = () => {
 
   if (selectedPrayer) {
     return (
-      <div className="pb-20">
+      <div className="pb-nav">
         <PrayerDetailView
           name={selectedPrayer.name}
           title={selectedPrayer.title}
@@ -226,7 +225,7 @@ const ChurchResources = () => {
   // Fullscreen expanded view for a selected section
   if (selectedSection) {
     return (
-      <div className="min-h-screen gradient-peaceful pb-20">
+      <div className="min-h-screen gradient-peaceful pb-nav">
         {/* Header */}
         <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
           <div className="container mx-auto px-4 lg:px-2 py-4">
@@ -656,7 +655,7 @@ const ChurchResources = () => {
   }
 
   return (
-    <div className="min-h-screen gradient-peaceful pb-20">
+    <div className="min-h-screen gradient-peaceful pb-nav">
 
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
@@ -684,13 +683,13 @@ const ChurchResources = () => {
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-0 mb-4">
             <div className="w-36 h-36 mx-auto relative -mb-1">
-              <img 
+              <img loading="eager" decoding="sync" 
                 src={orthodoxCrossBlack} 
                 alt="Orthodox Cross" 
                 className="w-full h-full object-contain dark:hidden"
                 style={{ filter: 'drop-shadow(0 0 16px rgba(139, 92, 246, 0.4))' }}
               />
-              <img 
+              <img loading="eager" decoding="sync" 
                 src={orthodoxCrossWhite} 
                 alt="Orthodox Cross" 
                 className="w-full h-full object-contain hidden dark:block"

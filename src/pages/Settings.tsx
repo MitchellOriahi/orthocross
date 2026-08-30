@@ -178,7 +178,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen gradient-peaceful">
+    <div className="min-h-screen gradient-peaceful pb-nav">
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">

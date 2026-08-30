@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Shield, Settings as SettingsIcon, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -112,7 +112,12 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const [shuffledOptions, setShuffledOptions] = useState<{text: string, originalIndex: number}[][]>([]);
 
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
+
+  // A toast raised mid-quiz must not outlive this screen. Run on unmount
+  // only: dismiss is re-created each render, so it must not be a dep.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => () => dismiss(), []);
   const { playSound } = useMusic();
 
   const isOriental = campaignId === 'oriental_orthodox_history';
@@ -224,6 +229,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         toast({
           title: "Correct! ✓",
           description: "Great job!",
+          duration: 1500,
         });
         setCurrentQuestion(currentQuestion + 1);
         setSelectedAnswer('');
@@ -255,7 +261,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const progress = ((currentQuestion + 1) / island.quiz.length) * 100;
 
   return (
-    <div className="min-h-screen gradient-peaceful pb-20">
+    <div className="min-h-screen gradient-peaceful pb-nav">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
@@ -412,7 +418,9 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
             <Button 
               onClick={() => {
                 setShowCompletionModal(false);
-                onBack();
+                // Let the dialog render its closed state before unmounting,
+                // so its scroll-lock/overlay teardown actually runs.
+                requestAnimationFrame(() => onBack());
               }} 
               size="lg" 
               className="w-full"

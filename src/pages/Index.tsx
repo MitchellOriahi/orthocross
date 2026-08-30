@@ -294,7 +294,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen gradient-peaceful pb-20">
+    <div className="min-h-screen gradient-peaceful pb-nav">
 
       {/* Header */}
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm safe-top">

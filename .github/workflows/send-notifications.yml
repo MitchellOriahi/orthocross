@@ -2,7 +2,8 @@ name: Send Scheduled Notifications
 
 on:
   schedule:
-    # Runs every 30 minutes — catches the 6 PM streak window and 8 PM fasting window
+    # Every 30 minutes — catches the 8 AM verse, 6 PM streak, and 8 PM fasting
+    # windows across all user timezones.
     - cron: '0,30 * * * *'
   workflow_dispatch: # Allow manual trigger from GitHub Actions tab
 
@@ -12,9 +13,10 @@ jobs:
     steps:
       - name: Call send-scheduled-reminders
         run: |
-          curl -s -o /dev/null -w "%{http_code}" \
+          # --fail makes a 4xx/5xx turn this step red instead of silently green.
+          curl --fail -sS \
             -X POST \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json" \
             -d '{}' \
-            https://atjpjmhumzfpotrkefaz.supabase.co/functions/v1/send-scheduled-reminders
+            https://uceqydqvjapkobqwrbxw.supabase.co/functions/v1/send-scheduled-reminders

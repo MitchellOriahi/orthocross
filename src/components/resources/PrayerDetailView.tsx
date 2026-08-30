@@ -56,7 +56,7 @@ export const PrayerDetailView = ({ name, title, content, onClose, prayerId }: Pr
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl pb-20">
+      <main className="container mx-auto px-4 py-8 max-w-4xl pb-nav">
         <div className="mb-8">
           <div className="flex flex-col items-center justify-center text-center">
             <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground break-words">

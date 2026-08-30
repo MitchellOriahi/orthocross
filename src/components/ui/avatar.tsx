@@ -15,13 +15,33 @@ const Avatar = React.forwardRef<
 ));
 Avatar.displayName = AvatarPrimitive.Root.displayName;
 
-const AvatarImage = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Image>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image ref={ref} className={cn("aspect-square h-full w-full", className)} {...props} />
-));
-AvatarImage.displayName = AvatarPrimitive.Image.displayName;
+// Plain <img> instead of AvatarPrimitive.Image: Radix re-probes the URL on
+// every mount and shows the fallback for at least one frame even for cached
+// images, which reads as an initials->photo flash on every screen. The eager
+// img paints immediately from cache; the fallback (rendered underneath)
+// shows through only while loading or on error.
+const AvatarImage = React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<HTMLImageElement>>(
+  ({ className, src, alt = "", ...props }, ref) => {
+    const [errored, setErrored] = React.useState(false);
+    React.useEffect(() => {
+      setErrored(false);
+    }, [src]);
+    if (!src || errored) return null;
+    return (
+      <img
+        ref={ref}
+        src={src}
+        alt={alt}
+        loading="eager"
+        decoding="async"
+        onError={() => setErrored(true)}
+        className={cn("absolute inset-0 z-[1] aspect-square h-full w-full object-cover", className)}
+        {...props}
+      />
+    );
+  },
+);
+AvatarImage.displayName = "AvatarImage";
 
 const AvatarFallback = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Fallback>,

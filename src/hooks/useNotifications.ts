@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { getVerseOfTheDay } from '@/lib/verseOfTheDay';
 
 export interface ReminderTime {
   id: string;

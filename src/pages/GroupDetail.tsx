@@ -237,14 +237,14 @@ export default function GroupDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen gradient-peaceful pb-20 flex items-center justify-center">
+      <div className="min-h-screen gradient-peaceful pb-nav flex items-center justify-center">
         <div className="text-muted-foreground">Loading group...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen gradient-peaceful pb-20 overflow-x-hidden">
+    <div className="min-h-screen gradient-peaceful pb-nav overflow-x-hidden">
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">
