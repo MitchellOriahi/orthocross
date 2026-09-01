@@ -4,18 +4,14 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const log = (msg: string) => console.log(msg);
 
-// Dynamically access OneSignal to avoid build errors on web
-const getOneSignal = async () => {
-  try {
-    // Obfuscate path to prevent Vite's static import analysis from failing on web
-    const pluginPath = ['onesignal-cordova-plugin', 'www', 'OneSignalPlugin'].join('/');
-    // @ts-ignore - OneSignal Cordova plugin dynamic import
-    const mod = await import(/* @vite-ignore */ pluginPath);
-    return mod.default;
-  } catch {
-    return null;
-  }
-};
+import OneSignalStatic from 'onesignal-cordova-plugin';
+
+// The SDK must be statically imported so Vite actually bundles it — the old
+// runtime import of a bare specifier can never resolve inside the packaged
+// app, which meant OneSignal never initialized in any native build. Its
+// cordova.exec calls all live inside methods, so importing on web is safe;
+// every call site is already gated on Capacitor.isNativePlatform().
+const getOneSignal = async () => OneSignalStatic;
 
 let oneSignalInitialized = false;
 
