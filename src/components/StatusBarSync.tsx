@@ -10,7 +10,12 @@ export const StatusBarSync = () => {
 
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
-    StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
+    // Overlay only on iOS: its WKWebView honors env(safe-area-inset-*), which
+    // the layout uses. Android WebView does not, so overlaying there would
+    // shove content under the status bar; Android keeps the default inset.
+    if (Capacitor.getPlatform() === "ios") {
+      StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
+    }
     StatusBar.setStyle({ style: resolvedTheme === "dark" ? Style.Dark : Style.Light }).catch(() => {});
   }, [resolvedTheme]);
 
