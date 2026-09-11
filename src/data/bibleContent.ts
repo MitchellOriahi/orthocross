@@ -198,43 +198,10 @@ export const bibleContent: Record<string, Record<number, Verse[]>> = {
       { number: 7, text: "And do thou write for thyself all these words which I declare unto thee this day, for I know their rebellion and their stiff neck, before I bring them into the land of which I sware to their fathers, to Abraham and to Isaac and to Jacob, saying: 'Unto your seed will I give a land flowing with milk and honey.'" },
     ],
   },
-  "1 Meqabyan": {
-    1: [
-      { number: 1, text: "There was one man whose name was called Tseerutsaydan and who loved sin; he would boast in his horses' abundance and his troops' firmness beneath his authority." },
-      { number: 2, text: "He had many priests who served his idols whom he worshipped and to whom he bowed and sacrificed sacrifices by night and by daylight." },
-      { number: 3, text: "But in his heart's dullness it would seem to him that they gave him firmness and power." },
-      { number: 4, text: "And in his heart it would seem to him that they gave him authority in all his rule." },
-      { number: 5, text: "And again in formation time it would seem to him that they gave him all the desired authority also." },
-      { number: 6, text: "And he would sacrifice sacrifices to them day and night." },
-      { number: 7, text: "He appointed priests who served his idols." },
-      { number: 8, text: "While they ate from that defiled sacrifice, they would tell him pretending that the idols ate night and day." },
-    ],
-    2: [
-      { number: 1, text: "There was one man birthed from the tribe of Benjamin whose name was called Meqabees;" },
-      { number: 2, text: "He had three children who were handsome and totally warriors; they had been beloved alongside all persons in that Midyam and Miedon country that was Tseerutsaydan's rule." },
-      { number: 3, text: "And like unto the king commanded them on the time he found them: 'Won't you bow to Tseerutsaydan's creators? How about won't you sacrifice sacrifice?'" },
-      { number: 4, text: "But if you refuse, we will seize and take you toward the king, and we will destroy all your money like unto the king commanded." },
-      { number: 5, text: "These youths who were handsome replied to him saying, 'As for Him to Whom we bow, there is our Father Creator Who created Earth and Heaven and what is within her, and the sea, moon and Sun and clouds and stars; He is the True Creator Whom we worship and in Whom we believe.'" },
-    ],
-  },
-  "2 Meqabyan": {
-    1: [
-      { number: 1, text: "In the days of King Maqorba, there arose a great persecution against the faithful ones who kept the law of the Lord." },
-      { number: 2, text: "The king sent forth decrees throughout all his kingdom that all should worship the idols he had set up." },
-      { number: 3, text: "But there were many who remained faithful to the Lord and would not bow down to false gods." },
-      { number: 4, text: "Among these were the brothers who stood firm in their faith, refusing to compromise with the king's demands." },
-      { number: 5, text: "They said, 'We will serve the Lord our God, and Him only shall we worship, for He is the true and living God.'" },
-    ],
-  },
-  "3 Meqabyan": {
-    1: [
-      { number: 1, text: "Now when peace had been restored to the land, the faithful ones gathered together to give thanks to the Lord." },
-      { number: 2, text: "They praised God for His deliverance and for His mercy that endures forever." },
-      { number: 3, text: "The elders spoke to the people, saying, 'Remember the works of the Lord and do not forget His commandments.'" },
-      { number: 4, text: "For the Lord is faithful to those who keep His covenant and walk in His ways." },
-      { number: 5, text: "Let us hold fast to our faith and not turn aside to the left or to the right, but continue in the path of righteousness." },
-    ],
-  },
+  // The Meqabyan books have no trustworthy public-domain English translation.
+  // Placeholder sample chapters (of unverifiable provenance) were removed
+  // 2026-09-10 per the founder's honest-label decision — the Reading page now
+  // explains that a faithful translation is being sought.
   "Paralipomena of Jeremiah": {
     1: [
       { number: 1, text: "In the fifth year of King Jehoiakim son of Josiah, king of Judah, this word came to Jeremiah from the Lord:" },

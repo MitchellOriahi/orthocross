@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 
 import { supabase } from '@/integrations/supabase/client';
@@ -36,6 +37,9 @@ const Auth = () => {
   const [showStreakDialog, setShowStreakDialog] = useState(false);
   const [fastingEnabled, setFastingEnabled] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotDialog, setShowForgotDialog] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   
@@ -84,6 +88,43 @@ const Auth = () => {
       });
     }
     setLoading(false);
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      emailSchema.parse(resetEmail);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          variant: 'destructive',
+          title: 'Validation Error',
+          description: error.errors[0].message,
+        });
+      }
+      return;
+    }
+
+    setResetLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: 'https://app.orthocrossapp.com/reset-password',
+    });
+    setResetLoading(false);
+
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Could Not Send Reset Email',
+        description: error.message,
+      });
+      return;
+    }
+
+    setShowForgotDialog(false);
+    toast({
+      title: 'Reset Email Sent',
+      description: 'Check your inbox for a link to reset your password.',
+    });
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -270,6 +311,18 @@ const Auth = () => {
                     </Button>
                   </div>
                 </div>
+                <div className="text-right">
+                  <button
+                    type="button"
+                    className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                    onClick={() => {
+                      setResetEmail(email);
+                      setShowForgotDialog(true);
+                    }}
+                  >
+                    Forgot password?
+                  </button>
+                </div>
                 <Button type="submit" className="w-full" disabled={loading} variant="sacred">
                   {loading ? 'Signing In...' : 'Sign In'}
                 </Button>
@@ -353,6 +406,35 @@ const Auth = () => {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Forgot Password Dialog */}
+      <Dialog open={showForgotDialog} onOpenChange={setShowForgotDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reset Your Password</DialogTitle>
+            <DialogDescription>
+              Enter your account email and we'll send you a link to choose a new password.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="reset-email">Email</Label>
+              <Input
+                id="reset-email"
+                type="email"
+                placeholder="your.email@example.com"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={resetLoading} variant="sacred">
+              {resetLoading ? 'Sending...' : 'Send Reset Link'}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Fasting Notifications Dialog */}
       <AlertDialog open={showFastingDialog} onOpenChange={setShowFastingDialog}>

@@ -78,7 +78,7 @@ export default function AdminImport() {
 1enoch,1 Enoch,RH_CHARLES,en,1,2,And Enoch took up his parable...`;
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className="min-h-screen bg-background p-4 safe-top">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>

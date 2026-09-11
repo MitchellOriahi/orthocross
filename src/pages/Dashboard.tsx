@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { StreakFlame } from "@/components/StreakFlame";
 import { DailyReadingCard } from "@/components/DailyReadingCard";
 import { FastingCalendar } from "@/components/FastingCalendar";
+import { VerseOfTheDayCard } from "@/components/VerseOfTheDayCard";
+import { DailyThree } from "@/components/DailyThree";
 import { FastingCalendarView } from "@/components/FastingCalendarView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
@@ -380,6 +382,11 @@ const Dashboard = () => {
           )}
         </section>
 
+        {/* Daily practice */}
+        <section>
+          <DailyThree />
+        </section>
+
         {/* Continue Reading */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold">Continue Reading</h2>
@@ -471,14 +478,14 @@ const Dashboard = () => {
         </section>
 
         {/* Journal */}
-        <section className="space-y-4">
+        <section className="space-y-4" id="journal-section">
           <h2 className="text-2xl font-bold">Journal</h2>
           <Journal />
         </section>
 
         {/* Additional Sections */}
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Fasting Calendar (verse of the day now arrives as a push notification) */}
+          <VerseOfTheDayCard />
           <FastingCalendar />
         </div>
       </main>

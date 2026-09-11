@@ -67,6 +67,16 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
           title: "Thank you! ☦",
           description: "Your generous donation has been received. God bless you!",
         });
+        // Record the donation so it counts toward the top-donators leaderboard
+        if (user) {
+          supabase.from("donations").insert({
+            user_id: user.id,
+            amount: Math.round(amount * 100),
+            currency: "usd",
+          }).then(({ error }) => {
+            if (error) console.error("Failed to record donation:", error);
+          });
+        }
         // Send thank-you email
         supabase.functions.invoke("send-donation-thank-you", {
           body: { donationType: "one-time", amount: Math.round(amount * 100) },

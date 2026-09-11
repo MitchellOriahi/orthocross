@@ -1,9 +1,10 @@
-import { Plus, Search, Trash2, Pin, PinOff, LayoutGrid, List, Layers, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, Search, Trash2, Pin, PinOff, LayoutGrid, List, Layers, ChevronDown, ChevronRight, Flame, BookOpen, Highlighter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 
 interface JournalNote {
@@ -12,6 +13,13 @@ interface JournalNote {
   content: string | null;
   updated_at: string;
   pinned: boolean;
+}
+
+export interface HighlightGroup {
+  book: string;
+  count: number;
+  firstChapter: number;
+  colors: string[];
 }
 
 interface JournalNotesListProps {
@@ -25,7 +33,34 @@ interface JournalNotesListProps {
   onSearchChange: (query: string) => void;
   viewMode: 'list' | 'gallery';
   onViewModeChange: (mode: 'list' | 'gallery') => void;
+  todayEntry?: JournalNote | null;
+  onOpenToday?: () => void;
+  userId?: string;
+  highlightGroups?: HighlightGroup[];
+  onOpenHighlights?: (book: string) => void;
 }
+
+const MOODS = [
+  { emoji: "🙏", label: "Grateful" },
+  { emoji: "🕊️", label: "Peaceful" },
+  { emoji: "🌅", label: "Hopeful" },
+  { emoji: "🌧️", label: "Heavy-hearted" },
+  { emoji: "💧", label: "Repentant" },
+];
+
+const HIGHLIGHT_DOT: Record<string, string> = {
+  yellow: "bg-yellow-400",
+  green: "bg-green-400",
+  blue: "bg-blue-400",
+  pink: "bg-pink-400",
+  purple: "bg-purple-400",
+};
+
+const dayKey = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+const entryDate = (iso: string) =>
+  new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 
 export const JournalNotesList = ({
   notes,
@@ -38,9 +73,44 @@ export const JournalNotesList = ({
   onSearchChange,
   viewMode,
   onViewModeChange,
+  todayEntry = null,
+  onOpenToday,
+  userId,
+  highlightGroups = [],
+  onOpenHighlights,
 }: JournalNotesListProps) => {
   const [expandedStacks, setExpandedStacks] = useState<Set<string>>(new Set());
-  const [activeTab, setActiveTab] = useState<'personal' | 'bible'>('personal');
+  const [mood, setMood] = useState<string | null>(() => {
+    if (!userId) return null;
+    try { return localStorage.getItem(`journal_mood_${userId}_${dayKey(new Date())}`); } catch { return null; }
+  });
+  const [moodOpen, setMoodOpen] = useState(false);
+
+  const streak = useMemo(() => {
+    const days = new Set(notes.map(n => dayKey(new Date(n.updated_at))));
+    let s = 0;
+    const cursor = new Date();
+    if (!days.has(dayKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+    while (days.has(dayKey(cursor))) {
+      s++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return s;
+  }, [notes]);
+
+  const chooseMood = (label: string) => {
+    const next = mood === label ? null : label;
+    setMood(next);
+    setMoodOpen(false);
+    if (!userId) return;
+    const key = `journal_mood_${userId}_${dayKey(new Date())}`;
+    try {
+      if (next) localStorage.setItem(key, next);
+      else localStorage.removeItem(key);
+    } catch {}
+  };
+
+  const moodEmoji = MOODS.find(m => m.label === mood)?.emoji;
 
   const toggleStack = (key: string) => {
     setExpandedStacks((prev) => {
@@ -80,7 +150,6 @@ export const JournalNotesList = ({
   const isBibleBookTitle = (note: JournalNote) => {
     const t = (note.title || "").trim();
     if (BIBLE_BOOKS.has(t)) return true;
-    // Also match titles like "Exodus", "Exodus 1:1", "1 Samuel 3:10", etc.
     for (const book of BIBLE_BOOKS) {
       if (t === book) return true;
       if (t.startsWith(book + " ") || t.startsWith(book + ":")) return true;
@@ -88,65 +157,102 @@ export const JournalNotesList = ({
     return false;
   };
 
-
   const getPreviewText = (note: JournalNote, titleOverride?: string) => {
     const content = note.content || "";
-
-    // Extract first image from content if exists
     const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
     const hasImage = !!imgMatch;
     const imageSrc = imgMatch ? imgMatch[1] : null;
 
-    // Strip HTML tags for text preview, but don't show URLs
     const textContent = content
       .replace(/<img[^>]*>/g, '')
       .replace(/<audio[^>]*>.*?<\/audio>/g, '')
       .replace(/<video[^>]*>.*?<\/video>/g, '')
       .replace(/<[^>]+>/g, '')
-      .replace(/https?:\/\/[^\s]+/g, '') // Remove URLs
+      .replace(/https?:\/\/[^\s]+/g, '')
       .trim();
 
     const preview = textContent.substring(0, 100);
-    // Raw title: use override, then stored title, otherwise empty (callers decide fallback)
     const rawTitle = titleOverride ?? (note.title || "").trim();
-    const title = rawTitle;
-    return { title, preview, hasImage, imageSrc };
+    return { title: rawTitle, preview, hasImage, imageSrc };
   };
 
-  const pinnedNotes = notes.filter(n => n.pinned);
-  const unpinnedNotes = notes.filter(n => !n.pinned);
+  // Today's entry renders in its own slot at the top, never duplicated below
+  const otherNotes = notes.filter(n => n.id !== todayEntry?.id);
+  const pinnedNotes = otherNotes.filter(n => n.pinned);
+  const unpinnedNotes = otherNotes.filter(n => !n.pinned);
+
+  const sectionLabel = (text: string) => (
+    <div className="flex items-center gap-2 px-1 mb-2 mt-5 first:mt-0">
+      <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{text}</h4>
+      <div className="flex-1 h-px bg-border/70" />
+    </div>
+  );
+
+  const renderTodaySlot = () => {
+    if (!onOpenToday) return null;
+    if (todayEntry) {
+      const { preview } = getPreviewText(todayEntry);
+      return (
+        <button
+          onClick={() => onNoteSelect(todayEntry.id)}
+          className={cn(
+            "w-full text-left p-3.5 rounded-xl bg-card border transition-colors hover:bg-accent/50",
+            selectedNoteId === todayEntry.id ? "border-primary/50 bg-accent" : "border-border"
+          )}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-primary bg-primary/10 rounded-full px-2 py-0.5">Today</span>
+            {moodEmoji && <span className="text-sm leading-none">{moodEmoji}</span>}
+            <span className="flex-1" />
+            <span className="text-xs text-muted-foreground">{entryDate(todayEntry.updated_at)}</span>
+          </div>
+          <div className="text-sm text-muted-foreground line-clamp-2 mt-1.5">
+            {preview || "Continue writing…"}
+          </div>
+        </button>
+      );
+    }
+    return (
+      <button
+        onClick={onOpenToday}
+        className="w-full text-left p-3.5 rounded-xl bg-card border border-border transition-colors hover:bg-accent/50 flex items-center gap-2.5"
+      >
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-primary bg-primary/10 rounded-full px-2 py-0.5">Today</span>
+        <span className="text-sm text-muted-foreground flex-1">Write today's entry</span>
+        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+      </button>
+    );
+  };
 
   const renderListNote = (note: JournalNote, titleOverride?: string) => {
     const { title, preview } = getPreviewText(note, titleOverride);
-    // Apple-Notes style: if no title, use the first words of the note as the title,
-    // and skip showing the body line so it doesn't repeat.
     const displayTitle = title || (preview ? preview.substring(0, 40) : "New Note");
     const showBody = !!title && !!preview;
     return (
       <div
         key={note.id}
         className={cn(
-          "group relative p-3 rounded-lg transition-colors",
-          selectedNoteId === note.id ? "bg-accent" : "hover:bg-accent/50"
+          "group relative p-3.5 rounded-xl bg-card border transition-colors",
+          selectedNoteId === note.id ? "border-primary/50 bg-accent" : "border-border hover:bg-accent/50"
         )}
       >
         <button
           onClick={() => onNoteSelect(note.id)}
           className="w-full text-left"
         >
-          <div className="font-medium text-sm truncate mb-1 pr-16">
-            {displayTitle}
+          <div className="flex items-baseline justify-between gap-3">
+            <div className="font-medium text-sm truncate">{displayTitle}</div>
+            <div className="text-xs text-muted-foreground whitespace-nowrap group-hover:opacity-0 transition-opacity">
+              {entryDate(note.updated_at)}
+            </div>
           </div>
           {showBody && (
-            <div className="text-xs text-muted-foreground line-clamp-2 mb-1">
+            <div className="text-xs text-muted-foreground line-clamp-2 mt-1">
               {preview}
             </div>
           )}
-          <div className="text-xs text-muted-foreground">
-            {formatDistanceToNow(new Date(note.updated_at), { addSuffix: true })}
-          </div>
         </button>
-        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-2.5 right-2.5 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
             variant="ghost"
             size="icon"
@@ -184,21 +290,19 @@ export const JournalNotesList = ({
       <div
         key={note.id}
         className={cn(
-          "group relative rounded-lg transition-all",
-          selectedNoteId === note.id
-            ? "bg-accent/60"
-            : "hover:shadow-md"
+          "group relative rounded-xl transition-all",
+          selectedNoteId === note.id ? "bg-accent/60" : "hover:shadow-md"
         )}
       >
         <button
           onClick={() => onNoteSelect(note.id)}
-          className="w-full text-left bg-card rounded-lg overflow-hidden block"
+          className="w-full text-left bg-card border border-border rounded-xl overflow-hidden block"
         >
           <div className="aspect-square bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center overflow-hidden">
             {hasImage && imageSrc ? (
-              <img 
-                src={imageSrc} 
-                alt="Note preview" 
+              <img
+                src={imageSrc}
+                alt="Note preview"
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -248,270 +352,206 @@ export const JournalNotesList = ({
     );
   };
 
-  return (
-    <div className="flex flex-col h-full border-r border-border bg-card/30">
-      <div className="p-3 border-b border-border space-y-2">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Notes</h3>
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn("h-7 w-7", viewMode === 'list' && "bg-accent")}
-              onClick={() => onViewModeChange('list')}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn("h-7 w-7", viewMode === 'gallery' && "bg-accent")}
-              onClick={() => onViewModeChange('gallery')}
-            >
-              <LayoutGrid className="h-4 w-4" />
-            </Button>
+  // Split notes into personal vs Bible
+  const isBibleNote = (n: JournalNote) => getVerseRef(n) !== null || isBibleBookTitle(n);
+  const bibleNotes = unpinnedNotes.filter(isBibleNote);
+  const personalNotes = unpinnedNotes.filter((n) => !isBibleNote(n));
+
+  const getBookKey = (n: JournalNote): string => {
+    const raw = (n.title || "Untitled").trim();
+    for (const book of BIBLE_BOOKS) {
+      if (raw === book) return book;
+      if (raw.startsWith(book + " ") || raw.startsWith(book + ":")) return book;
+    }
+    const ref = getVerseRef(n);
+    if (ref) {
+      const m = ref.match(/^([1-3]?\s?[A-Za-z]+(?:\s[A-Za-z]+)?)\s+\d+/);
+      if (m) return m[1].trim();
+    }
+    return raw;
+  };
+
+  const getRef = (n: JournalNote): { ch: number; vs: number } => {
+    const src = `${n.title || ""} ${n.content || ""}`;
+    const m = src.match(/(\d+)\s*:\s*(\d+)/);
+    return m ? { ch: parseInt(m[1], 10), vs: parseInt(m[2], 10) } : { ch: -1, vs: -1 };
+  };
+
+  const groups = new Map<string, JournalNote[]>();
+  const order: string[] = [];
+  for (const n of bibleNotes) {
+    const key = getBookKey(n);
+    if (!groups.has(key)) {
+      groups.set(key, []);
+      order.push(key);
+    }
+    groups.get(key)!.push(n);
+  }
+  order.sort((a, b) => BIBLE_BOOK_ORDER.indexOf(a) - BIBLE_BOOK_ORDER.indexOf(b));
+  for (const key of order) {
+    groups.get(key)!.sort((a, b) => {
+      const ra = getRef(a), rb = getRef(b);
+      if (rb.ch !== ra.ch) return rb.ch - ra.ch;
+      return rb.vs - ra.vs;
+    });
+  }
+
+  const renderStackCard = (key: string, items: JournalNote[]) => {
+    const isExpanded = expandedStacks.has(key);
+    const latest = items[0];
+    const { preview } = getPreviewText(latest);
+    return (
+      <div key={`stack-${key}`} className="relative">
+        <button
+          onClick={() => toggleStack(key)}
+          className={cn(
+            "w-full text-left p-3.5 rounded-xl transition-colors",
+            "hover:bg-accent/50 bg-card border border-border"
+          )}
+        >
+          <div className="flex items-center gap-2 mb-1">
+            {isExpanded ? <ChevronDown className="h-3 w-3 text-muted-foreground" /> : <ChevronRight className="h-3 w-3 text-muted-foreground" />}
+            <Layers className="h-3 w-3 text-muted-foreground" />
+            <div className="font-medium text-sm truncate flex-1">{key}</div>
+            <span className="text-xs text-muted-foreground bg-muted rounded-full px-2 py-0.5">{items.length}</span>
           </div>
-        </div>
+          <div className="text-xs text-muted-foreground line-clamp-1 pl-5">{preview}</div>
+        </button>
+        {isExpanded && (
+          <div className={cn("mt-2 space-y-1.5", viewMode === 'list' ? "ml-4 pl-3 border-l-2 border-border" : "")}>
+            {items.map((n) => {
+              const ref = getVerseRef(n) ?? (n.title || "Untitled");
+              return viewMode === 'list' ? renderListNote(n, ref) : renderGalleryNote(n, ref);
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const hasBibleSection = bibleNotes.length > 0 || highlightGroups.length > 0;
+
+  return (
+    <div className="relative flex flex-col h-full border-r border-border bg-card/30">
+      <div className="p-3 border-b border-border space-y-2.5">
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <Input
-            placeholder="Search notes..."
+            placeholder="Search your journal..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-7 h-8 text-sm"
+            className="pl-8 h-9 text-sm rounded-full"
           />
+        </div>
+        <div className="flex items-center gap-2">
+          <Popover open={moodOpen} onOpenChange={setMoodOpen}>
+            <PopoverTrigger asChild>
+              <button className="text-xs px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:bg-accent transition-colors inline-flex items-center gap-1.5">
+                {moodEmoji ? <>{moodEmoji} {mood}</> : <>Mood <ChevronDown className="h-3 w-3" /></>}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-auto p-1.5 flex gap-1">
+              {MOODS.map((m) => (
+                <button
+                  key={m.label}
+                  onClick={() => chooseMood(m.label)}
+                  className={cn(
+                    "w-9 h-9 rounded-full text-lg flex items-center justify-center transition-colors",
+                    mood === m.label ? "bg-primary/15 ring-1 ring-primary" : "hover:bg-accent"
+                  )}
+                  title={m.label}
+                  aria-pressed={mood === m.label}
+                >
+                  {m.emoji}
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>
+          {streak > 0 && (
+            <span className="text-xs px-3 py-1.5 rounded-full border border-border text-muted-foreground inline-flex items-center gap-1">
+              <Flame className="h-3 w-3 text-primary" /> {streak} day{streak === 1 ? '' : 's'}
+            </span>
+          )}
+          <span className="flex-1" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn("h-7 w-7", viewMode === 'list' && "bg-accent")}
+            onClick={() => onViewModeChange('list')}
+          >
+            <List className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn("h-7 w-7", viewMode === 'gallery' && "bg-accent")}
+            onClick={() => onViewModeChange('gallery')}
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className={cn("p-2", viewMode === 'gallery' && "grid grid-cols-2 gap-2")}>
-          {notes.length === 0 ? (
-            <>
-              {viewMode === 'list' ? (
-                <button
-                  onClick={onNoteCreate}
-                  className="w-full p-3 mb-2 rounded-lg border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-accent/50 transition-colors flex items-center justify-center gap-2 text-muted-foreground"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span className="text-sm">New Note</span>
-                </button>
-              ) : (
-                <button
-                  onClick={onNoteCreate}
-                  className="rounded-lg border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-accent/50 transition-colors"
-                >
-                  <div className="aspect-[4/3] flex items-center justify-center">
-                    <div className="text-center">
-                      <Plus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                      <span className="text-[10px] text-muted-foreground">New Note</span>
-                    </div>
-                  </div>
-                </button>
-              )}
-              <div className={cn("text-center py-8 text-sm text-muted-foreground", viewMode === 'gallery' && "col-span-2")}>
-                Click above to create your first note
+        <div className="p-3 pb-24">
+          {sectionLabel("Recent entries")}
+          <div className={cn(viewMode === 'list' ? "space-y-1.5" : "space-y-1.5")}>
+            {renderTodaySlot()}
+            {pinnedNotes.length > 0 && (
+              <div className={cn(viewMode === 'list' ? "space-y-1.5" : "grid grid-cols-2 gap-2")}>
+                {pinnedNotes.map((note) => viewMode === 'list' ? renderListNote(note) : renderGalleryNote(note))}
               </div>
-            </>
-          ) : (
+            )}
+            <div className={cn(viewMode === 'list' ? "space-y-1.5" : "grid grid-cols-2 gap-2")}>
+              {personalNotes.map((n) => viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n))}
+            </div>
+            {personalNotes.length === 0 && !todayEntry && (
+              <p className="text-center text-xs text-muted-foreground py-4">
+                Your words stay private — only you can read them.
+              </p>
+            )}
+          </div>
+
+          {hasBibleSection && (
             <>
-              {pinnedNotes.length > 0 && (
-                <div className={cn("mb-4", viewMode === 'gallery' && "col-span-2")}>
-                  <h4 className="text-xs font-semibold text-muted-foreground mb-2 px-1">Journal Cover</h4>
-                  <div className={cn(viewMode === 'list' ? "space-y-1" : "grid grid-cols-2 gap-2")}>
-                    {pinnedNotes.map((note) => viewMode === 'list' ? renderListNote(note) : renderGalleryNote(note))}
-                  </div>
-                </div>
-              )}
-              
-              {/* New Note Button below Journal Cover */}
-              <div className={cn(viewMode === 'gallery' && "", "mb-4")}>
-                {viewMode === 'list' ? (
+              {sectionLabel("Bible notes & highlights")}
+              <div className="space-y-1.5">
+                {order.map((key) => renderStackCard(key, groups.get(key)!))}
+                {highlightGroups.map((g) => (
                   <button
-                    onClick={onNoteCreate}
-                    className="w-full p-3 rounded-lg border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-accent/50 transition-colors flex items-center justify-center gap-2 text-muted-foreground"
+                    key={`hl-${g.book}`}
+                    onClick={() => onOpenHighlights?.(g.book)}
+                    className="w-full text-left p-3.5 rounded-xl bg-card border border-border hover:bg-accent/50 transition-colors flex items-center gap-2.5"
                   >
-                    <Plus className="h-4 w-4" />
-                    <span className="text-sm">New Note</span>
+                    <Highlighter className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                    <span className="font-medium text-sm truncate flex-1">{g.book}</span>
+                    <span className="flex items-center gap-1">
+                      {g.colors.slice(0, 4).map((c) => (
+                        <span key={c} className={cn("w-2 h-2 rounded-full", HIGHLIGHT_DOT[c] ?? "bg-muted-foreground/40")} />
+                      ))}
+                    </span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {g.count} verse{g.count === 1 ? '' : 's'}
+                    </span>
+                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
                   </button>
-                ) : (
-                  <button
-                    onClick={onNoteCreate}
-                    className="w-full rounded-lg border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40 hover:bg-accent/50 transition-colors"
-                  >
-                    <div className="aspect-square flex items-center justify-center">
-                      <div className="text-center">
-                        <Plus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                        <span className="text-[10px] text-muted-foreground">New Note</span>
-                      </div>
-                    </div>
-                  </button>
-                )}
+                ))}
               </div>
-              
-              {unpinnedNotes.length > 0 && (() => {
-                // Extract chapter/verse from a note's heading (e.g. "Genesis 1:1")
-                const getRef = (n: JournalNote): { ch: number; vs: number } => {
-                  const src = `${n.title || ""} ${n.content || ""}`;
-                  const m = src.match(/(\d+)\s*:\s*(\d+)/);
-                  return m ? { ch: parseInt(m[1], 10), vs: parseInt(m[2], 10) } : { ch: -1, vs: -1 };
-                };
-
-                // A note is a "Bible note" if its content contains a verse reference
-                const isBibleNote = (n: JournalNote) => getVerseRef(n) !== null || isBibleBookTitle(n);
-                const bibleNotes = unpinnedNotes.filter(isBibleNote);
-                const personalNotes = unpinnedNotes.filter((n) => !isBibleNote(n));
-
-                // Derive the canonical book name from a Bible note's title,
-                // so "Exodus 1:1" still groups under "Exodus".
-                const getBookKey = (n: JournalNote): string => {
-                  const raw = (n.title || "Untitled").trim();
-                  for (const book of BIBLE_BOOKS) {
-                    if (raw === book) return book;
-                    if (raw.startsWith(book + " ") || raw.startsWith(book + ":")) return book;
-                  }
-                  // Fall back to verse ref in content (e.g. "Exodus 1:1") then strip the numbers
-                  const ref = getVerseRef(n);
-                  if (ref) {
-                    const m = ref.match(/^([1-3]?\s?[A-Za-z]+(?:\s[A-Za-z]+)?)\s+\d+/);
-                    if (m) return m[1].trim();
-                  }
-                  return raw;
-                };
-
-                // Group Bible notes by book name to create stacks
-                const groups = new Map<string, JournalNote[]>();
-                const order: string[] = [];
-                for (const n of bibleNotes) {
-                  const key = getBookKey(n);
-                  if (!groups.has(key)) {
-                    groups.set(key, []);
-                    order.push(key);
-                  }
-                  groups.get(key)!.push(n);
-                }
-                // Sort book groups by canonical Bible order
-                order.sort((a, b) => {
-                  const idxA = BIBLE_BOOK_ORDER.indexOf(a);
-                  const idxB = BIBLE_BOOK_ORDER.indexOf(b);
-                  return idxA - idxB;
-                });
-                // Sort each group from furthest within the book to earliest
-                for (const key of order) {
-                  groups.get(key)!.sort((a, b) => {
-                    const ra = getRef(a), rb = getRef(b);
-                    if (rb.ch !== ra.ch) return rb.ch - ra.ch;
-                    return rb.vs - ra.vs;
-                  });
-                }
-
-                const renderStackCard = (key: string, items: JournalNote[]) => {
-                  const isExpanded = expandedStacks.has(key);
-                  const latest = items[0];
-                  const { preview } = getPreviewText(latest);
-                  return (
-                    <div key={`stack-${key}`} className="relative">
-                      <button
-                        onClick={() => toggleStack(key)}
-                        className={cn(
-                          "w-full text-left p-3 rounded-lg transition-colors relative",
-                          "hover:bg-accent/50 bg-card border border-border",
-                          "shadow-[0_4px_0_-2px_hsl(var(--border)),0_8px_0_-4px_hsl(var(--border))]"
-                        )}
-                      >
-                        <div className="flex items-center gap-2 mb-1">
-                          {isExpanded ? <ChevronDown className="h-3 w-3 text-muted-foreground" /> : <ChevronRight className="h-3 w-3 text-muted-foreground" />}
-                          <Layers className="h-3 w-3 text-muted-foreground" />
-                          <div className="font-medium text-sm truncate flex-1">{key}</div>
-                          <span className="text-xs text-muted-foreground bg-muted rounded-full px-2 py-0.5">{items.length}</span>
-                        </div>
-                        <div className="text-xs text-muted-foreground line-clamp-1 pl-5">{preview}</div>
-                      </button>
-                      {isExpanded && (
-                        <div className={cn("mt-2 space-y-1", viewMode === 'list' ? "ml-4 pl-3 border-l-2 border-border" : "")}>
-                          {items.map((n) => {
-                            const ref = getVerseRef(n) ?? (n.title || "Untitled");
-                            return viewMode === 'list' ? renderListNote(n, ref) : renderGalleryNote(n, ref);
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                };
-
-                const renderPersonal = () => (
-                  <div className={cn(viewMode === 'list' ? "space-y-1" : "grid grid-cols-2 gap-2")}>
-                    {personalNotes.length > 0 ? (
-                      personalNotes.map((n) => viewMode === 'list' ? renderListNote(n) : renderGalleryNote(n))
-                    ) : (
-                      <div className={cn("text-center py-8 text-sm text-muted-foreground", viewMode === 'gallery' && "col-span-2")}>
-                        No personal notes yet
-                      </div>
-                    )}
-                  </div>
-                );
-
-                const renderBible = () => (
-                  <div className="space-y-2">
-                    {bibleNotes.length > 0 ? (
-                      order.map((key) => {
-                        const items = groups.get(key)!;
-                        return renderStackCard(key, items);
-                      })
-                    ) : (
-                      <div className="text-center py-8 text-sm text-muted-foreground">
-                        No Bible notes yet
-                      </div>
-                    )}
-                  </div>
-                );
-
-                return (
-                  <div className={cn(viewMode === 'gallery' && "col-span-2")}>
-                    {/* Tab slider */}
-                    <div className="relative grid grid-cols-2 p-1 mb-3 bg-muted rounded-lg">
-                      <div
-                        className={cn(
-                          "absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-md bg-background shadow-sm transition-transform duration-300 ease-out",
-                          activeTab === 'bible' ? "translate-x-full" : "translate-x-0"
-                        )}
-                      />
-                      <button
-                        onClick={() => setActiveTab('personal')}
-                        className={cn(
-                          "relative z-10 text-xs font-medium py-1.5 rounded-md transition-colors",
-                          activeTab === 'personal' ? "text-foreground" : "text-muted-foreground"
-                        )}
-                      >
-                        Personal Notes
-                      </button>
-                      <button
-                        onClick={() => setActiveTab('bible')}
-                        className={cn(
-                          "relative z-10 text-xs font-medium py-1.5 rounded-md transition-colors",
-                          activeTab === 'bible' ? "text-foreground" : "text-muted-foreground"
-                        )}
-                      >
-                        Bible Notes
-                      </button>
-                    </div>
-
-                    {/* Sliding pane */}
-                    <div className="overflow-hidden">
-                      <div
-                        className="flex transition-transform duration-300 ease-out"
-                        style={{ transform: activeTab === 'bible' ? 'translateX(-100%)' : 'translateX(0)' }}
-                      >
-                        <div className="w-full shrink-0">{renderPersonal()}</div>
-                        <div className="w-full shrink-0">{renderBible()}</div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
             </>
           )}
         </div>
       </ScrollArea>
+
+      {/* New entry */}
+      <Button
+        onClick={onNoteCreate}
+        size="icon"
+        variant="sacred"
+        className="absolute bottom-5 right-4 h-12 w-12 rounded-full shadow-elevated"
+        aria-label="New note"
+      >
+        <Plus className="h-5 w-5" />
+      </Button>
     </div>
   );
 };

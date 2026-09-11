@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,12 +9,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 
+export interface SlideImage {
+  src: string;
+  alt: string;
+  credit?: string;
+}
+
 interface PaginatedReadingProps {
   content: string;
   onComplete: () => void;
   iconUrl?: string;
   campaignId: string;
   islandId: string;
+  // Optional per-paragraph imagery, keyed by paragraph index in the reading.
+  // A slide shows the image of the nearest paragraph at or before its first
+  // sentence, so an image "carries" until the story moves on.
+  slideImages?: Record<number, SlideImage>;
 }
 
 const HIGHLIGHT_COLORS = [
@@ -25,7 +36,13 @@ const HIGHLIGHT_COLORS = [
 
 const WORDS_PER_SLIDE = 80; // Target words per slide for consistent sizing
 
-export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, islandId }: PaginatedReadingProps) => {
+// Readings may mark key terms as **term** — rendered bold, never altering the words
+const renderEmphasis = (sentence: string) =>
+  sentence.split(/\*\*(.+?)\*\*/g).map((part, i) =>
+    i % 2 === 1 ? <strong key={i} className="font-bold text-primary">{part}</strong> : part
+  );
+
+export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, islandId, slideImages }: PaginatedReadingProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [highlights, setHighlights] = useState<Record<number, string>>({});
   const [showHighlighter, setShowHighlighter] = useState(false);
@@ -37,55 +54,76 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
   const contentRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
+  const [emblaRef, emblaApi] = useEmblaCarousel({ duration: 35, align: 'start' });
+
   // Save view mode preference
   useEffect(() => {
     localStorage.setItem('history-view-mode', viewMode);
   }, [viewMode]);
 
-  // Split content into paragraphs first
-  const paragraphs = content.split(/\n\n+/).filter(p => p.trim().length > 0);
-  
-  // Split each paragraph into sentences
-  const paragraphsWithSentences = paragraphs.map(para => 
-    para.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0)
-  );
-  
-  // Flatten for pagination
-  const allSentences = paragraphsWithSentences.flat();
-  
-  // Group sentences into pages - each page ends with a complete sentence
-  const pages: string[][] = [];
-  let currentPageSentences: string[] = [];
-  let currentWordCount = 0;
-  
-  allSentences.forEach(sentence => {
-    const sentenceWordCount = sentence.split(/\s+/).length;
-    
-    // If adding this sentence would exceed the limit AND we already have sentences on this page,
-    // start a new page with this sentence instead
-    if (currentWordCount + sentenceWordCount > WORDS_PER_SLIDE && currentPageSentences.length > 0) {
-      // Complete current page with the sentences we have
-      pages.push([...currentPageSentences]);
-      // Start new page with the current sentence
-      currentPageSentences = [sentence];
-      currentWordCount = sentenceWordCount;
-    } else {
-      // Add sentence to current page
-      currentPageSentences.push(sentence);
-      currentWordCount += sentenceWordCount;
-    }
-  });
-  
-  // Add the last page if it has content
-  if (currentPageSentences.length > 0) {
-    pages.push(currentPageSentences);
-  }
-  
-  // Create sentence index mapping
-  const pageSentences = pages;
+  const { paragraphsWithSentences, pages, pageParagraph } = useMemo(() => {
+    const paragraphs = content.split(/\n\n+/).filter(p => p.trim().length > 0);
+    const paragraphsWithSentences = paragraphs.map(para =>
+      para.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0)
+    );
 
+    // Flatten, remembering which paragraph each sentence belongs to
+    const allSentences: { text: string; para: number }[] = [];
+    paragraphsWithSentences.forEach((sentences, para) => {
+      sentences.forEach(text => allSentences.push({ text, para }));
+    });
+
+    // Group sentences into pages - each page ends with a complete sentence
+    const pages: string[][] = [];
+    const pageParagraph: number[] = []; // paragraph index of each page's first sentence
+    let currentPageSentences: string[] = [];
+    let currentPagePara = 0;
+    let currentWordCount = 0;
+
+    allSentences.forEach(({ text, para }) => {
+      const sentenceWordCount = text.split(/\s+/).length;
+      if (currentWordCount + sentenceWordCount > WORDS_PER_SLIDE && currentPageSentences.length > 0) {
+        pages.push([...currentPageSentences]);
+        pageParagraph.push(currentPagePara);
+        currentPageSentences = [text];
+        currentPagePara = para;
+        currentWordCount = sentenceWordCount;
+      } else {
+        if (currentPageSentences.length === 0) currentPagePara = para;
+        currentPageSentences.push(text);
+        currentWordCount += sentenceWordCount;
+      }
+    });
+    if (currentPageSentences.length > 0) {
+      pages.push(currentPageSentences);
+      pageParagraph.push(currentPagePara);
+    }
+
+    return { paragraphsWithSentences, pages, pageParagraph };
+  }, [content]);
+
+  const pageSentences = pages;
   const totalPages = pages.length;
   const progressPercentage = ((currentPage + 1) / totalPages) * 100;
+
+  // Resolve the artwork for a page: nearest paragraph image at or before it
+  const imageForPage = useCallback((pageIdx: number): SlideImage | null => {
+    if (slideImages) {
+      for (let para = pageParagraph[pageIdx] ?? 0; para >= 0; para--) {
+        if (slideImages[para]) return slideImages[para];
+      }
+    }
+    return iconUrl ? { src: iconUrl, alt: 'Historical Icon' } : null;
+  }, [slideImages, pageParagraph, iconUrl]);
+
+  const currentImage = imageForPage(currentPage);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setCurrentPage(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', onSelect);
+    return () => { emblaApi.off('select', onSelect); };
+  }, [emblaApi]);
 
   // Load highlights
   useEffect(() => {
@@ -115,7 +153,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
     if (!user) return;
 
     const currentHighlight = highlights[sentenceIndex];
-    
+
     if (currentHighlight) {
       // Remove highlight
       await supabase
@@ -125,7 +163,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
         .eq('campaign_id', campaignId)
         .eq('island_id', islandId)
         .eq('sentence_index', sentenceIndex);
-      
+
       const newHighlights = { ...highlights };
       delete newHighlights[sentenceIndex];
       setHighlights(newHighlights);
@@ -140,7 +178,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
           sentence_index: sentenceIndex,
           highlight_color: selectedColor.value,
         });
-      
+
       setHighlights({
         ...highlights,
         [sentenceIndex]: selectedColor.value,
@@ -163,21 +201,18 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
 
   const handleNext = () => {
     if (currentPage < totalPages - 1) {
-      setCurrentPage(currentPage + 1);
+      emblaApi?.scrollNext();
     } else {
       onComplete();
     }
   };
 
   const handlePrev = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
+    emblaApi?.scrollPrev();
   };
 
-
   return (
-    <Card className="p-8">
+    <Card className="p-6 sm:p-8 animate-chapter-open">
       <div className="space-y-4 mb-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -190,7 +225,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
               >
                 <Highlighter className="h-4 w-4" />
               </Button>
-              
+
               {showHighlighter && (
                 <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-lg shadow-lg z-10 flex gap-1">
                   {HIGHLIGHT_COLORS.map((color) => (
@@ -211,7 +246,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
                 </div>
               )}
             </div>
-            
+
             <div className="flex items-center gap-1 bg-muted rounded-md p-1">
               <Button
                 variant={viewMode === 'paginated' ? 'default' : 'ghost'}
@@ -231,59 +266,96 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
               </Button>
             </div>
           </div>
-          
+
           {viewMode === 'paginated' && (
             <div className="text-xs sm:text-sm font-medium text-muted-foreground bg-primary/10 px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">
               <span className="hidden sm:inline">Page </span>{currentPage + 1}<span className="hidden sm:inline"> of</span><span className="sm:hidden">/</span> {totalPages}
             </div>
           )}
         </div>
-        
+
         {viewMode === 'paginated' && (
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Reading Progress</span>
-              <span className="text-sm text-muted-foreground">{Math.round(progressPercentage)}%</span>
-            </div>
-            <Progress value={progressPercentage} className="h-2" />
-          </div>
+          <Progress value={progressPercentage} className="h-1.5" />
         )}
       </div>
-      
-      {iconUrl && (
-        <div className="flex justify-center mb-6">
-          <div className="w-48 h-48 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
-            <img src={iconUrl} alt="Historical Icon" className="w-full h-full object-cover" loading="eager" decoding="sync" fetchPriority="high" />
-          </div>
-        </div>
-      )}
-      
+
       {viewMode === 'paginated' ? (
         <>
-          <div 
-            ref={contentRef}
-            className="prose dark:prose-invert max-w-none mb-8 min-h-[400px] flex items-start"
-          >
-            <div className="text-base sm:text-lg leading-relaxed space-y-3">
-              {pageSentences[currentPage].map((sentence, idx) => {
-                const globalIndex = getSentenceIndex(currentPage, idx);
-                const highlight = highlights[globalIndex];
-                
-                return (
-                  <span
-                    key={idx}
-                    onClick={() => handleSentenceClick(globalIndex)}
-                    className={cn(
-                      "cursor-pointer transition-all inline",
-                      highlight && getHighlightClass(highlight)
-                    )}
-                  >
-                    {sentence}{' '}
+          {currentImage && (
+            <div className="flex justify-center mb-6">
+              <div className="w-full max-w-sm aspect-[4/3] sm:w-64 sm:h-64 sm:aspect-auto rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg relative">
+                <img
+                  key={currentImage.src}
+                  src={currentImage.src}
+                  alt={currentImage.alt}
+                  className="w-full h-full object-cover animate-image-in animate-kenburns"
+                  loading="eager"
+                  decoding="sync"
+                  fetchPriority="high"
+                />
+                {currentImage.credit && (
+                  <span className="absolute bottom-1 right-2 text-[10px] text-white/70 drop-shadow-sm">
+                    {currentImage.credit}
                   </span>
-                );
-              })}
+                )}
+              </div>
+            </div>
+          )}
+
+          <div className="overflow-hidden mb-6" ref={emblaRef}>
+            <div className="flex touch-pan-y">
+              {pageSentences.map((sentences, pageIdx) => (
+                <div
+                  key={pageIdx}
+                  className={cn(
+                    "min-w-0 flex-[0_0_100%] transition-opacity duration-500",
+                    pageIdx === currentPage ? "opacity-100" : "opacity-30"
+                  )}
+                >
+                  <div
+                    ref={pageIdx === currentPage ? contentRef : undefined}
+                    className="prose dark:prose-invert max-w-none min-h-[280px] flex items-start px-1"
+                  >
+                    <div className="text-base sm:text-lg leading-relaxed space-y-3">
+                      {sentences.map((sentence, idx) => {
+                        const globalIndex = getSentenceIndex(pageIdx, idx);
+                        const highlight = highlights[globalIndex];
+
+                        return (
+                          <span
+                            key={idx}
+                            onClick={() => handleSentenceClick(globalIndex)}
+                            className={cn(
+                              "cursor-pointer transition-all inline",
+                              highlight && getHighlightClass(highlight)
+                            )}
+                          >
+                            {renderEmphasis(sentence)}{' '}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
+
+          {totalPages > 1 && totalPages <= 12 && (
+            <div className="flex justify-center gap-1.5 mb-5" aria-hidden="true">
+              {pages.map((_, idx) => (
+                <button
+                  key={idx}
+                  tabIndex={-1}
+                  onClick={() => emblaApi?.scrollTo(idx)}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all duration-300",
+                    idx === currentPage ? "w-5 bg-primary" : "w-1.5 bg-muted-foreground/30"
+                  )}
+                />
+              ))}
+            </div>
+          )}
 
           <div className="flex items-center justify-between gap-4">
             <Button
@@ -311,6 +383,13 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
         </>
       ) : (
         <>
+          {iconUrl && (
+            <div className="flex justify-center mb-6">
+              <div className="w-48 h-48 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
+                <img src={iconUrl} alt="Historical Icon" className="w-full h-full object-cover" loading="eager" decoding="sync" fetchPriority="high" />
+              </div>
+            </div>
+          )}
           <ScrollArea className="h-[600px] pr-4">
             <div className="prose dark:prose-invert max-w-none">
               <div className="text-base sm:text-lg leading-relaxed">
@@ -320,14 +399,14 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
                   for (let i = 0; i < paraIdx; i++) {
                     sentenceOffset += paragraphsWithSentences[i].length;
                   }
-                  
+
                   return (
                     <div key={paraIdx} className="mb-6">
                       <p className="mb-4">
                         {sentences.map((sentence, sentIdx) => {
                           const globalIdx = sentenceOffset + sentIdx;
                           const highlight = highlights[globalIdx];
-                          
+
                           return (
                             <span
                               key={sentIdx}

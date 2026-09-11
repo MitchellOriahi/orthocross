@@ -17,6 +17,7 @@ import { AdminRoute } from "@/components/AdminRoute";
 import { TutorialIntro } from "@/components/TutorialIntro";
 import { NotificationManager } from "@/components/NotificationManager";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -56,7 +57,11 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
   }, [location.pathname]);
 
   return (
-    <div className={`transition-opacity duration-150 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+    <div
+      className={`transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1.5'
+      }`}
+    >
       {children}
     </div>
   );
@@ -89,6 +94,7 @@ const AppContent = () => {
             } 
           />
           <Route path="/home" element={<Home />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/index" element={<ProtectedRoute><Index /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/reading" element={<ProtectedRoute><Reading /></ProtectedRoute>} />

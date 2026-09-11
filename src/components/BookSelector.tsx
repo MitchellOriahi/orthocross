@@ -44,7 +44,7 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
           Select Book
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-md">
+      <SheetContent side="right" className="w-full sm:max-w-md safe-top">
         <SheetHeader>
           <SheetTitle>
             {selectedBook ? (
@@ -61,7 +61,7 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
           </SheetTitle>
         </SheetHeader>
         
-        <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+        <ScrollArea className="h-[calc(100dvh-120px-env(safe-area-inset-top))] mt-6">
           {!selectedBook ? (
             <div className="space-y-2">
               {books.map((book) => (

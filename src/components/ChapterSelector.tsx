@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Book, ChevronDown } from "lucide-react";
+import { Book, ChevronDown, X } from "lucide-react";
 
 interface ChapterSelectorProps {
   book: string;
@@ -37,14 +37,18 @@ export const ChapterSelector = ({
           <ChevronDown className="w-5 h-5 text-muted-foreground flex-shrink-0 animate-pulse" />
         </div>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[70vh]">
+      <SheetContent side="bottom" hideClose className="h-[70dvh] rounded-t-xl">
         <SheetHeader>
           <SheetTitle className="text-center">
             {book} - Select Chapter
           </SheetTitle>
+          <SheetClose className="absolute right-4 top-4 p-2 -m-2 rounded-sm opacity-70 hover:opacity-100">
+            <X className="h-5 w-5" />
+            <span className="sr-only">Close</span>
+          </SheetClose>
         </SheetHeader>
-        
-        <ScrollArea className="h-[calc(70vh-120px)] mt-6 px-4">
+
+        <ScrollArea className="h-[calc(70dvh-120px)] mt-6 px-4">
           <div className="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-10 gap-2 pb-4">
             {Array.from({ length: totalChapters }, (_, i) => i + 1).map((chapter) => (
               <Button

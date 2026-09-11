@@ -37,3 +37,11 @@ pnpm-lock.yaml
 # Android signing keys - publishing these to a remote is unrecoverable
 *.jks
 *.keystore
+
+# One-time scripture import caches (fetched source pages + parsed output)
+scripts/.cache-*
+scripts/.enoch-parsed.json
+scripts/.jubilees-parsed.json
+
+# Supabase CLI temp state
+supabase/.temp/

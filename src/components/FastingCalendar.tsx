@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Calendar, ChevronLeft, ChevronRight, Bell, BellOff, ChevronDown, ChevronUp, Church } from "lucide-react";
+import { EasternCross, OrientalCross } from "@/components/crosses";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -281,14 +282,14 @@ export const FastingCalendar = () => {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Eastern Orthodox" id="eastern" />
-              <Label htmlFor="eastern" className="cursor-pointer whitespace-nowrap text-base sm:text-lg">
-                ⛪ Eastern Orthodox
+              <Label htmlFor="eastern" className="cursor-pointer whitespace-nowrap text-base sm:text-lg inline-flex items-center gap-1.5">
+                <EasternCross className="h-[1.1em] w-[0.85em] text-primary" /> Eastern Orthodox
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="Oriental Orthodox" id="oriental" />
-              <Label htmlFor="oriental" className="cursor-pointer whitespace-nowrap text-base sm:text-lg">
-                ⛪ Oriental Orthodox
+              <Label htmlFor="oriental" className="cursor-pointer whitespace-nowrap text-base sm:text-lg inline-flex items-center gap-1.5">
+                <OrientalCross className="h-[1.1em] w-[1.1em] text-primary" /> Oriental Orthodox
               </Label>
             </div>
           </RadioGroup>
@@ -365,7 +366,9 @@ export const FastingCalendar = () => {
                             : "bg-purple-100 dark:bg-purple-900/40 border-purple-500 text-purple-900 dark:text-purple-100"
                         }`}
                       >
-                        {isEastern ? "⛪ Eastern Orthodox" : "⛪ Oriental Orthodox"}
+                        {isEastern
+                          ? <span className="inline-flex items-center gap-1"><EasternCross className="h-3 w-2.5" /> Eastern Orthodox</span>
+                          : <span className="inline-flex items-center gap-1"><OrientalCross className="h-3 w-3" /> Oriental Orthodox</span>}
                       </Badge>
                     </div>
                     {event.isMajor && (

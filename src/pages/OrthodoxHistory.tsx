@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Settings as SettingsIcon, Trophy } from "lucide-react";
+import { EasternCross, OrientalCross } from "@/components/crosses";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -212,7 +213,10 @@ const OrthodoxHistory = () => {
         <Tabs value={selectedCampaign} onValueChange={setSelectedCampaign} className="space-y-8">
           <TabsList className="grid w-full grid-cols-2 h-auto">
             {historyContent.campaigns.map(c => (
-              <TabsTrigger key={c.id} value={c.id} className="text-xs sm:text-sm whitespace-normal py-2">
+              <TabsTrigger key={c.id} value={c.id} className="text-xs sm:text-sm whitespace-normal py-2 gap-1.5">
+                {c.id === 'eastern_orthodox_history'
+                  ? <EasternCross className="h-4 w-3 flex-shrink-0" />
+                  : <OrientalCross className="h-4 w-4 flex-shrink-0" />}
                 {c.displayName}
               </TabsTrigger>
             ))}

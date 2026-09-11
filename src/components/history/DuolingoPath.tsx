@@ -1,6 +1,8 @@
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Flame, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { EasternCross, OrientalCross } from "@/components/crosses";
 
 interface Island {
   id: string;
@@ -28,6 +30,64 @@ interface DuolingoPathProps {
 }
 
 export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPathProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [markerPos, setMarkerPos] = useState<{ x: number; y: number } | null>(null);
+  const [walking, setWalking] = useState(false);
+  const [burstIdx, setBurstIdx] = useState<number | null>(null);
+
+  const completedCount = campaign.islands.filter(
+    i => progress.find(p => p.islandId === i.id)?.completed
+  ).length;
+  // The pilgrim stands at the next quest to take on (or the last, when done)
+  const currentIdx = Math.min(completedCount, campaign.islands.length - 1);
+
+  const nodeCenter = (idx: number) => {
+    const node = nodeRefs.current[idx];
+    const container = containerRef.current;
+    if (!node || !container) return null;
+    const n = node.getBoundingClientRect();
+    const c = container.getBoundingClientRect();
+    return { x: n.left - c.left + n.width / 2, y: n.top - c.top + n.height / 2 };
+  };
+
+  // Place the marker; if a quest was just conquered, walk it from the old node
+  useLayoutEffect(() => {
+    const justCompleted = sessionStorage.getItem('quest_just_completed');
+    const justIdx = justCompleted
+      ? campaign.islands.findIndex(i => i.id === justCompleted)
+      : -1;
+
+    const target = nodeCenter(currentIdx);
+    if (!target) return;
+
+    if (justIdx >= 0 && justIdx < currentIdx) {
+      sessionStorage.removeItem('quest_just_completed');
+      const from = nodeCenter(justIdx);
+      if (from) {
+        setMarkerPos(from);
+        setBurstIdx(justIdx);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          setWalking(true);
+          setMarkerPos(target);
+        }));
+        const t = setTimeout(() => { setWalking(false); setBurstIdx(null); }, 1800);
+        return () => clearTimeout(t);
+      }
+    }
+    setMarkerPos(target);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIdx, campaign.id]);
+
+  useEffect(() => {
+    const onResize = () => setMarkerPos(nodeCenter(currentIdx));
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIdx]);
+
+  const isEastern = campaign.id === 'eastern_orthodox_history';
+
   const getIslandStatus = (index: number, island: Island) => {
     const isCompleted = progress.find(p => p.islandId === island.id)?.completed || false;
     const previousCompleted = index === 0 || progress.find(p => p.islandId === campaign.islands[index - 1].id)?.completed || false;
@@ -75,7 +135,7 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
     : 'from-red-500/20 to-orange-600/20';
 
   return (
-    <div className="relative py-8" style={{ minHeight: `${campaign.islands.length * 280}px` }}>
+    <div ref={containerRef} className="relative py-8" style={{ minHeight: `${campaign.islands.length * 280}px` }}>
       {/* Winding path background */}
       <svg 
         className="absolute inset-0 pointer-events-none" 
@@ -149,17 +209,19 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
           const isLeftSide = index % 2 === 0;
           
           return (
-            <div 
-              key={island.id} 
-              className={`flex items-center gap-8 ${isLeftSide ? 'flex-row' : 'flex-row-reverse'}`}
-              style={{ minHeight: '240px' }}
+            <div
+              key={island.id}
+              className={`flex items-center gap-8 animate-rise-in ${isLeftSide ? 'flex-row' : 'flex-row-reverse'}`}
+              style={{ minHeight: '240px', animationDelay: `${Math.min(index, 6) * 70}ms` }}
             >
               {/* Island Card */}
               <div className="flex-1 max-w-md">
-                <Card 
+                <Card
                   className={`relative overflow-hidden transition-all duration-300 hover:scale-105 cursor-pointer ${
                     status.isCompleted ? 'border-primary shadow-xl' : ''
-                  } ${!status.isUnlocked ? 'opacity-60' : ''}`}
+                  } ${!status.isUnlocked ? 'opacity-60' : ''} ${
+                    status.canStart && !status.isCompleted ? 'animate-beckon border-primary/50' : ''
+                  }`}
                   onClick={() => status.isUnlocked && onIslandSelect(island.id)}
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${themeColors} opacity-30`} />
@@ -188,7 +250,12 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
               </div>
 
               {/* Status Circle */}
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0" ref={(el) => { nodeRefs.current[index] = el; }}>
+              {burstIdx === index && (
+                <div className="absolute pointer-events-none" style={{ transform: 'translate(-4px, -4px)' }}>
+                  <div className="w-24 h-24 rounded-full border-4 border-primary animate-victory-burst" />
+                </div>
+              )}
               <div className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
                 status.isCompleted 
                   ? 'bg-white dark:bg-gray-900 shadow-lg shadow-primary/50 border-2 border-primary' 
@@ -222,6 +289,28 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
           );
         })}
       </div>
+
+      {/* The pilgrim — stands at the current quest, walks forward after a victory */}
+      {markerPos && (
+        <div
+          className="absolute pointer-events-none z-10"
+          style={{
+            left: markerPos.x,
+            top: markerPos.y,
+            transform: 'translate(-50%, -50%)',
+            transition: walking ? 'left 1.5s cubic-bezier(0.45, 0, 0.25, 1), top 1.5s cubic-bezier(0.45, 0, 0.25, 1)' : undefined,
+          }}
+        >
+          <div className="animate-pilgrim-bob motion-reduce:animate-none">
+            <div className="w-11 h-11 -mt-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/40 border-2 border-background flex items-center justify-center">
+              {isEastern
+                ? <EasternCross className="h-6 w-4" />
+                : <OrientalCross className="h-6 w-6" />}
+            </div>
+            <div className="mx-auto w-2 h-2 rotate-45 bg-primary -mt-1" />
+          </div>
+        </div>
+      )}
 
       {/* Completion celebration */}
       {progress.filter(p => p.completed).length === campaign.islands.length && (

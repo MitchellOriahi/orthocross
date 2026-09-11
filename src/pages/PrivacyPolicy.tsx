@@ -2,7 +2,7 @@ import { Shield } from "lucide-react";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen bg-background p-6 md:p-12">
+    <div className="min-h-screen bg-background p-6 md:p-12 safe-top">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center space-y-4 mb-12">
           <Shield className="w-16 h-16 mx-auto text-primary" />

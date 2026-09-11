@@ -157,9 +157,10 @@ All colors MUST be HSL.
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* Clears the fixed bottom nav plus the home-indicator inset. */
+  /* Clears the fixed bottom nav plus the home-indicator inset.
+     The nav itself measures ~80px content + the inset, so reserve 6rem. */
   .pb-nav {
-    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom));
   }
 
   .safe-left {
@@ -191,6 +192,97 @@ All colors MUST be HSL.
 
 .animate-progress-bar {
   animation: progress-bar 7s linear forwards;
+}
+
+/* --- Calm motion vocabulary (quests + app-wide polish) --- */
+@keyframes chapter-open {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-chapter-open {
+  animation: chapter-open 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-rise-in {
+  animation: rise-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes image-cross-in {
+  from { opacity: 0; transform: scale(1.025); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-image-in {
+  animation: image-cross-in 0.7s ease-out both;
+}
+
+/* Slow, candlelight-calm drift for quest artwork */
+@keyframes kenburns-drift {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06) translateY(-1.5%); }
+}
+.animate-kenburns {
+  animation: kenburns-drift 26s ease-in-out infinite alternate;
+}
+
+@keyframes gentle-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-3px); }
+}
+.animate-gentle-shake {
+  animation: gentle-shake 0.35s ease-in-out;
+}
+
+@keyframes correct-glow {
+  0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.45); }
+  100% { box-shadow: 0 0 0 12px hsl(var(--primary) / 0); }
+}
+.animate-correct-glow {
+  animation: correct-glow 0.7s ease-out;
+}
+
+/* Soft pulsing ring for the next unlocked quest */
+@keyframes beckon {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.35); }
+  50% { box-shadow: 0 0 0 10px hsl(var(--primary) / 0); }
+}
+.animate-beckon {
+  animation: beckon 2.6s ease-in-out infinite;
+}
+
+/* The pilgrim marker resting at the current quest */
+@keyframes pilgrim-bob {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-7px); }
+}
+.animate-pilgrim-bob {
+  animation: pilgrim-bob 1.4s ease-in-out infinite alternate;
+}
+
+/* One-shot golden burst on a conquered island */
+@keyframes victory-burst {
+  0%   { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+.animate-victory-burst {
+  animation: victory-burst 1s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-chapter-open,
+  .animate-rise-in,
+  .animate-image-in,
+  .animate-kenburns,
+  .animate-gentle-shake,
+  .animate-correct-glow,
+  .animate-beckon {
+    animation: none;
+  }
 }
 
 /* Placeholder for contentEditable divs */
@@ -235,6 +327,18 @@ All colors MUST be HSL.
 [contenteditable] mark {
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
+  /* The UA stylesheet forces mark { color: black }, invisible on dark themes */
+  color: inherit;
+}
+
+/* An inline mark doesn't paint behind block children (multi-paragraph highlights) */
+[contenteditable] mark p {
+  background-color: inherit;
+  border-radius: 0.25rem;
+}
+
+[contenteditable] mark:has(p) {
+  padding: 0;
 }
 
 /* Media action buttons styling */

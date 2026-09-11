@@ -66,6 +66,12 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
+      subscription_data: {
+        metadata: {
+          user_id: user?.id || "anonymous",
+          donation_type: "monthly",
+        },
+      },
       success_url: `${req.headers.get("origin")}/dashboard?donation=monthly_success`,
       cancel_url: `${req.headers.get("origin")}/dashboard?donation=cancelled`,
       metadata: {

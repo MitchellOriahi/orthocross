@@ -49,7 +49,7 @@ const DataSafety = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8 safe-top">
       <div className="max-w-4xl mx-auto space-y-8">
         <Button
           variant="ghost"

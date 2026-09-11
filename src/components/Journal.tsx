@@ -4,9 +4,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { JournalSidebar } from "./journal/JournalSidebar";
-import { JournalNotesList } from "./journal/JournalNotesList";
+import { JournalNotesList, type HighlightGroup } from "./journal/JournalNotesList";
 import { JournalEditor } from "./journal/JournalEditor";
+import { useNavigate } from "react-router-dom";
+import { BIBLE_BOOKS } from "@/data/bibleContent";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Menu, Play, Pause, Volume2 } from "lucide-react";
@@ -141,13 +146,29 @@ export const Journal = () => {
         .from('journal_entries')
         .select('*')
         .eq('user_id', user.id);
-      
+
+      const offlineKey = `journal_notes_${user.id}`;
+      const applyNotes = (data: any[] | null) => {
+        if (data) {
+          setNotes(data);
+          if (!selectedFolderId) {
+            try { localStorage.setItem(offlineKey, JSON.stringify(data)); } catch {}
+          }
+        } else if (!selectedFolderId) {
+          // Offline — fall back to the last synced list
+          try {
+            const cached = localStorage.getItem(offlineKey);
+            if (cached) setNotes(JSON.parse(cached));
+          } catch {}
+        }
+      };
+
       if (selectedFolderId) {
         const { data } = await query.eq('folder_id', selectedFolderId).order('updated_at', { ascending: false });
-        if (data) setNotes(data);
+        applyNotes(data);
       } else {
         const { data } = await query.order('updated_at', { ascending: false });
-        if (data) setNotes(data);
+        applyNotes(data);
       }
     };
 
@@ -155,14 +176,54 @@ export const Journal = () => {
     loadNotes();
   }, [user, selectedFolderId]);
 
+  // Push any drafts that were written while offline
+  useEffect(() => {
+    if (!user) return;
+
+    const syncOfflineDrafts = async () => {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (!key?.startsWith('journal_draft_')) continue;
+        try {
+          const draft = JSON.parse(localStorage.getItem(key)!);
+          const noteId = key.slice('journal_draft_'.length);
+          const { error } = await (supabase as any)
+            .from('journal_entries')
+            .update({
+              title: draft.title || null,
+              content: draft.content || null,
+              updated_at: draft.updatedAt,
+            })
+            .eq('id', noteId)
+            .eq('user_id', user.id);
+          if (!error) localStorage.removeItem(key);
+        } catch {}
+      }
+    };
+
+    syncOfflineDrafts();
+    window.addEventListener('online', syncOfflineDrafts);
+    return () => window.removeEventListener('online', syncOfflineDrafts);
+  }, [user]);
+
   // Load selected note
   useEffect(() => {
     if (!selectedNoteId) return;
     
     const note = notes.find(n => n.id === selectedNoteId);
     if (note) {
-      setCurrentTitle(note.title || "");
-      setCurrentContent(note.content || "");
+      // An unsynced offline draft newer than the server copy wins
+      let draft: { title: string; content: string; updatedAt: string } | null = null;
+      try {
+        const raw = localStorage.getItem(`journal_draft_${selectedNoteId}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (new Date(parsed.updatedAt) > new Date(note.updated_at)) draft = parsed;
+        }
+      } catch {}
+
+      setCurrentTitle(draft ? draft.title : (note.title || ""));
+      setCurrentContent(draft ? draft.content : (note.content || ""));
       
       // If note already has content or media, clear the new/unmodified flag
       const hasContent = note.content && note.content.trim() !== "";
@@ -181,21 +242,31 @@ export const Journal = () => {
 
     const timeoutId = setTimeout(async () => {
       setIsSaving(true);
+      const updatedAt = new Date().toISOString();
+      const draftKey = `journal_draft_${selectedNoteId}`;
+      // Draft goes to local storage first, so writing offline never loses work
       try {
-        await (supabase as any)
+        localStorage.setItem(draftKey, JSON.stringify({ title: currentTitle, content: currentContent, updatedAt }));
+      } catch {}
+      try {
+        const { error } = await (supabase as any)
           .from('journal_entries')
           .update({
             title: currentTitle || null,
             content: currentContent || null,
-            updated_at: new Date().toISOString()
+            updated_at: updatedAt
           })
           .eq('id', selectedNoteId);
-        
+
+        if (!error) {
+          try { localStorage.removeItem(draftKey); } catch {}
+        }
+
         // Update only the current note in the list instead of refreshing everything
-        setNotes(prevNotes => 
-          prevNotes.map(note => 
-            note.id === selectedNoteId 
-              ? { ...note, title: currentTitle, content: currentContent, updated_at: new Date().toISOString() }
+        setNotes(prevNotes =>
+          prevNotes.map(note =>
+            note.id === selectedNoteId
+              ? { ...note, title: currentTitle, content: currentContent, updated_at: updatedAt }
               : note
           )
         );
@@ -208,6 +279,96 @@ export const Journal = () => {
 
     return () => clearTimeout(timeoutId);
   }, [currentTitle, currentContent, selectedNoteId, user]);
+
+  const todayEntryTitle = new Date().toLocaleDateString(undefined, {
+    weekday: "long", month: "long", day: "numeric",
+  });
+
+  const [dailyVerse, setDailyVerse] = useState<{ reference: string; verse_text: string } | null>(null);
+  useEffect(() => {
+    (supabase.rpc as any)("get_verse_of_the_day").then(
+      ({ data }: { data: { reference: string; verse_text: string }[] | null }) => {
+        if (data && data.length > 0) setDailyVerse(data[0]);
+      }
+    );
+  }, []);
+
+  const navigate = useNavigate();
+  const [highlightGroups, setHighlightGroups] = useState<HighlightGroup[]>([]);
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from('verse_highlights')
+      .select('scripture_title, chapter, highlight_color')
+      .eq('user_id', user.id)
+      .then(({ data }) => {
+        if (!data) return;
+        const byBook = new Map<string, { count: number; firstChapter: number; colors: Set<string> }>();
+        for (const h of data) {
+          const g = byBook.get(h.scripture_title) ?? { count: 0, firstChapter: h.chapter, colors: new Set<string>() };
+          g.count++;
+          g.firstChapter = Math.min(g.firstChapter, h.chapter);
+          if (h.highlight_color) g.colors.add(h.highlight_color);
+          byBook.set(h.scripture_title, g);
+        }
+        setHighlightGroups(
+          [...byBook.entries()].map(([book, g]) => ({
+            book, count: g.count, firstChapter: g.firstChapter, colors: [...g.colors],
+          }))
+        );
+      });
+  }, [user, isFullScreen]);
+
+  const handleOpenHighlights = (book: string) => {
+    const info = BIBLE_BOOKS.find(b => b.title === book);
+    const group = highlightGroups.find(g => g.book === book);
+    navigate('/reading', {
+      state: {
+        book,
+        bookName: info?.bookName ?? book,
+        chapter: group?.firstChapter ?? 1,
+        totalChapters: info?.totalChapters ?? 1,
+      },
+    });
+  };
+
+  const handleOpenToday = async () => {
+    const verse = dailyVerse;
+    if (!user) return;
+
+    const existing = notes.find(n => n.title === todayEntryTitle);
+    if (existing) {
+      setSelectedNoteId(existing.id);
+      setIsFullScreen(true);
+      if (isMobile) setShowNotesList(false);
+      return;
+    }
+
+    const initialContent = verse
+      ? `<p><em>“${verse.verse_text}” — ${verse.reference}</em></p><p><br></p>`
+      : "";
+    const { data, error } = await (supabase as any)
+      .from('journal_entries')
+      .insert({
+        user_id: user.id,
+        folder_id: null,
+        title: todayEntryTitle,
+        content: initialContent,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      toast({ title: "Error creating today's entry", variant: "destructive" });
+      return;
+    }
+    if (data) {
+      setNotes([data, ...notes]);
+      setSelectedNoteId(data.id);
+      setIsFullScreen(true);
+      if (isMobile) setShowNotesList(false);
+    }
+  };
 
   const handleNoteCreate = async () => {
     if (!user) return;
@@ -310,39 +471,58 @@ export const Journal = () => {
     }
   };
 
-  const handleFolderDelete = async (folderId: string) => {
-    if (!confirm("Delete this folder and all its notes?")) return;
-    
-    await (supabase as any).from('journal_folders').delete().eq('id', folderId);
-    setFolders(folders.filter(f => f.id !== folderId));
-    if (selectedFolderId === folderId) {
-      setSelectedFolderId(null);
-    }
+  const [confirmState, setConfirmState] = useState<{
+    title: string;
+    description: string;
+    onConfirm: () => void;
+  } | null>(null);
+  const [renameState, setRenameState] = useState<{ folderId: string; name: string } | null>(null);
+
+  const handleFolderDelete = (folderId: string) => {
+    setConfirmState({
+      title: "Delete this folder?",
+      description: "The folder and all notes inside it will be permanently deleted.",
+      onConfirm: async () => {
+        await (supabase as any).from('journal_folders').delete().eq('id', folderId);
+        setFolders(folders.filter(f => f.id !== folderId));
+        if (selectedFolderId === folderId) {
+          setSelectedFolderId(null);
+        }
+      },
+    });
   };
 
-  const handleFolderRename = async (folderId: string) => {
+  const handleFolderRename = (folderId: string) => {
     const folder = folders.find(f => f.id === folderId);
     if (!folder) return;
-    
-    const newName = prompt("Enter new folder name:", folder.name);
-    if (!newName) return;
-    
-    await (supabase as any)
-      .from('journal_folders')
-      .update({ name: newName })
-      .eq('id', folderId);
-    
-    setFolders(folders.map(f => f.id === folderId ? { ...f, name: newName } : f));
+    setRenameState({ folderId, name: folder.name });
   };
 
-  const handleNoteDelete = async (noteId: string) => {
-    if (!confirm("Delete this note?")) return;
-    
-    await (supabase as any).from('journal_entries').delete().eq('id', noteId);
-    setNotes(notes.filter(n => n.id !== noteId));
-    if (selectedNoteId === noteId) {
-      setSelectedNoteId(null);
-    }
+  const submitFolderRename = async () => {
+    if (!renameState || !renameState.name.trim()) return;
+    const { folderId, name } = renameState;
+    setRenameState(null);
+
+    await (supabase as any)
+      .from('journal_folders')
+      .update({ name })
+      .eq('id', folderId);
+
+    setFolders(folders.map(f => f.id === folderId ? { ...f, name } : f));
+  };
+
+  const handleNoteDelete = (noteId: string) => {
+    setConfirmState({
+      title: "Delete this note?",
+      description: "This note will be permanently deleted.",
+      onConfirm: async () => {
+        await (supabase as any).from('journal_entries').delete().eq('id', noteId);
+        setNotes(notes.filter(n => n.id !== noteId));
+        if (selectedNoteId === noteId) {
+          setSelectedNoteId(null);
+        }
+      },
+    });
   };
 
   const handleNotePin = async (noteId: string) => {
@@ -579,7 +759,7 @@ export const Journal = () => {
       </Card>
 
       <Sheet open={isFullScreen} onOpenChange={setIsFullScreen}>
-        <SheetContent side="bottom" className="inset-0 h-[100dvh] w-screen p-0 max-w-none">
+        <SheetContent side="bottom" className="inset-0 h-[100dvh] w-screen p-0 max-w-none" onOpenAutoFocus={(e) => e.preventDefault()}>
           <SheetTitle className="sr-only">Journal Editor</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="border-b border-border p-2 flex items-center bg-card safe-top">
@@ -640,8 +820,13 @@ export const Journal = () => {
               {/* Desktop: Always show notes list */}
               {/* Mobile: Show notes list only when no note is selected or when navigating back */}
               {(!isMobile || showNotesList) && (
-                <div className={`${isMobile ? 'flex-1' : 'w-64'}`}>
+                <div className={`${isMobile ? 'flex-1' : 'w-72'} flex flex-col bg-card/30`}>
                   <JournalNotesList
+                    todayEntry={notes.find(n => n.title === todayEntryTitle) ?? null}
+                    onOpenToday={handleOpenToday}
+                    userId={user?.id}
+                    highlightGroups={highlightGroups}
+                    onOpenHighlights={handleOpenHighlights}
                     notes={filteredNotes}
                     selectedNoteId={selectedNoteId}
                     onNoteSelect={handleNoteSelect}
@@ -680,6 +865,51 @@ export const Journal = () => {
           </div>
         </SheetContent>
       </Sheet>
+
+      <AlertDialog open={!!confirmState} onOpenChange={(open) => !open && setConfirmState(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirmState?.title}</AlertDialogTitle>
+            <AlertDialogDescription>{confirmState?.description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                confirmState?.onConfirm();
+                setConfirmState(null);
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog open={!!renameState} onOpenChange={(open) => !open && setRenameState(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Rename Folder</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              submitFolderRename();
+            }}
+          >
+            <Input
+              value={renameState?.name ?? ''}
+              onChange={(e) => setRenameState(s => s ? { ...s, name: e.target.value } : s)}
+              autoComplete="off"
+            />
+            <DialogFooter className="mt-4">
+              <Button type="button" variant="outline" onClick={() => setRenameState(null)}>Cancel</Button>
+              <Button type="submit" disabled={!renameState?.name.trim()}>Rename</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

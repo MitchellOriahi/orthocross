@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X, ChevronDown, ChevronUp, UsersRound } from "lucide-react";
+import { Users, UserPlus, Trophy, Activity, Settings as SettingsIcon, UserMinus, Heart, ThumbsUp, PartyPopper, Flame, Star, AlertCircle, Zap, Frown, Hand, Award, Cross, Circle, Check, X, ChevronDown, ChevronUp, UsersRound, Crown, Share2 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -412,6 +412,22 @@ export default function Friends() {
       }
     }
   }
+
+  const handleInviteFriend = async () => {
+    const invite = {
+      title: "OrthoCross",
+      text: "Join me on OrthoCross — daily Bible reading, prayer, and Orthodox learning. Let's keep each other's streaks alive!",
+      url: "https://app.orthocrossapp.com",
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(invite);
+      } else {
+        await navigator.clipboard.writeText(`${invite.text} ${invite.url}`);
+        toast({ description: "Invite link copied to clipboard!" });
+      }
+    } catch { /* user cancelled the share sheet */ }
+  };
 
   const handleAddFriend = async () => {
     if (!searchQuery.trim()) {
@@ -1019,15 +1035,25 @@ export default function Friends() {
                 {friendsListOpen && (
                   <>
                     {friends.length === 0 ? (
-                      <div className="text-center text-muted-foreground py-8">
-                        No friends yet. Add someone to get started!
+                      <div className="text-center py-8 space-y-3">
+                        <div className="mx-auto w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Users className="h-6 w-6 text-primary" />
+                        </div>
+                        <p className="font-medium">Walk the road together</p>
+                        <p className="text-xs text-muted-foreground max-w-[240px] mx-auto">
+                          Reading is sweeter with a brother or sister beside you. Invite someone to join you.
+                        </p>
+                        <Button variant="outline" size="sm" className="gap-2" onClick={handleInviteFriend}>
+                          <Share2 className="h-3.5 w-3.5" />
+                          Invite a friend
+                        </Button>
                       </div>
                     ) : (
                       <div className="space-y-2">
                         {friends.map(friend => (
-                          <div 
-                            key={friend.id} 
-                            className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
+                          <div
+                            key={friend.id}
+                            className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border hover:border-primary/40 transition-colors"
                           >
                             <div 
                               className="flex items-center gap-3 flex-1 cursor-pointer hover:opacity-80 transition-opacity"
@@ -1081,8 +1107,13 @@ export default function Friends() {
                 {activityTabOpen && (
                   <div className="space-y-3">
                     {activities.length === 0 ? (
-                      <div className="text-center text-muted-foreground py-8">
-                        No activity yet. Connect with friends to see their progress!
+                      <div className="text-center py-8 space-y-2">
+                        <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Activity className="h-5 w-5 text-primary" />
+                        </div>
+                        <p className="text-sm text-muted-foreground max-w-[240px] mx-auto">
+                          When your friends complete chapters and quests, their progress will appear here.
+                        </p>
                       </div>
                     ) : (
                       <div className="space-y-3">
@@ -1328,24 +1359,46 @@ export default function Friends() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {leaderboard.map((entry, index) => {
-                    const getCardBackground = () => {
-                      if (index === 0) return "bg-amber-400/10";
-                      if (index === 1) return "bg-slate-300/10";
-                      if (index === 2) return "bg-amber-700/10";
-                      return "bg-muted/50";
-                    };
-                    
-                    const getRankColors = () => {
-                      if (index === 0) return "bg-amber-400/20 text-amber-400";
-                      if (index === 1) return "bg-slate-300/20 text-slate-300";
-                      if (index === 2) return "bg-amber-700/20 text-amber-700";
-                      return "bg-primary/10 text-primary";
-                    };
-                    
+                  {/* Podium — 2nd, 1st, 3rd */}
+                  <div className="flex items-end justify-center gap-3 pt-6 pb-2">
+                    {[1, 0, 2].map((rankIdx) => {
+                      const entry = leaderboard[rankIdx];
+                      if (!entry) return <div key={`podium-empty-${rankIdx}`} className="flex-1 max-w-[110px]" />;
+                      const isFirst = rankIdx === 0;
+                      const medal =
+                        rankIdx === 0 ? "text-amber-400 border-amber-400/60 bg-amber-400/10" :
+                        rankIdx === 1 ? "text-slate-300 border-slate-300/60 bg-slate-300/10" :
+                        "text-amber-700 border-amber-700/60 bg-amber-700/10";
+                      const column =
+                        rankIdx === 0 ? "h-24 bg-gradient-to-t from-amber-400/25 to-amber-400/5" :
+                        rankIdx === 1 ? "h-16 bg-gradient-to-t from-slate-300/25 to-slate-300/5" :
+                        "h-12 bg-gradient-to-t from-amber-700/25 to-amber-700/5";
+                      return (
+                        <div key={entry.id} className="flex-1 max-w-[110px] flex flex-col items-center gap-1.5 animate-rise-in" style={{ animationDelay: `${rankIdx * 90}ms` }}>
+                          <div className="relative">
+                            {isFirst && <Crown className="absolute -top-5 left-1/2 -translate-x-1/2 w-5 h-5 text-amber-400" fill="currentColor" />}
+                            <Avatar className={`${isFirst ? 'h-16 w-16' : 'h-[52px] w-[52px]'} border-2 ${medal.split(' ')[1]}`}>
+                              <AvatarImage src={entry.profile_picture_url || undefined} />
+                              <AvatarFallback>{entry.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                            </Avatar>
+                            <span className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center border ${medal}`}>
+                              {rankIdx + 1}
+                            </span>
+                          </div>
+                          <span className="text-xs font-medium truncate max-w-full mt-1.5">{entry.username}</span>
+                          <div className={`w-full rounded-t-lg border border-b-0 border-border/60 flex items-start justify-center pt-1.5 ${column}`}>
+                            <span className="text-xs font-bold text-muted-foreground">{entry.books_completed} pts</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {leaderboard.slice(3).map((entry, i) => {
+                    const index = i + 3;
                     return (
-                      <div key={entry.id} className={`flex items-center gap-3 p-3 rounded-lg ${getCardBackground()}`}>
-                        <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${getRankColors()}`}>
+                      <div key={entry.id} className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border">
+                        <div className="w-8 h-8 flex items-center justify-center rounded-full font-bold bg-primary/10 text-primary">
                           {index + 1}
                         </div>
                         <Avatar>

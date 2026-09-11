@@ -42,7 +42,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen gradient-peaceful relative">
+    <div className="min-h-screen gradient-peaceful relative safe-top">
       {/* Instagram Handle */}
       <div className="absolute top-4 right-4 text-xs text-muted-foreground">
         @orthocross on Instagram
