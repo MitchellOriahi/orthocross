@@ -19,6 +19,7 @@ import { useProfileData } from "@/hooks/useProfileData";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
+import { isVerseOnBoardEnabled, VERSE_ON_BOARD_KEY } from "@/components/VerseOfTheDayCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
 
 const Settings = () => {
@@ -35,6 +36,15 @@ const Settings = () => {
   const [streakVisible, setStreakVisible] = useState(true);
   const [activityVisible, setActivityVisible] = useState(true);
   const [timezone, setTimezone] = useState('America/New_York');
+  const [verseOnBoard, setVerseOnBoard] = useState(isVerseOnBoardEnabled);
+
+  const handleToggleVerseOnBoard = (enabled: boolean) => {
+    setVerseOnBoard(enabled);
+    try { localStorage.setItem(VERSE_ON_BOARD_KEY, enabled ? "1" : "0"); } catch {}
+    toast.success(enabled
+      ? "Verse of the Day will show on your Board"
+      : "Verse of the Day hidden from your Board — you'll still get the daily notification");
+  };
 
   // Common timezone options
   const timezones = [
@@ -342,6 +352,19 @@ const Settings = () => {
                 <Switch
                   checked={friendsNotificationsEnabled}
                   onCheckedChange={handleToggleFriendsNotifications}
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1">
+                  <p className="font-medium">Verse of the Day on Board</p>
+                  <p className="text-sm text-muted-foreground">
+                    Show the daily verse card on your Board. The daily notification still arrives either way.
+                  </p>
+                </div>
+                <Switch
+                  checked={verseOnBoard}
+                  onCheckedChange={handleToggleVerseOnBoard}
                 />
               </div>
 

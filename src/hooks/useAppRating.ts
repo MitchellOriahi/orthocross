@@ -7,10 +7,8 @@ const STORAGE_KEY_PROMPTED = 'hasSeenRatingPrompt';
 const MIN_DAYS = 3;
 const MIN_OPENS = 3;
 
-// Fill in IOS_APP_STORE_URL after the app is published to the App Store
-const IOS_APP_STORE_URL = 'https://apps.apple.com/app/idYOUR_IOS_APP_ID';
-// TODO: Confirm the exact package name from Google Play Console and update this URL
-const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.orthocross.myapp';
+export const IOS_APP_STORE_URL = 'https://apps.apple.com/app/orthocross/id6753888924';
+export const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.orthocross.myapp';
 
 export const openAppStoreForRating = () => {
   const platform = Capacitor.getPlatform();

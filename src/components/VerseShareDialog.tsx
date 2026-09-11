@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Mail, MessageSquare, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { IOS_APP_STORE_URL } from "@/hooks/useAppRating";
 import orthodoxCrossWhite from "@/assets/orthodox-cross-white-new.png";
 import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
 import galileeSunset from "@/assets/verse-backgrounds/galilee-sunset.jpg";
@@ -411,7 +412,8 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
   }, [verseReference, verseText, styleId, seed]);
 
   const filename = `orthocross-verse-${verseReference.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
-  const shareText = `"${verseText}" — ${verseReference}\n\nShared from OrthoCross`;
+  // The image already carries the verse — the message only signs and links
+  const shareText = `Shared from OrthoCross ☦\n${IOS_APP_STORE_URL}`;
 
   const handleDownload = () => {
     if (!imageUrl) return;

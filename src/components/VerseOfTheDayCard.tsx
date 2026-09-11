@@ -10,11 +10,19 @@ interface DailyVerse {
   verse_text: string;
 }
 
+export const VERSE_ON_BOARD_KEY = "show_verse_on_board";
+
+export const isVerseOnBoardEnabled = () => {
+  try { return localStorage.getItem(VERSE_ON_BOARD_KEY) !== "0"; } catch { return true; }
+};
+
 export const VerseOfTheDayCard = () => {
   const [verse, setVerse] = useState<DailyVerse | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [enabled] = useState(isVerseOnBoardEnabled);
 
   useEffect(() => {
+    if (!enabled) return;
     // Types file predates the daily_verses migration, hence the cast
     (supabase.rpc as any)("get_verse_of_the_day").then(
       ({ data, error }: { data: DailyVerse[] | null; error: unknown }) => {
@@ -25,7 +33,9 @@ export const VerseOfTheDayCard = () => {
         if (data && data.length > 0) setVerse(data[0]);
       }
     );
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   if (!verse) {
     return (
