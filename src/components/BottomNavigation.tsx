@@ -1,15 +1,47 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Flame, Book, Church, ScrollText, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
-export const BottomNavigation = () => {
+interface BottomNavigationProps {
+  // Reading-style behavior: slide away on scroll down, return on scroll up
+  hideOnScroll?: boolean;
+}
+
+export const BottomNavigation = ({ hideOnScroll = false }: BottomNavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    if (!hideOnScroll) return;
+
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y < 80) {
+        setHidden(false);
+        lastY = y;
+        return;
+      }
+      const delta = y - lastY;
+      // Small movements accumulate until they cross the threshold
+      if (delta > 6) {
+        setHidden(true);
+        lastY = y;
+      } else if (delta < -6) {
+        setHidden(false);
+        lastY = y;
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [hideOnScroll]);
 
   const prefetchProfileData = async () => {
     if (!user) return;
@@ -291,50 +323,46 @@ export const BottomNavigation = () => {
     }
   ];
 
+  const prefetchFor = (path: string) => {
+    if (path === "/dashboard") prefetchDashboardData();
+    if (path === "/friends") {
+      prefetchFriendsData();
+      prefetchProfileData();
+    }
+    if (path === "/settings") prefetchProfileData();
+  };
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border z-50" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.25rem)' }}>
-      <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between py-2">
+    <nav
+      className={cn(
+        "fixed left-3 right-3 z-50 transition-all duration-300 ease-out motion-reduce:transition-none",
+        hidden ? "opacity-0 translate-y-8 pointer-events-none" : "opacity-100 translate-y-0"
+      )}
+      style={{ bottom: 'calc(env(safe-area-inset-bottom) + 0.625rem)' }}
+    >
+      <div className="mx-auto max-w-md rounded-[1.75rem] bg-card/90 backdrop-blur-xl border border-border/70 shadow-elevated px-2 py-1.5">
+        <div className="flex items-center justify-between gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
-            
+
             return (
-              <Button
+              <button
                 key={item.path}
-                variant="ghost"
                 onClick={() => navigate(item.path)}
-                onMouseEnter={() => {
-                  if (item.path === "/dashboard") {
-                    prefetchDashboardData();
-                  }
-                  if (item.path === "/friends") {
-                    prefetchFriendsData();
-                    prefetchProfileData();
-                  }
-                  if (item.path === "/settings") {
-                    prefetchProfileData();
-                  }
-                }}
-                onFocus={() => {
-                  if (item.path === "/dashboard") {
-                    prefetchDashboardData();
-                  }
-                  if (item.path === "/friends") {
-                    prefetchFriendsData();
-                    prefetchProfileData();
-                  }
-                  if (item.path === "/settings") {
-                    prefetchProfileData();
-                  }
-                }}
-                className={`flex flex-col items-center gap-1 h-auto py-2 px-3 ${
-                  isActive ? "text-primary" : "text-muted-foreground"
-                }`}
+                onMouseEnter={() => prefetchFor(item.path)}
+                onFocus={() => prefetchFor(item.path)}
+                className={cn(
+                  "flex flex-col items-center gap-0.5 flex-1 min-w-0 py-2 px-1 rounded-[1.25rem] transition-colors min-h-[52px]",
+                  isActive
+                    ? "bg-secondary text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                aria-current={isActive ? "page" : undefined}
               >
-                <Icon className={`h-6 w-6 ${isActive ? "fill-primary/20" : ""}`} />
-                <span className="text-xs">{item.label}</span>
-              </Button>
+                <Icon className={cn("h-[22px] w-[22px]", isActive && "fill-primary/20")} />
+                <span className={cn("text-[11px] leading-none", isActive && "font-semibold")}>{item.label}</span>
+              </button>
             );
           })}
         </div>

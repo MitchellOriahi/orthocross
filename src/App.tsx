@@ -58,8 +58,11 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div
+      // The visible state must carry NO transform: a transformed ancestor
+      // becomes the containing block for position:fixed children, which
+      // un-pins the bottom navigation from the viewport.
       className={`transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none ${
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1.5'
+        visible ? 'opacity-100' : 'opacity-0 translate-y-1.5'
       }`}
     >
       {children}

@@ -12,6 +12,7 @@ import { useMusic } from "@/contexts/MusicContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { ChapterSelector } from "@/components/ChapterSelector";
+import { BottomNavigation } from "@/components/BottomNavigation";
 import { TranslationSelector } from "@/components/TranslationSelector";
 import { bibleContent, BIBLE_BOOKS } from "@/data/bibleContent";
 import { 
@@ -679,7 +680,7 @@ const Reading = () => {
   };
 
   return (
-    <div className="min-h-screen gradient-peaceful safe-bottom">
+    <div className="min-h-screen gradient-peaceful pb-nav">
       {/* Header */}
       <header className="border-b border-border bg-card sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">
@@ -1091,6 +1092,8 @@ const Reading = () => {
           </Card>
         </div>
       </main>
+
+      <BottomNavigation hideOnScroll />
 
       {noteVerse && (
         <VerseNoteDialog
