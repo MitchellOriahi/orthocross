@@ -373,7 +373,7 @@ export default function Friends() {
 
       // Load donators
       const { data: donatorsData, error: donatorsError } = await supabase
-        .rpc('get_top_donators', { limit_count: 10 });
+        .rpc('get_top_donators', { limit_count: 1000 });
 
       // If the request fails, do NOT clear UI (prevents flicker)
       if (donatorsError) {
@@ -1245,24 +1245,11 @@ export default function Friends() {
                   <>
                     {/* Top 3 always visible */}
                     <div className="flex items-stretch gap-2">
-                      {topDonators.slice(0, 3).map((donator, index) => {
-                        const getRankColors = () => {
-                          if (index === 0) return "bg-rose-400/20 text-rose-400";
-                          if (index === 1) return "bg-rose-300/20 text-rose-300";
-                          return "bg-rose-200/20 text-rose-500";
-                        };
-
-                        return (
+                      {topDonators.slice(0, 3).map((donator) => (
                           <div
                             key={donator.user_id}
                             className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2 flex-1 min-w-0"
                           >
-                            <div
-                              className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${getRankColors()}`}
-                            >
-                              {index + 1}
-                            </div>
-
                             <Avatar className="h-7 w-7">
                               <AvatarImage src={donator.profile_picture_url || undefined} />
                               <AvatarFallback>{donator.username?.substring(0, 2).toUpperCase() || 'A'}</AvatarFallback>
@@ -1275,21 +1262,16 @@ export default function Friends() {
                               </div>
                             </div>
                           </div>
-                        );
-                      })}
+                      ))}
                     </div>
                     
                     {/* Expanded list for 4+ donators */}
                     <CollapsibleContent className="mt-3 space-y-2">
-                      {topDonators.slice(3).map((donator, index) => (
+                      {topDonators.slice(3).map((donator) => (
                         <div
                           key={donator.user_id}
                           className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2"
                         >
-                          <div className="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold bg-rose-100/20 text-rose-400">
-                            {index + 4}
-                          </div>
-
                           <Avatar className="h-7 w-7">
                             <AvatarImage src={donator.profile_picture_url || undefined} />
                             <AvatarFallback>{donator.username?.substring(0, 2).toUpperCase() || 'A'}</AvatarFallback>
