@@ -307,7 +307,7 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
-                <div className="space-y-1">
+                 <div className="space-y-1 pr-4">
                   <p className="font-medium">Fasting & Feast Notifications</p>
                   <p className="text-sm text-muted-foreground">
                     Receive reminders before every fast and feast day
@@ -320,7 +320,7 @@ const Settings = () => {
               </div>
               
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                <div className="space-y-1">
+                <div className="space-y-1 pr-4">
                   <p className="font-medium">Streak Notifications</p>
                   <p className="text-sm text-muted-foreground">
                     Receive reminders to read your Bible so you don't lose your streak
@@ -333,7 +333,7 @@ const Settings = () => {
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                <div className="space-y-1">
+                <div className="space-y-1 pr-4">
                   <p className="font-medium">Friends Notifications</p>
                   <p className="text-sm text-muted-foreground">
                     Get notified when friends complete books
@@ -346,7 +346,7 @@ const Settings = () => {
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                <div className="space-y-1">
+                <div className="space-y-1 pr-4">
                   <p className="font-medium">Show Streak to Friends</p>
                   <p className="text-sm text-muted-foreground">
                     Let your friends see your reading streak
@@ -359,7 +359,7 @@ const Settings = () => {
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                <div className="space-y-1">
+                <div className="space-y-1 pr-4">
                   <p className="font-medium">Share Activity with Friends</p>
                   <p className="text-sm text-muted-foreground">
                     Let your friends see your reading activities and achievements
