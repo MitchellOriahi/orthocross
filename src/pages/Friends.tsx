@@ -1203,7 +1203,7 @@ export default function Friends() {
           />
         </TabsContent>
 
-        <TabsContent value="leaderboard" className="mt-8 space-y-8">
+        <TabsContent value="leaderboard" className="mt-8">
           {/* Donators Section */}
           <Collapsible open={donatorsExpanded} onOpenChange={setDonatorsExpanded}>
             <Card>
@@ -1294,7 +1294,7 @@ export default function Friends() {
           </Collapsible>
 
           {/* Monthly Leaderboard Section */}
-          <Card>
+          <Card className="mt-4">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-[hsl(var(--podium-gold))]" />
