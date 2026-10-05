@@ -1,6 +1,7 @@
 import { Flame, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { getNextIslandId } from "./nextIsland";
 
 interface Island {
   id: string;
@@ -28,6 +29,7 @@ interface DuolingoPathProps {
 }
 
 export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPathProps) => {
+  const nextIslandId = getNextIslandId(campaign.islands, progress);
   const getIslandStatus = (index: number, island: Island) => {
     const isCompleted = progress.find(p => p.islandId === island.id)?.completed || false;
     const previousCompleted = index === 0 || progress.find(p => p.islandId === campaign.islands[index - 1].id)?.completed || false;
@@ -159,7 +161,7 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                 <Card 
                   className={`relative overflow-hidden transition-all duration-300 hover:scale-105 cursor-pointer ${
                     status.isCompleted ? 'border-primary shadow-xl' : ''
-                  } ${!status.isUnlocked ? 'opacity-60' : ''}`}
+                  } ${!status.isUnlocked ? 'opacity-60' : ''} ${island.id === nextIslandId ? 'journey-next-island' : ''}`}
                   onClick={() => status.isUnlocked && onIslandSelect(island.id)}
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${themeColors} opacity-30`} />
