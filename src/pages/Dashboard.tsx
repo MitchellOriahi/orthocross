@@ -9,6 +9,7 @@ import { DonateButton } from "@/components/DonateButton";
 import { DonationPromptDialog } from "@/components/DonationPromptDialog";
 import { DonationThankYouDialog } from "@/components/DonationThankYouDialog";
 import { Journal } from "@/components/Journal";
+import { VerseOfTheDayCard } from "@/components/VerseOfTheDayCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
 import { StreakMilestoneShare } from "@/components/StreakMilestoneShare";
@@ -470,6 +471,8 @@ const Dashboard = () => {
           ) : null}
         </section>
 
+        <VerseOfTheDayCard />
+
         {/* Journal */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold">Journal</h2>
@@ -478,7 +481,7 @@ const Dashboard = () => {
 
         {/* Additional Sections */}
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Fasting Calendar (verse of the day now arrives as a push notification) */}
+          {/* Fasting Calendar */}
           <FastingCalendar />
         </div>
       </main>
