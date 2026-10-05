@@ -44,21 +44,31 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
           Select Book
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-md">
+      <SheetContent side="right" className="w-full sm:max-w-md [&>button.absolute]:hidden">
         <SheetHeader>
-          <SheetTitle>
-            {selectedBook ? (
-              <button 
-                onClick={handleBackToBooks}
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ChevronRight className="w-4 h-4 rotate-180" />
-                {selectedBook.bookName}
-              </button>
-            ) : (
-              "Choose a Book"
-            )}
-          </SheetTitle>
+          <div className="flex items-center justify-between">
+            <SheetTitle>
+              {selectedBook ? (
+                <button
+                  onClick={handleBackToBooks}
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4 rotate-180" />
+                  {selectedBook.bookName}
+                </button>
+              ) : (
+                "Choose a Book"
+              )}
+            </SheetTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setOpen(false)}
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
         </SheetHeader>
         
         <ScrollArea className="h-[calc(100vh-120px)] mt-6 -mr-6">
