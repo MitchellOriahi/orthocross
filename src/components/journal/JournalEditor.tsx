@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetClose, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Highlighter, Pencil, Image as ImageIcon, Mic, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -59,7 +58,6 @@ export const JournalEditor = ({
   const [showDrawing, setShowDrawing] = useState(false);
   const [showAttachments, setShowAttachments] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
-  const [mediaToDelete, setMediaToDelete] = useState<HTMLElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [editingDrawingUrl, setEditingDrawingUrl] = useState<string | null>(null);
   const [editingDrawingElement, setEditingDrawingElement] = useState<HTMLElement | null>(null);
@@ -103,38 +101,28 @@ export const JournalEditor = ({
     }, 0);
   };
 
-  const applyHighlight = (color: typeof HIGHLIGHT_COLORS[number]) => {
-    if (!contentDivRef.current) return false;
-
+  const handleHighlight = () => {
+    if (!contentDivRef.current) return;
+    
     const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return false;
+    if (!selection || selection.rangeCount === 0) {
+      setShowHighlighter(!showHighlighter);
+      return;
+    }
 
     const range = selection.getRangeAt(0);
-    if (range.collapsed || !contentDivRef.current.contains(range.commonAncestorContainer)) {
-      return false;
+    if (range.collapsed) {
+      setShowHighlighter(!showHighlighter);
+      return;
     }
 
     const mark = document.createElement('mark');
-    mark.className = color.class;
-    try {
-      range.surroundContents(mark);
-    } catch {
-      // Selection crosses element boundaries (e.g. multiple paragraphs) —
-      // surroundContents throws, so extract and rewrap instead
-      mark.appendChild(range.extractContents());
-      range.insertNode(mark);
-    }
-
-    onContentChange(DOMPurify.sanitize(contentDivRef.current.innerHTML, SANITIZE_CONFIG));
+    mark.className = selectedColor.class;
+    range.surroundContents(mark);
+    
+    onContentChange(contentDivRef.current.innerHTML);
     setShowHighlighter(false);
     selection.removeAllRanges();
-    return true;
-  };
-
-  const handleHighlight = () => {
-    if (!applyHighlight(selectedColor)) {
-      setShowHighlighter(!showHighlighter);
-    }
   };
 
   const insertIntoContent = (html: string) => {
@@ -158,13 +146,9 @@ export const JournalEditor = ({
   };
 
   const handleDeleteMedia = (element: HTMLElement) => {
-    setMediaToDelete(element);
-  };
-
-  const confirmDeleteMedia = () => {
-    if (!mediaToDelete) return;
-    mediaToDelete.remove();
-    setMediaToDelete(null);
+    if (!confirm("Are you sure you want to delete this item?")) return;
+    
+    element.remove();
     if (contentDivRef.current) {
       onContentChange(contentDivRef.current.innerHTML);
       toast.success("Item deleted", { duration: 2000 });
@@ -501,19 +485,15 @@ export const JournalEditor = ({
                 {HIGHLIGHT_COLORS.map((color) => (
                   <button
                     key={color.name}
-                    onPointerDown={(e) => e.preventDefault()}
                     onClick={() => {
                       setSelectedColor(color);
-                      if (!applyHighlight(color)) {
-                        setShowHighlighter(false);
-                      }
+                      setShowHighlighter(false);
                     }}
                     className={cn(
                       "w-8 h-8 rounded border border-border",
                       color.class
                     )}
                     title={color.name}
-                    aria-label={`Highlight ${color.name}`}
                   />
                 ))}
               </div>
@@ -526,7 +506,7 @@ export const JournalEditor = ({
               onInput={handleContentInput}
               dir="ltr"
               className="resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none text-base"
-              style={{ minHeight: 'calc(100dvh - 400px)' }}
+              style={{ minHeight: 'calc(100vh - 400px)' }}
               data-placeholder="Start writing..."
             />
           </div>
@@ -543,7 +523,6 @@ export const JournalEditor = ({
           <Button
             variant="ghost"
             size="icon"
-            onPointerDown={(e) => e.preventDefault()}
             onClick={handleHighlight}
             className="h-10 w-10"
           >
@@ -576,26 +555,6 @@ export const JournalEditor = ({
         </div>
       </div>
 
-      <AlertDialog open={!!mediaToDelete} onOpenChange={(open) => !open && setMediaToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete this item?</AlertDialogTitle>
-            <AlertDialogDescription>
-              The attachment will be removed from this note.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={confirmDeleteMedia}
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       {/* Full-screen Drawing Interface */}
       <Sheet open={showDrawing} onOpenChange={(open) => {
         setShowDrawing(open);
@@ -604,7 +563,7 @@ export const JournalEditor = ({
           setEditingDrawingElement(null);
         }
       }}>
-        <SheetContent side="bottom" className="h-[90dvh] w-screen p-0 max-w-none">
+        <SheetContent side="bottom" className="h-[90vh] w-screen p-0 max-w-none">
           <SheetTitle className="sr-only">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</SheetTitle>
           <div className="h-full p-4 safe-top">
             <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
@@ -614,50 +573,39 @@ export const JournalEditor = ({
 
       {/* Image/Video Upload Sheet */}
       <Sheet open={showAttachments} onOpenChange={setShowAttachments}>
-        <SheetContent side="bottom" hideClose className="w-screen p-0 max-w-none rounded-t-xl" onInteractOutside={(e) => e.preventDefault()}>
-          <div className="flex flex-col pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-            <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-              <SheetTitle className="text-lg font-semibold">Insert Media</SheetTitle>
-              <SheetClose className="p-2 -m-2 rounded-sm opacity-70 hover:opacity-100">
-                <X className="h-5 w-5" />
-                <span className="sr-only">Close</span>
-              </SheetClose>
-            </div>
-            <div className="flex items-center justify-center p-8">
-              <input
-                type="file"
-                id="media-upload"
-                accept="image/*,video/*"
-                multiple
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-              <label htmlFor="media-upload">
-                <Button variant="default" size="lg" asChild>
-                  <span className="cursor-pointer">
-                    <ImageIcon className="h-5 w-5 mr-2" />
-                    Choose Images/Videos
-                  </span>
-                </Button>
-              </label>
-            </div>
+        <SheetContent side="bottom" className="h-[30vh] w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
+          <SheetTitle className="sr-only">Insert Media</SheetTitle>
+          <div className="h-full flex flex-col items-center justify-center p-4">
+            <input
+              type="file"
+              id="media-upload"
+              accept="image/*,video/*"
+              multiple
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+            <label htmlFor="media-upload">
+              <Button variant="default" size="lg" asChild>
+                <span className="cursor-pointer">
+                  <ImageIcon className="h-5 w-5 mr-2" />
+                  Choose Images/Videos
+                </span>
+              </Button>
+            </label>
           </div>
         </SheetContent>
       </Sheet>
 
       {/* Voice Recorder Sheet */}
       <Sheet open={showVoiceRecorder} onOpenChange={setShowVoiceRecorder}>
-        <SheetContent side="bottom" hideClose className="w-screen p-0 max-w-none rounded-t-xl" onInteractOutside={(e) => e.preventDefault()}>
-          <div className="flex flex-col pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-            <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-              <SheetTitle className="text-lg font-semibold">Voice Recording</SheetTitle>
-              <SheetClose className="p-2 -m-2 rounded-sm opacity-70 hover:opacity-100">
-                <X className="h-5 w-5" />
-                <span className="sr-only">Close</span>
-              </SheetClose>
+        <SheetContent side="bottom" className="h-[40vh] w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
+          <SheetTitle className="sr-only">Voice Recorder</SheetTitle>
+          <div className="h-full flex flex-col">
+            <div className="p-3 border-b border-border">
+              <h3 className="text-lg font-semibold">Voice Recording</h3>
             </div>
-            <div className="flex items-center justify-center p-8">
-              <VoiceRecorder
+            <div className="flex-1 p-4 flex items-center justify-center">
+              <VoiceRecorder 
                 onRecordingComplete={handleVoiceRecording}
                 onRecordingFinished={() => setShowVoiceRecorder(false)}
               />

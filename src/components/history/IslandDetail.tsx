@@ -11,9 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMusic } from "@/contexts/MusicContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
-import { PaginatedReading, type SlideImage } from "./PaginatedReading";
-import { SLIDE_IMAGES } from "@/data/slideImages";
-import { hapticSuccess, hapticWarning } from "@/utils/haptics";
+import { PaginatedReading } from "./PaginatedReading";
 import { HistoryHighlightIntro } from "./HistoryHighlightIntro";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import completionCross from "@/assets/completion-cross-cut.png";
@@ -96,7 +94,6 @@ interface Island {
   quiz: Quiz[];
   awardPiece: string;
   iconUrl?: string;
-  slideImages?: Record<number, SlideImage>;
 }
 
 interface IslandDetailProps {
@@ -114,7 +111,6 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const [answers, setAnswers] = useState<number[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const [shuffledOptions, setShuffledOptions] = useState<{text: string, originalIndex: number}[][]>([]);
-  const [answerFeedback, setAnswerFeedback] = useState<'correct' | 'wrong' | null>(null);
 
   const { toast, dismiss } = useToast();
 
@@ -229,27 +225,20 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
       setAnswers(newAnswers);
 
       if (currentQuestion < island.quiz.length - 1) {
-        // Not the last question - glow, then advance
-        hapticSuccess();
-        setAnswerFeedback('correct');
+        // Not the last question - show toast and continue
         toast({
           title: "Correct! ✓",
           description: "Great job!",
           duration: 1500,
         });
-        setTimeout(() => {
-          setAnswerFeedback(null);
-          setCurrentQuestion(q => q + 1);
-          setSelectedAnswer('');
-        }, 450);
+        setCurrentQuestion(currentQuestion + 1);
+        setSelectedAnswer('');
       } else {
         // Last question - skip toast and go straight to completion
         const correctCount = newAnswers.filter((ans, idx) => ans === island.quiz[idx].correctAnswer).length;
         const score = (correctCount / island.quiz.length) * 100;
         
         // Paint the completion screen first, then do the slow work
-        hapticSuccess();
-        try { sessionStorage.setItem('quest_just_completed', island.id); } catch {}
         setShowCompletionModal(true);
         requestAnimationFrame(() => {
           setTimeout(() => {
@@ -259,14 +248,11 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
         });
       }
     } else {
-      hapticWarning();
-      setAnswerFeedback('wrong');
       toast({
         title: "Incorrect",
         description: "Try again!",
         variant: "destructive"
       });
-      setTimeout(() => setAnswerFeedback(null), 400);
       // Don't proceed to next question - user must get it right
       setSelectedAnswer('');
     }
@@ -320,13 +306,12 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
                   iconUrl={island.iconUrl}
                   campaignId={campaignId}
                   islandId={island.id}
-                  slideImages={island.slideImages ?? SLIDE_IMAGES[island.id]}
                 />
               </>
             )}
 
             {stage === 'quiz' && (
-              <div className="space-y-6 animate-rise-in">
+              <div className="space-y-6">
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Question {currentQuestion + 1} of {island.quiz.length}</span>
@@ -335,7 +320,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
                   <Progress value={progress} />
                 </div>
 
-                <Card className={`p-8 ${answerFeedback === 'wrong' ? 'animate-gentle-shake' : ''} ${answerFeedback === 'correct' ? 'animate-correct-glow' : ''}`}>
+                <Card className="p-8">
                   <h3 className="text-xl font-bold mb-6">{island.quiz[currentQuestion].question}</h3>
                   
                   <RadioGroup value={selectedAnswer} onValueChange={handleAnswerSelect}>
@@ -376,7 +361,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
 
       <Dialog open={showCompletionModal}>
         <DialogContent 
-          className="sm:max-w-md [&>button]:hidden"
+          className="sm:max-w-md [&>button]:hidden !duration-0 !animate-none"
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
         >

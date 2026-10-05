@@ -399,17 +399,14 @@ const Index = () => {
                 {showTutorial && <BibleProgressTutorial onComplete={handleTutorialComplete} />}
 
                 {/* OLD TESTAMENT */}
-                <section>
-                  <div className="flex items-center gap-3 mb-4 mt-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-600 dark:bg-amber-500 flex-shrink-0" />
-                    <h3 className="text-2xl font-bold whitespace-nowrap">Old Testament</h3>
-                    <div className="flex-1 h-px bg-gradient-to-r from-amber-600/50 to-transparent" />
-                  </div>
-                  <Accordion type="multiple" className="space-y-2">
+                <Card className="border-orange-500/30 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20">
+                  <CardContent className="p-6">
+                    <h3 className="text-2xl font-bold mb-4 text-orange-700 dark:text-orange-400">Old Testament</h3>
+                    <Accordion type="multiple" className="space-y-2">
                       {Object.entries(oldTestament).map(([category, books]) => {
                         const sectionProgress = calculateSectionProgress(books);
                         return (
-                          <AccordionItem key={category} value={category} className="border rounded-lg bg-card">
+                          <AccordionItem key={category} value={category} className="border rounded-lg bg-background/50">
                             <AccordionTrigger className="px-4 hover:no-underline group">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
@@ -417,7 +414,7 @@ const Index = () => {
                                   <div className="text-xs text-muted-foreground">({books.length} books)</div>
                                 </div>
                                 <div className="group-data-[state=open]:hidden">
-                                  <Progress value={sectionProgress} className="h-1.5 [&>div]:bg-amber-600 dark:[&>div]:bg-amber-500" />
+                                  <Progress value={sectionProgress} className="h-1.5" />
                                 </div>
                               </div>
                             </AccordionTrigger>
@@ -451,20 +448,18 @@ const Index = () => {
                         );
                       })}
                     </Accordion>
-                </section>
+                  </CardContent>
+                </Card>
 
                 {/* NEW TESTAMENT */}
-                <section>
-                  <div className="flex items-center gap-3 mb-4 mt-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-500 flex-shrink-0" />
-                    <h3 className="text-2xl font-bold whitespace-nowrap">New Testament</h3>
-                    <div className="flex-1 h-px bg-gradient-to-r from-blue-600/50 to-transparent" />
-                  </div>
-                  <Accordion type="multiple" className="space-y-2">
+                <Card className="border-blue-500/30 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20">
+                  <CardContent className="p-6">
+                    <h3 className="text-2xl font-bold mb-4 text-blue-700 dark:text-blue-400">New Testament</h3>
+                    <Accordion type="multiple" className="space-y-2">
                       {Object.entries(newTestament).map(([category, books]) => {
                         const sectionProgress = calculateSectionProgress(books);
                         return (
-                          <AccordionItem key={category} value={category} className="border rounded-lg bg-card">
+                          <AccordionItem key={category} value={category} className="border rounded-lg bg-background/50">
                             <AccordionTrigger className="px-4 hover:no-underline group">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
@@ -472,7 +467,7 @@ const Index = () => {
                                   <div className="text-xs text-muted-foreground">({books.length} books)</div>
                                 </div>
                                 <div className="group-data-[state=open]:hidden">
-                                  <Progress value={sectionProgress} className="h-1.5 [&>div]:bg-blue-600 dark:[&>div]:bg-blue-500" />
+                                  <Progress value={sectionProgress} className="h-1.5" />
                                 </div>
                               </div>
                             </AccordionTrigger>
@@ -506,16 +501,14 @@ const Index = () => {
                         );
                       })}
                     </Accordion>
-                </section>
+                  </CardContent>
+                </Card>
 
                 {/* ADDITIONAL READINGS */}
-                <section>
-                  <div className="flex items-center gap-3 mb-4 mt-2">
-                    <span className="w-2 h-2 rounded-full bg-purple-600 dark:bg-purple-500 flex-shrink-0" />
-                    <h3 className="text-2xl font-bold whitespace-nowrap">Additional Readings</h3>
-                    <div className="flex-1 h-px bg-gradient-to-r from-purple-600/50 to-transparent" />
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <Card className="border-purple-500/30 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/20 dark:to-purple-900/20">
+                  <CardContent className="p-6">
+                    <h3 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">Orthodox Additional Readings</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                       {additional.map((book) => (
                         <button
                           key={book.title}
@@ -539,7 +532,8 @@ const Index = () => {
                         </button>
                       ))}
                     </div>
-                </section>
+                  </CardContent>
+                </Card>
               </div>
             </>
           )}

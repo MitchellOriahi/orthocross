@@ -12,7 +12,6 @@ import { useMusic } from "@/contexts/MusicContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { ChapterSelector } from "@/components/ChapterSelector";
-import { BottomNavigation } from "@/components/BottomNavigation";
 import { TranslationSelector } from "@/components/TranslationSelector";
 import { bibleContent, BIBLE_BOOKS } from "@/data/bibleContent";
 import { 
@@ -22,7 +21,6 @@ import {
 import { useTheme } from "next-themes";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
-import { hapticSuccess } from "@/utils/haptics";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { VerseNoteDialog } from "@/components/VerseNoteDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -37,9 +35,6 @@ interface VerseBookmark {
   id: string;
   verse_number: number;
 }
-
-const ADDITIONAL_BOOKS = ['1 Enoch', 'Jubilees', '1 Meqabyan', '2 Meqabyan', '3 Meqabyan'];
-const MEQABYAN_BOOKS = ['1 Meqabyan', '2 Meqabyan', '3 Meqabyan'];
 
 const HIGHLIGHT_COLORS = [
   { name: 'Yellow', value: 'yellow', bg: 'bg-yellow-200/30 dark:bg-yellow-400/20' },
@@ -145,11 +140,10 @@ const Reading = () => {
       const translationId = currentTranslation.id;
       const cacheKey = `cached_verses_${book}_${chapter}_${translationId}`;
 
-      // Use cached verses for instant display; only show loader if no cache.
-      // localStorage (not session) so previously read chapters open offline.
+      // Use cached verses for instant display; only show loader if no cache
       let hasCache = false;
       try {
-        const cached = localStorage.getItem(cacheKey) ?? sessionStorage.getItem(cacheKey);
+        const cached = sessionStorage.getItem(cacheKey);
         if (cached) {
           const parsed = JSON.parse(cached);
           if (Array.isArray(parsed) && parsed.length > 0) {
@@ -164,7 +158,7 @@ const Reading = () => {
       }
 
       const cacheVerses = (v: Array<{number: number; text: string}>) => {
-        try { localStorage.setItem(cacheKey, JSON.stringify(v)); } catch {}
+        try { sessionStorage.setItem(cacheKey, JSON.stringify(v)); } catch {}
       };
 
       try {
@@ -186,28 +180,6 @@ const Reading = () => {
           cacheVerses(formattedVerses);
           setLoadingVerses(false);
           return;
-        }
-
-        // Additional Readings exist in only one imported translation, so serve
-        // whatever translation the database has rather than nothing
-        if (ADDITIONAL_BOOKS.includes(book)) {
-          const { data: anyTranslation } = await supabase
-            .from('bible_verses')
-            .select('verse_number, verse_text')
-            .eq('book', book)
-            .eq('chapter', chapter)
-            .order('verse_number');
-
-          if (anyTranslation && anyTranslation.length > 0) {
-            const formattedVerses = anyTranslation.map(v => ({
-              number: v.verse_number,
-              text: v.verse_text
-            }));
-            setVerses(formattedVerses);
-            cacheVerses(formattedVerses);
-            setLoadingVerses(false);
-            return;
-          }
         }
 
         // If not in database, check hardcoded content (only for OSB/default translation)
@@ -492,8 +464,7 @@ const Reading = () => {
 
   const markChapterComplete = async () => {
     if (!user) return;
-
-    hapticSuccess();
+    
     await saveProgress(100);
     
     // Save to completed_chapters table
@@ -680,9 +651,9 @@ const Reading = () => {
   };
 
   return (
-    <div className="min-h-screen gradient-peaceful pb-nav">
+    <div className="min-h-screen gradient-peaceful">
       {/* Header */}
-      <header className="border-b border-border bg-card sticky top-0 z-50 shadow-sm safe-top">
+      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -874,21 +845,8 @@ const Reading = () => {
                   ) : (
                     <div className="text-center py-12 text-muted-foreground">
                       <BookMarked className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      {MEQABYAN_BOOKS.includes(book) ? (
-                        <>
-                          <p>No English translation yet</p>
-                          <p className="text-sm mt-2 max-w-sm mx-auto">
-                            A faithful English translation of {bookName} from the Ethiopic
-                            original is still being sought. We won't publish an unreliable
-                            text — thank you for your patience.
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <p>Chapter content not yet available</p>
-                          <p className="text-sm mt-2">This chapter will be added soon</p>
-                        </>
-                      )}
+                      <p>Chapter content not yet available</p>
+                      <p className="text-sm mt-2">This chapter will be added soon</p>
                     </div>
                   )}
                 </div>
@@ -1002,21 +960,8 @@ const Reading = () => {
                   ) : (
                     <div className="text-center py-12 text-muted-foreground">
                       <BookMarked className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      {MEQABYAN_BOOKS.includes(book) ? (
-                        <>
-                          <p>No English translation yet</p>
-                          <p className="text-sm mt-2 max-w-sm mx-auto">
-                            A faithful English translation of {bookName} from the Ethiopic
-                            original is still being sought. We won't publish an unreliable
-                            text — thank you for your patience.
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <p>Chapter content not yet available</p>
-                          <p className="text-sm mt-2">This chapter will be added soon</p>
-                        </>
-                      )}
+                      <p>Chapter content not yet available</p>
+                      <p className="text-sm mt-2">This chapter will be added soon</p>
                     </div>
                   )}
                 </div>
@@ -1092,8 +1037,6 @@ const Reading = () => {
           </Card>
         </div>
       </main>
-
-      <BottomNavigation hideOnScroll />
 
       {noteVerse && (
         <VerseNoteDialog
