@@ -374,7 +374,6 @@ export const Journal = () => {
   const handleClose = () => {
     discardUntouchedDraft();
     setIsFullScreen(false);
-    setSelectedNoteId(null);
     setShowSidebar(false);
     setShowNotesList(true);
   };
