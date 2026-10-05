@@ -410,7 +410,7 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-sm text-muted-foreground mb-4">
-                Help others build their spiritual practice by sharing OrthoCross
+                Help others build their spiritual practice by sharing OrthoCross:
               </p>
               <div className="grid grid-cols-1 gap-2">
                 {navigator.share && (
