@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Menu, Play, Pause, Volume2, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
 
 // Extended types that match the actual database schema
 interface JournalNote {
@@ -53,7 +54,7 @@ export const Journal = () => {
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
   const [viewMode, setViewMode] = useState<'list' | 'gallery'>('list');
-  const [isNewUnmodifiedNote, setIsNewUnmodifiedNote] = useState(false);
+  const draftRef = useRef<{ id: string; userId: string; modified: boolean } | null>(null);
   const [playingMediaId, setPlayingMediaId] = useState<string | null>(null);
 
   // Load view preference
@@ -75,52 +76,45 @@ export const Journal = () => {
     loadViewPreference();
   }, [user]);
 
-  // Clear new note flag when user makes any meaningful edits (not just title change)
-  useEffect(() => {
-    if (isNewUnmodifiedNote && selectedNoteId) {
-      const note = notes.find(n => n.id === selectedNoteId);
-      const hasContent = currentContent && currentContent.trim() !== "";
-      const hasAttachments = note?.attachments && Array.isArray(note.attachments) && (note.attachments as any[]).length > 0;
-      const hasPinnedMedia = note?.pinned_media_url;
-      
-      // Only clear the flag if actual content/media was added
-      if (hasContent || hasAttachments || hasPinnedMedia) {
-        setIsNewUnmodifiedNote(false);
-      }
-    }
-  }, [currentContent, isNewUnmodifiedNote, selectedNoteId, notes]);
+  const discardUntouchedDraft = () => {
+    const draft = draftRef.current;
+    const note = notes.find(n => n.id === draft?.id);
+    if (!draft || !shouldDiscardDraft(true, draft.modified, {
+      ...note, title: currentTitle, content: currentContent,
+    })) return;
 
-  // Delete unmodified notes when closing the sheet
-  useEffect(() => {
-    const deleteUnmodifiedNote = async () => {
-      if (!isFullScreen && isNewUnmodifiedNote && selectedNoteId) {
-        // Fetch fresh note data from database to avoid stale state issues
-        const { data: note } = await (supabase as any)
-          .from('journal_entries')
-          .select('*')
-          .eq('id', selectedNoteId)
-          .single();
-        
-        if (!note) return;
-        
-        // Check if note has any actual content or media (title changes don't count)
-        const hasContent = note.content && note.content.trim() !== "";
-        const hasAttachments = note.attachments && Array.isArray(note.attachments) && note.attachments.length > 0;
-        const hasPinnedMedia = note.pinned_media_url;
-        
-        const isEmpty = !hasContent && !hasAttachments && !hasPinnedMedia;
-        
-        if (isEmpty) {
-          await (supabase as any).from('journal_entries').delete().eq('id', selectedNoteId);
-          setNotes(prevNotes => prevNotes.filter(n => n.id !== selectedNoteId));
-          setSelectedNoteId(null);
-          setIsNewUnmodifiedNote(false);
+    draftRef.current = null;
+    setNotes(prev => prev.filter(n => n.id !== draft.id));
+    if (selectedNoteId === draft.id) setSelectedNoteId(null);
+    void (supabase as any).from('journal_entries').delete()
+      .eq('id', draft.id).eq('user_id', draft.userId)
+      .then(({ error }: { error: unknown }) => {
+        if (error) {
+          if (note) setNotes(prev => prev.some(n => n.id === note.id) ? prev : [note, ...prev]);
+          toast({ title: "Could not remove empty note", variant: "destructive" });
         }
-      }
-    };
+      });
+  };
 
-    deleteUnmodifiedNote();
-  }, [isFullScreen, isNewUnmodifiedNote, selectedNoteId]);
+  // A route change also leaves the editor; only this session's untouched draft is eligible.
+  useEffect(() => () => {
+    const draft = draftRef.current;
+    if (draft && !draft.modified) {
+      draftRef.current = null;
+      void (supabase as any).from('journal_entries').delete()
+        .eq('id', draft.id).eq('user_id', draft.userId);
+    }
+  }, []);
+
+  const handleTitleChange = (value: string) => {
+    if (draftRef.current && hasNoteAdditions({ title: value })) draftRef.current.modified = true;
+    setCurrentTitle(value);
+  };
+
+  const handleContentChange = (value: string) => {
+    if (draftRef.current && hasNoteAdditions({ content: value })) draftRef.current.modified = true;
+    setCurrentContent(value);
+  };
 
   // Load folders and notes
   useEffect(() => {
@@ -164,20 +158,13 @@ export const Journal = () => {
       setCurrentTitle(note.title || "");
       setCurrentContent(note.content || "");
       
-      // If note already has content or media, clear the new/unmodified flag
-      const hasContent = note.content && note.content.trim() !== "";
-      const hasAttachments = note.attachments && Array.isArray(note.attachments) && (note.attachments as any[]).length > 0;
-      const hasPinnedMedia = note.pinned_media_url;
-      
-      if (hasContent || hasAttachments || hasPinnedMedia) {
-        setIsNewUnmodifiedNote(false);
-      }
+
     }
   }, [selectedNoteId, notes]);
 
   // Auto-save with debounce
   useEffect(() => {
-    if (!user || !selectedNoteId) return;
+    if (!user || !selectedNoteId || draftRef.current?.modified === false) return;
 
     const timeoutId = setTimeout(async () => {
       setIsSaving(true);
@@ -211,6 +198,7 @@ export const Journal = () => {
 
   const handleNoteCreate = async () => {
     if (!user) return;
+    discardUntouchedDraft();
     
     const { data, error } = await (supabase as any)
       .from('journal_entries')
@@ -229,10 +217,13 @@ export const Journal = () => {
     }
     
     if (data) {
-      setNotes([data, ...notes]);
+      setNotes(prev => [data, ...prev]);
+      setCurrentTitle("");
+      setCurrentContent("");
+      draftRef.current = { id: data.id, userId: user.id, modified: false };
       setSelectedNoteId(data.id);
       setIsFullScreen(true);
-      setIsNewUnmodifiedNote(true);
+
       if (isMobile) {
         setShowNotesList(false);
       }
@@ -240,22 +231,8 @@ export const Journal = () => {
   };
 
   const handleNoteSelect = async (noteId: string) => {
-    // Check if we need to delete the current unmodified note before switching
-    if (isNewUnmodifiedNote && selectedNoteId && selectedNoteId !== noteId) {
-      const note = notes.find(n => n.id === selectedNoteId);
-      
-      // Check if note has any actual content or media (title changes don't count)
-      const hasContent = note?.content && note.content.trim() !== "";
-      const hasAttachments = note?.attachments && Array.isArray(note.attachments) && (note.attachments as any[]).length > 0;
-      const hasPinnedMedia = note?.pinned_media_url;
-      const isEmpty = !hasContent && !hasAttachments && !hasPinnedMedia;
-      
-      if (note && isEmpty) {
-        await (supabase as any).from('journal_entries').delete().eq('id', selectedNoteId);
-        setNotes(notes.filter(n => n.id !== selectedNoteId));
-      }
-    }
-    
+    if (selectedNoteId !== noteId) discardUntouchedDraft();
+
     // Synchronously prime the editor with the selected note's content so it
     // renders correctly on the first click (the editor only syncs innerHTML
     // when noteId changes, so content must be ready by then).
@@ -279,7 +256,7 @@ export const Journal = () => {
 
     setSelectedNoteId(noteId);
     setIsFullScreen(true);
-    setIsNewUnmodifiedNote(false);
+
     if (isMobile) {
       setShowNotesList(false);
     }
@@ -395,8 +372,8 @@ export const Journal = () => {
   });
 
   const handleClose = () => {
+    discardUntouchedDraft();
     setIsFullScreen(false);
-    setSelectedNoteId(null);
     setShowSidebar(false);
     setShowNotesList(true);
   };
@@ -578,7 +555,7 @@ export const Journal = () => {
         </div>
       </Card>
 
-      <Sheet open={isFullScreen} onOpenChange={setIsFullScreen}>
+      <Sheet open={isFullScreen} onOpenChange={(open) => open ? setIsFullScreen(true) : handleClose()}>
         <SheetContent side="bottom" className="inset-0 h-[100dvh] w-screen p-0 max-w-none [&>button.absolute]:hidden">
           <SheetTitle className="sr-only">Journal Editor</SheetTitle>
           <div className="h-full flex flex-col">
@@ -587,7 +564,7 @@ export const Journal = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setShowNotesList(true)}
+                  onClick={() => { discardUntouchedDraft(); setShowNotesList(true); }}
                   className="mr-2"
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -607,7 +584,7 @@ export const Journal = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setIsFullScreen(false)}
+                onClick={handleClose}
                 aria-label="Close"
               >
                 <X className="h-5 w-5" />
@@ -672,8 +649,8 @@ export const Journal = () => {
                     <JournalEditor
                       title={currentTitle}
                       content={currentContent}
-                      onTitleChange={setCurrentTitle}
-                      onContentChange={setCurrentContent}
+                      onTitleChange={handleTitleChange}
+                      onContentChange={handleContentChange}
                       isSaving={isSaving}
                       noteId={selectedNoteId}
                     />
