@@ -30,6 +30,7 @@ import { useGroupsData } from "@/hooks/useGroupsData";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Friend } from "@/hooks/useFriendsData";
 import { GroupsList } from "@/components/groups/GroupsList";
+import { LeaderboardPodium } from "@/components/LeaderboardPodium";
 
 interface PodiumEntry {
   id: string;
@@ -1296,7 +1297,7 @@ export default function Friends() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-amber-500" />
+                <Trophy className="h-5 w-5 text-[hsl(var(--podium-gold))]" />
                 Monthly Leaderboard
               </CardTitle>
               <CardDescription>
@@ -1310,7 +1311,9 @@ export default function Friends() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {leaderboard.map((entry, index) => {
+                  <LeaderboardPodium entries={leaderboard.slice(0, 3)} />
+                  {leaderboard.slice(3).map((entry, remainingIndex) => {
+                    const index = remainingIndex + 3;
                     const getCardBackground = () => {
                       if (index === 0) return "bg-amber-400/10";
                       if (index === 1) return "bg-slate-300/10";
