@@ -61,9 +61,9 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
           </SheetTitle>
         </SheetHeader>
         
-        <ScrollArea className="h-[calc(100vh-120px)] mt-6">
+        <ScrollArea className="h-[calc(100vh-120px)] mt-6 -mr-6">
           {!selectedBook ? (
-            <div className="space-y-2 pr-4">
+            <div className="space-y-2 pr-6">
 
               {books.map((book) => (
                 <button
@@ -86,7 +86,7 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-5 gap-2 pr-4">
+            <div className="grid grid-cols-5 gap-2 pr-6">
 
               {Array.from({ length: selectedBook.totalChapters }, (_, i) => i + 1).map((chapter) => (
                 <Button
