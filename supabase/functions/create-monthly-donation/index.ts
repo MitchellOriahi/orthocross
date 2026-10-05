@@ -66,7 +66,7 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/dashboard?donation=monthly_success`,
+      success_url: `${req.headers.get("origin")}/dashboard?donation=monthly_success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/dashboard?donation=cancelled`,
       metadata: {
         user_id: user?.id || "anonymous",

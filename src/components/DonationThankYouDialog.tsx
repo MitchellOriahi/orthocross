@@ -6,76 +6,51 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
+export const DONATION_COMPLETED_EVENT = "orthocross:donation-completed";
+
 export const DonationThankYouDialog = () => {
   const [showThankYou, setShowThankYou] = useState(false);
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Native (in-app purchase) donations announce themselves via a window event
+  useEffect(() => {
+    const onDone = () => setShowThankYou(true);
+    window.addEventListener(DONATION_COMPLETED_EVENT, onDone);
+    return () => window.removeEventListener(DONATION_COMPLETED_EVENT, onDone);
+  }, []);
+
+  // Web (Stripe) donations return with ?donation=...&session_id=...
   useEffect(() => {
     if (!user) return;
-
     const donationResult = searchParams.get("donation");
-    
-    if (donationResult === "success" || donationResult === "monthly_success") {
-      const isMonthly = donationResult === "monthly_success";
-      
-      // Check if we've already shown thank you for this donation
-      const lastThankYou = localStorage.getItem(`donation_thank_you_${user.id}`);
-      
-      if (lastThankYou) {
-        const lastThankYouDate = new Date(lastThankYou);
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    if (donationResult !== "success" && donationResult !== "monthly_success") return;
 
-        if (lastThankYouDate > oneYearAgo) {
-          // Remove the query param without showing dialog
-          searchParams.delete("donation");
-          setSearchParams(searchParams, { replace: true });
-          return;
-        }
-      }
+    const isMonthly = donationResult === "monthly_success";
+    const sessionId = searchParams.get("session_id");
 
-      // Show thank you dialog
-      setShowThankYou(true);
-      
-      // Send thank you email
-      sendThankYouEmail(isMonthly);
-      
-      // Record the donation date based on type
-      const donationDate = new Date().toISOString();
-      if (isMonthly) {
-        // Mark as monthly donor - permanently suppress prompt
-        localStorage.setItem(`monthly_donor_${user.id}`, 'true');
-      } else {
-        // One-time donation - suppress prompt for 1 month
-        localStorage.setItem(`last_one_time_donation_${user.id}`, donationDate);
-      }
-      localStorage.setItem(`donation_thank_you_${user.id}`, donationDate);
-      
-      // Remove query param
-      searchParams.delete("donation");
-      setSearchParams(searchParams, { replace: true });
+    setShowThankYou(true);
+
+    if (sessionId) {
+      // Records the donation (Donators list) and sends the thank-you email + message
+      supabase.functions.invoke("record-donation", { body: { sessionId } }).catch(console.error);
     }
+
+    const now = new Date().toISOString();
+    if (isMonthly) localStorage.setItem(`monthly_donor_${user.id}`, "true");
+    else localStorage.setItem(`last_one_time_donation_${user.id}`, now);
+    localStorage.setItem(`donation_thank_you_${user.id}`, now);
+
+    searchParams.delete("donation");
+    searchParams.delete("session_id");
+    setSearchParams(searchParams, { replace: true });
   }, [user, searchParams, setSearchParams]);
 
-  const sendThankYouEmail = async (isMonthly: boolean) => {
-    try {
-      await supabase.functions.invoke("send-donation-thank-you", {
-        body: { donationType: isMonthly ? "monthly" : "one-time" }
-      });
-      console.log("Thank you email sent successfully");
-    } catch (error) {
-      console.error("Failed to send thank you email:", error);
-    }
-  };
-
-  const handleClose = () => {
-    setShowThankYou(false);
-  };
+  const handleClose = () => setShowThankYou(false);
 
   return (
     <Dialog open={showThankYou} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md border-0 bg-gradient-to-b from-primary/5 to-background">
+      <DialogContent className="w-[86vw] max-w-sm rounded-2xl border-0 bg-gradient-to-b from-primary/5 to-background">
         <DialogHeader className="text-center items-center space-y-6 pt-8 pb-6">
           <div className="relative">
             <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center animate-scale-in">
@@ -88,9 +63,9 @@ export const DonationThankYouDialog = () => {
             Thank You!
           </DialogTitle>
           <DialogDescription className="text-lg text-center">
-            <p className="font-semibold text-foreground">Your generosity helps spread the Gospel.</p>
-            <p className="text-primary font-medium mt-2">May God bless you abundantly! 🙏</p>
-            <p className="text-muted-foreground text-sm mt-3">A thank you email has been sent to you.</p>
+            <span className="block font-semibold text-foreground">Your generosity helps spread the Gospel.</span>
+            <span className="block text-primary font-medium mt-2">May God bless you abundantly! 🙏</span>
+            <span className="block text-muted-foreground text-sm mt-3">A thank you email and message are on their way to you.</span>
           </DialogDescription>
         </DialogHeader>
 

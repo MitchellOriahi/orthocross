@@ -63,7 +63,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/dashboard?donation=success`,
+      success_url: `${req.headers.get("origin")}/dashboard?donation=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/dashboard?donation=cancelled`,
       metadata: {
         user_id: user?.id || "anonymous",
