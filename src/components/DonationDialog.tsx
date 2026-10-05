@@ -63,13 +63,12 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
       const result = await purchaseDonation(productId);
       if (result.success) {
         onOpenChange(false);
-        toast({
-          title: "Thank you! ☦",
-          description: "Your generous donation has been received. God bless you!",
-        });
-        // Send thank-you email
-        supabase.functions.invoke("send-donation-thank-you", {
-          body: { donationType: "one-time", amount: Math.round(amount * 100) },
+        // Show the thank-you sticker
+        window.dispatchEvent(new Event("orthocross:donation-completed"));
+        // Record donation (Donators list) + thank-you email and message
+        const txId = (result as any).customerInfo?.nonSubscriptionTransactions?.slice(-1)?.[0]?.transactionIdentifier;
+        supabase.functions.invoke("record-donation", {
+          body: { productId, transactionId: txId },
         }).catch(console.error);
       } else if (!result.cancelled) {
         toast({ title: "Purchase failed", description: result.error || "Please try again.", variant: "destructive" });
