@@ -86,7 +86,7 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-5 gap-2 pr-4">
+            <div className="grid grid-cols-5 gap-2 pr-6">
 
               {Array.from({ length: selectedBook.totalChapters }, (_, i) => i + 1).map((chapter) => (
                 <Button
