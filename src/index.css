@@ -43,6 +43,9 @@ All colors MUST be HSL.
     --ring: 0 0% 0%;
 
     --radius: 0.75rem;
+    --podium-gold: 43 88% 55%;
+    --podium-silver: 220 7% 58%;
+    --podium-bronze: 26 78% 35%;
 
     /* Gradients for light mode */
     --gradient-sacred: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(0 0% 15%) 100%);
@@ -178,6 +181,91 @@ All colors MUST be HSL.
   .safe-area-bottom {
     bottom: env(safe-area-inset-bottom);
   }
+}
+
+.leaderboard-podium {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: 12px;
+  padding-top: 48px;
+  padding-bottom: 8px;
+}
+
+.podium-place {
+  --podium-tone: var(--podium-gold);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+.podium-place-2 { --podium-tone: var(--podium-silver); }
+.podium-place-3 { --podium-tone: var(--podium-bronze); }
+.podium-portrait { position: relative; margin-bottom: 22px; }
+.podium-avatar {
+  width: 64px;
+  height: 64px;
+  border: 3px solid hsl(var(--podium-tone) / 0.75);
+  font-size: 22px;
+}
+.podium-place-1 .podium-avatar { width: 76px; height: 76px; }
+.podium-crown {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: calc(50% - 14px);
+  width: 28px;
+  height: 28px;
+  color: hsl(var(--podium-gold));
+  fill: currentColor;
+}
+.podium-rank {
+  position: absolute;
+  bottom: -10px;
+  left: calc(50% - 13px);
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid hsl(var(--podium-tone) / 0.8);
+  border-radius: 50%;
+  background: hsl(var(--podium-tone) / 0.2);
+  color: hsl(var(--podium-tone));
+  font-weight: 700;
+  font-size: 14px;
+}
+.podium-username {
+  width: 100%;
+  height: 40px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 13px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+  overflow: hidden;
+}
+.podium-step {
+  width: 100%;
+  height: 124px;
+  padding: 10px 4px;
+  text-align: center;
+  border: 1px solid hsl(var(--border));
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(180deg, hsl(var(--podium-tone) / 0.05), hsl(var(--podium-tone) / 0.3));
+}
+.podium-place-2 .podium-step { height: 84px; }
+.podium-place-3 .podium-step { height: 64px; }
+@media (min-width: 640px) {
+  .leaderboard-podium { gap: 16px; padding-top: 56px; }
+  .podium-avatar { width: 88px; height: 88px; font-size: 28px; }
+  .podium-place-1 .podium-avatar { width: 108px; height: 108px; }
+  .podium-username { font-size: 16px; }
+  .podium-step { height: 152px; }
+  .podium-place-2 .podium-step { height: 104px; }
+  .podium-place-3 .podium-step { height: 76px; }
 }
 
 @keyframes progress-bar {
