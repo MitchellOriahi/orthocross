@@ -603,12 +603,11 @@ export const Journal = () => {
                   <Menu className="h-5 w-5" />
                 </Button>
               )}
-              <h2 className="text-lg font-semibold px-2">Journal</h2>
+              <div className="flex-1" />
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsFullScreen(false)}
-                className="ml-auto"
                 aria-label="Close"
               >
                 <X className="h-5 w-5" />
