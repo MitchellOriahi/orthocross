@@ -582,7 +582,7 @@ export const Journal = () => {
         <SheetContent side="bottom" className="inset-0 h-[100dvh] w-screen p-0 max-w-none">
           <SheetTitle className="sr-only">Journal Editor</SheetTitle>
           <div className="h-full flex flex-col">
-            <div className="border-b border-border p-2 flex items-center bg-card safe-top">
+            <div className="border-b border-border p-3 min-h-16 flex items-center bg-card safe-top">
               {isMobile && selectedNoteId && !showNotesList && (
                 <Button
                   variant="ghost"
