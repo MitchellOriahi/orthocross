@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { BookOpen, ChevronRight } from "lucide-react";
+import { BookOpen, ChevronRight, X } from "lucide-react";
 import { useState } from "react";
 
 interface Book {
