@@ -46,6 +46,9 @@ All colors MUST be HSL.
     --podium-gold: 43 88% 55%;
     --podium-silver: 220 7% 58%;
     --podium-bronze: 26 78% 35%;
+    --journey-glow: 0 0% 45%;
+    --journey-glow-rest: 0 0 0 2px hsl(var(--journey-glow) / 0.15), 0 0 12px 2px hsl(var(--journey-glow) / 0.08);
+    --journey-glow-peak: 0 0 0 6px hsl(var(--journey-glow) / 0.4), 0 0 24px 6px hsl(var(--journey-glow) / 0.18);
 
     /* Gradients for light mode */
     --gradient-sacred: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(0 0% 15%) 100%);
@@ -60,6 +63,7 @@ All colors MUST be HSL.
   }
 
   .dark {
+    --journey-glow: 0 0% 100%;
     /* Dark mode - black background, white text */
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
@@ -180,6 +184,24 @@ All colors MUST be HSL.
 
   .safe-area-bottom {
     bottom: env(safe-area-inset-bottom);
+  }
+}
+
+.journey-next-island {
+  border-color: hsl(var(--journey-glow) / 0.6);
+  box-shadow: var(--journey-glow-rest);
+  animation: journey-next-glow 2.4s ease-in-out infinite;
+}
+
+@keyframes journey-next-glow {
+  0%, 100% { box-shadow: var(--journey-glow-rest); }
+  50% { box-shadow: var(--journey-glow-peak); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-next-island {
+    animation: none;
+    box-shadow: var(--journey-glow-peak);
   }
 }
 
