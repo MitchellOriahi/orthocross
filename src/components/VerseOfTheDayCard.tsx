@@ -29,7 +29,7 @@ export const VerseOfTheDayCard = () => {
     const getDailyVerse = supabase.rpc as unknown as (
       name: "get_verse_of_the_day"
     ) => PromiseLike<{ data: DailyVerse[] | null; error: unknown }>;
-    getDailyVerse("get_verse_of_the_day").then(({ data, error }) => {
+    getDailyVerse.call(supabase, "get_verse_of_the_day").then(({ data, error }) => {
       if (error) {
         console.error("Error loading verse of the day:", error);
         return;
