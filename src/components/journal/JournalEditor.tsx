@@ -519,7 +519,7 @@ export const JournalEditor = ({
         )}
 
         {/* Bottom Toolbar */}
-        <div className="border-t border-border p-2 flex items-center justify-around bg-card/50 safe-bottom">
+        <div className="border-t border-border px-3 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] shrink-0 flex items-center justify-around bg-card/50">
           <Button
             variant="ghost"
             size="icon"
