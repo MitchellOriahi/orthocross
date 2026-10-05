@@ -63,7 +63,8 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
         
         <ScrollArea className="h-[calc(100vh-120px)] mt-6">
           {!selectedBook ? (
-            <div className="space-y-2">
+            <div className="space-y-2 pr-4">
+
               {books.map((book) => (
                 <button
                   key={book.title}
@@ -85,7 +86,8 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-5 gap-2 pr-4">
+
               {Array.from({ length: selectedBook.totalChapters }, (_, i) => i + 1).map((chapter) => (
                 <Button
                   key={chapter}
