@@ -1203,7 +1203,7 @@ export default function Friends() {
           />
         </TabsContent>
 
-        <TabsContent value="leaderboard" className="mt-8">
+        <TabsContent value="leaderboard" className="mt-6">
           {/* Donators Section */}
           <Collapsible open={donatorsExpanded} onOpenChange={setDonatorsExpanded}>
             <Card>
