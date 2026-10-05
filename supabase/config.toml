@@ -64,3 +64,6 @@ verify_jwt = false
 
 [functions.send-friend-request-notification]
 verify_jwt = false
+
+[functions.record-donation]
+verify_jwt = false
