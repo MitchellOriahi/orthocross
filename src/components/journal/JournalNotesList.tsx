@@ -251,8 +251,7 @@ export const JournalNotesList = ({
   return (
     <div className="flex flex-col h-full border-r border-border bg-card/30">
       <div className="p-3 border-b border-border space-y-2">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Notes</h3>
+        <div className="flex items-center justify-end">
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
