@@ -859,7 +859,7 @@ export default function Friends() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 space-y-4">
+      <main className="container mx-auto px-4 pt-4 pb-8 space-y-4">
       
       <Tabs defaultValue="friends" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -878,7 +878,7 @@ export default function Friends() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="friends" className="space-y-4">
+        <TabsContent value="friends" className="mt-6 space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Add a Friend</CardTitle>
