@@ -679,7 +679,7 @@ const ChurchResources = () => {
       </header>
 
       {/* Main Content - Section Selection */}
-      <main className="container mx-auto px-4 py-2">
+      <main className="container mx-auto px-4 pt-2 pb-8">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-0 mb-4">
             <div className="w-36 h-36 mx-auto relative -mb-1">
