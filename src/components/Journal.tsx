@@ -9,7 +9,7 @@ import { JournalEditor } from "./journal/JournalEditor";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Menu, Play, Pause, Volume2 } from "lucide-react";
+import { ChevronLeft, Menu, Play, Pause, Volume2, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 // Extended types that match the actual database schema
@@ -579,7 +579,7 @@ export const Journal = () => {
       </Card>
 
       <Sheet open={isFullScreen} onOpenChange={setIsFullScreen}>
-        <SheetContent side="bottom" className="inset-0 h-[100dvh] w-screen p-0 max-w-none">
+        <SheetContent side="bottom" className="inset-0 h-[100dvh] w-screen p-0 max-w-none [&>button.absolute]:hidden">
           <SheetTitle className="sr-only">Journal Editor</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="border-b border-border p-3 min-h-16 flex items-center bg-card safe-top">
@@ -604,6 +604,15 @@ export const Journal = () => {
                 </Button>
               )}
               <h2 className="text-lg font-semibold px-2">Journal</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsFullScreen(false)}
+                className="ml-auto"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5" />
+              </Button>
             </div>
             
             <div className="flex-1 flex overflow-hidden">
