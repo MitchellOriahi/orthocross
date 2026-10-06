@@ -22,7 +22,7 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
 
   function back() {
-    if (category) { setCategory(null); setTag(null); setAngelSubcategory(null); } else onClose();
+    if (category) { setCategory(null); setTag(null); setSubcategory(null); } else onClose();
   }
 
   return (
