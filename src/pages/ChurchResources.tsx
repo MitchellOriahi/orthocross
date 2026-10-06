@@ -23,6 +23,7 @@ import { DetailedContentView } from "@/components/resources/DetailedContentView"
 import { PrayerDetailView } from "@/components/resources/PrayerDetailView";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
+import { getVisibleSaints, SAINTS_VISIBLE } from "@/data/saintsVisibility";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
@@ -45,7 +46,7 @@ const ChurchResources = () => {
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [locatingChurches, setLocatingChurches] = useState(false);
   const [saintSearch, setSaintSearch] = useState("");
-  const filteredSaints = saintsContent.filter((saint) => {
+  const filteredSaints = getVisibleSaints(saintsContent).filter((saint) => {
     const q = saintSearch.trim().toLowerCase();
     if (!q) return true;
     return `${saint.prefix} ${saint.name} ${saint.epithet} ${saint.shortDescription}`
@@ -620,7 +621,7 @@ const ChurchResources = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="relative mb-4">
+                  {SAINTS_VISIBLE && <div className="relative mb-4">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                     <Input
                       type="search"
@@ -630,11 +631,11 @@ const ChurchResources = () => {
                       className="pl-9 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       aria-label="Search saints"
                     />
-                  </div>
+                  </div>}
                   <div className="space-y-2">
                     {filteredSaints.length === 0 ? (
                       <div className="text-center text-muted-foreground py-8">
-                        No saints found matching "{saintSearch}"
+                        {SAINTS_VISIBLE ? `No saints found matching "${saintSearch}"` : "No saints available."}
                       </div>
                     ) : (
                       filteredSaints.map((saint) => (
