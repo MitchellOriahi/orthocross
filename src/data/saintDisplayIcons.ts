@@ -1,6 +1,7 @@
 import michael from "@/assets/saints/display/archangel-michael.jpg.asset.json";
 import mary from "@/assets/saints/display/mary-magdalene.jpg.asset.json";
 import timothy from "@/assets/saints/display/timothy-apostle.jpg.asset.json";
+import peter from "@/assets/saints/display/peter-apostle.jpg.asset.json";
 import athanasius from "@/assets/saints/display/athanasius.jpg.asset.json";
 import anthony from "@/assets/saints/display/anthony.jpg.asset.json";
 import george from "@/assets/saints/display/george.jpg.asset.json";
@@ -29,6 +30,7 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
   "archangel-michael": portrait(michael.url, "Michael_icon_Athens.JPG", "Unknown Byzantine painter, 14th century"),
   "mary-magdalene": portrait(mary.url, "Maria_Magdalene_icon.jpg", "Unknown icon painter, Dionysiou Monastery"),
   "timothy-apostle": portrait(timothy.url, "Saint_Timothy.jpg", "Unknown icon painter"),
+  "peter-apostle": portrait(peter.url, "St_Peter_Icon_Sinai_7th_century.jpg", "Unknown painter, Saint Catherine’s Monastery, Sinai, 7th century"),
   athanasius: portrait(athanasius.url, "St._Athanasius_Icon_(10335730335).jpg", "Unknown Byzantine painter, 1556; photograph by Ted", "CC BY-SA 2.0", "https://creativecommons.org/licenses/by-sa/2.0/"),
   anthony: portrait(anthony.url, "Cretan_Icon_Saint_Anthony_the_Great.jpg", "Unknown Cretan painter, 15th–17th century"),
   george: portrait(george.url, "Icon_of_Saint_George_in_the_Byzantine_and_Christian_Museum_(Athens).jpg", "Unknown Byzantine painter, 14th century; photograph by Yair-haklai", "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0/"),
@@ -38,7 +40,7 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
 export const SAINT_CATEGORY_DISPLAY_ICON: Record<string, string> = {
   angels: "archangel-michael",
   biblical: "mary-magdalene",
-  "apostles-missionaries": "timothy-apostle",
+  "apostles-missionaries": "peter-apostle",
   "fathers-hierarchs": "athanasius",
   monastics: "anthony",
   martyrs: "george",
