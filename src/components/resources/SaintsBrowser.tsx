@@ -94,6 +94,7 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
     const scroll = scrollRef.current;
     const measure = measureRef.current;
     if (!scroll || !measure) return;
+    const updateRows = () => {
     const GAP = 8;
     // The px-6 insets leave 48px of the scroll container's width for pills.
     const limit = scroll.clientWidth - 48;
@@ -120,6 +121,12 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
       }
     });
     setRows(next);
+    };
+    updateRows();
+    scroll.scrollLeft = 0;
+    const observer = new ResizeObserver(updateRows);
+    observer.observe(scroll);
+    return () => observer.disconnect();
   }, [items]);
 
   return (
