@@ -24,10 +24,7 @@ describe("Saint categories", () => {
 
   test("classifies every saint in the merged catalog exactly once", () => {
     expect(allSaints).toHaveLength(100);
-    const categorizedIds = new Set(
-      allSaints.map(s => getSaintCategoryId(s.id)).filter(Boolean)
-    );
-    expect(categorizedIds.size).toBe(100);
+    expect(new Set(allSaints.map(s => s.id)).size).toBe(100);
     for (const saint of allSaints) {
       expect(getSaintCategoryId(saint.id)).not.toBeNull();
     }
