@@ -24,6 +24,15 @@ test("Angels use Michael without adding a saint to the preserved catalog", () =>
   expect(SAINT_DISPLAY_ICONS[SAINT_CATEGORY_DISPLAY_ICON.angels]).toBeDefined();
 });
 
+test("Monastics use the owner-provided Saint Anthony icon with angel-style display", () => {
+  expect(SAINT_CATEGORY_DISPLAY_ICON.monastics).toBe("saint-anthony-lrp");
+  const icon = SAINT_DISPLAY_ICONS["saint-anthony-lrp"];
+  expect(icon).toBeDefined();
+  expect(icon.image_fit).toBe("contain");
+  expect(icon.image_glow).toBe(true);
+  expect(icon.image_source).toContain("Provided by the app owner");
+});
+
 test("unsuitable and unaudited images never fall back to legacy artwork", () => {
   expect(SAINT_DISPLAY_ICONS["vladimir-kyiv"]).toBeUndefined();
   expect(SAINT_DISPLAY_ICONS["saint-gregory-nazianzus"]).toBeUndefined();
