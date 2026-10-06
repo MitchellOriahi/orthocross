@@ -1,5 +1,8 @@
 # Verse image sharing
 
+- [ ] Replace AI backgrounds with licensed royalty-free photos and compose immediately on Share.
+- [ ] Verify photo styles, immediate composition, and image-only sharing.
+
 - [x] Fix image authorization rejecting a valid sign-in; live request passes authentication and reaches generation configuration.
 
 - [x] Make each image choice request matching, visibly different artwork; deploy the updated image function.
