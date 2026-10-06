@@ -1,9 +1,17 @@
 import { describe, expect, test } from "bun:test";
 import { saintsContent } from "./saintsContent";
 import { SAINT_CATEGORIES } from "./saintCategories";
-import { getCategoryCount, getCategorySaints, getCategoryTags, MIN_SAINTS_PER_TAG } from "./saintBrowser";
+import { ANGEL_SUBCATEGORIES, getCategoryCount, getCategorySaints, getCategoryTags, MIN_SAINTS_PER_TAG } from "./saintBrowser";
 
 describe("Refined Saints browser", () => {
+  test("offers the requested Angels sub-categories in order", () => {
+    expect(ANGEL_SUBCATEGORIES).toEqual([
+      "Archangels",
+      "Heavenly Ranks",
+      "Guardian Angels",
+      "Heavenly Witnesses",
+    ]);
+  });
   test("counts the saved collection while all category lists remain hidden", () => {
     expect(SAINT_CATEGORIES.map(c => getCategoryCount(saintsContent, c.id))).toEqual([0, 6, 20, 29, 12, 26, 3]);
     for (const category of SAINT_CATEGORIES) expect(getCategorySaints(saintsContent, category.id)).toEqual([]);

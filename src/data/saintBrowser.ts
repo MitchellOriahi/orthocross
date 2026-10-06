@@ -4,6 +4,13 @@ import { getVisibleSaints, SAINTS_VISIBLE } from "./saintsVisibility";
 
 export const MIN_SAINTS_PER_TAG = 3;
 
+export const ANGEL_SUBCATEGORIES = [
+  "Archangels",
+  "Heavenly Ranks",
+  "Guardian Angels",
+  "Heavenly Witnesses",
+] as const;
+
 // Curated factual groupings, independent of saved biographies and image fields.
 export const SAINT_TAG_MEMBERS: Record<string, readonly string[]> = {
   "The Twelve": ["peter-apostle", "andrew-first-called", "james-son-of-zebedee", "john-theologian", "philip-apostle", "bartholomew-apostle", "thomas-apostle", "matthew-evangelist", "james-son-of-alphaeus", "jude-thaddeus", "simon-zealot", "matthias-apostle"],

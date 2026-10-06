@@ -1,11 +1,11 @@
 import { useLayoutEffect, useState } from "react";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, ChevronRight, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { saintsContent } from "@/data/saintsContent";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
+import { ANGEL_SUBCATEGORIES, getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 
@@ -13,12 +13,14 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   const [category, setCategory] = useState<SaintCategoryId | null>(null);
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState<string | null>(null);
+  const [angelSubcategory, setAngelSubcategory] = useState<string | null>(null);
   const selectedCategory = SAINT_CATEGORIES.find(item => item.id === category);
   const tags = category ? getCategoryTags(saintsContent, category) : [];
   const saints = getCategorySaints(saintsContent, category, query, tag);
-  useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
+  useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category, angelSubcategory]);
 
   function back() {
+    if (angelSubcategory) { setAngelSubcategory(null); return; }
     if (category) { setCategory(null); setTag(null); } else onClose();
   }
 
@@ -28,18 +30,23 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         <Button variant="ghost" onClick={back}><ArrowLeft className="h-4 w-4" />Back</Button>
       </div>
       <div className="p-6">
-        <h2 className="text-2xl font-semibold mb-1">{selectedCategory?.label ?? "Saints"}</h2>
+        <h2 className="text-2xl font-semibold mb-1">{angelSubcategory ?? selectedCategory?.label ?? "Saints"}</h2>
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input type="search" placeholder="Search a saint by name…" aria-label="Search saints" value={query} onChange={event => setQuery(event.target.value)} className="pl-9" />
         </div>
         {selectedCategory ? (
           <>
-            {tags.length > 0 && <div className="flex gap-2 overflow-x-auto pb-3 mb-2" aria-label="Saint tags">
+            {category === "angels" && !angelSubcategory && <div className="divide-y divide-border" aria-label="Angel sub-categories">
+              {ANGEL_SUBCATEGORIES.map(item => <Button key={item} variant="ghost" onClick={() => setAngelSubcategory(item)} className="h-14 w-full justify-between rounded-none px-1 text-left">
+                <span>{item}</span><ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </Button>)}
+            </div>}
+            {category !== "angels" && tags.length > 0 && <div className="flex gap-2 overflow-x-auto pb-3 mb-2" aria-label="Saint tags">
               <Button size="sm" variant={tag === null ? "secondary" : "ghost"} aria-pressed={tag === null} onClick={() => setTag(null)} className="shrink-0 rounded-full border border-border">All</Button>
               {tags.map(item => <Button key={item.label} size="sm" variant={tag === item.label ? "secondary" : "ghost"} aria-pressed={tag === item.label} onClick={() => setTag(tag === item.label ? null : item.label)} className="shrink-0 rounded-full border border-border">{item.label}</Button>)}
             </div>}
-            <SaintRows saints={saints} onSelect={onSelect} />
+            {(category !== "angels" || angelSubcategory) && <SaintRows saints={saints} onSelect={onSelect} />}
           </>
         ) : (
           <>
