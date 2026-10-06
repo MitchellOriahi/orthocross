@@ -62,11 +62,27 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     ctx.lineWidth = 1.5;
     ctx.strokeRect(28, 28, size - 56, size - 56);
 
-    // Small cross ornament above the verse
+    // Original three-bar Orthodox cross, matching the gold frame and lettering.
     const crossY = size * 0.62;
-    ctx.fillStyle = "hsl(42 80% 75%)";
-    ctx.fillRect(size / 2 - 1.5, crossY - 14, 3, 28);
-    ctx.fillRect(size / 2 - 9, crossY - 1.5, 18, 3);
+    ctx.save();
+    ctx.translate(size / 2, crossY - 6);
+    ctx.strokeStyle = "hsl(42 78% 72%)";
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.shadowColor = "rgba(0,0,0,0.65)";
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.moveTo(0, -32);
+    ctx.lineTo(0, 32);
+    // Title bar, main arms, and raised-left slanted footrest.
+    ctx.moveTo(-9, -21);
+    ctx.lineTo(9, -21);
+    ctx.moveTo(-18, -6);
+    ctx.lineTo(18, -6);
+    ctx.moveTo(-11, 13);
+    ctx.lineTo(11, 23);
+    ctx.stroke();
+    ctx.restore();
 
     const quote = `“${verseText}”`;
     ctx.fillStyle = "hsl(40 30% 96%)";
@@ -76,7 +92,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     ctx.shadowBlur = 16;
 
     const maxWidth = size - 160;
-    const startY = crossY + 28;
+    const startY = crossY + 44;
     let fontSize = 44;
     let lines: string[] = [];
     while (fontSize >= 20) {
