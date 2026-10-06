@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { saintsContent } from "./saintsContent";
 import { SAINT_CATEGORIES } from "./saintCategories";
-import { ANGEL_SUBCATEGORIES, getCategoryCount, getCategorySaints, getCategoryTags, MIN_SAINTS_PER_TAG } from "./saintBrowser";
+import { ANGEL_SUBCATEGORIES, CATEGORY_SUBCATEGORIES, MISSIONARY_SUBCATEGORIES, SAINT_SUBCATEGORY_MEMBERS, getCategoryCount, getCategorySaints, getCategoryTags, MIN_SAINTS_PER_TAG } from "./saintBrowser";
 
 describe("Refined Saints browser", () => {
   test("offers the requested Angels sub-categories in order", () => {
