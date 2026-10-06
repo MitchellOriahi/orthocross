@@ -24,32 +24,6 @@ export interface SaintDetail {
 
 export const saintsContent: SaintDetail[] = [
   {
-    id: "theotokos",
-    prefix: "",
-    name: "Theotokos",
-    epithet: "(The Virgin Mary)",
-    shortDescription: "Holy Mother of God",
-    tradition: "Eastern/Oriental",
-    iconUrl: theotokosIcon,
-    content: [
-      "The Theotokos, meaning 'God-bearer' in Greek, holds the highest honor among all saints in Orthodox Christianity. Born to Joachim and Anna in their old age after years of prayer, Mary's birth was itself considered miraculous. From her earliest years, she was dedicated to God and raised in the Temple in Jerusalem.",
-      
-      "According to Orthodox tradition, Mary was chosen from among the temple virgins to be the Mother of God. When she reached marriageable age, the priests sought a husband who would respect her vow of virginity. Joseph, an elderly widower with children from his previous marriage, was chosen through divine intervention - his staff miraculously blossomed.",
-      
-      "The Annunciation marks the pivotal moment when the Archangel Gabriel appeared to Mary with the message that she would conceive and bear the Son of God. Her response, 'Behold the handmaid of the Lord; be it unto me according to thy word,' exemplifies perfect obedience and humility. This moment of consent became the gateway for the Incarnation of Christ.",
-      
-      "Throughout Christ's ministry, Mary remained a faithful presence. Though she is mentioned sparingly in the Gospels, each appearance is significant. At the wedding in Cana, she prompted Jesus's first miracle. She stood at the foot of the Cross during His crucifixion, and He entrusted her to the care of John the Beloved Disciple.",
-      
-      "After the Resurrection and Ascension, Mary remained with the Apostles, praying with them in the Upper Room until Pentecost. According to Orthodox tradition, she lived with John in Ephesus and was eventually taken up bodily into heaven - an event celebrated as the Dormition (falling asleep) of the Theotokos.",
-      
-      "The Orthodox Church venerates Mary as Ever-Virgin, recognizing her perpetual purity before, during, and after Christ's birth. She is honored as the New Eve, whose obedience reversed Eve's disobedience. Through her, death came to an end and life began. She is invoked as intercessor, protector, and advocate for all humanity.",
-      
-      "Countless miracles and appearances have been attributed to the Theotokos throughout Church history. Her icons are considered particularly powerful sources of blessing and healing. The Orthodox faithful celebrate multiple feast days in her honor, including the Nativity of the Theotokos, the Presentation of the Theotokos, the Annunciation, and the Dormition.",
-      
-      "The depth of Orthodox devotion to the Mother of God is expressed in countless hymns, prayers, and liturgical services. She is called 'More honorable than the Cherubim and beyond compare more glorious than the Seraphim.' Her love, protection, and prayers continue to comfort and guide the faithful throughout the ages."
-    ]
-  },
-  {
     id: "anthony",
     prefix: "St.",
     name: "Anthony",
@@ -343,6 +317,32 @@ export const saintsContent: SaintDetail[] = [
       "Elder Paisios reposed on July 12, 1994, after a long struggle with cancer, which he bore with patience and without complaint. Thousands attended his funeral at the Monastery of Saint John the Theologian in Souroti, where he is buried. He was canonized by the Ecumenical Patriarchate in 2015. His feast day is celebrated on July 12th, and he is venerated as one of the greatest spiritual fathers of modern Orthodox Christianity."
     ]
   },
+  {
+    id: "theotokos",
+    prefix: "",
+    name: "Theotokos",
+    epithet: "(The Virgin Mary)",
+    shortDescription: "Holy Mother of God",
+    tradition: "Eastern/Oriental",
+    iconUrl: theotokosIcon,
+    content: [
+      "The Theotokos, meaning 'God-bearer' in Greek, holds the highest honor among all saints in Orthodox Christianity. Born to Joachim and Anna in their old age after years of prayer, Mary's birth was itself considered miraculous. From her earliest years, she was dedicated to God and raised in the Temple in Jerusalem.",
+      
+      "According to Orthodox tradition, Mary was chosen from among the temple virgins to be the Mother of God. When she reached marriageable age, the priests sought a husband who would respect her vow of virginity. Joseph, an elderly widower with children from his previous marriage, was chosen through divine intervention - his staff miraculously blossomed.",
+      
+      "The Annunciation marks the pivotal moment when the Archangel Gabriel appeared to Mary with the message that she would conceive and bear the Son of God. Her response, 'Behold the handmaid of the Lord; be it unto me according to thy word,' exemplifies perfect obedience and humility. This moment of consent became the gateway for the Incarnation of Christ.",
+      
+      "Throughout Christ's ministry, Mary remained a faithful presence. Though she is mentioned sparingly in the Gospels, each appearance is significant. At the wedding in Cana, she prompted Jesus's first miracle. She stood at the foot of the Cross during His crucifixion, and He entrusted her to the care of John the Beloved Disciple.",
+      
+      "After the Resurrection and Ascension, Mary remained with the Apostles, praying with them in the Upper Room until Pentecost. According to Orthodox tradition, she lived with John in Ephesus and was eventually taken up bodily into heaven - an event celebrated as the Dormition (falling asleep) of the Theotokos.",
+      
+      "The Orthodox Church venerates Mary as Ever-Virgin, recognizing her perpetual purity before, during, and after Christ's birth. She is honored as the New Eve, whose obedience reversed Eve's disobedience. Through her, death came to an end and life began. She is invoked as intercessor, protector, and advocate for all humanity.",
+      
+      "Countless miracles and appearances have been attributed to the Theotokos throughout Church history. Her icons are considered particularly powerful sources of blessing and healing. The Orthodox faithful celebrate multiple feast days in her honor, including the Nativity of the Theotokos, the Presentation of the Theotokos, the Annunciation, and the Dormition.",
+      
+      "The depth of Orthodox devotion to the Mother of God is expressed in countless hymns, prayers, and liturgical services. She is called 'More honorable than the Cherubim and beyond compare more glorious than the Seraphim.' Her love, protection, and prayers continue to comfort and guide the faithful throughout the ages."
+    ]
+  }
 ];
 
 // Preload saint icons at module load (same pattern as HISTORY_ICONS) so they're
