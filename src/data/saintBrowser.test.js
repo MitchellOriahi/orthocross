@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { saintsContent } from "./saintsContent";
 import { SAINT_CATEGORIES } from "./saintCategories";
-import { ANGEL_SUBCATEGORIES, CATEGORY_SUBCATEGORIES, MISSIONARY_SUBCATEGORIES, SAINT_SUBCATEGORY_MEMBERS, getCategoryCount, getCategorySaints, getCategoryTags, MIN_SAINTS_PER_TAG } from "./saintBrowser";
+import { ANGEL_SUBCATEGORIES, CATEGORY_SUBCATEGORIES, MISSIONARY_SUBCATEGORIES, MONASTIC_SUBCATEGORIES, SAINT_SUBCATEGORY_MEMBERS, getCategoryCount, getCategorySaints, getCategoryTags, MIN_SAINTS_PER_TAG } from "./saintBrowser";
 
 describe("Refined Saints browser", () => {
   test("offers the requested Angels sub-categories in order", () => {
@@ -29,6 +29,34 @@ describe("Refined Saints browser", () => {
     expect(SAINT_SUBCATEGORY_MEMBERS["Equal to Apostles"]).toContain("cyril-slavs");
     expect(SAINT_SUBCATEGORY_MEMBERS["Enlighteners"]).toContain("gregory-illuminator");
     expect(SAINT_SUBCATEGORY_MEMBERS["Overseas Missionaries"]).toContain("nicholas-japan");
+  });
+  test("offers the requested Monastics sub-categories, each within the category", () => {
+    expect(MONASTIC_SUBCATEGORIES).toEqual([
+      "Desert Fathers",
+      "Desert Mothers",
+      "Founders of Monasticism",
+      "Stylites",
+      "Holy Fools",
+      "Athonites",
+      "Elders",
+    ]);
+    expect(CATEGORY_SUBCATEGORIES.monastics).toEqual(MONASTIC_SUBCATEGORIES);
+    const monasticIds = new Set(getCategorySaints(saintsContent, "monastics", "", null, true).map(s => s.id));
+    for (const label of MONASTIC_SUBCATEGORIES) {
+      const ids = SAINT_SUBCATEGORY_MEMBERS[label];
+      if (label === "Stylites" || label === "Holy Fools") {
+        // The collection holds no stylites or holy fools yet; pills stay visible and empty.
+        expect(ids).toEqual([]);
+        continue;
+      }
+      expect(ids.length).toBeGreaterThanOrEqual(3);
+      for (const id of ids) expect(monasticIds.has(id)).toBe(true);
+    }
+    expect(SAINT_SUBCATEGORY_MEMBERS["Desert Fathers"]).toContain("anthony");
+    expect(SAINT_SUBCATEGORY_MEMBERS["Desert Mothers"]).toContain("syncletica-alexandria");
+    expect(SAINT_SUBCATEGORY_MEMBERS["Founders of Monasticism"]).toContain("pachomius-great");
+    expect(SAINT_SUBCATEGORY_MEMBERS["Athonites"]).toContain("silouan-athonite");
+    expect(SAINT_SUBCATEGORY_MEMBERS["Elders"]).toContain("seraphim-sarov");
   });
   test("counts the saved collection while all category lists remain hidden", () => {
     expect(SAINT_CATEGORIES.map(c => getCategoryCount(saintsContent, c.id))).toEqual([0, 6, 20, 29, 12, 26, 3]);
