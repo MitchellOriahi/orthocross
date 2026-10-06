@@ -33,6 +33,15 @@ test("Monastics use the owner-provided Saint Anthony icon with angel-style displ
   expect(icon.image_source).toContain("Provided by the app owner");
 });
 
+test("Biblical Saints use the owner-provided Theotokos icon with angel-style display", () => {
+  expect(SAINT_CATEGORY_DISPLAY_ICON.biblical).toBe("theotokos-seven-swords-lrp");
+  const icon = SAINT_DISPLAY_ICONS["theotokos-seven-swords-lrp"];
+  expect(icon).toBeDefined();
+  expect(icon.image_fit).toBe("contain");
+  expect(icon.image_glow).toBe(true);
+  expect(icon.image_source).toContain("Provided by the app owner");
+});
+
 test("unsuitable and unaudited images never fall back to legacy artwork", () => {
   expect(SAINT_DISPLAY_ICONS["vladimir-kyiv"]).toBeUndefined();
   expect(SAINT_DISPLAY_ICONS["saint-gregory-nazianzus"]).toBeUndefined();
