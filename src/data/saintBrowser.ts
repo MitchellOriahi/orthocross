@@ -11,6 +11,18 @@ export const ANGEL_SUBCATEGORIES = [
   "Heavenly Witnesses",
 ] as const;
 
+export const MISSIONARY_SUBCATEGORIES = [
+  "Equal to the Apostles",
+  "Enlighteners of Nations",
+  "Overseas Missionaries",
+] as const;
+
+// Sub-category pill labels shown on a category page, in order.
+export const CATEGORY_SUBCATEGORIES: Partial<Record<SaintCategoryId, readonly string[]>> = {
+  angels: ANGEL_SUBCATEGORIES,
+  "apostles-missionaries": MISSIONARY_SUBCATEGORIES,
+};
+
 // Curated factual groupings, independent of saved biographies and image fields.
 export const SAINT_TAG_MEMBERS: Record<string, readonly string[]> = {
   "The Twelve": ["peter-apostle", "andrew-first-called", "james-son-of-zebedee", "john-theologian", "philip-apostle", "bartholomew-apostle", "thomas-apostle", "matthew-evangelist", "james-son-of-alphaeus", "jude-thaddeus", "simon-zealot", "matthias-apostle"],
@@ -23,7 +35,15 @@ export const SAINT_TAG_MEMBERS: Record<string, readonly string[]> = {
   "Desert Father": ["anthony", "paul-of-thebes", "macarius-great", "pachomius-great", "bishoy-great", "moses-black"],
   "Military Saint": ["george", "saint-demetrius-thessalonica", "mercurius-soldier", "menas-wonderworker"],
   "Women Martyrs": ["catherine", "saint-barbara", "saint-paraskeva-iconium", "hripsime-armenia", "margaret-marina", "anastasia-sirmium"],
-  "Equal-to-the-Apostles": ["constantine-great", "helena-equal-apostles", "vladimir-kyiv", "olga-kyiv", "mary-magdalene", "thekla-iconium", "nino-georgia", "nicholas-japan"],
+"Equal-to-the-Apostles": ["constantine-great", "helena-equal-apostles", "vladimir-kyiv", "olga-kyiv", "mary-magdalene", "thekla-iconium", "nino-georgia", "nicholas-japan"],
+};
+
+// Curated factual sub-groupings for category pages with sub-category pills.
+// Every listed saint must belong to that category in saintCategories.ts.
+export const SAINT_SUBCATEGORY_MEMBERS: Record<string, readonly string[]> = {
+  "Equal to the Apostles": ["thekla-iconium", "cyril-slavs", "methodius-slavs", "nino-georgia", "innocent-alaska", "nicholas-japan"],
+  "Enlighteners of Nations": ["cyril-slavs", "methodius-slavs", "nino-georgia", "gregory-illuminator", "stephen-perm", "innocent-alaska", "nicholas-japan"],
+  "Overseas Missionaries": ["paul-apostle", "barnabas-apostle", "thomas-apostle", "innocent-alaska", "nicholas-japan"],
 };
 
 export function getCategoryCount(catalog: SaintDetail[], category: SaintCategoryId) {

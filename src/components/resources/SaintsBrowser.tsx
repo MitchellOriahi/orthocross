@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { saintsContent } from "@/data/saintsContent";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { ANGEL_SUBCATEGORIES, getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
+import { CATEGORY_SUBCATEGORIES, SAINT_SUBCATEGORY_MEMBERS, getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 
@@ -13,14 +13,16 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   const [category, setCategory] = useState<SaintCategoryId | null>(null);
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState<string | null>(null);
-  const [angelSubcategory, setAngelSubcategory] = useState<string | null>(null);
+  const [subcategory, setSubcategory] = useState<string | null>(null);
   const selectedCategory = SAINT_CATEGORIES.find(item => item.id === category);
+  const subcategories = category ? CATEGORY_SUBCATEGORIES[category] : undefined;
   const tags = category ? getCategoryTags(saintsContent, category) : [];
-  const saints = getCategorySaints(saintsContent, category, query, tag);
+  const categorySaints = getCategorySaints(saintsContent, category, query, tag);
+  const saints = subcategory ? categorySaints.filter(saint => SAINT_SUBCATEGORY_MEMBERS[subcategory]?.includes(saint.id)) : categorySaints;
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
 
   function back() {
-    if (category) { setCategory(null); setTag(null); setAngelSubcategory(null); } else onClose();
+    if (category) { setCategory(null); setTag(null); setSubcategory(null); } else onClose();
   }
 
   return (
@@ -36,11 +38,11 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         </div>
         {selectedCategory ? (
           <>
-            {category === "angels" && <div className="flex flex-wrap items-start gap-2 pb-3 mb-2" aria-label="Angel sub-categories">
-              <Button size="sm" variant={angelSubcategory === null ? "secondary" : "ghost"} aria-pressed={angelSubcategory === null} onClick={() => setAngelSubcategory(null)} className="rounded-full border border-border">All</Button>
-              {ANGEL_SUBCATEGORIES.map(item => <Button key={item} size="sm" variant={angelSubcategory === item ? "secondary" : "ghost"} aria-pressed={angelSubcategory === item} onClick={() => setAngelSubcategory(angelSubcategory === item ? null : item)} className="rounded-full border border-border">{item}</Button>)}
+            {subcategories && <div className="flex flex-wrap items-start gap-2 pb-3 mb-2" aria-label="Sub-categories">
+              <Button size="sm" variant={subcategory === null ? "secondary" : "ghost"} aria-pressed={subcategory === null} onClick={() => setSubcategory(null)} className="rounded-full border border-border">All</Button>
+              {subcategories.map(item => <Button key={item} size="sm" variant={subcategory === item ? "secondary" : "ghost"} aria-pressed={subcategory === item} onClick={() => setSubcategory(subcategory === item ? null : item)} className="rounded-full border border-border">{item}</Button>)}
             </div>}
-            {category !== "angels" && tags.length > 0 && <div className="flex gap-2 overflow-x-auto pb-3 mb-2" aria-label="Saint tags">
+            {!subcategories && tags.length > 0 && <div className="flex gap-2 overflow-x-auto pb-3 mb-2" aria-label="Saint tags">
               <Button size="sm" variant={tag === null ? "secondary" : "ghost"} aria-pressed={tag === null} onClick={() => setTag(null)} className="shrink-0 rounded-full border border-border">All</Button>
               {tags.map(item => <Button key={item.label} size="sm" variant={tag === item.label ? "secondary" : "ghost"} aria-pressed={tag === item.label} onClick={() => setTag(tag === item.label ? null : item.label)} className="shrink-0 rounded-full border border-border">{item.label}</Button>)}
             </div>}
@@ -52,7 +54,7 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
               {SAINT_CATEGORIES.map((item, index) => {
                 // An odd tile count centers the final box under both columns.
                 const centered = index === SAINT_CATEGORIES.length - 1 && SAINT_CATEGORIES.length % 2 === 1;
-                const tile = <Button variant="ghost" onClick={() => { setCategory(item.id); setTag(null); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
+                const tile = <Button variant="ghost" onClick={() => { setCategory(item.id); setTag(null); setSubcategory(null); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
                   <SaintPortrait saintId={SAINT_CATEGORY_DISPLAY_ICON[item.id]} className="w-full" />
                   <span className="mt-2 h-10 w-full text-sm font-medium leading-5 line-clamp-2">{item.label}</span>
                 </Button>;
