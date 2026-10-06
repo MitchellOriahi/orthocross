@@ -40,8 +40,8 @@ function portrait(url: string, file: string, author: string, license = "Public d
 export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
   "archangel-michael": {
     image_url: michael.url,
-    image_source: "Provided by the app owner (uploaded icon)",
-    image_author: "LRP icon studio (owner-provided artwork)",
+    image_source: "https://www.athoniteusa.com/",
+    image_author: "Athonite (LRP icon studio)",
     image_license: "Owner-provided",
     image_license_url: "",
     image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",
@@ -50,8 +50,8 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
   },
   "saint-anthony-lrp": {
     image_url: anthonyLrp.url,
-    image_source: "Provided by the app owner (uploaded icon)",
-    image_author: "LRP icon studio (owner-provided artwork)",
+    image_source: "https://www.athoniteusa.com/",
+    image_author: "Athonite (LRP icon studio)",
     image_license: "Owner-provided",
     image_license_url: "",
     image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",
@@ -60,8 +60,8 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
   },
   "theotokos-seven-swords-lrp": {
     image_url: theotokosLrp.url,
-    image_source: "Provided by the app owner (uploaded icon)",
-    image_author: "LRP icon studio (owner-provided artwork)",
+    image_source: "https://www.athoniteusa.com/",
+    image_author: "Athonite (LRP icon studio)",
     image_license: "Owner-provided",
     image_license_url: "",
     image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",
@@ -70,8 +70,8 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
   },
   "saint-nicholas-lrp": {
     image_url: nicholasLrp.url,
-    image_source: "Provided by the app owner (uploaded icon)",
-    image_author: "LRP icon studio (owner-provided artwork)",
+    image_source: "https://www.athoniteusa.com/",
+    image_author: "Athonite (LRP icon studio)",
     image_license: "Owner-provided",
     image_license_url: "",
     image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",
@@ -80,8 +80,8 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
   },
   "saint-stephen-lrp": {
     image_url: stephenLrp.url,
-    image_source: "Provided by the app owner (uploaded icon)",
-    image_author: "LRP icon studio (owner-provided artwork)",
+    image_source: "https://www.athoniteusa.com/",
+    image_author: "Athonite (LRP icon studio)",
     image_license: "Owner-provided",
     image_license_url: "",
     image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",
@@ -90,8 +90,8 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
   },
   "saint-matrona-lrp": {
     image_url: matronaLrp.url,
-    image_source: "Provided by the app owner (uploaded icon)",
-    image_author: "LRP icon studio (owner-provided artwork)",
+    image_source: "https://www.athoniteusa.com/",
+    image_author: "Athonite (LRP icon studio)",
     image_license: "Owner-provided",
     image_license_url: "",
     image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",
@@ -100,8 +100,8 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
   },
   "saint-olga-lrp": {
     image_url: olgaLrp.url,
-    image_source: "Provided by the app owner (uploaded icon)",
-    image_author: "LRP icon studio (owner-provided artwork)",
+    image_source: "https://www.athoniteusa.com/",
+    image_author: "Athonite (LRP icon studio)",
     image_license: "Owner-provided",
     image_license_url: "",
     image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",

@@ -8,7 +8,7 @@ test("every accepted icon retains provenance and a reusable license", () => {
       // Owner-provided artwork (e.g. LRP studio icons): provenance states the
       // origin instead of inventing a Commons source, and stays in the same
       // replaceable registry.
-      expect(icon.image_source).toContain("Provided by the app owner");
+      expect(icon.image_source).toContain("athoniteusa.com");
     } else {
       expect(new URL(icon.image_source).hostname).toBe("commons.wikimedia.org");
       expect(icon.image_license).toMatch(/^(Public domain|CC BY)/);
@@ -30,7 +30,7 @@ test("Monastics use the owner-provided Saint Anthony icon with angel-style displ
   expect(icon).toBeDefined();
   expect(icon.image_fit).toBe("contain");
   expect(icon.image_glow).toBe(true);
-  expect(icon.image_source).toContain("Provided by the app owner");
+  expect(icon.image_source).toContain("athoniteusa.com");
 });
 
 test("Biblical Saints use the owner-provided Theotokos icon with angel-style display", () => {
@@ -39,7 +39,7 @@ test("Biblical Saints use the owner-provided Theotokos icon with angel-style dis
   expect(icon).toBeDefined();
   expect(icon.image_fit).toBe("contain");
   expect(icon.image_glow).toBe(true);
-  expect(icon.image_source).toContain("Provided by the app owner");
+  expect(icon.image_source).toContain("athoniteusa.com");
 });
 
 test("Church Fathers use the owner-provided Saint Nicholas icon with angel-style display", () => {
@@ -48,7 +48,7 @@ test("Church Fathers use the owner-provided Saint Nicholas icon with angel-style
   expect(icon).toBeDefined();
   expect(icon.image_fit).toBe("contain");
   expect(icon.image_glow).toBe(true);
-  expect(icon.image_source).toContain("Provided by the app owner");
+  expect(icon.image_source).toContain("athoniteusa.com");
 });
 
 test("Martyrs use the owner-provided Saint Stephen icon with angel-style display", () => {
@@ -57,7 +57,7 @@ test("Martyrs use the owner-provided Saint Stephen icon with angel-style display
   expect(icon).toBeDefined();
   expect(icon.image_fit).toBe("contain");
   expect(icon.image_glow).toBe(true);
-  expect(icon.image_source).toContain("Provided by the app owner");
+  expect(icon.image_source).toContain("athoniteusa.com");
 });
 
 test("Missionaries use the owner-provided Saint Olga icon with angel-style display", () => {
@@ -66,7 +66,7 @@ test("Missionaries use the owner-provided Saint Olga icon with angel-style displ
   expect(icon).toBeDefined();
   expect(icon.image_fit).toBe("contain");
   expect(icon.image_glow).toBe(true);
-  expect(icon.image_source).toContain("Provided by the app owner");
+  expect(icon.image_source).toContain("athoniteusa.com");
 });
 
 test("Righteous Laypeople use the owner-provided Saint Matrona icon with angel-style display", () => {
@@ -75,7 +75,7 @@ test("Righteous Laypeople use the owner-provided Saint Matrona icon with angel-s
   expect(icon).toBeDefined();
   expect(icon.image_fit).toBe("contain");
   expect(icon.image_glow).toBe(true);
-  expect(icon.image_source).toContain("Provided by the app owner");
+  expect(icon.image_source).toContain("athoniteusa.com");
 });
 
 test("unsuitable and unaudited images never fall back to legacy artwork", () => {
