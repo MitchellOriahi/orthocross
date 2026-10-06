@@ -46,6 +46,10 @@ All colors MUST be HSL.
     --podium-gold: 43 88% 55%;
     --podium-silver: 220 7% 58%;
     --podium-bronze: 26 78% 35%;
+    --verse-art-ink: 40 30% 96%;
+    --verse-art-gold: 42 78% 72%;
+    --verse-art-mist: 155 20% 82%;
+    --verse-art-night: 225 30% 8%;
     --journey-glow: 0 0% 45%;
     --journey-glow-rest: 0 0 0 1px hsl(var(--journey-glow) / 0.08), 0 0 8px 1px hsl(var(--journey-glow) / 0.04);
     --journey-glow-peak: 0 0 0 5px hsl(var(--journey-glow) / 0.4), 0 0 30px 8px hsl(var(--journey-glow) / 0.28);
