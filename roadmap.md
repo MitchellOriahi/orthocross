@@ -1,5 +1,7 @@
 # Verse image sharing
 
+- [ ] Give each photo a distinct, fully readable verse composition and verify all three.
+
 - [x] Replace AI backgrounds with licensed royalty-free photos and compose immediately on Share.
 - [x] Verify photo styles, immediate composition, and image-only sharing — four tests pass; browser composition ready in approximately 233ms with preloaded photos, three distinct styles, cached reopening, no runtime errors; stored photo delivery returns HTTP 200.
 
