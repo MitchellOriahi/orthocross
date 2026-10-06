@@ -11,6 +11,18 @@ export const ANGEL_SUBCATEGORIES = [
   "Heavenly Witnesses",
 ] as const;
 
+export const MISSIONARY_SUBCATEGORIES = [
+  "Equal to the Apostles",
+  "Enlighteners of Nations",
+  "Overseas Missionaries",
+] as const;
+
+// Sub-category pill labels shown on a category page, in order.
+export const CATEGORY_SUBCATEGORIES: Partial<Record<SaintCategoryId, readonly string[]>> = {
+  angels: ANGEL_SUBCATEGORIES,
+  "apostles-missionaries": MISSIONARY_SUBCATEGORIES,
+};
+
 // Curated factual groupings, independent of saved biographies and image fields.
 export const SAINT_TAG_MEMBERS: Record<string, readonly string[]> = {
   "The Twelve": ["peter-apostle", "andrew-first-called", "james-son-of-zebedee", "john-theologian", "philip-apostle", "bartholomew-apostle", "thomas-apostle", "matthew-evangelist", "james-son-of-alphaeus", "jude-thaddeus", "simon-zealot", "matthias-apostle"],
