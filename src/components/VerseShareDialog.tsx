@@ -3,8 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Share2, Download, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { VERSE_IMAGE_STYLES } from "@/components/verseImageStyles";
+import { loadVerseBackground, preloadVerseBackgrounds } from "@/components/versePhotoBackgrounds";
 import { downloadVerseImage, shareVerseImage } from "@/components/verseImageSharing";
 
 interface VerseShareDialogProps {
@@ -42,14 +42,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
   const generation = useRef(0);
   const startedVerse = useRef("");
 
-  const loadImage = (src: string) =>
-    new Promise<HTMLImageElement>((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    });
+  useEffect(() => { preloadVerseBackgrounds(); }, []);
 
   const drawTextOverlay = (
     ctx: CanvasRenderingContext2D,
@@ -110,7 +103,6 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     setIsGenerating(true);
     setGenerationError(null);
     try {
-      await document.fonts?.ready;
       const size = 1080;
       const canvas = document.createElement("canvas");
       canvas.width = size;
@@ -119,20 +111,9 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
       if (!ctx) throw new Error("Canvas is unavailable");
 
       const style = VERSE_IMAGE_STYLES[styleIndex] ?? VERSE_IMAGE_STYLES[0];
-      const { data, error } = await supabase.functions.invoke("generate-verse-image", {
-        body: { verseText, verseReference, styleId: style.id },
-      });
-      if (error) {
-        let message = error.message;
-        if (error.context instanceof Response) {
-          const details = await error.context.json().catch(() => null);
-          message = details?.error ?? details?.message ?? message;
-        }
-        throw new Error(message);
-      }
-      if (!data?.imageUrl) throw new Error(data?.error ?? "No image was returned.");
-      const img = await loadImage(data.imageUrl);
-      ctx.drawImage(img, 0, 0, size, size);
+      const img = await loadVerseBackground(style.id);
+      const cropSize = Math.min(img.naturalWidth, img.naturalHeight);
+      ctx.drawImage(img, (img.naturalWidth - cropSize) / 2, (img.naturalHeight - cropSize) / 2, cropSize, cropSize, 0, 0, size, size);
       drawTextOverlay(ctx, size);
 
       if (generation.current !== requestId) return;
@@ -152,7 +133,9 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
 
   useEffect(() => {
     const verseKey = `${verseReference}|${verseText}`;
-    if (!open || startedVerse.current === verseKey) return;
+    if (!open) { generation.current++; setIsGenerating(false); return; }
+    if (startedVerse.current === verseKey && imageUrl) return;
+    if (startedVerse.current === verseKey) { void generateImage(selectedStyle); return; }
     startedVerse.current = verseKey;
     images.current = {};
     setSelectedStyle(0);
@@ -240,13 +223,13 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
 
           <div className="flex gap-2">
             <Button
-              onClick={() => { setImageUrl(null); void generateImage(selectedStyle); }}
+              onClick={() => generationError ? void generateImage(selectedStyle) : selectStyle((selectedStyle + 1) % VERSE_IMAGE_STYLES.length)}
               disabled={isGenerating}
               variant="secondary"
               className="flex-1 gap-2"
             >
               <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
-              New Image
+              {generationError ? "Retry" : "New Image"}
             </Button>
             <Button onClick={() => onOpenChange(false)} variant="default" className="flex-1">
               Close
