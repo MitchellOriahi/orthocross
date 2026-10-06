@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft, MapPin, Loader2, Search, Sparkles, Compass, Mountain, Flame, Crown, Users, type LucideIcon } from "lucide-react";
+import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft, MapPin, Loader2, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,8 +23,7 @@ import { DetailedContentView } from "@/components/resources/DetailedContentView"
 import { PrayerDetailView } from "@/components/resources/PrayerDetailView";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
-import { getVisibleSaints } from "@/data/saintsVisibility";
-import { SAINT_CATEGORIES, SAINT_CATEGORY_THUMBNAIL_SAINT_ID, SAINT_CATEGORY_THUMBNAIL_URL, filterSaintsByCategory, getSaintCategoryId, type SaintCategoryId } from "@/data/saintCategories";
+import { SaintsBrowser } from "@/components/resources/SaintsBrowser";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
@@ -32,17 +31,6 @@ import { useMusic } from "@/contexts/MusicContext";
 
 type SectionType = "eastern" | "oriental" | "prayers" | "saints" | null;
 type PrayerFilterType = "all" | "Eastern" | "Oriental";
-
-const SAINT_CATEGORY_ICONS: Record<SaintCategoryId, LucideIcon> = {
-  angels: Sparkles,
-  biblical: BookOpen,
-  "apostles-missionaries": Compass,
-  "fathers-hierarchs": Church,
-  monastics: Mountain,
-  martyrs: Flame,
-  rulers: Crown,
-  laypeople: Users,
-};
 
 const ChurchResources = () => {
   const navigate = useNavigate();
@@ -57,16 +45,6 @@ const ChurchResources = () => {
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [locatingChurches, setLocatingChurches] = useState(false);
-  const [saintSearch, setSaintSearch] = useState("");
-  const [saintCategory, setSaintCategory] = useState<SaintCategoryId | null>(null);
-  const filteredSaints = filterSaintsByCategory(getVisibleSaints(saintsContent), saintCategory).filter((saint) => {
-    const q = saintSearch.trim().toLowerCase();
-    if (!q) return true;
-    return `${saint.prefix} ${saint.name} ${saint.epithet} ${saint.shortDescription}`
-      .toLowerCase()
-      .includes(q);
-  });
-
   const handleFindChurchesNearMe = () => {
     // Apple devices default to Apple Maps; everyone else gets Google Maps.
     const isApple =
@@ -249,7 +227,7 @@ const ChurchResources = () => {
   // Fullscreen expanded view for a selected section
   if (selectedSection) {
     return (
-      <div className="min-h-screen gradient-peaceful pb-nav">
+      <div className={`min-h-screen pb-nav ${selectedSection === "saints" ? "bg-background" : "gradient-peaceful"}`}>
         {/* Header */}
         <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
           <div className="container mx-auto px-4 lg:px-2 py-4">
@@ -618,116 +596,7 @@ const ChurchResources = () => {
             )}
 
             {selectedSection === "saints" && (
-              <Card className="shadow-elevated border-border/50">
-                <div className="flex items-center justify-between p-4 border-b border-border/50">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setSelectedSection(null)}
-                  >
-                    ← Back
-                  </Button>
-                </div>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <UserRound className="w-5 h-5 text-primary" />
-                    Saints
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="relative mb-4">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                    <Input
-                      type="search"
-                      placeholder="Search a saint by name…"
-                      value={saintSearch}
-                      onChange={(e) => setSaintSearch(e.target.value)}
-                      className="pl-9 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                      aria-label="Search saints"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    {SAINT_CATEGORIES.map((category) => {
-                      const CategoryIcon = SAINT_CATEGORY_ICONS[category.id];
-                      const thumbnailSaintId = SAINT_CATEGORY_THUMBNAIL_SAINT_ID[category.id];
-                      const thumbnailSaint = thumbnailSaintId
-                        ? saintsContent.find((saint) => saint.id === thumbnailSaintId)
-                        : undefined;
-                      const thumbnailUrl = SAINT_CATEGORY_THUMBNAIL_URL[category.id] ?? thumbnailSaint?.iconUrl;
-                      const isActive = saintCategory === category.id;
-                      return (
-                        <button
-                          key={category.id}
-                          type="button"
-                          aria-pressed={isActive}
-                          onClick={() => setSaintCategory(isActive ? null : category.id)}
-                          className="flex flex-col items-stretch text-left"
-                        >
-                          <span
-                            className={`block aspect-square w-full overflow-hidden rounded-xl border bg-muted ${isActive ? "border-primary ring-2 ring-primary/40" : "border-border"}`}
-                          >
-                            {thumbnailUrl ? (
-                              <img
-                                src={thumbnailUrl}
-                                alt=""
-                                className="h-full w-full object-cover object-top"
-                              />
-                            ) : (
-                              <span className="flex h-full w-full items-center justify-center">
-                                <CategoryIcon className={`w-10 h-10 ${isActive ? "text-primary" : "text-primary/70"}`} />
-                              </span>
-                            )}
-                          </span>
-                          <span className="mt-2 text-sm font-medium leading-tight">{category.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div className="space-y-2">
-                    {filteredSaints.length === 0 ? (
-                      saintSearch.trim() ? (
-                        <div className="text-center text-muted-foreground py-8">
-                          {`No saints found matching "${saintSearch}"`}
-                        </div>
-                      ) : null
-                    ) : (
-                      filteredSaints.map((saint) => (
-                      <Button
-                        variant="ghost"
-                        key={saint.id}
-                        onClick={() => setSelectedSaint(saint)}
-                        className={`w-full h-auto whitespace-normal justify-start font-normal p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative flex items-start gap-4 ${saint.id === "theotokos" ? "theotokos-sticker" : ""}`}
-                      >
-                        <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary/20">
-                          <img 
-                            src={saint.iconUrl} 
-                            alt={`${saint.prefix} ${saint.name}`}
-                            className={`w-full h-full object-cover ${saint.iconCredit ? "" : "scale-125"}`}
-                            decoding="async"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0 pt-1 pr-12 sm:pr-16">
-                          {saint.prefix && <div className="text-base font-bold leading-tight">{saint.prefix}</div>}
-                          <div className="font-bold text-base leading-tight">{saint.name}</div>
-                          {saint.epithet && <div className="text-base font-bold leading-tight mt-0.5">{saint.epithet}</div>}
-                          <div className="text-xs text-muted-foreground mt-1.5 leading-relaxed whitespace-pre-line">{saint.shortDescription}</div>
-                        </div>
-                        <div className="absolute top-3 right-3 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-primary/10 font-medium whitespace-nowrap">
-                          {saint.tradition === "Oriental" && <span className="text-orange-500">Oriental</span>}
-                          {saint.tradition === "Eastern" && <span className="text-blue-500">Eastern</span>}
-                          {saint.tradition === "Eastern/Oriental" && (
-                            <>
-                              <span className="text-blue-500">E</span>
-                              <span className="text-primary">/</span>
-                              <span className="text-orange-500">O</span>
-                            </>
-                          )}
-                        </div>
-                      </Button>
-                      ))
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <SaintsBrowser onSelect={setSelectedSaint} onClose={() => setSelectedSection(null)} />
             )}
           </div>
         </main>
