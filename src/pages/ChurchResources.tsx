@@ -611,7 +611,7 @@ const ChurchResources = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {[...saintsContent.filter((saint) => saint.id === "theotokos"), ...saintsContent.filter((saint) => saint.id !== "theotokos")].map((saint) => (
+                    {saintsContent.map((saint) => (
                       <Button
                         variant="ghost"
                         key={saint.id}
