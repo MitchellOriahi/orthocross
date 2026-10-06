@@ -41,6 +41,10 @@ export function getSaintPageList(category: SaintCategoryId | null, subgroup: str
   ).sort((a, b) => saintSortName(a.name).localeCompare(saintSortName(b.name), "en"));
 }
 
+export function getSaintMemberships(saintId: string): Membership[] {
+  return memberships.get(saintId) ?? [];
+}
+
 export function getSaintPageSubgroups(category: SaintCategoryId) {
   return (CATEGORY_SUBCATEGORIES[category] ?? []).filter(subgroup => getSaintPageList(category, subgroup).length > 0);
 }

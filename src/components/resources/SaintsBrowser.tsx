@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { getSaintPageList, getSaintPageSubgroups, type SaintTraditionFilter } from "@/data/saintPageRoster";
+import { getSaintMemberships, getSaintPageList, getSaintPageSubgroups, type SaintTraditionFilter } from "@/data/saintPageRoster";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 import { SaintListCard } from "./SaintListCard";
@@ -67,7 +67,7 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
               })}
             </div>
             {query.trim() && saints.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No saints found matching “{query}”</p>}
-            {query.trim() && <SaintRows saints={saints} onSelect={onSelect} />}
+            {query.trim() && <SaintSearchRows saints={saints} onSelect={onSelect} />}
             <details className="mt-4 text-xs text-muted-foreground">
               <summary className="cursor-pointer">Icon credits</summary>
               <div className="mt-2 space-y-2 break-words">
@@ -154,4 +154,35 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
 
 function SaintRows({ saints, onSelect }: { saints: SaintDetail[]; onSelect: (saint: SaintDetail) => void }) {
   return <div className="space-y-2" aria-label="Saint list">{saints.map(saint => <SaintListCard key={saint.id} saint={saint} onSelect={onSelect} />)}</div>;
+}
+
+// Landing-page search results: mini cards showing each match with its
+// category → subgroup path and tradition tag.
+function SaintSearchRows({ saints, onSelect }: { saints: SaintDetail[]; onSelect: (saint: SaintDetail) => void }) {
+  return <div className="space-y-2" aria-label="Saint search results">{saints.map(saint => <SaintSearchCard key={saint.id} saint={saint} onSelect={onSelect} />)}</div>;
+}
+
+function SaintSearchCard({ saint, onSelect }: { saint: SaintDetail; onSelect: (saint: SaintDetail) => void }) {
+  const [failed, setFailed] = useState(false);
+  const paths = getSaintMemberships(saint.id).map(item => {
+    const label = SAINT_CATEGORIES.find(category => category.id === item.category)?.label ?? item.category;
+    return `${label} → ${item.subgroup}`;
+  });
+  return (
+    <Button variant="ghost" onClick={() => onSelect(saint)} className="relative h-auto w-full items-start justify-start gap-3 whitespace-normal rounded-lg border border-border p-3 text-left hover:border-primary hover:bg-accent">
+      <span className="block h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-border bg-muted">
+        {saint.iconUrl && !failed ? <img src={saint.iconUrl} alt="" className="h-full w-full object-cover" onError={() => setFailed(true)} /> : <span className="flex h-full w-full items-center justify-center text-muted-foreground"><svg aria-hidden="true" viewBox="0 0 32 44" className="!h-6 !w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M16 3v38M10 10h12M4 18h24M9 29l14 7" /></svg></span>}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block pr-14 text-sm font-semibold leading-5 break-words">
+          {saint.prefix && <span>{saint.prefix} </span>}
+          {[saint.name, saint.epithet].filter(Boolean).join(" ")}
+        </span>
+        {paths.map(path => <span key={path} className="mt-1 block text-xs font-normal leading-4 text-muted-foreground">{path}</span>)}
+      </span>
+      <span className="absolute right-3 top-3 rounded-md bg-primary/10 px-2 py-1 text-xs font-medium">
+        {saint.tradition === "Eastern" ? <span className="text-tradition-eastern">Eastern</span> : saint.tradition === "Oriental" ? <span className="text-tradition-oriental">Oriental</span> : <><span className="text-tradition-eastern">E</span><span className="text-foreground">/</span><span className="text-tradition-oriental">O</span></>}
+      </span>
+    </Button>
+  );
 }
