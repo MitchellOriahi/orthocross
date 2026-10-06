@@ -24,7 +24,7 @@ import { PrayerDetailView } from "@/components/resources/PrayerDetailView";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { getVisibleSaints } from "@/data/saintsVisibility";
-import { SAINT_CATEGORIES, SAINT_CATEGORY_THUMBNAIL_SAINT_ID, filterSaintsByCategory, getSaintCategoryId, type SaintCategoryId } from "@/data/saintCategories";
+import { SAINT_CATEGORIES, SAINT_CATEGORY_THUMBNAIL_SAINT_ID, SAINT_CATEGORY_THUMBNAIL_URL, filterSaintsByCategory, getSaintCategoryId, type SaintCategoryId } from "@/data/saintCategories";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
@@ -652,6 +652,7 @@ const ChurchResources = () => {
                       const thumbnailSaint = thumbnailSaintId
                         ? saintsContent.find((saint) => saint.id === thumbnailSaintId)
                         : undefined;
+                      const thumbnailUrl = SAINT_CATEGORY_THUMBNAIL_URL[category.id] ?? thumbnailSaint?.iconUrl;
                       const isActive = saintCategory === category.id;
                       return (
                         <button
@@ -664,9 +665,9 @@ const ChurchResources = () => {
                           <span
                             className={`block aspect-square w-full overflow-hidden rounded-xl border bg-muted ${isActive ? "border-primary ring-2 ring-primary/40" : "border-border"}`}
                           >
-                            {thumbnailSaint ? (
+                            {thumbnailUrl ? (
                               <img
-                                src={thumbnailSaint.iconUrl}
+                                src={thumbnailUrl}
                                 alt=""
                                 className="h-full w-full object-cover object-top"
                               />
@@ -683,11 +684,11 @@ const ChurchResources = () => {
                   </div>
                   <div className="space-y-2">
                     {filteredSaints.length === 0 ? (
-                      <div className="text-center text-muted-foreground py-8">
-                        {saintSearch.trim()
-                          ? `No saints found matching "${saintSearch}"`
-                          : "No saints in this category yet"}
-                      </div>
+                      saintSearch.trim() ? (
+                        <div className="text-center text-muted-foreground py-8">
+                          {`No saints found matching "${saintSearch}"`}
+                        </div>
+                      ) : null
                     ) : (
                       filteredSaints.map((saint) => (
                       <Button

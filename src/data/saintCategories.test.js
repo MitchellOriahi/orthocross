@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { saintsContent } from "./saintsContent";
 import {
   SAINT_CATEGORY_THUMBNAIL_SAINT_ID,
+  SAINT_CATEGORY_THUMBNAIL_URL,
   SAINT_CATEGORIES,
   filterSaintsByCategory,
   getSaintCategoryId,
@@ -66,4 +67,12 @@ test("each category thumbnail uses a saint from that category", () => {
     expect(getSaintCategoryId(saintId)).toBe(categoryId);
   }
   expect(SAINT_CATEGORY_THUMBNAIL_SAINT_ID["angels"]).toBeUndefined();
+});
+
+test("English-clean thumbnail overrides exist for Slavonic-inscription icons", () => {
+  // Vladimir and Xenia's authentic icons carry Slavonic inscriptions, so the
+  // category boxes use face-crop derivatives with no foreign lettering.
+  expect(SAINT_CATEGORY_THUMBNAIL_URL["rulers"]).toBeTruthy();
+  expect(SAINT_CATEGORY_THUMBNAIL_URL["laypeople"]).toBeTruthy();
+  expect(SAINT_CATEGORY_THUMBNAIL_URL["rulers"]).not.toBe(SAINT_CATEGORY_THUMBNAIL_URL["laypeople"]);
 });
