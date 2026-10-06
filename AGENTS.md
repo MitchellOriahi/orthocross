@@ -17,4 +17,4 @@
 - Keep style-specific verse typography in a dedicated canvas renderer with measured text fitting and global artwork palette tokens, so all styles preserve the complete verse without clipping.
 - Resolve every island lesson image through a provenance registry of stored assets, retain source/license credits, and use cover framing with upper alignment for face-focused artwork so frames stay filled without cropping out faces.
 - Reset island detail scroll before paint on each island selection, because same-page selection does not trigger route scroll restoration.
-- Keep additional saint lives in a typed catalog with stored icon pointers and per-icon provenance, merging alphabetically with the original saints so additions preserve existing identities and presentation.
+- Keep additional saint lives in a typed catalog with stored icon pointers and per-icon provenance, merging alphabetically with the original saints so additions preserve existing identities and presentation.- Show Synaxaria-researched roster stories from a separate id-keyed stories file ahead of preserved biographies, so expanded lives never overwrite the saved catalog.

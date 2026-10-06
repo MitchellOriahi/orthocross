@@ -55,7 +55,11 @@ test("the roster keeps supplied traditions and saved biographies intact", () => 
   expect(getSaintPageList("fathers-hierarchs", "Apostolic", "Irenaeus")[0].tradition).toBe("Eastern");
   const original = saintsContent.find(s => s.id === "anthony");
   const shown = getSaintPageList("monastics", "Desert Fathers", "Anthony")[0];
-  expect(shown.content).toBe(original.content);
+  expect(original.content).toHaveLength(8); // preserved biography untouched
+  expect(shown.content.length).toBeGreaterThanOrEqual(8);
   expect(shown.iconUrl).toBe(original.iconUrl);
   expect(saintsContent).toHaveLength(100);
+});
+test("every roster saint's story has at most 12 cards", () => {
+  for (const saint of saintPageRoster) expect(saint.content.length).toBeLessThanOrEqual(12);
 });

@@ -1,4 +1,6 @@
 import roster from "./saintPageRoster.json";
+// Synaxaria-researched life stories (8–12 cards) keyed by roster id; preserved biographies stay untouched.
+import saintStories from "./saintStories.json";
 import { saintsContent } from "./saintsContent";
 import type { SaintDetail } from "./saintTypes";
 import type { SaintCategoryId } from "./saintCategories";
@@ -24,7 +26,7 @@ export const saintPageRoster: SaintDetail[] = roster.map(record => {
     tradition: record.tradition as SaintDetail["tradition"],
     iconUrl: saved?.iconUrl ?? "",
     iconCredit: saved?.iconCredit,
-    content: saved?.content ?? [record.subtitle],
+    content: (saintStories as Record<string, string[]>)[record.id] ?? saved?.content ?? [record.subtitle],
   };
 });
 
