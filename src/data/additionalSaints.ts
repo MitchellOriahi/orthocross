@@ -667,7 +667,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-irenaeus-lyons",
   "prefix": "St.",
-  "name": "Irenaeus of Lyons",
+  "name": "Irenaeus",
   "epithet": "of Lyons",
   "shortDescription": "Bishop of Lyons and theologian whose Against Heresies refuted Gnosticism and s",
   "tradition": "Eastern",
@@ -715,7 +715,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-clement-rome",
   "prefix": "St.",
-  "name": "Clement of Rome",
+  "name": "Clement",
   "epithet": "of Rome",
   "shortDescription": "Apostolic Father and early bishop of Rome whose epistle to the Corinthians is ",
   "tradition": "Eastern",
@@ -739,7 +739,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-cyprian-carthage",
   "prefix": "St.",
-  "name": "Cyprian of Carthage",
+  "name": "Cyprian",
   "epithet": "of Carthage",
   "shortDescription": "Bishop of Carthage whose writings on church unity and penance shaped Latin ecc",
   "tradition": "Eastern",
@@ -763,7 +763,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-ambrose-milan",
   "prefix": "St.",
-  "name": "Ambrose of Milan",
+  "name": "Ambrose",
   "epithet": "of Milan",
   "shortDescription": "Roman governor turned bishop of Milan",
   "tradition": "Eastern/Oriental",
@@ -811,7 +811,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-gregory-nyssa",
   "prefix": "St.",
-  "name": "Gregory of Nyssa",
+  "name": "Gregory",
   "epithet": "of Nyssa",
   "shortDescription": "Cappadocian bishop and mystical theologian renowned for his writings on the Tr",
   "tradition": "Eastern",
@@ -835,7 +835,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-cyril-jerusalem",
   "prefix": "St.",
-  "name": "Cyril of Jerusalem",
+  "name": "Cyril",
   "epithet": "of Jerusalem",
   "shortDescription": "Fourth-century bishop of Jerusalem whose Catechetical Lectures remain a founda",
   "tradition": "Eastern",
@@ -859,7 +859,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-cyril-alexandria",
   "prefix": "St.",
-  "name": "Cyril of Alexandria",
+  "name": "Cyril",
   "epithet": "of Alexandria",
   "shortDescription": "Patriarch of Alexandria and chief architect of Christological orthodoxy at the",
   "tradition": "Eastern/Oriental",
@@ -883,7 +883,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-ephrem-syrian",
   "prefix": "St.",
-  "name": "Ephrem the Syrian",
+  "name": "Ephrem",
   "epithet": "the Syrian",
   "shortDescription": "Syriac deacon",
   "tradition": "Eastern/Oriental",
@@ -931,7 +931,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-john-damascus",
   "prefix": "St.",
-  "name": "John of Damascus",
+  "name": "John",
   "epithet": "of Damascus",
   "shortDescription": "Eighth-century monk-theologian and hymnographer who defended icon veneration a",
   "tradition": "Eastern",
@@ -955,7 +955,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-maximus-confessor",
   "prefix": "St.",
-  "name": "Maximus the Confessor",
+  "name": "Maximus",
   "epithet": "the Confessor",
   "shortDescription": "Byzantine monk-theologian who suffered mutilation for defending Christ's two w",
   "tradition": "Eastern",
@@ -979,8 +979,8 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-john-climacus",
   "prefix": "St.",
-  "name": "John Climacus",
-  "epithet": "of the Ladder",
+  "name": "John",
+  "epithet": "Climacus",
   "shortDescription": "Sixth-century abbot of Sinai whose Ladder of Divine Ascent became the foundati",
   "tradition": "Eastern",
   "content": [
@@ -1027,7 +1027,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-spyridon-trimythous",
   "prefix": "St.",
-  "name": "Spyridon of Trimythous",
+  "name": "Spyridon",
   "epithet": "of Trimythous",
   "shortDescription": "Fourth-century shepherd-bishop of Cyprus famed for his humility",
   "tradition": "Eastern",
@@ -1075,7 +1075,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-demetrius-thessalonica",
   "prefix": "St.",
-  "name": "Demetrius of Thessalonica",
+  "name": "Demetrius",
   "epithet": "of Thessalonica",
   "shortDescription": "Early fourth-century soldier-martyr and patron of Thessalonica",
   "tradition": "Eastern",
@@ -1123,7 +1123,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "saint-paraskeva-iconium",
   "prefix": "St.",
-  "name": "Paraskeva of Iconium",
+  "name": "Paraskeva",
   "epithet": "of Iconium",
   "shortDescription": "Early virgin martyr of Asia Minor",
   "tradition": "Eastern",
@@ -1147,7 +1147,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "seraphim-sarov",
   "prefix": "St.",
-  "name": "Seraphim of Sarov",
+  "name": "Seraphim",
   "epithet": "of Sarov",
   "shortDescription": "Russian hieromonk",
   "tradition": "Eastern",
@@ -1171,7 +1171,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "sergius-radonezh",
   "prefix": "St.",
-  "name": "Sergius of Radonezh",
+  "name": "Sergius",
   "epithet": "of Radonezh",
   "shortDescription": "Founder of the Trinity Lavra and father of Russian monasticism.",
   "tradition": "Eastern",
@@ -1195,7 +1195,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "silouan-athonite",
   "prefix": "St.",
-  "name": "Silouan the Athonite",
+  "name": "Silouan",
   "epithet": "the Athonite",
   "shortDescription": "Russian monk of St. Panteleimon Monastery known for his teaching on love for e",
   "tradition": "Eastern",
@@ -1219,7 +1219,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "nektarios-aegina",
   "prefix": "St.",
-  "name": "Nektarios of Aegina",
+  "name": "Nektarios",
   "epithet": "of Aegina",
   "shortDescription": "Greek bishop, hymnographer and founder of the Holy Trinity Convent on Aegina.",
   "tradition": "Eastern",
@@ -1243,7 +1243,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "nicodemus-hagiorite",
   "prefix": "St.",
-  "name": "Nicodemus the Hagiorite",
+  "name": "Nicodemus",
   "epithet": "the Hagiorite",
   "shortDescription": "Substituted for Porphyrios of Kafsokalyvia (d. 1991)",
   "tradition": "Eastern",
@@ -1267,7 +1267,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "dimitry-rostov",
   "prefix": "St.",
-  "name": "Dimitry of Rostov",
+  "name": "Dimitry",
   "epithet": "of Rostov",
   "shortDescription": "Substituted for John of Kronstadt",
   "tradition": "Eastern",
@@ -1315,7 +1315,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "matrona-moscow",
   "prefix": "St.",
-  "name": "Matrona of Moscow",
+  "name": "Matrona",
   "epithet": "of Moscow",
   "shortDescription": "Blind and paralyzed Russian eldress revered for prophecy and healing through t",
   "tradition": "Eastern",
@@ -1339,7 +1339,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "herman-alaska",
   "prefix": "St.",
-  "name": "Herman of Alaska",
+  "name": "Herman",
   "epithet": "of Alaska",
   "shortDescription": "Russian monk-missionary who defended Native Alaskans against colonial exploita",
   "tradition": "Eastern",
@@ -1363,7 +1363,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "innocent-alaska",
   "prefix": "St.",
-  "name": "Innocent of Alaska",
+  "name": "Innocent",
   "epithet": "of Alaska",
   "shortDescription": "Linguist-missionary bishop who evangelized Alaska and Siberia and became Metro",
   "tradition": "Eastern",
@@ -1411,7 +1411,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "john-shanghai-sanfrancisco",
   "prefix": "St.",
-  "name": "John of Shanghai and San Francisco",
+  "name": "John",
   "epithet": "of Shanghai and San Francisco",
   "shortDescription": "Russian émigré bishop known for asceticism",
   "tradition": "Eastern",
@@ -1435,7 +1435,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "nicholas-japan",
   "prefix": "St.",
-  "name": "Nicholas of Japan",
+  "name": "Nicholas",
   "epithet": "of Japan",
   "shortDescription": "Russian missionary bishop who founded the Orthodox Church of Japan.",
   "tradition": "Eastern",
@@ -1459,7 +1459,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "vladimir-kyiv",
   "prefix": "St.",
-  "name": "Vladimir the Great of Kyiv",
+  "name": "Vladimir the Great",
   "epithet": "of Kyiv",
   "shortDescription": "Grand Prince who converted Kyivan Rus' to Christianity in 988.",
   "tradition": "Eastern",
@@ -1483,7 +1483,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "olga-kyiv",
   "prefix": "St.",
-  "name": "Olga of Kyiv",
+  "name": "Olga",
   "epithet": "of Kyiv",
   "shortDescription": "Regent of Kyivan Rus' and the first of its rulers to embrace Christianity.",
   "tradition": "Eastern",
@@ -1555,7 +1555,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "sava-serbia",
   "prefix": "St.",
-  "name": "Sava of Serbia",
+  "name": "Sava",
   "epithet": "of Serbia",
   "shortDescription": "Founder of the autocephalous Serbian Church and author of its earliest legal a",
   "tradition": "Eastern",
@@ -1579,7 +1579,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "stephen-perm",
   "prefix": "St.",
-  "name": "Stephen of Perm",
+  "name": "Stephen",
   "epithet": "of Perm",
   "shortDescription": "Substituted for Nikolaj Velimirović",
   "tradition": "Eastern",
@@ -1603,7 +1603,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "gregory-palamas",
   "prefix": "St.",
-  "name": "Gregory Palamas",
+  "name": "Gregory",
   "epithet": "Palamas",
   "shortDescription": "Defender of hesychasm and theologian of the distinction between God's essence ",
   "tradition": "Eastern",
@@ -1627,7 +1627,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "theodore-studite",
   "prefix": "St.",
-  "name": "Theodore the Studite",
+  "name": "Theodore",
   "epithet": "the Studite",
   "shortDescription": "Monastic reformer and fierce defender of icon veneration during the Byzantine ",
   "tradition": "Eastern",
@@ -1651,7 +1651,7 @@ export const additionalSaints: SaintDetail[] = [
 {
   "id": "symeon-new-theologian",
   "prefix": "St.",
-  "name": "Symeon the New Theologian",
+  "name": "Symeon",
   "epithet": "the New Theologian",
   "shortDescription": "Byzantine monastic mystic whose writings on direct personal experience of God ",
   "tradition": "Eastern",
