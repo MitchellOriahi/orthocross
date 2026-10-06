@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { getSaintPageList, getSaintPageSubgroups, type SaintTraditionFilter } from "@/data/saintPageRoster";
+import { getSaintMemberships, getSaintPageList, getSaintPageSubgroups, type SaintTraditionFilter } from "@/data/saintPageRoster";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 import { SaintListCard } from "./SaintListCard";
@@ -67,7 +67,7 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
               })}
             </div>
             {query.trim() && saints.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No saints found matching “{query}”</p>}
-            {query.trim() && <SaintRows saints={saints} onSelect={onSelect} />}
+            {query.trim() && <SaintSearchRows saints={saints} onSelect={onSelect} />}
             <details className="mt-4 text-xs text-muted-foreground">
               <summary className="cursor-pointer">Icon credits</summary>
               <div className="mt-2 space-y-2 break-words">
