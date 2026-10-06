@@ -11,13 +11,14 @@ import {
 const allSaints = saintsContent;
 
 describe("Saint categories", () => {
-  test("offers exactly the six visible categories in the requested order", () => {
+  test("offers exactly the seven visible categories in the requested order", () => {
     expect(SAINT_CATEGORIES.map(c => c.label)).toEqual([
       "Angels and Archangels",
       "Biblical Saints",
       "Monastics",
       "Church Fathers and Hierarchs",
       "Martyrs",
+      "Missionaries",
       "Righteous Laypeople",
     ]);
   });
