@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
+import { VERSE_IMAGE_DESIGNS } from "../_shared/verseImageDesigns.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -34,7 +35,7 @@ serve(async (req) => {
       );
     }
 
-    const { verseText, verseReference } = await req.json();
+    const { verseText, verseReference, styleId = "golden" } = await req.json();
     if (!verseText || !verseReference) {
       return new Response(
         JSON.stringify({ error: "Missing verseText or verseReference" }),
@@ -42,34 +43,27 @@ serve(async (req) => {
       );
     }
 
+    const design = VERSE_IMAGE_DESIGNS.find((item) => item.id === styleId);
+    if (!design) {
+      return new Response(JSON.stringify({ error: "Unknown image design" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     if (!GEMINI_API_KEY) {
       throw new Error("GEMINI_API_KEY is not configured");
     }
     const model = Deno.env.get("GEMINI_IMAGE_MODEL") ?? "gemini-3.1-flash-image";
 
-    // Vary the artistic style based on the verse so each share feels unique
-    const styles = [
-      "cinematic Makoto Shinkai anime key-visual — hyper-detailed painterly skies, volumetric god-rays, glowing horizon, lens flare",
-      "Studio Ghibli watercolor landscape — soft pastel washes, hand-painted clouds, gentle wind through grass, nostalgic warmth",
-      "ukiyo-e woodblock print reinterpreted with anime sensibility — bold flat color planes, stylized waves and clouds, gold leaf accents",
-      "moody anime oil-painting style — deep chiaroscuro, candle-warm highlights, baroque atmosphere, Caravaggio-inspired light",
-      "ethereal celestial anime art — nebulae, starfields, aurora, drifting petals or embers, dreamlike scale",
-      "serene Eastern Orthodox iconographic landscape reimagined as anime — gold-leaf sky, Byzantine ornament patterns subtly woven into clouds, deep jewel tones",
-      "minimalist anime ink-wash (sumi-e) with a single bold accent color — vast negative space, restrained brushwork, meditative silence",
-    ];
-    // Deterministic-ish pick from verse reference so the same verse trends toward similar style, but with variety across verses
-    const styleIndex = Math.abs([...verseReference].reduce((a, c) => a + c.charCodeAt(0), 0)) % styles.length;
-    const chosenStyle = styles[(styleIndex + Math.floor(Math.random() * 3)) % styles.length];
-
     const prompt = `Create a stunning 4K square (1:1) background illustration whose imagery, mood, palette, and symbolism are derived SPECIFICALLY from this Bible verse: "${verseText}" — ${verseReference}.
 
-Artistic style for THIS image: ${chosenStyle}.
+Required artistic design for THIS image: ${design.prompt}
+Follow this design's medium, lighting, scenery and palette; do not randomly substitute another style.
 
 Interpretation rules:
 - READ THE VERSE and choose scenery, weather, time of day, season, colors, and symbolic motifs that directly evoke its meaning. Different verses must produce visibly different images (a verse about light → dawn breaking; about waters → seas/rivers; about shepherds → green pastures; about refuge → mountains/strongholds; about harvest → wheat fields; about peace → still gardens; about fire → embers and warm glow; etc.).
 - Reverent, contemplative, awe-inspiring atmosphere with Orthodox/Byzantine spiritual undertone.
-- Compose so the UPPER-CENTER region is calmer and slightly darker (sky, soft gradient, gentle clouds, mist) to allow overlay text to remain readable. Place the richest detail in the lower two-thirds.
+- Keep the upper 55% visually rich and clearly show the selected design. Keep the lower 45% simple and low-detail for a separate verse text overlay.
 - Acceptable elements: landscapes, seas, mountains, deserts, gardens, wheat, olive trees, doves, lanterns, ancient stone paths, distant cathedrals/monasteries, lone wanderer from behind, candles, open scrolls, vines, lambs, stars.
 - STRICTLY FORBIDDEN: any depiction of Jesus, God, angels with faces, saints, or any human face. No religious figures with visible features — only distant silhouettes from behind or symbolic objects.
 - STRICTLY FORBIDDEN: any text, letters, words, numerals, watermarks, signatures, calligraphy, or captions anywhere in the image.
@@ -89,9 +83,11 @@ Interpretation rules:
     );
 
     if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error("AI API error:", errorText);
-      throw new Error(`AI generation failed: ${aiResponse.status}`);
+      const details = await aiResponse.json().catch(() => null);
+      const message = details?.error?.message ?? `Image generation failed (${aiResponse.status}).`;
+      return new Response(JSON.stringify({ error: message }), {
+        status: aiResponse.status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const aiData = await aiResponse.json();

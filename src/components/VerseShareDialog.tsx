@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Share2, Download, Mail, MessageSquare, RefreshCw } from "lucide-react";
+import { Share2, Download, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { VERSE_IMAGE_STYLES } from "@/components/verseImageStyles";
+import { downloadVerseImage, shareVerseImage } from "@/components/verseImageSharing";
 
 interface VerseShareDialogProps {
   open: boolean;
@@ -35,6 +36,7 @@ const wrapCanvasText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: n
 export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference }: VerseShareDialogProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState(0);
   const images = useRef<Record<number, string>>({});
   const generation = useRef(0);
@@ -80,25 +82,21 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     ctx.shadowColor = "rgba(0,0,0,0.9)";
     ctx.shadowBlur = 16;
 
-    ctx.font = "400 44px 'Cormorant Garamond', Georgia, 'Times New Roman', serif";
-    const maxWidth = 880;
-    let lines = wrapCanvasText(ctx, quote, maxWidth);
-    if (lines.length > 6) {
-      ctx.font = "400 38px 'Cormorant Garamond', Georgia, serif";
-      lines = wrapCanvasText(ctx, quote, maxWidth);
-    }
-    const lineHeight = lines.length > 5 ? 50 : 58;
+    const maxWidth = size - 160;
     const startY = crossY + 28;
-    lines.forEach((line, index) => {
-      ctx.fillText(line, size / 2, startY + index * lineHeight);
-    });
-
-    // Reference in gold tracked caps
+    let fontSize = 44;
+    let lines: string[] = [];
+    while (fontSize >= 20) {
+      ctx.font = `400 ${fontSize}px 'Cormorant Garamond', Georgia, serif`;
+      lines = wrapCanvasText(ctx, quote, maxWidth);
+      if (lines.length * fontSize * 1.25 <= size - 150 - startY) break;
+      fontSize -= 2;
+    }
+    const lineHeight = fontSize * 1.25;
+    lines.forEach((line, index) => ctx.fillText(line, size / 2, startY + index * lineHeight));
     ctx.fillStyle = "hsl(42 78% 72%)";
-    ctx.font = "500 22px 'Inter', system-ui, sans-serif";
-    const refY = startY + lines.length * lineHeight + 24;
-    const refText = verseReference.toUpperCase().split("").join(" ");
-    ctx.fillText(refText, size / 2, refY);
+    ctx.font = "500 22px system-ui, sans-serif";
+    ctx.fillText(verseReference.toUpperCase(), size / 2, startY + lines.length * lineHeight + 20);
 
     // Signature
     ctx.shadowBlur = 0;
@@ -107,24 +105,10 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     ctx.fillText("O R T H O C R O S S", size / 2, size - 56);
   };
 
-  const drawFallbackBackground = (ctx: CanvasRenderingContext2D, size: number, styleIndex: number) => {
-    const style = VERSE_IMAGE_STYLES[styleIndex] ?? VERSE_IMAGE_STYLES[0];
-    const bg = ctx.createLinearGradient(0, 0, size, size);
-    bg.addColorStop(0, style.background[0]);
-    bg.addColorStop(0.6, style.background[1]);
-    bg.addColorStop(1, style.background[2]);
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, size, size);
-    const glow = ctx.createRadialGradient(size * 0.5, size * 0.7, 60, size * 0.5, size * 0.7, 700);
-    glow.addColorStop(0, "hsl(42 72% 72% / 0.32)");
-    glow.addColorStop(1, "hsl(42 64% 28% / 0)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, size, size);
-  };
-
   const generateImage = useCallback(async (styleIndex: number) => {
     const requestId = ++generation.current;
     setIsGenerating(true);
+    setGenerationError(null);
     try {
       await document.fonts?.ready;
       const size = 1080;
@@ -134,26 +118,21 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("Canvas is unavailable");
 
-      let bgDrawn = false;
-      try {
-        const { data, error } = await supabase.functions.invoke("generate-verse-image", {
-          body: { verseText, verseReference },
-        });
-        if (error) throw error;
-        if (data?.imageUrl) {
-          const img = await loadImage(data.imageUrl);
-          ctx.drawImage(img, 0, 0, size, size);
-          bgDrawn = true;
+      const style = VERSE_IMAGE_STYLES[styleIndex] ?? VERSE_IMAGE_STYLES[0];
+      const { data, error } = await supabase.functions.invoke("generate-verse-image", {
+        body: { verseText, verseReference, styleId: style.id },
+      });
+      if (error) {
+        let message = error.message;
+        if (error.context instanceof Response) {
+          const details = await error.context.json().catch(() => null);
+          message = details?.error ?? details?.message ?? message;
         }
-      } catch (err) {
-        console.warn("AI background failed, using fallback:", err);
+        throw new Error(message);
       }
-
-      if (!bgDrawn) drawFallbackBackground(ctx, size, styleIndex);
-      if (bgDrawn) {
-        ctx.fillStyle = (VERSE_IMAGE_STYLES[styleIndex] ?? VERSE_IMAGE_STYLES[0]).tint;
-        ctx.fillRect(0, 0, size, size);
-      }
+      if (!data?.imageUrl) throw new Error(data?.error ?? "No image was returned.");
+      const img = await loadImage(data.imageUrl);
+      ctx.drawImage(img, 0, 0, size, size);
       drawTextOverlay(ctx, size);
 
       if (generation.current !== requestId) return;
@@ -162,7 +141,10 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
       setImageUrl(result);
     } catch (error) {
       console.error('Error generating verse image:', error);
-      toast.error("Failed to generate image. Please try again.");
+      if (generation.current !== requestId) return;
+      const message = error instanceof Error ? error.message : "The image could not be created.";
+      setGenerationError(message);
+      toast.error(message);
     } finally {
       if (generation.current === requestId) setIsGenerating(false);
     }
@@ -187,40 +169,20 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
   };
 
   const filename = `orthocross-verse-${verseReference.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
-  const shareText = `"${verseText}" — ${verseReference}\n\nShared from OrthoCross`;
-
   const handleDownload = () => {
     if (!imageUrl) return;
-    const link = document.createElement('a');
-    link.href = imageUrl;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadVerseImage(imageUrl, filename);
     toast.success("Image downloaded!");
   };
 
-  const handleShare = async (method: 'native' | 'email' | 'sms') => {
+  const handleShare = async () => {
     if (!imageUrl) return;
     try {
-      if (method === 'native' && navigator.share) {
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-        const file = new File([blob], filename, { type: 'image/png' });
-        await navigator.share({
-          title: 'Verse of the Day',
-          text: shareText,
-          files: [file],
-        });
-        toast.success("Shared successfully!");
-      } else if (method === 'email') {
-        window.location.href = `mailto:?subject=${encodeURIComponent('Verse of the Day')}&body=${encodeURIComponent(shareText)}`;
-      } else if (method === 'sms') {
-        window.location.href = `sms:?body=${encodeURIComponent(shareText)}`;
-      }
+      const outcome = await shareVerseImage(imageUrl, filename);
+      if (outcome === "downloaded") toast.info("Image downloaded. This browser cannot share image attachments directly.");
     } catch (error) {
-      console.error('Error sharing:', error);
-      toast.error("Sharing failed. Try downloading the image instead.");
+      if (error instanceof Error && error.name === "AbortError") return;
+      toast.error("The image could not be shared. You can download it instead.");
     }
   };
 
@@ -244,7 +206,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
             ) : imageUrl ? (
               <img src={imageUrl} alt={`${verseReference} verse`} className="w-full h-full object-cover" />
             ) : (
-              <p className="text-sm text-muted-foreground">Failed to load image</p>
+              <p className="text-sm text-muted-foreground">{generationError ?? "No image available"}</p>
             )}
           </div>
 
@@ -265,54 +227,15 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
             ))}
           </div>
 
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground text-center">
-              Share this verse with friends and family
-            </p>
-
-            <div className="grid grid-cols-2 gap-2">
-              {typeof navigator !== 'undefined' && (navigator as any).share && (
-                <Button
-                  onClick={() => handleShare('native')}
-                  disabled={isGenerating || !imageUrl}
-                  variant="outline"
-                  className="gap-2"
-                >
-                  <Share2 className="w-4 h-4" />
-                  Share
-                </Button>
-              )}
-
-              <Button
-                onClick={handleDownload}
-                disabled={isGenerating || !imageUrl}
-                variant="outline"
-                className="gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Download
-              </Button>
-
-              <Button
-                onClick={() => handleShare('email')}
-                disabled={isGenerating || !imageUrl}
-                variant="outline"
-                className="gap-2"
-              >
-                <Mail className="w-4 h-4" />
-                Email
-              </Button>
-
-              <Button
-                onClick={() => handleShare('sms')}
-                disabled={isGenerating || !imageUrl}
-                variant="outline"
-                className="gap-2"
-              >
-                <MessageSquare className="w-4 h-4" />
-                Text
-              </Button>
-            </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Button onClick={handleShare} disabled={isGenerating || !imageUrl} variant="outline" className="gap-2">
+              <Share2 className="w-4 h-4" />
+              Share
+            </Button>
+            <Button onClick={handleDownload} disabled={isGenerating || !imageUrl} variant="outline" className="gap-2">
+              <Download className="w-4 h-4" />
+              Download
+            </Button>
           </div>
 
           <div className="flex gap-2">
