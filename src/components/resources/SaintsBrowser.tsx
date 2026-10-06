@@ -84,8 +84,8 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
   const mid = Math.ceil(items.length / 2);
   const rows = [items.slice(0, mid), items.slice(mid)];
   return (
-    <div className="overflow-x-auto pb-3 mb-2" aria-label="Sub-categories">
-      <div className="flex flex-col gap-2 w-max min-w-full">
+    <div className="-mx-6 overflow-x-auto pb-3 mb-2" aria-label="Sub-categories">
+      <div className="flex flex-col gap-2 w-max min-w-full px-6">
         {rows.map((row, rowIndex) => (
           <div key={rowIndex} className="flex gap-2">
             {row.map(item => (
