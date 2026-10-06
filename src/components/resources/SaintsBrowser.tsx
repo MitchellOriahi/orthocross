@@ -95,7 +95,8 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
     const measure = measureRef.current;
     if (!scroll || !measure) return;
     const GAP = 8;
-    const limit = scroll.clientWidth - GAP;
+    // The px-6 insets leave 48px of the scroll container's width for pills.
+    const limit = scroll.clientWidth - 48;
     const pills = Array.from(measure.children) as HTMLElement[];
     const widths = items.map((_, index) => pills[index]?.offsetWidth ?? 0);
     const next: string[][] = [[], []];
