@@ -79,6 +79,23 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   );
 }
 
+// Subcategory pills sit in two stacked rows; each row carousels sideways when its pills overflow.
+function SubcategoryPills({ items, active, onToggle }: { items: string[]; active: string | null; onToggle: (item: string) => void }) {
+  const mid = Math.ceil(items.length / 2);
+  const rows = [items.slice(0, mid), items.slice(mid)];
+  return (
+    <div className="flex flex-col gap-2 pb-3 mb-2" aria-label="Sub-categories">
+      {rows.map((row, rowIndex) => (
+        <div key={rowIndex} className="flex gap-2 overflow-x-auto">
+          {row.map(item => (
+            <Button key={item} size="sm" variant={item === "All" ? active === null ? "secondary" : "ghost" : active === item ? "secondary" : "ghost"} aria-pressed={item === "All" ? active === null : active === item} onClick={() => onToggle(item)} className="shrink-0 rounded-full border border-border">{item}</Button>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SaintRows({ saints, onSelect }: { saints: SaintDetail[]; onSelect: (saint: SaintDetail) => void }) {
   return <div className="divide-y divide-border">{saints.map(saint => <Button key={saint.id} variant="ghost" onClick={() => onSelect(saint)} className="h-auto w-full justify-start gap-3 px-0 py-3 text-left">
     <SaintPortrait saintId={saint.id} circular className="h-12 w-12" />
