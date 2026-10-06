@@ -645,10 +645,32 @@ const ChurchResources = () => {
                       aria-label="Search saints"
                     />
                   </div>}
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    {SAINT_CATEGORIES.map((category) => {
+                      const CategoryIcon = SAINT_CATEGORY_ICONS[category.id];
+                      const isActive = saintCategory === category.id;
+                      return (
+                        <Button
+                          key={category.id}
+                          variant="outline"
+                          aria-pressed={isActive}
+                          onClick={() => setSaintCategory(isActive ? null : category.id)}
+                          className={`h-auto min-h-[5.5rem] py-4 flex flex-col items-center justify-center gap-2 whitespace-normal ${isActive ? "border-primary bg-primary/5" : ""}`}
+                        >
+                          <CategoryIcon className={`w-6 h-6 ${isActive ? "text-primary" : "text-primary/70"}`} />
+                          <span className="text-sm font-medium leading-tight">{category.label}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
                   <div className="space-y-2">
                     {filteredSaints.length === 0 ? (
                       <div className="text-center text-muted-foreground py-8">
-                        {SAINTS_VISIBLE ? `No saints found matching "${saintSearch}"` : "No saints available."}
+                        {SAINTS_VISIBLE
+                          ? (saintSearch.trim()
+                              ? `No saints found matching "${saintSearch}"`
+                              : "No saints in this category yet")
+                          : "No saints available."}
                       </div>
                     ) : (
                       filteredSaints.map((saint) => (
