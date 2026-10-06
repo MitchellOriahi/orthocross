@@ -6,32 +6,48 @@ export const MIN_SAINTS_PER_TAG = 3;
 
 export const ANGEL_SUBCATEGORIES = [
   "Archangels",
-  "Heavenly Ranks",
-  "Guardian Angels",
-  "Heavenly Witnesses",
+  "Heavenly Orders",
+  "Guardians",
+  "Witnesses",
+  "Appearances",
 ] as const;
 
+export const BIBLICAL_SUBCATEGORIES = ["Forefathers", "Prophets", "Kings", "Holy Family", "Myrrh-bearers", "Gospel Era", "The Twelve", "The Seventy"] as const;
+
 export const MISSIONARY_SUBCATEGORIES = [
-  "Equal to Apostles",
+  "Equal-to-Apostles",
   "Enlighteners",
-  "Overseas Missionaries",
+  "Slavs",
+  "Caucasus",
+  "Africa",
+  "Asia & Americas",
 ] as const;
+
+export const FATHER_SUBCATEGORIES = ["Three Hierarchs", "Apostolic", "Cappadocians", "Syriac", "Wonderworkers", "Confessors", "Theologians", "Western Fathers"] as const;
 
 export const MONASTIC_SUBCATEGORIES = [
   "Desert Fathers",
   "Desert Mothers",
-  "Founders of Monasticism",
+  "Founders",
   "Stylites",
   "Holy Fools",
   "Athonites",
+  "Kiev Caves",
   "Elders",
 ] as const;
+
+export const MARTYR_SUBCATEGORIES = ["Early Martyrs", "Great-martyrs", "Hieromartyrs", "Soldiers", "Women", "Neomartyrs", "Passion-bearers", "Modern"] as const;
+export const LAYPEOPLE_SUBCATEGORIES = ["Emperors", "Kings & Princes", "Parents", "Children", "Healers", "Public Life", "Modern"] as const;
 
 // Sub-category pill labels shown on a category page, in order.
 export const CATEGORY_SUBCATEGORIES: Partial<Record<SaintCategoryId, readonly string[]>> = {
   angels: ANGEL_SUBCATEGORIES,
+  biblical: BIBLICAL_SUBCATEGORIES,
   "apostles-missionaries": MISSIONARY_SUBCATEGORIES,
+  "fathers-hierarchs": FATHER_SUBCATEGORIES,
   monastics: MONASTIC_SUBCATEGORIES,
+  martyrs: MARTYR_SUBCATEGORIES,
+  laypeople: LAYPEOPLE_SUBCATEGORIES,
 };
 
 // Curated factual groupings, independent of saved biographies and image fields.
@@ -52,16 +68,17 @@ export const SAINT_TAG_MEMBERS: Record<string, readonly string[]> = {
 // Curated factual sub-groupings for category pages with sub-category pills.
 // Every listed saint must belong to that category in saintCategories.ts.
 export const SAINT_SUBCATEGORY_MEMBERS: Record<string, readonly string[]> = {
-  "Equal to Apostles": ["thekla-iconium", "cyril-slavs", "methodius-slavs", "nino-georgia", "innocent-alaska", "nicholas-japan"],
+  "Equal-to-Apostles": ["thekla-iconium", "cyril-slavs", "methodius-slavs", "nino-georgia", "innocent-alaska", "nicholas-japan"],
   "Enlighteners": ["cyril-slavs", "methodius-slavs", "nino-georgia", "gregory-illuminator", "stephen-perm", "innocent-alaska", "nicholas-japan"],
   "Overseas Missionaries": ["paul-apostle", "barnabas-apostle", "thomas-apostle", "innocent-alaska", "nicholas-japan"],
   "Desert Fathers": ["anthony", "paul-of-thebes", "macarius-great", "pachomius-great", "bishoy-great", "moses-black", "shenoute-archimandrite", "saint-john-climacus"],
   "Desert Mothers": ["macrina-younger", "mary-egypt", "syncletica-alexandria"],
-  "Founders of Monasticism": ["anthony", "pachomius-great", "sergius-radonezh"],
+  "Founders": ["anthony", "pachomius-great", "sergius-radonezh"],
   // No stylite or holy-fool saints exist in the saved collection yet;
   // these pills stay visible (empty) until matching saints join.
   "Stylites": [],
   "Holy Fools": [],
+  "Kiev Caves": [],
   "Athonites": ["paisios-athonite", "silouan-athonite", "nicodemus-hagiorite"],
   "Elders": ["paisios-athonite", "silouan-athonite", "seraphim-sarov", "herman-alaska"],
 };
