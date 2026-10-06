@@ -38,9 +38,9 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         </div>
         {selectedCategory ? (
           <>
-            {subcategories && <div className="flex flex-wrap items-start gap-2 pb-3 mb-2" aria-label="Sub-categories">
-              <Button size="sm" variant={subcategory === null ? "secondary" : "ghost"} aria-pressed={subcategory === null} onClick={() => setSubcategory(null)} className="rounded-full border border-border">All</Button>
-              {subcategories.map(item => <Button key={item} size="sm" variant={subcategory === item ? "secondary" : "ghost"} aria-pressed={subcategory === item} onClick={() => setSubcategory(subcategory === item ? null : item)} className="rounded-full border border-border">{item}</Button>)}
+            {subcategories && <div className="-mx-4 flex flex-wrap items-start gap-2 pb-3 mb-2" aria-label="Sub-categories">
+              <Button size="sm" variant={subcategory === null ? "secondary" : "ghost"} aria-pressed={subcategory === null} onClick={() => setSubcategory(null)} className="rounded-full border border-border px-2.5 text-[11px]">All</Button>
+              {subcategories.map(item => <Button key={item} size="sm" variant={subcategory === item ? "secondary" : "ghost"} aria-pressed={subcategory === item} onClick={() => setSubcategory(subcategory === item ? null : item)} className="rounded-full border border-border px-2.5 text-[11px]">{item}</Button>)}
             </div>}
             {!subcategories && tags.length > 0 && <div className="flex gap-2 overflow-x-auto pb-3 mb-2" aria-label="Saint tags">
               <Button size="sm" variant={tag === null ? "secondary" : "ghost"} aria-pressed={tag === null} onClick={() => setTag(null)} className="shrink-0 rounded-full border border-border">All</Button>
