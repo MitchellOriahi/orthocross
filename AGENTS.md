@@ -2,6 +2,7 @@
 
 - Pause the Saints display through a dedicated visibility selector without modifying the catalog or its presentation, so restoring visibility preserves the exact saved collection.
 - Keep the refined Saints browser separate from the preserved catalog, derive counts and tag thresholds from saved records, and resolve displayed portraits only through an audited replaceable Commons provenance registry so hidden lists and unsuitable artwork cannot leak into the new presentation.
+- Keep Saints subgroup filtering within preserved parent classifications and qualify shared labels by category, so identically named filters cannot mix memberships.
 
 - Deduplicate React and React DOM in Vite resolution so the renderer and hook-based dependencies share one React instance and dispatcher.
 - Track new Journal drafts separately from persisted notes and evaluate cleanup with the shared empty-note predicate, so exit cleanup cannot delete existing or edited notes.

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { saintsContent } from "@/data/saintsContent";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { CATEGORY_SUBCATEGORIES, SAINT_SUBCATEGORY_MEMBERS, getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
+import { CATEGORY_SUBCATEGORIES, getSubcategorySaints, getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 
@@ -18,7 +18,7 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   const subcategories = category ? CATEGORY_SUBCATEGORIES[category] : undefined;
   const tags = category ? getCategoryTags(saintsContent, category) : [];
   const categorySaints = getCategorySaints(saintsContent, category, query, tag);
-  const saints = subcategory ? categorySaints.filter(saint => SAINT_SUBCATEGORY_MEMBERS[subcategory]?.includes(saint.id)) : categorySaints;
+  const saints = getSubcategorySaints(categorySaints, category, subcategory);
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
 
   function back() {
@@ -94,6 +94,7 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
     const scroll = scrollRef.current;
     const measure = measureRef.current;
     if (!scroll || !measure) return;
+    const updateRows = () => {
     const GAP = 8;
     // The px-6 insets leave 48px of the scroll container's width for pills.
     const limit = scroll.clientWidth - 48;
@@ -120,6 +121,12 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
       }
     });
     setRows(next);
+    };
+    updateRows();
+    scroll.scrollLeft = 0;
+    const observer = new ResizeObserver(updateRows);
+    observer.observe(scroll);
+    return () => observer.disconnect();
   }, [items]);
 
   return (
