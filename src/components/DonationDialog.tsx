@@ -121,7 +121,8 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             Support OrthoCross
           </DialogTitle>
           <DialogDescription>
-            "It is more blessed to give than to receive." — Acts 20:35
+            <span className="block">"It is more blessed to give than to receive."</span>
+            <span className="mt-1 block text-muted-foreground">— Acts 20:35</span>
           </DialogDescription>
         </DialogHeader>
 
