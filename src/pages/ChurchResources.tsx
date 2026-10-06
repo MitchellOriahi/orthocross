@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft, MapPin, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft, MapPin, Loader2, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,6 +44,14 @@ const ChurchResources = () => {
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [locatingChurches, setLocatingChurches] = useState(false);
+  const [saintSearch, setSaintSearch] = useState("");
+  const filteredSaints = saintsContent.filter((saint) => {
+    const q = saintSearch.trim().toLowerCase();
+    if (!q) return true;
+    return `${saint.prefix} ${saint.name} ${saint.epithet} ${saint.shortDescription}`
+      .toLowerCase()
+      .includes(q);
+  });
 
   const handleFindChurchesNearMe = () => {
     // Apple devices default to Apple Maps; everyone else gets Google Maps.
@@ -661,7 +670,8 @@ const ChurchResources = () => {
                           )}
                         </div>
                       </Button>
-                    ))}
+                      ))
+                    )}
                   </div>
                 </CardContent>
               </Card>
