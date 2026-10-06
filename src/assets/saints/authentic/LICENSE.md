@@ -194,7 +194,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [CC0](https://creativecommons.org/publicdomain/zero/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Irenaeus of Lyons of Lyons
+## St. Irenaeus of Lyons
 
 - Artwork: Saint_irenee_saint_irenee.jpg
 - Creator / photograph: : Q3265409 VIAF : 51839609 ISNI : 0000000117631472 ULAN : 500105146 LCCN : no97029014 Open Library : OL4894597A WorldCat
@@ -210,7 +210,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Clement of Rome of Rome
+## St. Clement of Rome
 
 - Artwork: Clemens_Romanus.jpg
 - Creator / photograph: Unknown author
@@ -218,7 +218,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Cyprian of Carthage of Carthage
+## St. Cyprian of Carthage
 
 - Artwork: Cyprian_von_Karthago2.jpg
 - Creator / photograph: The original uploader was Bwag at German Wikipedia .
@@ -226,7 +226,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Ambrose of Milan of Milan
+## St. Ambrose of Milan
 
 - Artwork: AmbroseOfMilan_(cropped).jpg
 - Creator / photograph: Unknown author
@@ -242,7 +242,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Copyrighted free use](https://commons.wikimedia.org/wiki/File:Gregor-Chora_(cropped).jpg)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Gregory of Nyssa of Nyssa
+## St. Gregory of Nyssa
 
 - Artwork: Gregory_of_Nyssa.jpg
 - Creator / photograph: Anonymous Unknown author
@@ -250,7 +250,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Cyril of Jerusalem of Jerusalem
+## St. Cyril of Jerusalem
 
 - Artwork: Saint_Cyril_of_Jerusalem.jpg
 - Creator / photograph: Anonymous Unknown author
@@ -258,7 +258,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Cyril of Alexandria of Alexandria
+## St. Cyril of Alexandria
 
 - Artwork: Chora-Kirche_2013-03-21zh_(cropped).jpg
 - Creator / photograph: Rabe!
@@ -266,7 +266,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Ephrem the Syrian the Syrian
+## St. Ephrem the Syrian
 
 - Artwork: Mor_Ephrem_icon.jpg
 - Creator / photograph: Anonymous Unknown author
@@ -282,7 +282,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. John of Damascus of Damascus
+## St. John of Damascus
 
 - Artwork: Athonite_Fresco_Icon_of_Saint_John_of_Damascus.jpg
 - Creator / photograph: Unknown author Unknown author
@@ -290,7 +290,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Maximus the Confessor the Confessor
+## St. Maximus the Confessor
 
 - Artwork: Athonite_Fresco_Icon_of_Saint_Maximos_the_Confessor_2.jpg
 - Creator / photograph: Tzortzis Phouka
@@ -298,7 +298,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. John Climacus of the Ladder
+## St. John Climacus
 
 - Artwork: Lestvichnik.jpg
 - Creator / photograph: Unknown
@@ -314,7 +314,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Spyridon of Trimythous of Trimythous
+## St. Spyridon of Trimythous
 
 - Artwork: Saint_Spiridion_(17_c).JPG
 - Creator / photograph: Anonymous Unknown author
@@ -330,7 +330,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Demetrius of Thessalonica of Thessalonica
+## St. Demetrius of Thessalonica
 
 - Artwork: Demetrius_of_Thessalonica_(St_Michael's,_Kyiv).jpg
 - Creator / photograph: This file is lacking author information.
@@ -346,7 +346,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Paraskeva of Iconium of Iconium
+## St. Paraskeva of Iconium
 
 - Artwork: Paraskeva_(15th_c,_Vologda_museum).jpg
 - Creator / photograph: Anonymous Unknown author
@@ -354,7 +354,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Seraphim of Sarov of Sarov
+## St. Seraphim of Sarov
 
 - Artwork: Seraphim of Sarov (after 1903, priv.coll).jpg
 - Creator / photograph: Anonymous Russian icon painter (before 1917) Public domain image (according to PD-Russia-expired )
@@ -362,7 +362,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Sergius of Radonezh of Radonezh
+## St. Sergius of Radonezh
 
 - Artwork: Sergius of Radonezh vita icon (17 c., Yaroslavl museum).jpg
 - Creator / photograph: anonimous
@@ -370,7 +370,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Silouan the Athonite the Athonite
+## St. Silouan the Athonite
 
 - Artwork: Silouanicon.jpg
 - Creator / photograph: Jack1956
@@ -378,7 +378,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Nektarios of Aegina of Aegina
+## St. Nektarios of Aegina
 
 - Artwork: Saint Nektarios of Aegina Icon.jpg
 - Creator / photograph: Unknown author Unknown author
@@ -386,7 +386,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Nicodemus the Hagiorite the Hagiorite
+## St. Nicodemus the Hagiorite
 
 - Artwork: Athonite Icon of Saint Nikodemos the Hagiorite.jpg
 - Creator / photograph: Unknown author Unknown author
@@ -394,7 +394,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Dimitry of Rostov of Rostov
+## St. Dimitry of Rostov
 
 - Artwork: Guardian Angel with 4 saints circle of Dikariev, circa 1900 (Sotheby's).jpg
 - Creator / photograph: Mikhail Ivanovich Dikarev
@@ -410,7 +410,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Matrona of Moscow of Moscow
+## St. Matrona of Moscow
 
 - Artwork: Блаженная Матрона Московская (13899411716).jpg
 - Creator / photograph: Иконописная мастерская Елеон
@@ -418,7 +418,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Herman of Alaska of Alaska
+## St. Herman of Alaska
 
 - Artwork: Glorification of Venerable Herman of Alaska, Wonderworker of All America wg.jpg
 - Creator / photograph: Unknown author Unknown author
@@ -426,7 +426,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Innocent of Alaska of Alaska
+## St. Innocent of Alaska
 
 - Artwork: St Innocent of Alaska.JPG
 - Creator / photograph: Wolfymoza
@@ -442,7 +442,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. John of Shanghai and San Francisco of Shanghai and San Francisco
+## St. John of Shanghai and San Francisco
 
 - Artwork: Icon of Our Holy Father John of Shanghai and San Francisco.jpg
 - Creator / photograph: MKoala
@@ -450,7 +450,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Nicholas of Japan of Japan
+## St. Nicholas of Japan
 
 - Artwork: Hakodate Orthodox Church May 2016 Icon Nicholas of Japan.jpg
 - Creator / photograph: Alexander Klink
@@ -458,7 +458,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Vladimir the Great of Kyiv of Kyiv
+## St. Vladimir the Great of Kyiv
 
 - Artwork: Icon of S.Vladimir by anonymous after Vasnetsov (20 c, priv.coll).jpg
 - Creator / photograph: Anonymous Russian icon painter (before 1917) Public domain image (according to PD-Russia-expired )
@@ -466,7 +466,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Olga of Kyiv of Kyiv
+## St. Olga of Kyiv
 
 - Artwork: Gleb, Olga, guardian angel by O.Chirikov (1902, Novgorod museum).jpg
 - Creator / photograph: Osip Semenovich Chirikov
@@ -490,7 +490,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Sava of Serbia of Serbia
+## St. Sava of Serbia
 
 - Artwork: Icon of Saint Sava, Krupa Monastery.jpg
 - Creator / photograph: Rade Nagraisalović
@@ -498,7 +498,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Stephen of Perm of Perm
+## St. Stephen of Perm
 
 - Artwork: Stefan Permskiy.jpg
 - Creator / photograph: О. Алешков
@@ -506,7 +506,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Gregory Palamas Palamas
+## St. Gregory Palamas
 
 - Artwork: Gregory Palamas Fresco from Saint George Church in Kastoria, 14th Century.jpg
 - Creator / photograph: Unknown author Unknown author
@@ -514,7 +514,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Theodore the Studite the Studite
+## St. Theodore the Studite
 
 - Artwork: Studite.jpg
 - Creator / photograph: Anonymous Unknown author
@@ -522,7 +522,7 @@ These are reproductions of existing devotional icons, mosaics and frescoes, not 
 - License: [Public domain](https://creativecommons.org/publicdomain/mark/1.0/)
 - Changes: Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license.
 
-## St. Symeon the New Theologian the New Theologian
+## St. Symeon the New Theologian
 
 - Artwork: Symeon the New Theologian.jpg
 - Creator / photograph: Unknown author Unknown author
