@@ -15,7 +15,7 @@ describe("Refined Saints browser", () => {
   });
   test("offers the requested Missionaries sub-categories, each within the category", () => {
     expect(MISSIONARY_SUBCATEGORIES).toEqual([
-      "Equal to the Apostles",
+      "Equal to Apostles",
       "Enlighteners of Nations",
       "Overseas Missionaries",
     ]);
@@ -26,7 +26,7 @@ describe("Refined Saints browser", () => {
       expect(ids.length).toBeGreaterThanOrEqual(3);
       for (const id of ids) expect(missionaryIds.has(id)).toBe(true);
     }
-    expect(SAINT_SUBCATEGORY_MEMBERS["Equal to the Apostles"]).toContain("cyril-slavs");
+    expect(SAINT_SUBCATEGORY_MEMBERS["Equal to Apostles"]).toContain("cyril-slavs");
     expect(SAINT_SUBCATEGORY_MEMBERS["Enlighteners of Nations"]).toContain("gregory-illuminator");
     expect(SAINT_SUBCATEGORY_MEMBERS["Overseas Missionaries"]).toContain("nicholas-japan");
   });
