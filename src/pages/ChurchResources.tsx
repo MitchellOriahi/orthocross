@@ -611,8 +611,24 @@ const ChurchResources = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="relative mb-4">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                    <Input
+                      type="search"
+                      placeholder="Search a saint by name…"
+                      value={saintSearch}
+                      onChange={(e) => setSaintSearch(e.target.value)}
+                      className="pl-9 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      aria-label="Search saints"
+                    />
+                  </div>
                   <div className="space-y-2">
-                    {saintsContent.map((saint) => (
+                    {filteredSaints.length === 0 ? (
+                      <div className="text-center text-muted-foreground py-8">
+                        No saints found matching "{saintSearch}"
+                      </div>
+                    ) : (
+                      filteredSaints.map((saint) => (
                       <Button
                         variant="ghost"
                         key={saint.id}
