@@ -9,7 +9,7 @@ export function SaintPortrait({ saintId, circular = false, className }: { saintI
   return (
     <span className={cn("block aspect-square shrink-0 overflow-hidden border border-border bg-muted", circular ? "rounded-full" : "rounded-lg", className)}>
       {icon && icon.image_url !== failedUrl ? (
-        <img src={icon.image_url} alt="" decoding="async" onError={() => setFailedUrl(icon.image_url)} className="saint-portrait-image h-full w-full object-cover object-[center_30%]" />
+        <img src={icon.image_url} alt="" decoding="async" onError={() => setFailedUrl(icon.image_url)} className={cn("saint-portrait-image h-full w-full", icon.image_fit === "contain" ? "saint-portrait-contained object-contain" : "object-cover object-[center_30%]")} />
       ) : (
         <span className="flex h-full w-full items-center justify-center text-muted-foreground"><Cross aria-hidden="true" className="h-7 w-7" /></span>
       )}
