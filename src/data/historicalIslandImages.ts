@@ -20,7 +20,7 @@ import oo_8 from "@/assets/history/authentic/oo_8.asset.json";
 
 // Upper framing protects heads and halos in portrait-oriented historical art.
 export const HISTORICAL_FACE_FOCUSED_ISLANDS = new Set([
-  "eo_1", "eo_3", "eo_6", "eo_7", "eo_8", "eo_9", "oo_1", "oo_8",
+  "eo_1", "eo_3", "eo_6", "eo_7", "eo_8", "eo_9", "oo_8",
 ]);
 
 export const HISTORICAL_ISLAND_IMAGES: Record<string, { url: string; title: string; source: string; author: string; license: string; licenseUrl: string }> = {
