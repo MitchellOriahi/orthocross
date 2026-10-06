@@ -79,12 +79,47 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   );
 }
 
-// Subcategory pills sit in two stacked rows that share one carousel: both rows slide together when the pills overflow.
+// Subcategory pills fill two rows to the available width before anything overflows;
+// once both rows are full, the remaining pills join a single shared carousel,
+// distributed so the two rows stay evenly filled while it slides.
 function SubcategoryPills({ items, active, onToggle }: { items: string[]; active: string | null; onToggle: (item: string) => void }) {
-  const mid = Math.ceil(items.length / 2);
-  const rows = [items.slice(0, mid), items.slice(mid)];
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
+  const [rows, setRows] = useState<string[][]>(() => {
+    const mid = Math.ceil(items.length / 2);
+    return [items.slice(0, mid), items.slice(mid)];
+  });
+
+  useLayoutEffect(() => {
+    const scroll = scrollRef.current;
+    const measure = measureRef.current;
+    if (!scroll || !measure) return;
+    const GAP = 8;
+    const limit = scroll.clientWidth - GAP;
+    const pills = Array.from(measure.children) as HTMLElement[];
+    const widths = items.map((_, index) => pills[index]?.offsetWidth ?? 0);
+    const next: string[][] = [[], []];
+    const rowWidths = [0, 0];
+    let currentRow = 0;
+    items.forEach((item, index) => {
+      const width = widths[index];
+      const rowGap = next[currentRow].length ? GAP : 0;
+      if (currentRow < 2 && rowWidths[currentRow] + width + rowGap > limit) currentRow += 1;
+      if (currentRow >= 2) {
+        // Both rows are full: keep them evenly filled as the carousel grows.
+        const row = rowWidths[0] <= rowWidths[1] ? 0 : 1;
+        next[row].push(item);
+        rowWidths[row] += width + (next[row].length > 1 ? GAP : 0);
+      } else {
+        next[currentRow].push(item);
+        rowWidths[currentRow] += width + rowGap;
+      }
+    });
+    setRows(next);
+  }, [items]);
+
   return (
-    <div className="-mx-6 overflow-x-auto pb-4 mb-2" aria-label="Sub-categories">
+    <div className="-mx-6 overflow-x-auto pb-4 mb-2" aria-label="Sub-categories" ref={scrollRef}>
       <div className="flex flex-col gap-2 w-max min-w-full px-6">
         {rows.map((row, rowIndex) => (
           <div key={rowIndex} className="flex gap-2">
@@ -93,6 +128,9 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
             ))}
           </div>
         ))}
+      </div>
+      <div ref={measureRef} aria-hidden="true" className="absolute invisible pointer-events-none flex gap-2 w-max">
+        {items.map(item => <Button key={item} size="sm" tabIndex={-1} variant="ghost" className="shrink-0 rounded-full border border-border">{item}</Button>)}
       </div>
     </div>
   );
