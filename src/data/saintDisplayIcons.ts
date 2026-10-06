@@ -27,7 +27,14 @@ function portrait(url: string, file: string, author: string, license = "Public d
 }
 
 export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
-  "archangel-michael": portrait(michael.url, "Michael_icon_Athens.JPG", "Unknown Byzantine painter, 14th century"),
+  "archangel-michael": {
+    image_url: michael.url,
+    image_source: "Provided by the app owner (uploaded icon)",
+    image_author: "LRP icon studio (owner-provided artwork)",
+    image_license: "Owner-provided",
+    image_license_url: "",
+    image_modification: "Displayed as uploaded, square-cropped by the shared portrait frame.",
+  },
   "mary-magdalene": portrait(mary.url, "Maria_Magdalene_icon.jpg", "Unknown icon painter, Dionysiou Monastery"),
   "timothy-apostle": portrait(timothy.url, "Saint_Timothy.jpg", "Unknown icon painter"),
   "peter-apostle": portrait(peter.url, "St_Peter_Icon_Sinai_7th_century.jpg", "Unknown painter, Saint Catherine’s Monastery, Sinai, 7th century"),
