@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { getSaintPageList, getSaintPageSubgroups } from "@/data/saintPageRoster";
+import { getSaintPageList, getSaintPageSubgroups, type SaintTraditionFilter } from "@/data/saintPageRoster";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 import { SaintListCard } from "./SaintListCard";
@@ -14,13 +14,14 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
+  const [tradition, setTradition] = useState<SaintTraditionFilter>("all");
   const selectedCategory = SAINT_CATEGORIES.find(item => item.id === category);
   const subcategories = category ? getSaintPageSubgroups(category) : undefined;
-  const saints = getSaintPageList(category, subcategory, query);
+  const saints = getSaintPageList(category, subcategory, query, tradition);
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
 
   function back() {
-    if (category) { setCategory(null); setTag(null); setSubcategory(null); } else onClose();
+    if (category) { setCategory(null); setTag(null); setSubcategory(null); setTradition("all"); } else onClose();
   }
 
   return (
@@ -29,7 +30,16 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         <Button variant="ghost" onClick={back}><ArrowLeft className="h-4 w-4" />Back</Button>
       </div>
       <div className="p-6">
-        <h2 className="text-2xl font-semibold mb-1">{selectedCategory?.label ?? "Saints"}</h2>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-1">
+          <h2 className="text-2xl font-semibold">{selectedCategory?.label ?? "Saints"}</h2>
+          {selectedCategory && (
+            <div className="flex gap-2" role="group" aria-label="Saint tradition">
+              <Button size="sm" variant={tradition === "all" ? "default" : "outline"} aria-pressed={tradition === "all"} onClick={() => setTradition("all")}>All</Button>
+              <Button size="sm" variant={tradition === "Eastern" ? "default" : "outline"} aria-pressed={tradition === "Eastern"} onClick={() => setTradition("Eastern")} className={tradition === "Eastern" ? "" : "text-[hsl(var(--tradition-eastern))] hover:text-[hsl(var(--tradition-eastern))] border-[hsl(var(--tradition-eastern)/0.5)]"}>Eastern</Button>
+              <Button size="sm" variant={tradition === "Oriental" ? "default" : "outline"} aria-pressed={tradition === "Oriental"} onClick={() => setTradition("Oriental")} className={tradition === "Oriental" ? "" : "text-[hsl(var(--tradition-oriental))] hover:text-[hsl(var(--tradition-oriental))] border-[hsl(var(--tradition-oriental)/0.5)]"}>Oriental</Button>
+            </div>
+          )}
+        </div>
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input type="search" placeholder="Search a saint by name…" aria-label="Search saints" value={query} onChange={event => setQuery(event.target.value)} className="pl-9" />
@@ -47,7 +57,7 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
               {SAINT_CATEGORIES.map((item, index) => {
                 // An odd tile count centers the final box under both columns.
                 const centered = index === SAINT_CATEGORIES.length - 1 && SAINT_CATEGORIES.length % 2 === 1;
-                const tile = <Button variant="ghost" onClick={() => { setCategory(item.id); setTag(null); setSubcategory(null); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
+                const tile = <Button variant="ghost" onClick={() => { setCategory(item.id); setTag(null); setSubcategory(null); setTradition("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
                   <SaintPortrait saintId={SAINT_CATEGORY_DISPLAY_ICON[item.id]} className="w-full" />
                   <span className="mt-2 h-10 w-full text-sm font-medium leading-5 line-clamp-2">{item.label}</span>
                 </Button>;
