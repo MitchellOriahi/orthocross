@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, Highlighter, BookOpen, Scroll } from "lucide
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
-import { HISTORICAL_ISLAND_IMAGES } from "@/data/historicalIslandImages";
+import { HISTORICAL_ISLAND_IMAGES, HISTORICAL_FACE_FOCUSED_ISLANDS } from "@/data/historicalIslandImages";
 
 interface PaginatedReadingProps {
   content: string;
@@ -255,7 +255,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
       {iconUrl && (
         <figure className="mb-6 mx-auto w-full max-w-sm">
           <div className="h-48 rounded-lg overflow-hidden bg-muted border border-border">
-            <img src={iconUrl} alt={imageCredit?.title ?? "Historical artwork"} className="w-full h-full object-cover object-center" loading="eager" decoding="sync" fetchPriority="high" />
+            <img src={iconUrl} alt={imageCredit?.title ?? "Historical artwork"} className={cn("w-full h-full object-cover", HISTORICAL_FACE_FOCUSED_ISLANDS.has(islandId) ? "object-top" : "object-center")} loading="eager" decoding="sync" fetchPriority="high" />
           </div>
           {imageCredit && (
             <figcaption className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">

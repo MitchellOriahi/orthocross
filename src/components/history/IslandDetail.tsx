@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Shield, Settings as SettingsIcon, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -113,6 +113,12 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
   const [shuffledOptions, setShuffledOptions] = useState<{text: string, originalIndex: number}[][]>([]);
 
   const { toast, dismiss } = useToast();
+
+  // Island selection happens within the same page, so route-level scroll
+  // restoration does not run. Reset before the new lesson is painted.
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [campaignId, island.id]);
 
   // A toast raised mid-quiz must not outlive this screen. Run on unmount
   // only: dismiss is re-created each render, so it must not be a dep.
@@ -301,6 +307,7 @@ export const IslandDetail = ({ island, campaignId, onComplete, onBack }: IslandD
               <>
                 <HistoryHighlightIntro />
                 <PaginatedReading
+                  key={island.id}
                   content={island.reading}
                   onComplete={handleStartQuiz}
                   iconUrl={island.iconUrl}
