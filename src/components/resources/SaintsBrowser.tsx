@@ -28,7 +28,7 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         <Button variant="ghost" onClick={back}><ArrowLeft className="h-4 w-4" />Back</Button>
       </div>
       <div className="p-6">
-        <h2 className="text-2xl font-semibold mb-6">{selectedCategory?.label ?? "Saints"}</h2>
+        <h2 className="text-2xl font-semibold mb-4">{selectedCategory?.label ?? "Saints"}</h2>
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input type="search" placeholder="Search a saint by name…" aria-label="Search saints" value={query} onChange={event => setQuery(event.target.value)} className="pl-9" />
