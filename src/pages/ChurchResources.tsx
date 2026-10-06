@@ -611,11 +611,12 @@ const ChurchResources = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {saintsContent.map((saint) => (
-                      <button
+                    {[...saintsContent.filter((saint) => saint.id === "theotokos"), ...saintsContent.filter((saint) => saint.id !== "theotokos")].map((saint) => (
+                      <Button
+                        variant="ghost"
                         key={saint.id}
                         onClick={() => setSelectedSaint(saint)}
-                        className="w-full p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative flex items-start gap-4"
+                        className={`w-full h-auto whitespace-normal justify-start font-normal p-4 text-left rounded-lg border border-border hover:border-primary hover:bg-accent transition-all relative flex items-start gap-4 ${saint.id === "theotokos" ? "theotokos-sticker" : ""}`}
                       >
                         <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 border-2 border-primary/20">
                           <img 
@@ -641,7 +642,7 @@ const ChurchResources = () => {
                             </>
                           )}
                         </div>
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </CardContent>
