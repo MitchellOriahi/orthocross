@@ -59,3 +59,6 @@ test("the roster keeps supplied traditions and saved biographies intact", () => 
   expect(shown.iconUrl).toBe(original.iconUrl);
   expect(saintsContent).toHaveLength(100);
 });
+test("every roster saint's story has at most 12 cards", () => {
+  for (const saint of saintPageRoster) expect(saint.content.length).toBeLessThanOrEqual(12);
+});
