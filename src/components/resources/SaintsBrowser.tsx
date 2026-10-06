@@ -73,8 +73,6 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
                   : tile;
               })}
             </div>
-            {query.trim() && saints.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No saints found matching “{query}”</p>}
-            {query.trim() && <SaintSearchRows saints={saints} onSelect={onSelect} />}
             <details className="mt-4 text-xs text-muted-foreground">
               <summary className="cursor-pointer">Icon credits</summary>
               <div className="mt-2 space-y-2 break-words">
