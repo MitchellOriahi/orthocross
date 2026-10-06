@@ -101,5 +101,6 @@ export const SAINT_CATEGORY_DISPLAY_ICON: Record<string, string> = {
   monastics: "saint-anthony-lrp",
   "fathers-hierarchs": "saint-nicholas-lrp",
   martyrs: "saint-stephen-lrp",
+  "apostles-missionaries": "timothy-apostle",
   laypeople: "xenia-petersburg",
 };

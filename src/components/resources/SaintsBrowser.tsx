@@ -44,13 +44,18 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         ) : (
           <>
             <div className="grid grid-cols-2 gap-3 mb-4">
-              {SAINT_CATEGORIES.map(item => {
+              {SAINT_CATEGORIES.map((item, index) => {
                 const count = getCategoryCount(saintsContent, item.id);
-                return <Button variant="ghost" key={item.id} onClick={() => { setCategory(item.id); setTag(null); }} className="h-auto min-w-0 p-0 gap-0 flex-col items-stretch whitespace-normal text-left hover:bg-transparent">
+                // An odd tile count centers the final box under both columns.
+                const centered = index === SAINT_CATEGORIES.length - 1 && SAINT_CATEGORIES.length % 2 === 1;
+                const tile = <Button variant="ghost" onClick={() => { setCategory(item.id); setTag(null); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-stretch whitespace-normal text-left hover:bg-transparent">
                   <SaintPortrait saintId={SAINT_CATEGORY_DISPLAY_ICON[item.id]} className="w-full" />
                   <span className="mt-2 h-10 text-sm font-medium leading-5 line-clamp-2">{item.label}</span>
                   <span className="mt-1 text-xs font-normal text-muted-foreground">{count} {count === 1 ? "saint" : "saints"}</span>
                 </Button>;
+                return centered
+                  ? <div key={item.id} className="col-span-2 flex justify-center"><div className="w-[calc(50%-6px)]">{tile}</div></div>
+                  : tile;
               })}
             </div>
             {query.trim() && saints.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No saints found matching “{query}”</p>}

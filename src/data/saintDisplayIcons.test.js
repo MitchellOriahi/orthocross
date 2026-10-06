@@ -60,6 +60,15 @@ test("Martyrs use the owner-provided Saint Stephen icon with angel-style display
   expect(icon.image_source).toContain("Provided by the app owner");
 });
 
+test("Missionaries use the audited Saint Timothy portrait in standard display", () => {
+  expect(SAINT_CATEGORY_DISPLAY_ICON["apostles-missionaries"]).toBe("timothy-apostle");
+  const icon = SAINT_DISPLAY_ICONS["timothy-apostle"];
+  expect(icon).toBeDefined();
+  expect(new URL(icon.image_source).hostname).toBe("commons.wikimedia.org");
+  expect(icon.image_fit).toBeUndefined(); // cover crop, not the contain treatment
+  expect(icon.image_glow).toBeUndefined();
+});
+
 test("unsuitable and unaudited images never fall back to legacy artwork", () => {
   expect(SAINT_DISPLAY_ICONS["vladimir-kyiv"]).toBeUndefined();
   expect(SAINT_DISPLAY_ICONS["saint-gregory-nazianzus"]).toBeUndefined();

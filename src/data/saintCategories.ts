@@ -20,15 +20,17 @@ export interface SaintCategory {
   label: string;
 }
 
-// Row order: each row renders two boxes side by side.
-// Apostles and Missionaries and Holy Rulers are currently not shown; their
-// saved classification stays intact below so they can be restored exactly.
+// Row order: each row renders two boxes side by side. When the list length is
+// odd, the last box centers under the grid instead of hugging one column.
+// Holy Rulers is currently not shown; its saved classification stays intact
+// below so it can be restored exactly.
 export const SAINT_CATEGORIES: SaintCategory[] = [
   { id: "angels", label: "Angels and Archangels" },
   { id: "biblical", label: "Biblical Saints" },
   { id: "monastics", label: "Monastics" },
   { id: "fathers-hierarchs", label: "Church Fathers and Hierarchs" },
   { id: "martyrs", label: "Martyrs" },
+  { id: "apostles-missionaries", label: "Missionaries" },
   { id: "laypeople", label: "Righteous Laypeople" },
 ];
 
