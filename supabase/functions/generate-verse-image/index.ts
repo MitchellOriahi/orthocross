@@ -83,9 +83,11 @@ Interpretation rules:
     );
 
     if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error("AI API error:", errorText);
-      throw new Error(`AI generation failed: ${aiResponse.status}`);
+      const details = await aiResponse.json().catch(() => null);
+      const message = details?.error?.message ?? `Image generation failed (${aiResponse.status}).`;
+      return new Response(JSON.stringify({ error: message }), {
+        status: aiResponse.status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const aiData = await aiResponse.json();
