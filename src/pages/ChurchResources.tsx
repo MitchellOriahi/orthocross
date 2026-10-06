@@ -665,9 +665,9 @@ const ChurchResources = () => {
                           <span
                             className={`block aspect-square w-full overflow-hidden rounded-xl border bg-muted ${isActive ? "border-primary ring-2 ring-primary/40" : "border-border"}`}
                           >
-                            {thumbnailSaint ? (
+                            {thumbnailUrl ? (
                               <img
-                                src={thumbnailSaint.iconUrl}
+                                src={thumbnailUrl}
                                 alt=""
                                 className="h-full w-full object-cover object-top"
                               />
