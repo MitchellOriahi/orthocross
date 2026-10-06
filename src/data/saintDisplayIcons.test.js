@@ -60,13 +60,13 @@ test("Martyrs use the owner-provided Saint Stephen icon with angel-style display
   expect(icon.image_source).toContain("Provided by the app owner");
 });
 
-test("Missionaries use the audited Saint Timothy portrait in standard display", () => {
-  expect(SAINT_CATEGORY_DISPLAY_ICON["apostles-missionaries"]).toBe("timothy-apostle");
-  const icon = SAINT_DISPLAY_ICONS["timothy-apostle"];
+test("Missionaries use the owner-provided Saint Olga icon with angel-style display", () => {
+  expect(SAINT_CATEGORY_DISPLAY_ICON["apostles-missionaries"]).toBe("saint-olga-lrp");
+  const icon = SAINT_DISPLAY_ICONS["saint-olga-lrp"];
   expect(icon).toBeDefined();
-  expect(new URL(icon.image_source).hostname).toBe("commons.wikimedia.org");
-  expect(icon.image_fit).toBeUndefined(); // cover crop, not the contain treatment
-  expect(icon.image_glow).toBeUndefined();
+  expect(icon.image_fit).toBe("contain");
+  expect(icon.image_glow).toBe(true);
+  expect(icon.image_source).toContain("Provided by the app owner");
 });
 
 test("Righteous Laypeople use the owner-provided Saint Matrona icon with angel-style display", () => {
