@@ -17,10 +17,21 @@ export const MISSIONARY_SUBCATEGORIES = [
   "Overseas Missionaries",
 ] as const;
 
+export const MONASTIC_SUBCATEGORIES = [
+  "Desert Fathers",
+  "Desert Mothers",
+  "Founders of Monasticism",
+  "Stylites",
+  "Holy Fools",
+  "Athonites",
+  "Elders",
+] as const;
+
 // Sub-category pill labels shown on a category page, in order.
 export const CATEGORY_SUBCATEGORIES: Partial<Record<SaintCategoryId, readonly string[]>> = {
   angels: ANGEL_SUBCATEGORIES,
   "apostles-missionaries": MISSIONARY_SUBCATEGORIES,
+  monastics: MONASTIC_SUBCATEGORIES,
 };
 
 // Curated factual groupings, independent of saved biographies and image fields.
@@ -44,6 +55,15 @@ export const SAINT_SUBCATEGORY_MEMBERS: Record<string, readonly string[]> = {
   "Equal to Apostles": ["thekla-iconium", "cyril-slavs", "methodius-slavs", "nino-georgia", "innocent-alaska", "nicholas-japan"],
   "Enlighteners": ["cyril-slavs", "methodius-slavs", "nino-georgia", "gregory-illuminator", "stephen-perm", "innocent-alaska", "nicholas-japan"],
   "Overseas Missionaries": ["paul-apostle", "barnabas-apostle", "thomas-apostle", "innocent-alaska", "nicholas-japan"],
+  "Desert Fathers": ["anthony", "paul-of-thebes", "macarius-great", "pachomius-great", "bishoy-great", "moses-black", "shenoute-archimandrite", "saint-john-climacus"],
+  "Desert Mothers": ["macrina-younger", "mary-egypt", "syncletica-alexandria"],
+  "Founders of Monasticism": ["anthony", "pachomius-great", "sergius-radonezh"],
+  // No stylite or holy-fool saints exist in the saved collection yet;
+  // these pills stay visible (empty) until matching saints join.
+  "Stylites": [],
+  "Holy Fools": [],
+  "Athonites": ["paisios-athonite", "silouan-athonite", "nicodemus-hagiorite"],
+  "Elders": ["paisios-athonite", "silouan-athonite", "seraphim-sarov", "herman-alaska"],
 };
 
 export function getCategoryCount(catalog: SaintDetail[], category: SaintCategoryId) {
