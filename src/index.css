@@ -47,12 +47,7 @@ All colors MUST be HSL.
     --podium-silver: 220 7% 58%;
     --podium-bronze: 26 78% 35%;
     --theotokos-gold: 43 80% 57%;
-    --theotokos-gold-light: 47 85% 79%;
-    --theotokos-gold-deep: 37 67% 45%;
-    --theotokos-ink: 30 45% 13%;
-    --theotokos-muted-ink: 30 28% 28%;
-    --theotokos-sticker-background: linear-gradient(120deg, hsl(var(--theotokos-gold-light)), hsl(var(--theotokos-gold)) 55%, hsl(var(--theotokos-gold-light)));
-    --theotokos-sticker-glow: 0 0 12px 2px hsl(var(--theotokos-gold) / 0.24);
+    --theotokos-glow: 0 0 14px 3px hsl(var(--theotokos-gold) / 0.4), 0 0 28px 8px hsl(var(--theotokos-gold) / 0.18);
     --verse-art-ink: 40 30% 96%;
     --verse-art-gold: 42 78% 72%;
     --verse-art-mist: 155 20% 82%;
@@ -200,19 +195,7 @@ All colors MUST be HSL.
 
 .theotokos-sticker,
 .theotokos-sticker:hover {
-  background: var(--theotokos-sticker-background);
-  color: hsl(var(--theotokos-ink));
-  border-color: hsl(var(--theotokos-gold-deep) / 0.7);
-  box-shadow: var(--theotokos-sticker-glow);
-}
-.theotokos-sticker .text-muted-foreground {
-  color: hsl(var(--theotokos-muted-ink));
-}
-.theotokos-sticker .bg-primary\/10 {
-  background: hsl(var(--theotokos-gold-light) / 0.85);
-}
-.theotokos-sticker .text-primary {
-  color: hsl(var(--theotokos-ink));
+  box-shadow: var(--theotokos-glow);
 }
 
 .journey-next-island {
