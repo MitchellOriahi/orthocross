@@ -176,6 +176,7 @@ const ChurchResources = () => {
           title={`${selectedSaint.prefix} ${selectedSaint.name}${selectedSaint.epithet ? ` ${selectedSaint.epithet}` : ''}`}
           subtitle={selectedSaint.shortDescription}
           content={selectedSaint.content}
+          iconCredit={selectedSaint.iconCredit}
           onClose={() => {
             setSelectedSaint(null);
             setSelectedSection("saints");
@@ -622,7 +623,8 @@ const ChurchResources = () => {
                           <img 
                             src={saint.iconUrl} 
                             alt={`${saint.prefix} ${saint.name}`}
-                            className="w-full h-full object-cover scale-125"
+                            className={`w-full h-full object-cover ${saint.iconCredit ? "" : "scale-125"}`}
+                            decoding="async"
                           />
                         </div>
                         <div className="flex-1 min-w-0 pt-1">

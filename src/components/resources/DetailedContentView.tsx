@@ -6,6 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import type { SaintIconCredit } from "@/data/saintTypes";
+import { SaintIconCredits } from "./SaintIconCredits";
 
 interface DetailedContentViewProps {
   title: string;
@@ -15,9 +17,10 @@ interface DetailedContentViewProps {
   showProgress?: boolean;
   onComplete?: () => void;
   iconUrl?: string;
+  iconCredit?: SaintIconCredit;
 }
 
-export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete, iconUrl }: DetailedContentViewProps) => {
+export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete, iconUrl, iconCredit }: DetailedContentViewProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   // If iconUrl exists, we'll show it on page 0, content starts from page 1
@@ -303,6 +306,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
             </div>
           </Card>
         )}
+        {iconCredit && <SaintIconCredits credit={iconCredit} />}
       </main>
     </div>
   );
