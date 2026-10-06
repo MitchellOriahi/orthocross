@@ -1,6 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import { mergeSaintCatalog } from "./saintCatalog";
-import { additionalSaints } from "./additionalSaints";
 import { saintsContent } from "./saintsContent";
 import {
   SAINT_CATEGORIES,
@@ -8,7 +6,7 @@ import {
   getSaintCategoryId,
 } from "./saintCategories";
 
-const allSaints = mergeSaintCatalog(saintsContent, additionalSaints);
+const allSaints = saintsContent;
 
 describe("Saint categories", () => {
   test("offers exactly the eight requested categories in the requested order", () => {
