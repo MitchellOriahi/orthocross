@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { saintsContent } from "./saintsContent";
 import { SAINT_CATEGORIES } from "./saintCategories";
-import { ANGEL_SUBCATEGORIES, CATEGORY_SUBCATEGORIES, MISSIONARY_SUBCATEGORIES, MONASTIC_SUBCATEGORIES, SAINT_SUBCATEGORY_MEMBERS, getCategoryCount, getCategorySaints, getCategoryTags, MIN_SAINTS_PER_TAG } from "./saintBrowser";
+import { ANGEL_SUBCATEGORIES, CATEGORY_SUBCATEGORIES, MISSIONARY_SUBCATEGORIES, MONASTIC_SUBCATEGORIES, SAINT_SUBCATEGORY_MEMBERS, getSubcategorySaints, getCategoryCount, getCategorySaints, getCategoryTags, MIN_SAINTS_PER_TAG } from "./saintBrowser";
 
 describe("Refined Saints browser", () => {
   test("offers the requested Angels sub-categories in order", () => {
@@ -83,6 +83,10 @@ describe("Refined Saints browser", () => {
     expect(tags.find(t => t.label === "Wonderworker")?.count).toBe(5);
     expect(getCategoryTags(saintsContent, "rulers")).toEqual([{ label: "Equal-to-the-Apostles", count: 4 }]);
     for (const category of SAINT_CATEGORIES) for (const tag of getCategoryTags(saintsContent, category.id)) expect(tag.count).toBeGreaterThanOrEqual(3);
+  });
+  test("Modern filters are scoped to their category", () => {
+    expect(getSubcategorySaints(getCategorySaints(saintsContent, "laypeople", "", null, true), "laypeople", "Modern").map(s => s.id)).toEqual(["matrona-moscow"]);
+    expect(getSubcategorySaints(getCategorySaints(saintsContent, "martyrs", "", null, true), "martyrs", "Modern")).toEqual([]);
   });
   test("future restored lists combine name search and tag filtering", () => {
     expect(getCategorySaints(saintsContent, "fathers-hierarchs", "spyridon", "Wonderworker", true).map(s => s.id)).toEqual(["saint-spyridon-trimythous"]);
