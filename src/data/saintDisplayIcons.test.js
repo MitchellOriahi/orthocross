@@ -51,6 +51,15 @@ test("Church Fathers use the owner-provided Saint Nicholas icon with angel-style
   expect(icon.image_source).toContain("Provided by the app owner");
 });
 
+test("Martyrs use the owner-provided Saint Stephen icon with angel-style display", () => {
+  expect(SAINT_CATEGORY_DISPLAY_ICON.martyrs).toBe("saint-stephen-lrp");
+  const icon = SAINT_DISPLAY_ICONS["saint-stephen-lrp"];
+  expect(icon).toBeDefined();
+  expect(icon.image_fit).toBe("contain");
+  expect(icon.image_glow).toBe(true);
+  expect(icon.image_source).toContain("Provided by the app owner");
+});
+
 test("unsuitable and unaudited images never fall back to legacy artwork", () => {
   expect(SAINT_DISPLAY_ICONS["vladimir-kyiv"]).toBeUndefined();
   expect(SAINT_DISPLAY_ICONS["saint-gregory-nazianzus"]).toBeUndefined();
