@@ -24,7 +24,7 @@ import { PrayerDetailView } from "@/components/resources/PrayerDetailView";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { getVisibleSaints, SAINTS_VISIBLE } from "@/data/saintsVisibility";
-import { SAINT_CATEGORIES, filterSaintsByCategory, getSaintCategoryId, type SaintCategoryId } from "@/data/saintCategories";
+import { SAINT_CATEGORIES, SAINT_CATEGORY_THUMBNAIL_SAINT_ID, filterSaintsByCategory, getSaintCategoryId, type SaintCategoryId } from "@/data/saintCategories";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
@@ -648,6 +648,10 @@ const ChurchResources = () => {
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     {SAINT_CATEGORIES.map((category) => {
                       const CategoryIcon = SAINT_CATEGORY_ICONS[category.id];
+                      const thumbnailSaintId = SAINT_CATEGORY_THUMBNAIL_SAINT_ID[category.id];
+                      const thumbnailSaint = thumbnailSaintId
+                        ? saintsContent.find((saint) => saint.id === thumbnailSaintId)
+                        : undefined;
                       const isActive = saintCategory === category.id;
                       return (
                         <Button
@@ -657,7 +661,15 @@ const ChurchResources = () => {
                           onClick={() => setSaintCategory(isActive ? null : category.id)}
                           className={`h-auto min-h-[5.5rem] py-4 flex flex-col items-center justify-center gap-2 whitespace-normal ${isActive ? "border-primary bg-primary/5" : ""}`}
                         >
-                          <CategoryIcon className={`w-6 h-6 ${isActive ? "text-primary" : "text-primary/70"}`} />
+                          {thumbnailSaint ? (
+                            <img
+                              src={thumbnailSaint.iconUrl}
+                              alt=""
+                              className="w-10 h-10 rounded-full object-cover object-top border border-primary/30"
+                            />
+                          ) : (
+                            <CategoryIcon className={`w-6 h-6 ${isActive ? "text-primary" : "text-primary/70"}`} />
+                          )}
                           <span className="text-sm font-medium leading-tight">{category.label}</span>
                         </Button>
                       );

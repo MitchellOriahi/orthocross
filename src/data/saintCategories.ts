@@ -148,6 +148,19 @@ const SAINT_CATEGORY_BY_ID: Record<string, SaintCategoryId> = {
   "matrona-moscow": "laypeople",
 };
 
+// Thumbnail saint for each category box: the most popular saint in the
+// category, whose icon illustrates the box. Angels has no saint in the
+// current catalog, so it falls back to the Lucide icon in the UI.
+export const SAINT_CATEGORY_THUMBNAIL_SAINT_ID: Partial<Record<SaintCategoryId, string>> = {
+  "biblical": "theotokos",
+  "apostles-missionaries": "peter-apostle",
+  "fathers-hierarchs": "nicholas",
+  "monastics": "anthony",
+  "martyrs": "george",
+  "rulers": "constantine-great",
+  "laypeople": "xenia-petersburg",
+};
+
 export function getSaintCategoryId(saintId: string): SaintCategoryId | null {
   return SAINT_CATEGORY_BY_ID[saintId] ?? null;
 }
