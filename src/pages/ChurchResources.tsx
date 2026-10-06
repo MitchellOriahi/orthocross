@@ -683,11 +683,11 @@ const ChurchResources = () => {
                   </div>
                   <div className="space-y-2">
                     {filteredSaints.length === 0 ? (
-                      <div className="text-center text-muted-foreground py-8">
-                        {saintSearch.trim()
-                          ? `No saints found matching "${saintSearch}"`
-                          : "No saints in this category yet"}
-                      </div>
+                      saintSearch.trim() ? (
+                        <div className="text-center text-muted-foreground py-8">
+                          {`No saints found matching "${saintSearch}"`}
+                        </div>
+                      ) : null
                     ) : (
                       filteredSaints.map((saint) => (
                       <Button
