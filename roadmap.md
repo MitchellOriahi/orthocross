@@ -1,6 +1,8 @@
 # Verse image sharing
 
 ## Saints
+- [ ] Add exactly 88 relevant saints with accurate lives, verified traditional icons and source/license credits.
+- [ ] Verify all 100 Saints cards, portrait framing, alphabetical order and detail views.
 - [x] Put Theotokos first and apply a gold background with a light glow to her entire sticker, keeping the image unchanged.
 
 ## Historical island imagery
