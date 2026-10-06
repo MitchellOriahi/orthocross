@@ -10,17 +10,8 @@ import mosesBlackIcon from "@/assets/saints/moses-black-icon.jpg";
 import nicholasIcon from "@/assets/saints/nicholas-icon.jpg";
 import paisiosIcon from "@/assets/saints/paisios-icon.jpg";
 import theotokosIcon from "@/assets/saints/theotokos-icon.jpg";
-
-export interface SaintDetail {
-  id: string;
-  prefix: string;
-  name: string;
-  epithet: string;
-  shortDescription: string;
-  tradition: "Oriental" | "Eastern" | "Eastern/Oriental";
-  iconUrl: string;
-  content: string[];
-}
+import type { SaintDetail } from "./saintTypes";
+export type { SaintDetail } from "./saintTypes";
 
 export const saintsContent: SaintDetail[] = [
   {
