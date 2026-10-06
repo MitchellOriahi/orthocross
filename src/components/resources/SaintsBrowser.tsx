@@ -129,7 +129,7 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
           </div>
         ))}
       </div>
-      <div ref={measureRef} aria-hidden="true" className="absolute invisible pointer-events-none flex gap-2 w-max">
+      <div ref={measureRef} aria-hidden="true" className="fixed left-[-9999px] top-0 invisible pointer-events-none flex gap-2 w-max -z-50">
         {items.map(item => <Button key={item} size="sm" tabIndex={-1} variant="ghost" className="shrink-0 rounded-full border border-border">{item}</Button>)}
       </div>
     </div>
