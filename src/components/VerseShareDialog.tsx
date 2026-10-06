@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Mail, MessageSquare, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { VERSE_IMAGE_STYLES } from "@/components/verseImageStyles";
 
 interface VerseShareDialogProps {
   open: boolean;
@@ -34,6 +35,10 @@ const wrapCanvasText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: n
 export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference }: VerseShareDialogProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState(0);
+  const images = useRef<Record<number, string>>({});
+  const generation = useRef(0);
+  const startedVerse = useRef("");
 
   const loadImage = (src: string) =>
     new Promise<HTMLImageElement>((resolve, reject) => {
@@ -102,11 +107,12 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     ctx.fillText("O R T H O C R O S S", size / 2, size - 56);
   };
 
-  const drawFallbackBackground = (ctx: CanvasRenderingContext2D, size: number) => {
+  const drawFallbackBackground = (ctx: CanvasRenderingContext2D, size: number, styleIndex: number) => {
+    const style = VERSE_IMAGE_STYLES[styleIndex] ?? VERSE_IMAGE_STYLES[0];
     const bg = ctx.createLinearGradient(0, 0, size, size);
-    bg.addColorStop(0, "hsl(220 40% 8%)");
-    bg.addColorStop(0.6, "hsl(220 35% 14%)");
-    bg.addColorStop(1, "hsl(38 48% 22%)");
+    bg.addColorStop(0, style.background[0]);
+    bg.addColorStop(0.6, style.background[1]);
+    bg.addColorStop(1, style.background[2]);
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, size, size);
     const glow = ctx.createRadialGradient(size * 0.5, size * 0.7, 60, size * 0.5, size * 0.7, 700);
@@ -116,7 +122,8 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     ctx.fillRect(0, 0, size, size);
   };
 
-  const generateImage = useCallback(async () => {
+  const generateImage = useCallback(async (styleIndex: number) => {
+    const requestId = ++generation.current;
     setIsGenerating(true);
     try {
       await document.fonts?.ready;
@@ -142,28 +149,42 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
         console.warn("AI background failed, using fallback:", err);
       }
 
-      if (!bgDrawn) drawFallbackBackground(ctx, size);
+      if (!bgDrawn) drawFallbackBackground(ctx, size, styleIndex);
+      if (bgDrawn) {
+        ctx.fillStyle = (VERSE_IMAGE_STYLES[styleIndex] ?? VERSE_IMAGE_STYLES[0]).tint;
+        ctx.fillRect(0, 0, size, size);
+      }
       drawTextOverlay(ctx, size);
 
-      setImageUrl(canvas.toDataURL("image/png"));
+      if (generation.current !== requestId) return;
+      const result = canvas.toDataURL("image/png");
+      images.current[styleIndex] = result;
+      setImageUrl(result);
     } catch (error) {
       console.error('Error generating verse image:', error);
       toast.error("Failed to generate image. Please try again.");
     } finally {
-      setIsGenerating(false);
+      if (generation.current === requestId) setIsGenerating(false);
     }
   }, [verseReference, verseText]);
 
   useEffect(() => {
-    if (open && !imageUrl && !isGenerating) {
-      generateImage();
-    }
-  }, [generateImage, imageUrl, isGenerating, open]);
-
-  // Reset when verse changes
-  useEffect(() => {
+    const verseKey = `${verseReference}|${verseText}`;
+    if (!open || startedVerse.current === verseKey) return;
+    startedVerse.current = verseKey;
+    images.current = {};
+    setSelectedStyle(0);
     setImageUrl(null);
-  }, [verseReference, verseText]);
+    void generateImage(0);
+  }, [generateImage, open, verseReference, verseText]);
+
+  const selectStyle = (index: number) => {
+    if (isGenerating || index === selectedStyle) return;
+    setSelectedStyle(index);
+    const cached = images.current[index];
+    setImageUrl(cached ?? null);
+    if (!cached) void generateImage(index);
+  };
 
   const filename = `orthocross-verse-${verseReference.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
   const shareText = `"${verseText}" — ${verseReference}\n\nShared from OrthoCross`;
@@ -205,7 +226,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-md max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl">Share Verse of the Day</DialogTitle>
           <DialogDescription>
@@ -225,6 +246,23 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
             ) : (
               <p className="text-sm text-muted-foreground">Failed to load image</p>
             )}
+          </div>
+
+          <div role="tablist" aria-label="Verse image styles" className="grid grid-cols-3 gap-2">
+            {VERSE_IMAGE_STYLES.map((style, index) => (
+              <Button
+                key={style.id}
+                role="tab"
+                aria-selected={selectedStyle === index}
+                variant="outline"
+                disabled={isGenerating}
+                onClick={() => selectStyle(index)}
+                className="h-8 min-w-0 rounded-full px-1 text-[10px] sm:text-xs whitespace-nowrap data-[selected=true]:border-foreground data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
+                data-selected={selectedStyle === index}
+              >
+                {style.title}
+              </Button>
+            ))}
           </div>
 
           <div className="space-y-2">
@@ -279,7 +317,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
 
           <div className="flex gap-2">
             <Button
-              onClick={() => { setImageUrl(null); generateImage(); }}
+              onClick={() => { setImageUrl(null); void generateImage(selectedStyle); }}
               disabled={isGenerating}
               variant="secondary"
               className="flex-1 gap-2"
