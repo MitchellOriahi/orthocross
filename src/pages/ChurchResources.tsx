@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft, MapPin, Loader2, Search } from "lucide-react";
+import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft, MapPin, Loader2, Search, Sparkles, Compass, Mountain, Flame, Crown, Users, type LucideIcon } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +24,7 @@ import { PrayerDetailView } from "@/components/resources/PrayerDetailView";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { getVisibleSaints, SAINTS_VISIBLE } from "@/data/saintsVisibility";
+import { SAINT_CATEGORIES, filterSaintsByCategory, getSaintCategoryId, type SaintCategoryId } from "@/data/saintCategories";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
@@ -31,6 +32,17 @@ import { useMusic } from "@/contexts/MusicContext";
 
 type SectionType = "eastern" | "oriental" | "prayers" | "saints" | null;
 type PrayerFilterType = "all" | "Eastern" | "Oriental";
+
+const SAINT_CATEGORY_ICONS: Record<SaintCategoryId, LucideIcon> = {
+  angels: Sparkles,
+  biblical: BookOpen,
+  "apostles-missionaries": Compass,
+  "fathers-hierarchs": Church,
+  monastics: Mountain,
+  martyrs: Flame,
+  rulers: Crown,
+  laypeople: Users,
+};
 
 const ChurchResources = () => {
   const navigate = useNavigate();
@@ -46,7 +58,8 @@ const ChurchResources = () => {
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [locatingChurches, setLocatingChurches] = useState(false);
   const [saintSearch, setSaintSearch] = useState("");
-  const filteredSaints = getVisibleSaints(saintsContent).filter((saint) => {
+  const [saintCategory, setSaintCategory] = useState<SaintCategoryId | null>(null);
+  const filteredSaints = filterSaintsByCategory(getVisibleSaints(saintsContent), saintCategory).filter((saint) => {
     const q = saintSearch.trim().toLowerCase();
     if (!q) return true;
     return `${saint.prefix} ${saint.name} ${saint.epithet} ${saint.shortDescription}`
@@ -632,10 +645,32 @@ const ChurchResources = () => {
                       aria-label="Search saints"
                     />
                   </div>}
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    {SAINT_CATEGORIES.map((category) => {
+                      const CategoryIcon = SAINT_CATEGORY_ICONS[category.id];
+                      const isActive = saintCategory === category.id;
+                      return (
+                        <Button
+                          key={category.id}
+                          variant="outline"
+                          aria-pressed={isActive}
+                          onClick={() => setSaintCategory(isActive ? null : category.id)}
+                          className={`h-auto min-h-[5.5rem] py-4 flex flex-col items-center justify-center gap-2 whitespace-normal ${isActive ? "border-primary bg-primary/5" : ""}`}
+                        >
+                          <CategoryIcon className={`w-6 h-6 ${isActive ? "text-primary" : "text-primary/70"}`} />
+                          <span className="text-sm font-medium leading-tight">{category.label}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
                   <div className="space-y-2">
                     {filteredSaints.length === 0 ? (
                       <div className="text-center text-muted-foreground py-8">
-                        {SAINTS_VISIBLE ? `No saints found matching "${saintSearch}"` : "No saints available."}
+                        {SAINTS_VISIBLE
+                          ? (saintSearch.trim()
+                              ? `No saints found matching "${saintSearch}"`
+                              : "No saints in this category yet")
+                          : "No saints available."}
                       </div>
                     ) : (
                       filteredSaints.map((saint) => (

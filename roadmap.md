@@ -5,6 +5,7 @@
 - [x] Add exactly 88 relevant saints with accurate lives, verified traditional icons and source/license credits.
 - [x] Verify all 100 Saints cards, portrait framing, alphabetical order and detail views; all portraits load, all 100 detail views open, and all 88 additions include icon credits.
 - [x] Put Theotokos first and apply a gold background with a light glow to her entire sticker, keeping the image unchanged.
+- [x] Add two-column category boxes under the Saints search bar; all 100 saints are pre-classified for filtering once the catalog is shown again.
 
 ## Historical island imagery
 - [x] Replace every island illustration with authenticated, topic-relevant reusable historical imagery.
