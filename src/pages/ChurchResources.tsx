@@ -654,24 +654,30 @@ const ChurchResources = () => {
                         : undefined;
                       const isActive = saintCategory === category.id;
                       return (
-                        <Button
+                        <button
                           key={category.id}
-                          variant="outline"
+                          type="button"
                           aria-pressed={isActive}
                           onClick={() => setSaintCategory(isActive ? null : category.id)}
-                          className={`h-auto min-h-[5.5rem] py-4 flex flex-col items-center justify-center gap-2 whitespace-normal ${isActive ? "border-primary bg-primary/5" : ""}`}
+                          className="flex flex-col items-stretch text-left"
                         >
-                          {thumbnailSaint ? (
-                            <img
-                              src={thumbnailSaint.iconUrl}
-                              alt=""
-                              className="w-10 h-10 rounded-full object-cover object-top border border-primary/30"
-                            />
-                          ) : (
-                            <CategoryIcon className={`w-6 h-6 ${isActive ? "text-primary" : "text-primary/70"}`} />
-                          )}
-                          <span className="text-sm font-medium leading-tight">{category.label}</span>
-                        </Button>
+                          <span
+                            className={`block aspect-square w-full overflow-hidden rounded-xl border bg-muted ${isActive ? "border-primary ring-2 ring-primary/40" : "border-border"}`}
+                          >
+                            {thumbnailSaint ? (
+                              <img
+                                src={thumbnailSaint.iconUrl}
+                                alt=""
+                                className="h-full w-full object-cover object-top"
+                              />
+                            ) : (
+                              <span className="flex h-full w-full items-center justify-center">
+                                <CategoryIcon className={`w-10 h-10 ${isActive ? "text-primary" : "text-primary/70"}`} />
+                              </span>
+                            )}
+                          </span>
+                          <span className="mt-2 text-sm font-medium leading-tight">{category.label}</span>
+                        </button>
                       );
                     })}
                   </div>
