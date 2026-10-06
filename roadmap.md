@@ -1,5 +1,9 @@
 # Verse image sharing
 
+## Historical island imagery
+- [ ] Replace every island illustration with authenticated, topic-relevant reusable historical imagery.
+- [ ] Document sources and verify all 19 islands render their replacement images.
+
 - [x] Give each photo a distinct, fully readable verse composition; verified centered serif, left-aligned editorial, and framed uppercase treatments with Psalm 51:10. Image-sharing tests pass.
 
 - [x] Replace AI backgrounds with licensed royalty-free photos and compose immediately on Share.
