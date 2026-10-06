@@ -15,6 +15,13 @@ test("shared saints are one record across categories and subgroups", () => {
   expect(new Set(saintPageRoster.map(s => s.id)).size).toBe(saintPageRoster.length);
   expect(getSaintPageList("martyrs").filter(s => s.name === "Ignatius of Antioch")).toHaveLength(1);
 });
+test("biblical names do not merge with similarly named monastics and fathers", () => {
+  expect(getSaintPageList("biblical", "Forefathers", "Isaac")[0].name).toBe("Isaac");
+  expect(getSaintPageList("fathers-hierarchs", "Syriac", "Isaac")[0].name).toBe("Isaac of Nineveh");
+  expect(getSaintPageList("fathers-hierarchs", "Syriac", "Isaac")[0].prefix).toBe("St.");
+  expect(getSaintPageList("angels", "Heavenly Orders", "Seraphim")[0].name).toBe("Seraphim");
+  expect(getSaintPageList("monastics", "Elders", "Seraphim")[0].name).toBe("Seraphim of Sarov");
+});
 test("search stays within the selected subgroup", () => {
   expect(getSaintPageList("angels", "Archangels", "Michael").map(s => s.name)).toEqual(["Michael"]);
   expect(getSaintPageList("angels", "Guardians", "Michael")).toEqual([]);
