@@ -132,7 +132,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Greek - Saint Andrew - Walters 37559.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon1.url
@@ -203,7 +203,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Icon of Apostle Philip (10th c, St. Catherine monastery, Sinai).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon4.url
@@ -251,7 +251,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Apostle Thomas - Orthodox icon.jpeg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon6.url
@@ -323,7 +323,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Russian Icon of Apostle Jude Thaddeus, Kizhi.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon9.url
@@ -347,7 +347,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Simon the Zealot - Apostle.jpeg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon10.url
@@ -371,7 +371,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 3.0 RS",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/rs/deed.en",
     "title": "Апостол Матија.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon11.url
@@ -395,7 +395,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Andrei Rublev - St Paul. From Deisus Tier - Google Art Project.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon12.url
@@ -419,7 +419,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "An early byzantine icon of John the Baptist, 6th century BC.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon13.url
@@ -443,7 +443,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint Luke the Evangelist - icon.jpeg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon14.url
@@ -467,7 +467,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Maria Magdalene icon.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon15.url
@@ -491,7 +491,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint Stephen (Nevyansk icon).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon16.url
@@ -515,7 +515,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Tzangarolas Stephanos - St James the Brother of the Lord - Google Art Project.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon17.url
@@ -563,7 +563,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint Timothy.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon19.url
@@ -587,7 +587,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Fresco of Saint Titos.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon20.url
@@ -611,7 +611,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Icon of St. Philip the Diacon (16th c., Moscow) 2.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon21.url
@@ -659,7 +659,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC0",
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
     "title": "Polycarp_of_Smyrna2.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon23.url
@@ -683,7 +683,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint_irenee_saint_irenee.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon24.url
@@ -707,7 +707,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint_Justin_Martyr_by_Theophanes_the_Cretan.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon25.url
@@ -755,7 +755,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Cyprian_von_Karthago2.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon27.url
@@ -779,7 +779,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "AmbroseOfMilan_(cropped).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon28.url
@@ -803,7 +803,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Copyrighted free use",
     "licenseUrl": "https://commons.wikimedia.org/wiki/File:Gregor-Chora_(cropped).jpg",
     "title": "Gregor-Chora_(cropped).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon29.url
@@ -827,7 +827,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Gregory_of_Nyssa.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon30.url
@@ -875,7 +875,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "Chora-Kirche_2013-03-21zh_(cropped).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon32.url
@@ -947,7 +947,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Athonite_Fresco_Icon_of_Saint_John_of_Damascus.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon35.url
@@ -971,7 +971,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Athonite_Fresco_Icon_of_Saint_Maximos_the_Confessor_2.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon36.url
@@ -995,7 +995,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Lestvichnik.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon37.url
@@ -1043,7 +1043,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint_Spiridion_(17_c).JPG",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon39.url
@@ -1115,7 +1115,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Wilhelm_Kalteysen_-_Saint_Barbara_Altarpiece_-_Google_Art_Project.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon42.url
@@ -1139,7 +1139,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Paraskeva_(15th_c,_Vologda_museum).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon43.url
@@ -1163,7 +1163,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Seraphim of Sarov (after 1903, priv.coll).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon44.url
@@ -1211,7 +1211,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Silouanicon.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon46.url
@@ -1283,7 +1283,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Guardian Angel with 4 saints circle of Dikariev, circa 1900 (Sotheby's).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon49.url
@@ -1307,7 +1307,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY 2.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
     "title": "Блаженная Ксения Петербурская (иконописная мастерская Елеон).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon50.url
@@ -1331,7 +1331,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY 2.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
     "title": "Блаженная Матрона Московская (13899411716).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon51.url
@@ -1355,7 +1355,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "Glorification of Venerable Herman of Alaska, Wonderworker of All America wg.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon52.url
@@ -1379,7 +1379,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "St Innocent of Alaska.JPG",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon53.url
@@ -1427,7 +1427,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "Icon of Our Holy Father John of Shanghai and San Francisco.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon55.url
@@ -1475,7 +1475,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Icon of S.Vladimir by anonymous after Vasnetsov (20 c, priv.coll).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon57.url
@@ -1499,7 +1499,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Gleb, Olga, guardian angel by O.Chirikov (1902, Novgorod museum).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon58.url
@@ -1595,7 +1595,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Stefan Permskiy.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon62.url
@@ -1643,7 +1643,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Studite.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon64.url
@@ -1690,7 +1690,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:StPakhom.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon66.url
@@ -1713,7 +1713,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Paul_of_Thebes.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon67.url
@@ -1736,7 +1736,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Saint_Macarius_the_Egyptian.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon68.url
@@ -1759,7 +1759,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Shenoute_of_Atripe.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon69.url
@@ -1782,7 +1782,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Agios_Pavsios_Dionysiou.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon70.url
@@ -1805,7 +1805,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:S.Menas_by_E.Lambardos_(17th_c.).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon71.url
@@ -1875,7 +1875,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Severus_of_Antioch_(Coptic_icon).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon74.url
@@ -1944,7 +1944,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "File:Gregory_the_Illuminator_Aghtamar_bas_relief.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon77.url
@@ -2036,7 +2036,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "File:St._Nino_Icon1.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon81.url
@@ -2082,7 +2082,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Monica_of_Hippo_by_Gozzoli.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon83.url
@@ -2128,7 +2128,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Margaret_the_Virgin.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon85.url
@@ -2174,7 +2174,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Saint_Anastasia.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon87.url
