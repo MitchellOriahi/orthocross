@@ -1,6 +1,7 @@
-import { SAINT_CATEGORY_THUMBNAIL_SAINT_ID, describe, expect, test } from "bun:test";
-import { SAINT_CATEGORY_THUMBNAIL_SAINT_ID, saintsContent } from "./saintsContent";
-import { SAINT_CATEGORY_THUMBNAIL_SAINT_ID,
+import { describe, expect, test } from "bun:test";
+import { saintsContent } from "./saintsContent";
+import {
+  SAINT_CATEGORY_THUMBNAIL_SAINT_ID,
   SAINT_CATEGORIES,
   filterSaintsByCategory,
   getSaintCategoryId,
