@@ -56,7 +56,7 @@ export const PrayerDetailView = ({ name, title, content, onClose, prayerId }: Pr
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl pb-nav">
+      <main className="container mx-auto px-4 pt-8 pb-[calc(6rem+env(safe-area-inset-bottom))] max-w-4xl">
         <div className="mb-8">
           <div className="flex flex-col items-center justify-center text-center">
             <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground break-words">
@@ -144,6 +144,10 @@ const ExplanationView = ({ content, viewMode, prayerId }: ExplanationViewProps) 
   );
 
   const totalPages = content.length;
+
+  useEffect(() => {
+    if (contentRef.current) contentRef.current.scrollTop = 0;
+  }, [currentPage, viewMode]);
 
   // Load highlights
   useEffect(() => {
@@ -355,10 +359,13 @@ const ExplanationView = ({ content, viewMode, prayerId }: ExplanationViewProps) 
 
       <div 
         ref={contentRef}
-        className="prose dark:prose-invert max-w-none mb-8 min-h-[300px] sm:min-h-[400px]"
+        role="region"
+        aria-label="Prayer explanation page"
+        tabIndex={0}
+        className="prose dark:prose-invert max-w-none mb-6 h-[min(400px,50dvh)] overflow-y-auto overscroll-contain pr-3 break-words"
       >
         <div className="text-base sm:text-lg leading-relaxed">
-          {content[currentPage].split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0).map((sentence, sentenceIndex) => {
+          {(content[currentPage] ?? '').split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0).map((sentence, sentenceIndex) => {
             const startIndex = getSentencesInParagraph(currentPage);
             const globalIndex = startIndex + sentenceIndex;
             const highlight = highlights[globalIndex];
