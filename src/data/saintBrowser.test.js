@@ -5,7 +5,7 @@ import { getCategoryCount, getCategorySaints, getCategoryTags, MIN_SAINTS_PER_TA
 
 describe("Refined Saints browser", () => {
   test("counts the saved collection while all category lists remain hidden", () => {
-    expect(SAINT_CATEGORIES.map(c => getCategoryCount(saintsContent, c.id))).toEqual([0, 6, 26, 29, 20, 12, 4, 3]);
+    expect(SAINT_CATEGORIES.map(c => getCategoryCount(saintsContent, c.id))).toEqual([0, 6, 20, 29, 12, 3]);
     for (const category of SAINT_CATEGORIES) expect(getCategorySaints(saintsContent, category.id)).toEqual([]);
     expect(getCategorySaints(saintsContent, null, "Nicholas")).toEqual([]);
   });
