@@ -24,7 +24,7 @@ import { PrayerDetailView } from "@/components/resources/PrayerDetailView";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { getVisibleSaints, SAINTS_VISIBLE } from "@/data/saintsVisibility";
-import { SAINT_CATEGORIES, filterSaintsByCategory, getSaintCategoryId, type SaintCategoryId } from "@/data/saintCategories";
+import { SAINT_CATEGORIES, SAINT_CATEGORY_THUMBNAIL_SAINT_ID, filterSaintsByCategory, getSaintCategoryId, type SaintCategoryId } from "@/data/saintCategories";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
