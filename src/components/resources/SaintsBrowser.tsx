@@ -43,6 +43,13 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input type="search" placeholder="Search a saint by name…" aria-label="Search saints" value={query} onChange={event => setQuery(event.target.value)} className="pl-9" />
+          {!selectedCategory && query.trim() && (
+            <div role="listbox" aria-label="Saint search suggestions" className="absolute inset-x-0 top-full z-30 mt-1 max-h-96 overflow-y-auto rounded-lg border border-border bg-popover p-2 shadow-lg">
+              {saints.length === 0
+                ? <p className="py-4 text-center text-sm text-muted-foreground">No saints found matching “{query}”</p>
+                : <SaintSearchRows saints={saints} onSelect={onSelect} />}
+            </div>
+          )}
         </div>
         {selectedCategory ? (
           <>
