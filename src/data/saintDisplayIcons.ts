@@ -1,6 +1,7 @@
 import michael from "@/assets/saints/display/archangel-michael-lrp.jpg.asset.json";
 import anthonyLrp from "@/assets/saints/display/saint-anthony-lrp-2.png.asset.json";
 import theotokosLrp from "@/assets/saints/display/theotokos-seven-swords-lrp.jpg.asset.json";
+import nicholasLrp from "@/assets/saints/display/saint-nicholas-lrp.jpg.asset.json";
 import mary from "@/assets/saints/display/mary-magdalene.jpg.asset.json";
 import timothy from "@/assets/saints/display/timothy-apostle.jpg.asset.json";
 import peter from "@/assets/saints/display/peter-apostle.jpg.asset.json";
@@ -64,6 +65,16 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
     image_fit: "contain",
     image_glow: true,
   },
+  "saint-nicholas-lrp": {
+    image_url: nicholasLrp.url,
+    image_source: "Provided by the app owner (uploaded icon)",
+    image_author: "LRP icon studio (owner-provided artwork)",
+    image_license: "Owner-provided",
+    image_license_url: "",
+    image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",
+    image_fit: "contain",
+    image_glow: true,
+  },
   "mary-magdalene": portrait(mary.url, "Maria_Magdalene_icon.jpg", "Unknown icon painter, Dionysiou Monastery"),
   "timothy-apostle": portrait(timothy.url, "Saint_Timothy.jpg", "Unknown icon painter"),
   "peter-apostle": portrait(peter.url, "St_Peter_Icon_Sinai_7th_century.jpg", "Unknown painter, Saint Catherine’s Monastery, Sinai, 7th century"),
@@ -77,7 +88,7 @@ export const SAINT_CATEGORY_DISPLAY_ICON: Record<string, string> = {
   angels: "archangel-michael",
   biblical: "theotokos-seven-swords-lrp",
   "apostles-missionaries": "peter-apostle",
-  "fathers-hierarchs": "athanasius",
+  "fathers-hierarchs": "saint-nicholas-lrp",
   monastics: "saint-anthony-lrp",
   martyrs: "george",
   rulers: "vladimir-kyiv",
