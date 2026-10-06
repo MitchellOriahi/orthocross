@@ -104,14 +104,17 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
     let currentRow = 0;
     items.forEach((item, index) => {
       const width = widths[index];
-      const rowGap = next[currentRow].length ? GAP : 0;
-      if (currentRow < 2 && rowWidths[currentRow] + width + rowGap > limit) currentRow += 1;
+      if (currentRow < 2) {
+        const rowGap = next[currentRow].length ? GAP : 0;
+        if (rowWidths[currentRow] + width + rowGap > limit) currentRow += 1;
+      }
       if (currentRow >= 2) {
         // Both rows are full: keep them evenly filled as the carousel grows.
         const row = rowWidths[0] <= rowWidths[1] ? 0 : 1;
         next[row].push(item);
         rowWidths[row] += width + (next[row].length > 1 ? GAP : 0);
       } else {
+        const rowGap = next[currentRow].length ? GAP : 0;
         next[currentRow].push(item);
         rowWidths[currentRow] += width + rowGap;
       }
