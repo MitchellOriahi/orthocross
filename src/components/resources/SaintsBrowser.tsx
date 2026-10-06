@@ -30,7 +30,7 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         <Button variant="ghost" onClick={back}><ArrowLeft className="h-4 w-4" />Back</Button>
       </div>
       <div className="p-6">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-1">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <h2 className="text-2xl font-semibold">{selectedCategory?.label ?? "Saints"}</h2>
           {selectedCategory && (
             <div className="flex gap-2" role="group" aria-label="Saint tradition">
