@@ -4,11 +4,11 @@ import { SAINT_DISPLAY_ICONS, SAINT_CATEGORY_DISPLAY_ICON } from "./saintDisplay
 test("every accepted icon retains provenance and a reusable license", () => {
   expect(Object.keys(SAINT_DISPLAY_ICONS).length).toBeGreaterThan(0);
   for (const [id, icon] of Object.entries(SAINT_DISPLAY_ICONS)) {
-    if (id === "archangel-michael") {
-      // Owner-provided artwork: provenance states the origin instead of
-      // inventing a Commons source, and stays in the same replaceable registry.
+    if (icon.image_license === "Owner-provided") {
+      // Owner-provided artwork (e.g. LRP studio icons): provenance states the
+      // origin instead of inventing a Commons source, and stays in the same
+      // replaceable registry.
       expect(icon.image_source).toContain("Provided by the app owner");
-      expect(icon.image_license).toBe("Owner-provided");
     } else {
       expect(new URL(icon.image_source).hostname).toBe("commons.wikimedia.org");
       expect(icon.image_license).toMatch(/^(Public domain|CC BY)/);
@@ -22,6 +22,15 @@ test("every accepted icon retains provenance and a reusable license", () => {
 test("Angels use Michael without adding a saint to the preserved catalog", () => {
   expect(SAINT_CATEGORY_DISPLAY_ICON.angels).toBe("archangel-michael");
   expect(SAINT_DISPLAY_ICONS[SAINT_CATEGORY_DISPLAY_ICON.angels]).toBeDefined();
+});
+
+test("Monastics use the owner-provided Saint Anthony icon with angel-style display", () => {
+  expect(SAINT_CATEGORY_DISPLAY_ICON.monastics).toBe("saint-anthony-lrp");
+  const icon = SAINT_DISPLAY_ICONS["saint-anthony-lrp"];
+  expect(icon).toBeDefined();
+  expect(icon.image_fit).toBe("contain");
+  expect(icon.image_glow).toBe(true);
+  expect(icon.image_source).toContain("Provided by the app owner");
 });
 
 test("unsuitable and unaudited images never fall back to legacy artwork", () => {
