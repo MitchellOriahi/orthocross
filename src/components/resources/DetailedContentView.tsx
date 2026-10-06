@@ -119,7 +119,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
+    <div className="fixed inset-x-0 top-0 bottom-[calc(6rem+env(safe-area-inset-bottom))] z-50 bg-background overflow-y-auto overscroll-contain">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-top">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -157,7 +157,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
         </div>
       </header>
 
-      <main className={`container mx-auto px-4 py-8 max-w-4xl ${iconCredit ? "pb-[calc(6rem+env(safe-area-inset-bottom))]" : "pb-nav"}`}>
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Only show title/subtitle header if not on icon page or in scroll mode */}
         {(viewMode === 'scroll' || currentPage !== 0 || !iconUrl) && (
           <div className="mb-8">
