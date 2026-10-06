@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, Highlighter, BookOpen, Scroll } from "lucide
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { HISTORICAL_ISLAND_IMAGES } from "@/data/historicalIslandImages";
 
 interface PaginatedReadingProps {
   content: string;
@@ -26,6 +27,7 @@ const HIGHLIGHT_COLORS = [
 const WORDS_PER_SLIDE = 80; // Target words per slide for consistent sizing
 
 export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, islandId }: PaginatedReadingProps) => {
+  const imageCredit = HISTORICAL_ISLAND_IMAGES[islandId];
   const [currentPage, setCurrentPage] = useState(0);
   const [highlights, setHighlights] = useState<Record<number, string>>({});
   const [showHighlighter, setShowHighlighter] = useState(false);
@@ -251,11 +253,20 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
       </div>
       
       {iconUrl && (
-        <div className="flex justify-center mb-6">
-          <div className="w-48 h-48 rounded-lg overflow-hidden border-2 border-primary/20 shadow-lg">
-            <img src={iconUrl} alt="Historical Icon" className="w-full h-full object-cover" loading="eager" decoding="sync" fetchPriority="high" />
+        <figure className="mb-6 mx-auto w-full max-w-sm">
+          <div className="h-48 rounded-lg overflow-hidden bg-muted border border-border">
+            <img src={iconUrl} alt={imageCredit?.title ?? "Historical artwork"} className="w-full h-full object-contain" loading="eager" decoding="sync" fetchPriority="high" />
           </div>
-        </div>
+          {imageCredit && (
+            <figcaption className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
+              {imageCredit.title}
+              <details className="mt-1">
+                <summary className="cursor-pointer">Image credits</summary>
+                <div className="mt-1">{imageCredit.author} · <a className="underline" href={imageCredit.licenseUrl} target="_blank" rel="noopener noreferrer">{imageCredit.license}</a> · <a className="underline" href={imageCredit.source} target="_blank" rel="noopener noreferrer">Source</a></div>
+              </details>
+            </figcaption>
+          )}
+        </figure>
       )}
       
       {viewMode === 'paginated' ? (
