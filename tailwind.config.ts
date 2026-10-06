@@ -18,6 +18,10 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
+        tradition: {
+          eastern: "hsl(var(--tradition-eastern))",
+          oriental: "hsl(var(--tradition-oriental))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
