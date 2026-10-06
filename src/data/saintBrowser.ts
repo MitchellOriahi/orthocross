@@ -13,7 +13,7 @@ export const ANGEL_SUBCATEGORIES = [
 
 export const MISSIONARY_SUBCATEGORIES = [
   "Equal to Apostles",
-  "Enlighteners of Nations",
+  "Enlighteners",
   "Overseas Missionaries",
 ] as const;
 
@@ -42,7 +42,7 @@ export const SAINT_TAG_MEMBERS: Record<string, readonly string[]> = {
 // Every listed saint must belong to that category in saintCategories.ts.
 export const SAINT_SUBCATEGORY_MEMBERS: Record<string, readonly string[]> = {
   "Equal to Apostles": ["thekla-iconium", "cyril-slavs", "methodius-slavs", "nino-georgia", "innocent-alaska", "nicholas-japan"],
-  "Enlighteners of Nations": ["cyril-slavs", "methodius-slavs", "nino-georgia", "gregory-illuminator", "stephen-perm", "innocent-alaska", "nicholas-japan"],
+  "Enlighteners": ["cyril-slavs", "methodius-slavs", "nino-georgia", "gregory-illuminator", "stephen-perm", "innocent-alaska", "nicholas-japan"],
   "Overseas Missionaries": ["paul-apostle", "barnabas-apostle", "thomas-apostle", "innocent-alaska", "nicholas-japan"],
 };
 
