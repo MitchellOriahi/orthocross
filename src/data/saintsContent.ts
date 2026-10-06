@@ -11,9 +11,11 @@ import nicholasIcon from "@/assets/saints/nicholas-icon.jpg";
 import paisiosIcon from "@/assets/saints/paisios-icon.jpg";
 import theotokosIcon from "@/assets/saints/theotokos-icon.jpg";
 import type { SaintDetail } from "./saintTypes";
+import { additionalSaints } from "./additionalSaints";
+import { mergeSaintCatalog } from "./saintCatalog";
 export type { SaintDetail } from "./saintTypes";
 
-export const saintsContent: SaintDetail[] = [
+const originalSaints: SaintDetail[] = [
   {
     id: "anthony",
     prefix: "St.",
@@ -335,6 +337,8 @@ export const saintsContent: SaintDetail[] = [
     ]
   }
 ];
+
+export const saintsContent = mergeSaintCatalog(originalSaints, additionalSaints);
 
 // Preload saint icons at module load (same pattern as HISTORY_ICONS) so they're
 // already in the browser cache before the Church Resources list renders them,

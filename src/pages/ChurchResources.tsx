@@ -627,7 +627,7 @@ const ChurchResources = () => {
                             decoding="async"
                           />
                         </div>
-                        <div className="flex-1 min-w-0 pt-1">
+                        <div className="flex-1 min-w-0 pt-1 pr-12 sm:pr-16">
                           {saint.prefix && <div className="text-base font-bold leading-tight">{saint.prefix}</div>}
                           <div className="font-bold text-base leading-tight">{saint.name}</div>
                           {saint.epithet && <div className="text-base font-bold leading-tight mt-0.5">{saint.epithet}</div>}
