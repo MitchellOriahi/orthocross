@@ -17,6 +17,8 @@ export interface SaintDisplayIcon {
   // "contain" (default "cover") shows the whole artwork letterboxed inside
   // the square frame instead of cropping it to the face-and-halo region.
   image_fit?: "contain";
+  // Adds a soft golden glow around the artwork's edges.
+  image_glow?: boolean;
 }
 
 // Only audited, matching Commons paintings belong here. To replace an icon,
@@ -36,8 +38,9 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
     image_author: "LRP icon studio (owner-provided artwork)",
     image_license: "Owner-provided",
     image_license_url: "",
-    image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop).",
+    image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",
     image_fit: "contain",
+    image_glow: true,
   },
   "mary-magdalene": portrait(mary.url, "Maria_Magdalene_icon.jpg", "Unknown icon painter, Dionysiou Monastery"),
   "timothy-apostle": portrait(timothy.url, "Saint_Timothy.jpg", "Unknown icon painter"),
