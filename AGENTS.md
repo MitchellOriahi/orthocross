@@ -10,4 +10,4 @@
 - Validate the image function's bearer token explicitly with getUser(token) on a stateless auth client, because global request headers do not create an SDK session.
 - Keep the legacy server-side verse artwork function isolated from photo-based sharing, so the current dialog never invokes a billed image-generation request.
 - Keep style-specific verse typography in a dedicated canvas renderer with measured text fitting and global artwork palette tokens, so all styles preserve the complete verse without clipping.
-- Resolve every island lesson image through a provenance registry of stored assets and render its source/license credit with uncropped artwork, so authentic historical imagery remains attributable and inspectable.
+- Resolve every island lesson image through a provenance registry of stored assets, retain source/license credits, and use centered cover framing so authentic historical imagery fills each lesson frame without empty bands.
