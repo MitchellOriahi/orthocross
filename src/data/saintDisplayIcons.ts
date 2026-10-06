@@ -98,10 +98,8 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
 export const SAINT_CATEGORY_DISPLAY_ICON: Record<string, string> = {
   angels: "archangel-michael",
   biblical: "theotokos-seven-swords-lrp",
-  "apostles-missionaries": "peter-apostle",
-  "fathers-hierarchs": "saint-nicholas-lrp",
   monastics: "saint-anthony-lrp",
+  "fathers-hierarchs": "saint-nicholas-lrp",
   martyrs: "saint-stephen-lrp",
-  rulers: "vladimir-kyiv",
   laypeople: "xenia-petersburg",
 };
