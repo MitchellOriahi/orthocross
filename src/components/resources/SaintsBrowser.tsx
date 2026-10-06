@@ -14,12 +14,19 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
+  const subcategoryRowRef = useRef<HTMLDivElement | null>(null);
+  const [subcategoryRowScrolls, setSubcategoryRowScrolls] = useState(false);
   const selectedCategory = SAINT_CATEGORIES.find(item => item.id === category);
   const subcategories = category ? CATEGORY_SUBCATEGORIES[category] : undefined;
   const tags = category ? getCategoryTags(saintsContent, category) : [];
   const categorySaints = getCategorySaints(saintsContent, category, query, tag);
   const saints = subcategory ? categorySaints.filter(saint => SAINT_SUBCATEGORY_MEMBERS[subcategory]?.includes(saint.id)) : categorySaints;
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
+  useLayoutEffect(() => {
+    // Two rows of pills maximum; anything taller becomes a horizontal carousel.
+    const row = subcategoryRowRef.current;
+    setSubcategoryRowScrolls(!!row && row.scrollHeight > 74);
+  }, [category, subcategories]);
 
   function back() {
     if (category) { setCategory(null); setTag(null); setSubcategory(null); } else onClose();
