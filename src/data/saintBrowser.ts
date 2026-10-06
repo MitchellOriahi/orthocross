@@ -70,7 +70,26 @@ export const SAINT_TAG_MEMBERS: Record<string, readonly string[]> = {
 export const SAINT_SUBCATEGORY_MEMBERS: Record<string, readonly string[]> = {
   "Equal-to-Apostles": ["thekla-iconium", "cyril-slavs", "methodius-slavs", "nino-georgia", "innocent-alaska", "nicholas-japan"],
   "Enlighteners": ["cyril-slavs", "methodius-slavs", "nino-georgia", "gregory-illuminator", "stephen-perm", "innocent-alaska", "nicholas-japan"],
-  "Overseas Missionaries": ["paul-apostle", "barnabas-apostle", "thomas-apostle", "innocent-alaska", "nicholas-japan"],
+  "Slavs": ["cyril-slavs", "methodius-slavs", "stephen-perm"],
+  "Caucasus": ["nino-georgia", "gregory-illuminator"],
+  "Africa": ["mark"],
+  "Asia & Americas": ["thomas-apostle", "nicholas-japan", "innocent-alaska"],
+  "Forefathers": [],
+  "Prophets": ["john-the-baptist"],
+  "Kings": [],
+  "Holy Family": ["theotokos"],
+  "Myrrh-bearers": ["mary-magdalene"],
+  "Gospel Era": ["theotokos", "john-the-baptist", "mary-magdalene", "james-brother-of-the-lord", "stephen-protomartyr", "philip-the-deacon"],
+  "The Twelve": [], // The saved Twelve remain in Apostles and Missionaries.
+  "The Seventy": ["james-brother-of-the-lord", "philip-the-deacon"],
+  "Three Hierarchs": ["basil", "saint-gregory-nazianzus", "john-chrysostom"],
+  "Apostolic": ["saint-ignatius-antioch", "saint-polycarp-smyrna", "saint-clement-rome"],
+  "Cappadocians": ["basil", "saint-gregory-nazianzus", "saint-gregory-nyssa"],
+  "Syriac": ["saint-ephrem-syrian", "saint-isaac-syrian", "jacob-serugh"],
+  "Wonderworkers": ["saint-gregory-wonderworker", "saint-spyridon-trimythous", "nicholas", "nektarios-aegina", "john-shanghai-sanfrancisco"],
+  "Confessors": ["saint-maximus-confessor"],
+  "Theologians": ["saint-gregory-nazianzus", "saint-john-damascus", "gregory-palamas"],
+  "Western Fathers": ["saint-ambrose-milan", "saint-cyprian-carthage", "saint-irenaeus-lyons", "saint-clement-rome"],
   "Desert Fathers": ["anthony", "paul-of-thebes", "macarius-great", "pachomius-great", "bishoy-great", "moses-black", "shenoute-archimandrite", "saint-john-climacus"],
   "Desert Mothers": ["macrina-younger", "mary-egypt", "syncletica-alexandria"],
   "Founders": ["anthony", "pachomius-great", "sergius-radonezh"],
@@ -81,7 +100,28 @@ export const SAINT_SUBCATEGORY_MEMBERS: Record<string, readonly string[]> = {
   "Kiev Caves": [],
   "Athonites": ["paisios-athonite", "silouan-athonite", "nicodemus-hagiorite"],
   "Elders": ["paisios-athonite", "silouan-athonite", "seraphim-sarov", "herman-alaska"],
+  "Early Martyrs": ["saint-justin-martyr", "catherine", "george", "saint-panteleimon", "saint-demetrius-thessalonica", "saint-barbara", "saint-paraskeva-iconium", "menas-wonderworker", "mercurius-soldier", "hripsime-armenia", "margaret-marina", "anastasia-sirmium"],
+  "Great-martyrs": ["catherine", "george", "saint-panteleimon", "saint-demetrius-thessalonica", "saint-barbara", "margaret-marina", "anastasia-sirmium"],
+  "Hieromartyrs": [],
+  "Soldiers": ["george", "saint-demetrius-thessalonica", "mercurius-soldier", "menas-wonderworker"],
+  "Women": ["catherine", "saint-barbara", "saint-paraskeva-iconium", "hripsime-armenia", "margaret-marina", "anastasia-sirmium"],
+  "Neomartyrs": [],
+  "Passion-bearers": [],
+  "martyrs.Modern": [],
+  "Emperors": [], // Holy Rulers' saved classification remains intact.
+  "Kings & Princes": [],
+  "Parents": ["monica-hippo"],
+  "Children": [],
+  "Healers": ["matrona-moscow"],
+  "Public Life": [],
+  "laypeople.Modern": ["matrona-moscow"],
 };
+
+export function getSubcategorySaints(saints: SaintDetail[], category: SaintCategoryId | null, subcategory: string | null) {
+  if (!subcategory || !category) return saints;
+  const ids = SAINT_SUBCATEGORY_MEMBERS[`${category}.${subcategory}`] ?? SAINT_SUBCATEGORY_MEMBERS[subcategory] ?? [];
+  return saints.filter(saint => ids.includes(saint.id));
+}
 
 export function getCategoryCount(catalog: SaintDetail[], category: SaintCategoryId) {
   return filterSaintsByCategory(catalog, category).length;
