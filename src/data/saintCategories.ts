@@ -2,6 +2,9 @@
 // The catalog itself is untouched — this file only classifies existing saints
 // so the category boxes can filter the saved collection when it is shown.
 
+import vladimirEnglishThumb from "@/assets/saints/authentic/saint-thumb-vladimir-english.jpg.asset.json";
+import xeniaEnglishThumb from "@/assets/saints/authentic/saint-thumb-xenia-english.jpg.asset.json";
+
 export type SaintCategoryId =
   | "angels"
   | "biblical"
@@ -159,6 +162,15 @@ export const SAINT_CATEGORY_THUMBNAIL_SAINT_ID: Partial<Record<SaintCategoryId, 
   "martyrs": "george",
   "rulers": "vladimir-kyiv",
   "laypeople": "xenia-petersburg",
+};
+
+// English-clean thumbnail artwork for category boxes whose thumbnail saint's
+// icon carries Slavonic inscriptions (authentic English-inscribed icons of
+// these saints do not exist). These are face crops of the same authentic
+// icons, so no foreign lettering shows; the catalog icons stay untouched.
+export const SAINT_CATEGORY_THUMBNAIL_URL: Partial<Record<SaintCategoryId, string>> = {
+  "rulers": vladimirEnglishThumb.url,
+  "laypeople": xeniaEnglishThumb.url,
 };
 
 export function getSaintCategoryId(saintId: string): SaintCategoryId | null {
