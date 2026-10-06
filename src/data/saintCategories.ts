@@ -153,7 +153,7 @@ const SAINT_CATEGORY_BY_ID: Record<string, SaintCategoryId> = {
 // current catalog, so it falls back to the Lucide icon in the UI.
 export const SAINT_CATEGORY_THUMBNAIL_SAINT_ID: Partial<Record<SaintCategoryId, string>> = {
   "biblical": "theotokos",
-  "apostles-missionaries": "paul-apostle",
+  "apostles-missionaries": "mark",
   "fathers-hierarchs": "nicholas",
   "monastics": "anthony",
   "martyrs": "george",
