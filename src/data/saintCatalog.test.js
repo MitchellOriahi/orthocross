@@ -1,8 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { mergeSaintCatalog } from "./saintCatalog";
-import type { SaintDetail } from "./saintTypes";
 
-const entry = (id: string, name: string, epithet = ""): SaintDetail => ({
+const entry = (id, name, epithet = "") => ({
   id, name, epithet, prefix: "St.", shortDescription: "Apostle",
   tradition: "Eastern/Oriental", iconUrl: "icon.jpg", content: ["Life"],
 });
