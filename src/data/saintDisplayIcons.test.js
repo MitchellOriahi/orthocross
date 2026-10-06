@@ -69,6 +69,15 @@ test("Missionaries use the audited Saint Timothy portrait in standard display", 
   expect(icon.image_glow).toBeUndefined();
 });
 
+test("Righteous Laypeople use the owner-provided Saint Matrona icon with angel-style display", () => {
+  expect(SAINT_CATEGORY_DISPLAY_ICON.laypeople).toBe("saint-matrona-lrp");
+  const icon = SAINT_DISPLAY_ICONS["saint-matrona-lrp"];
+  expect(icon).toBeDefined();
+  expect(icon.image_fit).toBe("contain");
+  expect(icon.image_glow).toBe(true);
+  expect(icon.image_source).toContain("Provided by the app owner");
+});
+
 test("unsuitable and unaudited images never fall back to legacy artwork", () => {
   expect(SAINT_DISPLAY_ICONS["vladimir-kyiv"]).toBeUndefined();
   expect(SAINT_DISPLAY_ICONS["saint-gregory-nazianzus"]).toBeUndefined();
