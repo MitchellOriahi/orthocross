@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test";
-import { saintsContent } from "./saintsContent";
-import {
+import { SAINT_CATEGORY_THUMBNAIL_SAINT_ID, describe, expect, test } from "bun:test";
+import { SAINT_CATEGORY_THUMBNAIL_SAINT_ID, saintsContent } from "./saintsContent";
+import { SAINT_CATEGORY_THUMBNAIL_SAINT_ID,
   SAINT_CATEGORIES,
   filterSaintsByCategory,
   getSaintCategoryId,
@@ -56,4 +56,13 @@ describe("Saint categories", () => {
       expect(allSaints).toContain(saint);
     }
   });
+});
+
+test("each category thumbnail uses a saint from that category", () => {
+  const ids = new Set(saintsContent.map((s) => s.id));
+  for (const [categoryId, saintId] of Object.entries(SAINT_CATEGORY_THUMBNAIL_SAINT_ID)) {
+    expect(ids.has(saintId)).toBe(true);
+    expect(getSaintCategoryId(saintId)).toBe(categoryId);
+  }
+  expect(SAINT_CATEGORY_THUMBNAIL_SAINT_ID["angels"]).toBeUndefined();
 });
