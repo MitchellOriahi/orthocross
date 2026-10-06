@@ -6,6 +6,14 @@
   filter: brightness(1.04) saturate(0.94);
 }
 
+/* Whole-artwork portraits (e.g. the owner-provided Archangel Michael) sit
+   on a warm gilded ground that matches the icon's own background instead of
+   cropping the artwork to fill the square. */
+.saint-portrait-contained {
+  background-color: #cbb567;
+}
+
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
