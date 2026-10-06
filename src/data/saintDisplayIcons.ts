@@ -1,5 +1,6 @@
 import michael from "@/assets/saints/display/archangel-michael-lrp.jpg.asset.json";
 import anthonyLrp from "@/assets/saints/display/saint-anthony-lrp-2.png.asset.json";
+import theotokosLrp from "@/assets/saints/display/theotokos-seven-swords-lrp.jpg.asset.json";
 import mary from "@/assets/saints/display/mary-magdalene.jpg.asset.json";
 import timothy from "@/assets/saints/display/timothy-apostle.jpg.asset.json";
 import peter from "@/assets/saints/display/peter-apostle.jpg.asset.json";
@@ -45,6 +46,16 @@ export const SAINT_DISPLAY_ICONS: Record<string, SaintDisplayIcon> = {
   },
   "saint-anthony-lrp": {
     image_url: anthonyLrp.url,
+    image_source: "Provided by the app owner (uploaded icon)",
+    image_author: "LRP icon studio (owner-provided artwork)",
+    image_license: "Owner-provided",
+    image_license_url: "",
+    image_modification: "Shown whole inside the square frame (owner-provided artwork, no crop) with a soft golden edge glow.",
+    image_fit: "contain",
+    image_glow: true,
+  },
+  "theotokos-seven-swords-lrp": {
+    image_url: theotokosLrp.url,
     image_source: "Provided by the app owner (uploaded icon)",
     image_author: "LRP icon studio (owner-provided artwork)",
     image_license: "Owner-provided",
