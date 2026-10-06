@@ -21,14 +21,14 @@ export interface SaintCategory {
 }
 
 // Row order: each row renders two boxes side by side.
+// Apostles and Missionaries and Holy Rulers are currently not shown; their
+// saved classification stays intact below so they can be restored exactly.
 export const SAINT_CATEGORIES: SaintCategory[] = [
   { id: "angels", label: "Angels and Archangels" },
   { id: "biblical", label: "Biblical Saints" },
-  { id: "apostles-missionaries", label: "Apostles and Missionaries" },
-  { id: "fathers-hierarchs", label: "Church Fathers and Hierarchs" },
   { id: "monastics", label: "Monastics" },
+  { id: "fathers-hierarchs", label: "Church Fathers and Hierarchs" },
   { id: "martyrs", label: "Martyrs" },
-  { id: "rulers", label: "Holy Rulers" },
   { id: "laypeople", label: "Righteous Laypeople" },
 ];
 
