@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { saintsContent } from "@/data/saintsContent";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { getCategoryCount, getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
+import { getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 
@@ -45,13 +45,11 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
           <>
             <div className="grid grid-cols-2 gap-3 mb-4">
               {SAINT_CATEGORIES.map((item, index) => {
-                const count = getCategoryCount(saintsContent, item.id);
                 // An odd tile count centers the final box under both columns.
                 const centered = index === SAINT_CATEGORIES.length - 1 && SAINT_CATEGORIES.length % 2 === 1;
                 const tile = <Button variant="ghost" onClick={() => { setCategory(item.id); setTag(null); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
                   <SaintPortrait saintId={SAINT_CATEGORY_DISPLAY_ICON[item.id]} className="w-full" />
                   <span className="mt-2 h-10 w-full text-sm font-medium leading-5 line-clamp-2">{item.label}</span>
-                  <span className="mt-1 text-xs font-normal text-muted-foreground">{count} {count === 1 ? "saint" : "saints"}</span>
                 </Button>;
                 return centered
                   ? <div key={item.id} className="col-span-2 flex justify-center"><div className="w-[calc(50%-6px)]">{tile}</div></div>
