@@ -1,0 +1,5 @@
+export const VERSE_IMAGE_DESIGNS = [
+  { id: "golden", title: "Golden Hour", prompt: "Golden Hour: luminous painterly anime landscape at sunset, radiant amber sunlight, peach clouds, golden wheat and olive trees, a sunlit distant monastery, warm and hopeful. Clear sunset sky in the upper half; detailed landscape below." },
+  { id: "pilgrim", title: "Pilgrim’s Path", prompt: "Pilgrim’s Path: hand-painted watercolor woodland landscape, a winding ancient stone path leading toward a distant monastery, lush emerald foliage, moss, soft morning mist, natural green and ivory palette, contemplative pilgrimage. Open misty sky above, winding path below. No people." },
+  { id: "midnight", title: "Midnight Gold", prompt: "Midnight Gold: richly detailed celestial ink-and-gouache nocturne, midnight sky filled with small gold stars, a crescent moon, dark mountains and a distant monastery with candlelit windows, deep charcoal and sapphire with metallic gold accents, quiet and reverent. Night sky above, landscape below." },
+] as const;
