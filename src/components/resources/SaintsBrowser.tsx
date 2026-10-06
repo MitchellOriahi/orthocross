@@ -25,7 +25,8 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   useLayoutEffect(() => {
     // Two rows of pills maximum; anything taller becomes a horizontal carousel.
     const row = subcategoryRowRef.current;
-    setSubcategoryRowScrolls(!!row && row.scrollHeight > 74);
+    const pillHeight = row?.querySelector("button")?.offsetHeight ?? 32;
+    setSubcategoryRowScrolls(!!row && row.scrollHeight > pillHeight * 2 + 10);
   }, [category, subcategories]);
 
   function back() {
