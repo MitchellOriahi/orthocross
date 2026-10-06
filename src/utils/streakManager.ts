@@ -22,8 +22,9 @@ export const checkStreakOnAppOpen = async (
     const row = Array.isArray(data) ? data[0] : data;
     if (!row) return null;
 
-    // No streak-loss event happened (still within window)
-    if (row.saved === false && row.current_streak !== 0) return null;
+    // No streak-loss event happened (still within window, or streak was already 0
+    // so there was nothing to lose)
+    if (row.saved === false) return null;
 
     return {
       saved: !!row.saved,
