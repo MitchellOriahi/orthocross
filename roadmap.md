@@ -1,6 +1,7 @@
 # Verse image sharing
 
 ## Saints
+- [ ] Update all seven requested subgroup sets; verify two filled rows before shared carousel overflow.
 - [x] Refine square category tiles with consistent Commons icons and counts; add compact tagged category pages while keeping saints hidden. Holy Rulers uses a neutral cross until a matching licensed portrait is supplied. Verified category navigation, hidden rows, and seven image deliveries; tests pass.
 - [x] Temporarily hide all saints without deleting their saved stories, icons, credits or presentation; keep exact restoration available.
 - [x] Add exactly 88 relevant saints with accurate lives, verified traditional icons and source/license credits.
