@@ -49,8 +49,7 @@ export function drawVerseTypography(ctx: CanvasRenderingContext2D, size: number,
   };
   const label = (x: number, y: number, align: CanvasTextAlign) => {
     ctx.textAlign = align; ctx.fillStyle = accent;
-    const fitted = fit(ctx, reference.toUpperCase(), 780, 54, 23, "500 1px Arial", 1.2);
-    // fit's face accepts a complete family/weight suffix; labels use a plain sans face.
+    const fitted = fit(ctx, reference.toUpperCase(), 780, 54, 23, "Arial, sans-serif", 1.2);
     ctx.font = `500 ${Math.min(23, fitted.size)}px Arial, sans-serif`;
     ctx.fillText(reference.toUpperCase(), x, y, 780);
   };

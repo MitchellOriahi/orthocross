@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Share2, Download, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { drawVerseTypography } from "@/components/verseImageTypography";
 import { VERSE_IMAGE_STYLES } from "@/components/verseImageStyles";
 import { loadVerseBackground, preloadVerseBackgrounds } from "@/components/versePhotoBackgrounds";
 import { downloadVerseImage, shareVerseImage } from "@/components/verseImageSharing";
@@ -14,25 +15,6 @@ interface VerseShareDialogProps {
   verseReference: string;
 }
 
-const wrapCanvasText = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
-  const words = text.split(/\s+/);
-  const lines: string[] = [];
-  let currentLine = "";
-
-  words.forEach((word) => {
-    const testLine = currentLine ? `${currentLine} ${word}` : word;
-    if (ctx.measureText(testLine).width > maxWidth && currentLine) {
-      lines.push(currentLine);
-      currentLine = word;
-    } else {
-      currentLine = testLine;
-    }
-  });
-
-  if (currentLine) lines.push(currentLine);
-  return lines;
-};
-
 export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference }: VerseShareDialogProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -43,76 +25,6 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
   const startedVerse = useRef("");
 
   useEffect(() => { preloadVerseBackgrounds(); }, []);
-
-  const drawTextOverlay = (
-    ctx: CanvasRenderingContext2D,
-    size: number,
-  ) => {
-    // Bottom gradient band — keeps artwork visible on top, text legible below
-    const bandTop = size * 0.5;
-    const band = ctx.createLinearGradient(0, bandTop, 0, size);
-    band.addColorStop(0, "rgba(8, 12, 24, 0)");
-    band.addColorStop(0.45, "rgba(8, 12, 24, 0.65)");
-    band.addColorStop(1, "rgba(8, 12, 24, 0.92)");
-    ctx.fillStyle = band;
-    ctx.fillRect(0, bandTop, size, size - bandTop);
-
-    // Thin gold hairline frame
-    ctx.strokeStyle = "hsl(42 70% 70% / 0.45)";
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(28, 28, size - 56, size - 56);
-
-    // Original three-bar Orthodox cross, matching the gold frame and lettering.
-    const crossY = size * 0.62;
-    ctx.save();
-    ctx.translate(size / 2, crossY - 6);
-    ctx.strokeStyle = "hsl(42 78% 72%)";
-    ctx.lineWidth = 3;
-    ctx.lineCap = "round";
-    ctx.shadowColor = "rgba(0,0,0,0.65)";
-    ctx.shadowBlur = 8;
-    ctx.beginPath();
-    ctx.moveTo(0, -32);
-    ctx.lineTo(0, 32);
-    // Title bar, main arms, and raised-left slanted footrest.
-    ctx.moveTo(-9, -21);
-    ctx.lineTo(9, -21);
-    ctx.moveTo(-18, -6);
-    ctx.lineTo(18, -6);
-    ctx.moveTo(-11, 13);
-    ctx.lineTo(11, 23);
-    ctx.stroke();
-    ctx.restore();
-
-    const quote = `“${verseText}”`;
-    ctx.fillStyle = "hsl(40 30% 96%)";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.shadowColor = "rgba(0,0,0,0.9)";
-    ctx.shadowBlur = 16;
-
-    const maxWidth = size - 160;
-    const startY = crossY + 44;
-    let fontSize = 44;
-    let lines: string[] = [];
-    while (fontSize >= 20) {
-      ctx.font = `400 ${fontSize}px 'Cormorant Garamond', Georgia, serif`;
-      lines = wrapCanvasText(ctx, quote, maxWidth);
-      if (lines.length * fontSize * 1.25 <= size - 150 - startY) break;
-      fontSize -= 2;
-    }
-    const lineHeight = fontSize * 1.25;
-    lines.forEach((line, index) => ctx.fillText(line, size / 2, startY + index * lineHeight));
-    ctx.fillStyle = "hsl(42 78% 72%)";
-    ctx.font = "500 22px system-ui, sans-serif";
-    ctx.fillText(verseReference.toUpperCase(), size / 2, startY + lines.length * lineHeight + 20);
-
-    // Signature
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = "hsl(0 0% 92% / 0.7)";
-    ctx.font = "500 16px 'Inter', system-ui, sans-serif";
-    ctx.fillText("O R T H O C R O S S", size / 2, size - 56);
-  };
 
   const generateImage = useCallback(async (styleIndex: number) => {
     const requestId = ++generation.current;
@@ -130,7 +42,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
       const img = await loadVerseBackground(style.id);
       const cropSize = Math.min(img.naturalWidth, img.naturalHeight);
       ctx.drawImage(img, (img.naturalWidth - cropSize) / 2, (img.naturalHeight - cropSize) / 2, cropSize, cropSize, 0, 0, size, size);
-      drawTextOverlay(ctx, size);
+      drawVerseTypography(ctx, size, style.id, verseText, verseReference);
 
       if (generation.current !== requestId) return;
       const result = canvas.toDataURL("image/png");
