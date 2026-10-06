@@ -25,10 +25,10 @@ export interface SaintCategory {
 // Holy Rulers is currently not shown; its saved classification stays intact
 // below so it can be restored exactly.
 export const SAINT_CATEGORIES: SaintCategory[] = [
-  { id: "angels", label: "Angels and Archangels" },
+  { id: "angels", label: "Angels" },
   { id: "biblical", label: "Biblical Saints" },
   { id: "monastics", label: "Monastics" },
-  { id: "fathers-hierarchs", label: "Church Fathers and Hierarchs" },
+  { id: "fathers-hierarchs", label: "Church Fathers" },
   { id: "martyrs", label: "Martyrs" },
   { id: "apostles-missionaries", label: "Missionaries" },
   { id: "laypeople", label: "Righteous Laypeople" },

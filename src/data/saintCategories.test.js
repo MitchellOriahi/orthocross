@@ -13,10 +13,10 @@ const allSaints = saintsContent;
 describe("Saint categories", () => {
   test("offers exactly the seven visible categories in the requested order", () => {
     expect(SAINT_CATEGORIES.map(c => c.label)).toEqual([
-      "Angels and Archangels",
+      "Angels",
       "Biblical Saints",
       "Monastics",
-      "Church Fathers and Hierarchs",
+      "Church Fathers",
       "Martyrs",
       "Missionaries",
       "Righteous Laypeople",
