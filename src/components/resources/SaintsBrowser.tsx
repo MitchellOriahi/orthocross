@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { saintsContent } from "@/data/saintsContent";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { ANGEL_SUBCATEGORIES, getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
+import { CATEGORY_SUBCATEGORIES, SAINT_SUBCATEGORY_MEMBERS, getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 
