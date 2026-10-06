@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,12 +14,24 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
+  const subcategoryRowRef = useRef<HTMLDivElement | null>(null);
+  const [subcategoryRowScrolls, setSubcategoryRowScrolls] = useState(false);
   const selectedCategory = SAINT_CATEGORIES.find(item => item.id === category);
   const subcategories = category ? CATEGORY_SUBCATEGORIES[category] : undefined;
   const tags = category ? getCategoryTags(saintsContent, category) : [];
   const categorySaints = getCategorySaints(saintsContent, category, query, tag);
   const saints = subcategory ? categorySaints.filter(saint => SAINT_SUBCATEGORY_MEMBERS[subcategory]?.includes(saint.id)) : categorySaints;
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
+  useLayoutEffect(() => {
+    // Two rows of pills maximum; anything taller becomes a horizontal carousel.
+    const row = subcategoryRowRef.current;
+    if (!row) return;
+    const previousWrap = row.style.flexWrap;
+    row.style.flexWrap = "wrap"; // measure in wrapping mode regardless of current display mode
+    const rowCount = new Set(Array.from(row.querySelectorAll("button"), button => button.offsetTop)).size;
+    row.style.flexWrap = previousWrap;
+    setSubcategoryRowScrolls(rowCount > 2);
+  }, [category, subcategories]);
 
   function back() {
     if (category) { setCategory(null); setTag(null); setSubcategory(null); } else onClose();
@@ -38,9 +50,9 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         </div>
         {selectedCategory ? (
           <>
-            {subcategories && <div className="flex flex-wrap items-start gap-2 pb-3 mb-2" aria-label="Sub-categories">
-              <Button size="sm" variant={subcategory === null ? "secondary" : "ghost"} aria-pressed={subcategory === null} onClick={() => setSubcategory(null)} className="rounded-full border border-border">All</Button>
-              {subcategories.map(item => <Button key={item} size="sm" variant={subcategory === item ? "secondary" : "ghost"} aria-pressed={subcategory === item} onClick={() => setSubcategory(subcategory === item ? null : item)} className="rounded-full border border-border">{item}</Button>)}
+            {subcategories && <div ref={subcategoryRowRef} className={`flex gap-2 pb-3 mb-2 ${subcategoryRowScrolls ? "overflow-x-auto" : "flex-wrap items-start"}`} aria-label="Sub-categories">
+              <Button size="sm" variant={subcategory === null ? "secondary" : "ghost"} aria-pressed={subcategory === null} onClick={() => setSubcategory(null)} className={`rounded-full border border-border ${subcategoryRowScrolls ? "shrink-0" : ""}`}>All</Button>
+              {subcategories.map(item => <Button key={item} size="sm" variant={subcategory === item ? "secondary" : "ghost"} aria-pressed={subcategory === item} onClick={() => setSubcategory(subcategory === item ? null : item)} className={`rounded-full border border-border ${subcategoryRowScrolls ? "shrink-0" : ""}`}>{item}</Button>)}
             </div>}
             {!subcategories && tags.length > 0 && <div className="flex gap-2 overflow-x-auto pb-3 mb-2" aria-label="Saint tags">
               <Button size="sm" variant={tag === null ? "secondary" : "ghost"} aria-pressed={tag === null} onClick={() => setTag(null)} className="shrink-0 rounded-full border border-border">All</Button>
