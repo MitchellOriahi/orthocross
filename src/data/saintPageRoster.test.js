@@ -2,6 +2,23 @@ import { expect, test } from "bun:test";
 import { getSaintPageList, getSaintPageSubgroups, saintPageRoster, saintSortName } from "./saintPageRoster";
 import { saintsContent } from "./saintsContent";
 
+test("All includes both traditions in the selected category", () => {
+  const names = getSaintPageList("angels", "Archangels", "", "all").map(s => s.name);
+  expect(names).toContain("Michael");
+  expect(names).toContain("Raguel");
+});
+test("Eastern includes shared saints but excludes Oriental-only saints", () => {
+  const names = getSaintPageList("angels", "Archangels", "", "Eastern").map(s => s.name);
+  expect(names).toContain("Michael");
+  expect(names).not.toContain("Raguel");
+});
+test("Oriental includes shared saints and respects search and subgroup selection", () => {
+  expect(getSaintPageList("angels", "Archangels", "Michael", "Oriental").map(s => s.name)).toEqual(["Michael"]);
+  expect(getSaintPageList("angels", "Archangels", "Raguel", "Oriental").map(s => s.name)).toEqual(["Raguel"]);
+  expect(getSaintPageList("angels", "Guardians", "Michael", "Oriental")).toEqual([]);
+  expect(getSaintPageList("fathers-hierarchs", "Apostolic", "Irenaeus", "Oriental")).toEqual([]);
+});
+
 test("the supplied roster shows all twelve archangels and hides empty Appearances", () => {
   expect(getSaintPageList("angels", "Archangels")).toHaveLength(12);
   expect(getSaintPageList("angels")).toHaveLength(24);

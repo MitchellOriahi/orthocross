@@ -28,9 +28,12 @@ export const saintPageRoster: SaintDetail[] = roster.map(record => {
   };
 });
 
-export function getSaintPageList(category: SaintCategoryId | null, subgroup: string | null = null, query = "") {
+export type SaintTraditionFilter = "all" | "Eastern" | "Oriental";
+
+export function getSaintPageList(category: SaintCategoryId | null, subgroup: string | null = null, query = "", tradition: SaintTraditionFilter = "all") {
   const needle = query.trim().toLocaleLowerCase();
   return saintPageRoster.filter(saint =>
+    (tradition === "all" || saint.tradition === tradition || saint.tradition === "Eastern/Oriental") &&
     (!category || memberships.get(saint.id)?.some(item => item.category === category && (!subgroup || item.subgroup === subgroup))) &&
     (!needle || `${saint.prefix} ${saint.name} ${saint.shortDescription}`.toLocaleLowerCase().includes(needle))
   ).sort((a, b) => saintSortName(a.name).localeCompare(saintSortName(b.name), "en"));
