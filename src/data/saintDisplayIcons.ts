@@ -14,6 +14,9 @@ export interface SaintDisplayIcon {
   image_license_url: string;
   image_modification: string;
   image_author: string;
+  // "contain" (default "cover") shows the whole artwork letterboxed inside
+  // the square frame instead of cropping it to the face-and-halo region.
+  image_fit?: "contain";
 }
 
 // Only audited, matching Commons paintings belong here. To replace an icon,
