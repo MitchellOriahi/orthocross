@@ -1,5 +1,8 @@
 # Verse image sharing
 
+## Saints
+- [x] Put Theotokos first and apply a gold background with a light glow to her entire sticker, keeping the image unchanged.
+
 ## Historical island imagery
 - [x] Replace every island illustration with authenticated, topic-relevant reusable historical imagery.
 - [x] Document sources and verify all 19 islands render their replacement images; browser checks confirm 19/19 load without runtime errors, source/license credits are visible, and six tests pass.
