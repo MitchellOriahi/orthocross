@@ -1,5 +1,7 @@
 # Verse image sharing
 
+- [ ] Fix image authorization rejecting a valid sign-in; verify against the live image function.
+
 - [x] Make each image choice request matching, visibly different artwork; deploy the updated image function.
 - [x] Share the composed image without pasted verse text; support browser files and add native attachment support.
 - [x] Verify three distinct style requests, cached image restoration, and a PNG-only share payload using controlled images; five tests pass.
