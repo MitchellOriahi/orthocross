@@ -99,7 +99,7 @@ export const DonationPromptDialog = () => {
             <DialogTitle className="text-2xl">Support OrthoCross</DialogTitle>
             <DialogDescription className="text-base flex flex-col items-center gap-1">
               <span>"It is more blessed to give than to receive."</span>
-              <span className="text-muted-foreground">— Acts 20:35</span>
+              <span className="text-muted-foreground">— Acts 20:35 —</span>
             </DialogDescription>
           </DialogHeader>
 
