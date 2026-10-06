@@ -21,3 +21,7 @@
 - [x] Verify three distinct style requests, cached image restoration, and a PNG-only share payload using controlled images; five tests pass.
 - [x] Replace missing image-service credential dependency with managed Lovable AI; deployed function returned HTTP 200 and a live verse image with the current signed-in session; sharing tests pass.
 - [ ] Verify native device sharing — requires a new phone build with the added sharing plugins.
+
+## Saints gold backgrounds and descriptions
+- [x] Recolor the 88 added saints' plain backgrounds to the app's golden icon palette (53 icons recolored; photos, mosaics, frescoes and stained glass keep their authentic backgrounds).
+- [x] Rewrite all 88 short descriptions to clean one-sentence versions; removed internal notes; data tests pass (4).

@@ -94,7 +94,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Peter",
   "epithet": "Chief Apostle",
-  "shortDescription": "Galilean fisherman called by Christ as foremost of the Twelve and",
+  "shortDescription": "Galilean fisherman called by Christ as foremost of the Twelve and shepherd of His flock.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Simon, renamed Peter ('Rock') by Christ, was a fisherman of Bethsaida and Capernaum who, with his brother Andrew, left his nets to follow Jesus. He is consistently named first among the Twelve in the Gospels, confessed Christ as 'the Son of the living God' at Caesarea Philippi, and was present at the Transfiguration and Gethsemane. Despite his threefold denial during the Passion, he was restored by the Risen Christ on the shore of Tiberias and commanded to 'feed my sheep,' becoming the leading voice of the apostolic preaching recorded in Acts, including the Pentecost sermon and the reception of Cornelius the Gentile.",
@@ -118,7 +118,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Andrew",
   "epithet": "the First-Called",
-  "shortDescription": "Brother of Peter",
+  "shortDescription": "Brother of Peter, first to be called by Christ.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Andrew, son of Jonah and brother of Simon Peter, was a fisherman of Bethsaida who had first been a disciple of John the Baptist. When the Forerunner identified Jesus as the Lamb of God, Andrew immediately followed Him and then brought his brother Peter, earning him the title 'Protokletos,' the First-Called, a title of special honor in the Eastern Church. He appears repeatedly in the Gospel of John, including at the feeding of the five thousand and bringing the Greeks who sought Jesus to Philip.",
@@ -132,7 +132,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Greek - Saint Andrew - Walters 37559.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon1.url
@@ -142,7 +142,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "James",
   "epithet": "Son of Zebedee",
-  "shortDescription": "Elder son of Zebedee",
+  "shortDescription": "Elder son of Zebedee and first apostle to be martyred.",
   "tradition": "Eastern/Oriental",
   "content": [
     "James, son of Zebedee and elder brother of John the Theologian, was a Galilean fisherman whom Christ called 'Boanerges,' Son of Thunder, for his fervent temperament. Together with Peter and John he formed the inner circle of the Twelve, uniquely present at the raising of Jairus's daughter, the Transfiguration on Mount Tabor, and the agony in Gethsemane—moments of singular revelation shared with no other disciples.",
@@ -165,7 +165,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "John",
   "epithet": "the Theologian",
-  "shortDescription": "The 'Beloved Disciple",
+  "shortDescription": "The Beloved Disciple, brother of James and author of the Fourth Gospel.",
   "tradition": "Eastern/Oriental",
   "content": [
     "John, younger son of Zebedee and brother of James, was called the Beloved Disciple for his unique closeness to Christ, reclining on His breast at the Last Supper and standing at the foot of the Cross, where the dying Lord entrusted His Mother to John's care. With Peter and James he witnessed the Transfiguration and Gethsemane, and with Peter he ran to the empty tomb on Easter morning, outrunning him and being the first to believe.",
@@ -189,7 +189,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Philip",
   "epithet": "the Apostle",
-  "shortDescription": "Apostle from Bethsaida who brought Nathanael to Christ and asked to 'show us t",
+  "shortDescription": "Apostle from Bethsaida who brought Nathanael to Christ.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Philip of Bethsaida was called directly by Christ early in His ministry and in turn brought Nathanael (Bartholomew) to Jesus, telling him 'we have found him of whom Moses in the law and the prophets did write.' He appears at the feeding of the five thousand, where Christ tests him by asking where bread might be bought; he is the apostle to whom the Greeks seeking Jesus were first brought; and at the Last Supper his request, 'Lord, show us the Father, and it sufficeth us,' prompts Christ's profound reply, 'he that hath seen me hath seen the Father.'",
@@ -203,7 +203,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Icon of Apostle Philip (10th c, St. Catherine monastery, Sinai).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon4.url
@@ -213,7 +213,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Bartholomew",
   "epithet": "Nathanael",
-  "shortDescription": "Apostle identified with Nathanael",
+  "shortDescription": "Apostle identified with Nathanael of Cana.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Bartholomew ('son of Tolmai') is identified by the Eastern Fathers with Nathanael of Cana, whom Philip brought to Christ beneath a fig tree. Jesus's words upon seeing him approach—'Behold an Israelite indeed, in whom is no guile!'—and His revelation that He had seen Nathanael under the fig tree before Philip called him, elicited the disciple's immediate confession, 'Rabbi, thou art the Son of God; thou art the King of Israel.' He is listed among the witnesses of the Resurrection appearance at the Sea of Tiberias in John 21.",
@@ -237,7 +237,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Thomas",
   "epithet": "Didymus",
-  "shortDescription": "Apostle called 'the Twin",
+  "shortDescription": "Apostle called the Twin, who first doubted and then confessed the Risen Christ.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Thomas, called Didymus ('the Twin') in Greek, is remembered chiefly for his insistence, after the other disciples reported seeing the Risen Christ, that he would not believe unless he saw and touched the Lord's wounds himself. Eight days later Christ appeared again and invited Thomas to do exactly that; the Gospel of John records Thomas's immediate confession, 'My Lord and my God!,' without stating explicitly that he actually touched the wounds. Orthodox hymnography treats this episode, commemorated the Sunday after Pascha ('Thomas Sunday'), not as mere doubt but as a path by which the Church's faith in the bodily Resurrection was confirmed beyond question.",
@@ -251,7 +251,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Apostle Thomas - Orthodox icon.jpeg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon6.url
@@ -261,7 +261,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Matthew",
   "epithet": "Levi, the Evangelist",
-  "shortDescription": "Former tax collector called by Christ",
+  "shortDescription": "Former tax collector called by Christ and author of the first Gospel.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Matthew, also called Levi, was a publican—a collector of Roman taxes—working at Capernaum when Christ called him with the simple command, 'Follow me.' Matthew's own Gospel records that he immediately left his tax booth and held a great feast for Jesus at his house, attended by fellow tax collectors and sinners, provoking the Pharisees' scorn and Christ's famous reply that He came to call sinners, not the righteous, to repentance.",
@@ -285,7 +285,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "James",
   "epithet": "Son of Alphaeus",
-  "shortDescription": "One of the Twelve",
+  "shortDescription": "One of the Twelve, remembered for his quiet fidelity.",
   "tradition": "Eastern/Oriental",
   "content": [
     "James, son of Alphaeus, appears in all four apostolic lists among the Twelve but receives no individual narrative episode in the Gospels, making him one of the more hidden members of Christ's inner band. Because the Gospels name multiple men called James, Orthodox tradition takes great care to distinguish him from James the son of Zebedee (brother of John) and from James the Brother of the Lord, first bishop of Jerusalem; some ancient commentators (though not universally) further identify him with 'James the Less,' son of a Mary who stood at the Cross, though this identification is debated among the Fathers.",
@@ -309,7 +309,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Jude",
   "epithet": "Thaddeus",
-  "shortDescription": "Apostle also called Thaddeus and Lebbaeus",
+  "shortDescription": "Apostle also called Thaddeus, author of the epistle that bears his name.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Jude, called Thaddeus and also Lebbaeus in the Gospel lists, was one of the Twelve. His exact family relationships are debated: Eastern tradition generally holds him to be a brother of James the son of Alphaeus, while some ancient writers link him instead to the 'brothers of the Lord' named in the Gospels; Orthodox sources are careful to keep this distinct from the separate figure of James the Brother of the Lord, and the identifications are not uniformly resolved among the Fathers. At the Last Supper, it is Jude (called 'Judas, not Iscariot' in John's Gospel) who asks Christ why He will manifest Himself to the disciples and not to the world, receiving the Lord's teaching that those who love Him and keep His word will be loved by the Father and indwelt by the Trinity.",
@@ -323,7 +323,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Russian Icon of Apostle Jude Thaddeus, Kizhi.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon9.url
@@ -333,7 +333,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Simon",
   "epithet": "the Zealot",
-  "shortDescription": "Apostle called 'the Zealot,' traditionally a missionary to the Caucasus.",
+  "shortDescription": "Apostle called the Zealot, traditionally a missionary to the Caucasus.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Simon appears in the apostolic lists with the epithet 'the Zealot' (in Luke and Acts) or 'the Canaanite/Cananaean' (in Matthew and Mark, a Semitic term of similar meaning), distinguishing him from Simon Peter. The designation has traditionally been understood to indicate prior association with the Zealots, a Jewish movement devoted to resisting Roman occupation, though some scholars read 'zealot' instead as describing religious fervor rather than political affiliation; either way, his calling by Christ alongside a former tax collector like Matthew illustrates the Gospel's power to unite men of opposed backgrounds within the apostolic band.",
@@ -347,7 +347,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Simon the Zealot - Apostle.jpeg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon10.url
@@ -371,7 +371,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 3.0 RS",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/rs/deed.en",
     "title": "Апостол Матија.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon11.url
@@ -381,7 +381,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Paul",
   "epithet": "Apostle to the Gentiles",
-  "shortDescription": "Pharisee transformed by the Risen Christ into the Church's foremost missionary",
+  "shortDescription": "Zealous Pharisee transformed by the Risen Christ into the Church's foremost missionary.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Saul of Tarsus, a zealous Pharisee and persecutor of the Church who consented to the stoning of Stephen, was transformed by a blinding vision of the Risen Christ on the road to Damascus, who asked him, 'Saul, Saul, why persecutest thou me?' Baptized by Ananias and renamed Paul, he became, though not one of the original Twelve, the Church's foremost missionary theologian, undertaking three great missionary journeys across Asia Minor, Greece, and eventually Rome, planting churches and instructing them through letters that form the largest single block of the New Testament.",
@@ -395,7 +395,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Andrei Rublev - St Paul. From Deisus Tier - Google Art Project.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon12.url
@@ -405,7 +405,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "John",
   "epithet": "the Forerunner",
-  "shortDescription": "Last prophet of the Old Covenant who baptized Christ and was martyred by Herod",
+  "shortDescription": "Last prophet of the Old Covenant who baptized Christ and was martyred by Herod.",
   "tradition": "Eastern/Oriental",
   "content": [
     "John, son of the priest Zechariah and Elizabeth, kinswoman of the Virgin Mary, was set apart from the womb, leaping for joy when the pregnant Mary visited his mother. He lived an ascetic life in the wilderness of Judea, clothed in camel's hair and eating locusts and wild honey, and began preaching repentance and baptizing in the Jordan River, drawing crowds who wondered whether he himself might be the Messiah. John firmly directed all such speculation toward the one 'mightier than I,' whose sandal he was unworthy to unloose.",
@@ -419,7 +419,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "An early byzantine icon of John the Baptist, 6th century BC.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon13.url
@@ -429,7 +429,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Luke",
   "epithet": "the Evangelist",
-  "shortDescription": "Physician and companion of Paul",
+  "shortDescription": "Physician and companion of Paul, author of the third Gospel and Acts.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Luke, described by Paul as 'the beloved physician,' was a Gentile convert, likely from Antioch in Syria, who became a devoted companion of the Apostle Paul, accompanying him on portions of his missionary journeys and remaining faithfully at his side even during his final Roman imprisonment, as recorded in 2 Timothy: 'only Luke is with me.' His authorship extends to two of the New Testament's longest books, the Gospel of Luke and the Acts of the Apostles, together comprising roughly a quarter of the entire New Testament.",
@@ -443,7 +443,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint Luke the Evangelist - icon.jpeg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon14.url
@@ -453,7 +453,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Mary Magdalene",
   "epithet": "Equal to the Apostles",
-  "shortDescription": "Devoted disciple",
+  "shortDescription": "Devoted disciple who stood at the Cross and first proclaimed the Resurrection.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Mary of Magdala was delivered by Christ from seven demons and became one of the women who followed and provided for Him and the Twelve out of their own means. She stood at the foot of the Cross with the Mother of God and the Beloved Disciple when the male apostles, save John, had fled, and she was among the myrrh-bearing women who came to the tomb at dawn on the third day to anoint the body of Jesus with spices.",
@@ -467,7 +467,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Maria Magdalene icon.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon15.url
@@ -477,7 +477,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Stephen",
   "epithet": "the Protomartyr",
-  "shortDescription": "First of the Seven deacons and the first Christian martyr",
+  "shortDescription": "First of the Seven deacons and the first Christian martyr.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Stephen was foremost among the seven men 'full of the Holy Spirit and wisdom' chosen by the apostles in Acts 6 to administer charitable distribution to the Greek-speaking widows of the Jerusalem church, a ministry that developed into the order of deacons. Scripture describes him as full of faith and power, working great wonders and signs among the people, and so effective in disputation that his opponents 'were not able to resist the wisdom and the spirit by which he spoke.'",
@@ -491,7 +491,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint Stephen (Nevyansk icon).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon16.url
@@ -501,7 +501,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "James",
   "epithet": "Brother of the Lord",
-  "shortDescription": "Kinsman of Christ",
+  "shortDescription": "Kinsman of Christ and first bishop of Jerusalem.",
   "tradition": "Eastern/Oriental",
   "content": [
     "James, called the Brother of the Lord, is understood in Eastern tradition as a son of Joseph the Betrothed by a prior marriage, making him a step-brother, not a blood brother, of Jesus—a view that safeguards the Orthodox doctrine of the Virgin Mary's perpetual virginity while honoring his close family relationship to Christ. Though not originally a believer during Christ's earthly ministry, James became a devoted disciple after a personal resurrection appearance of the Risen Lord to him, as recorded by Paul in 1 Corinthians 15.",
@@ -515,7 +515,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Tzangarolas Stephanos - St James the Brother of the Lord - Google Art Project.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon17.url
@@ -525,7 +525,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Barnabas",
   "epithet": "'Son of Encouragement'",
-  "shortDescription": "Cypriot Levite and companion of Paul",
+  "shortDescription": "Cypriot Levite named Son of Encouragement, companion of Paul.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Barnabas, originally named Joseph, was a Levite from Cyprus whom the apostles surnamed 'Barnabas,' meaning 'son of encouragement' or 'son of consolation,' for his generous and conciliatory character. His first appearance in Acts shows him selling a field and laying the proceeds at the apostles' feet for the relief of the poor, establishing the pattern of selfless generosity for which he was known throughout his ministry; Orthodox tradition numbers him among the Seventy Apostles sent out by Christ in Luke 10, distinguishing him from the Twelve while honoring him with full apostolic rank.",
@@ -549,7 +549,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Timothy",
   "epithet": "Bishop of Ephesus",
-  "shortDescription": "Beloved disciple and co-worker of Paul",
+  "shortDescription": "Beloved disciple and co-worker of Paul, first bishop of Ephesus.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Timothy was the son of a Greek father and a devout Jewish mother, Eunice, and grandson of Lois, both commended by Paul for the genuine faith they instilled in him from childhood through knowledge of the Scriptures. Converted and discipled by Paul at Lystra, Timothy became one of the apostle's closest and most trusted companions, accompanying him on extensive missionary travels and being entrusted with sensitive pastoral missions to the troubled churches of Thessalonica, Corinth, and Philippi.",
@@ -563,7 +563,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint Timothy.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon19.url
@@ -587,7 +587,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Fresco of Saint Titos.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon20.url
@@ -597,7 +597,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Philip",
   "epithet": "the Deacon",
-  "shortDescription": "One of the Seven deacons of Acts 6",
+  "shortDescription": "One of the Seven deacons of Acts 6 who baptized the Ethiopian eunuch.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Philip the Deacon, also called Philip the Evangelist, was one of the seven men 'of good reputation, full of the Spirit and wisdom' chosen by the Jerusalem church in Acts 6 to oversee the daily distribution of charity, alongside Stephen the Protomartyr. He must be carefully distinguished from Philip the Apostle, one of the Twelve; the Eastern Church is precise in this distinction, commemorating the two men separately as Philip the Apostle and Philip the Deacon/Evangelist, holding distinct offices within the apostolic Church. The icon venerated under his name shows him, as in Eastern church tradition, vested as a deacon rather than in the dress of one of the Twelve, marking the separate identity of the two Philips at a glance.",
@@ -611,7 +611,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Icon of St. Philip the Diacon (16th c., Moscow) 2.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon21.url
@@ -621,7 +621,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Ignatius of Antioch",
   "epithet": "the God-Bearer",
-  "shortDescription": "Apostolic Father and bishop martyred in Rome",
+  "shortDescription": "Apostolic Father and bishop of Antioch, martyred in Rome.",
   "tradition": "Eastern",
   "content": [
     "Saint Ignatius of Antioch (c. 35–c. 108), called \"Theophoros\" (the God-Bearer), was the third bishop of Antioch and a disciple of the Apostle John. He is one of the Apostolic Fathers, the generation that had direct contact with the apostles, and tradition holds he was consecrated by Peter himself. Little is known of his early life, but by the late first century he led the church of Antioch through a period of persecution and internal division.",
@@ -645,7 +645,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Polycarp of Smyrna",
   "epithet": "Bishop and Martyr",
-  "shortDescription": "Disciple of the Apostle John and bishop of Smyrna",
+  "shortDescription": "Disciple of the Apostle John and bishop of Smyrna, martyred for his faith.",
   "tradition": "Eastern",
   "content": [
     "Saint Polycarp (c. 69–c. 155) was bishop of Smyrna in Asia Minor and, according to Irenaeus of Lyons, a direct disciple of the Apostle John, forming a crucial link between the apostolic generation and the early Church Fathers. He presided over the church at Smyrna for decades, combating Gnostic and Marcionite teachings, and corresponded with churches throughout the region.",
@@ -659,7 +659,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC0",
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
     "title": "Polycarp_of_Smyrna2.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon23.url
@@ -669,7 +669,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Irenaeus",
   "epithet": "of Lyons",
-  "shortDescription": "Bishop of Lyons and theologian whose Against Heresies refuted Gnosticism and s",
+  "shortDescription": "Bishop of Lyons whose Against Heresies refuted Gnosticism.",
   "tradition": "Eastern",
   "content": [
     "Saint Irenaeus (c. 130–c. 202) was born in Smyrna in Asia Minor, where as a youth he heard the preaching of Polycarp, who had himself known the Apostle John. He later traveled to Gaul, becoming a presbyter and then, around 177, the second bishop of Lyons, succeeding Pothinus after the latter's martyrdom in a wave of persecution.",
@@ -683,7 +683,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint_irenee_saint_irenee.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon24.url
@@ -693,7 +693,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Justin Martyr",
   "epithet": "the Martyr",
-  "shortDescription": "Former pagan philosopher who embraced Christianity and defended it before Roma",
+  "shortDescription": "Pagan philosopher who embraced Christianity and defended it before Rome.",
   "tradition": "Eastern",
   "content": [
     "Saint Justin Martyr (c. 100–c. 165) was born in Flavia Neapolis (modern Nablus) to pagan Greek parents. He pursued philosophy extensively, studying Stoicism, Aristotelianism, Pythagoreanism, and Platonism before an encounter with an old man near the seashore, as he recounts in his Dialogue with Trypho, led him to Christianity, which he came to regard as the \"true philosophy.\"",
@@ -707,7 +707,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint_Justin_Martyr_by_Theophanes_the_Cretan.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon25.url
@@ -717,7 +717,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Clement",
   "epithet": "of Rome",
-  "shortDescription": "Apostolic Father and early bishop of Rome whose epistle to the Corinthians is ",
+  "shortDescription": "Apostolic Father and early bishop of Rome.",
   "tradition": "Eastern",
   "content": [
     "Saint Clement of Rome (fl. late first century) is traditionally counted as the fourth bishop of Rome, after Peter, Linus, and Anacletus, and is numbered among the Apostolic Fathers. Early sources, including Tertullian, claim he was consecrated by Peter himself, though the precise chronology of the earliest Roman bishops remains uncertain to historians.",
@@ -741,7 +741,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Cyprian",
   "epithet": "of Carthage",
-  "shortDescription": "Bishop of Carthage whose writings on church unity and penance shaped Latin ecc",
+  "shortDescription": "Bishop of Carthage whose writings shaped Latin teaching on unity and penance.",
   "tradition": "Eastern",
   "content": [
     "Saint Cyprian (c. 210–258) was born into a wealthy pagan family in Carthage, North Africa, and trained as a rhetorician before his conversion to Christianity around 245 under the influence of the priest Caecilius. Within a few years he was elected bishop of Carthage, a position he held during one of the most turbulent periods of early Christian history.",
@@ -755,7 +755,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Cyprian_von_Karthago2.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon27.url
@@ -765,7 +765,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Ambrose",
   "epithet": "of Milan",
-  "shortDescription": "Roman governor turned bishop of Milan",
+  "shortDescription": "Roman governor turned bishop of Milan and teacher of Augustine.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Saint Ambrose (c. 340–397) was born into a Roman Christian family and trained in law and rhetoric, rising to become governor of the province of Aemilia-Liguria, based in Milan. In 374, upon the death of the Arian bishop of Milan, Ambrose attended the contentious episcopal election to keep the peace; a child's cry of \"Ambrose for bishop!\" led to his acclamation by the crowd, remarkable since he was not yet baptized. Within a week he was baptized, ordained, and consecrated bishop.",
@@ -779,7 +779,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "AmbroseOfMilan_(cropped).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon28.url
@@ -789,7 +789,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Gregory of Nazianzus",
   "epithet": "the Theologian",
-  "shortDescription": "Cappadocian Father and Archbishop of Constantinople",
+  "shortDescription": "Cappadocian Father and Archbishop of Constantinople, the Trinitarian Theologian.",
   "tradition": "Eastern",
   "content": [
     "Saint Gregory of Nazianzus (c. 329–390), one of the three Cappadocian Fathers alongside Basil the Great and Gregory of Nyssa, was born near Nazianzus in Cappadocia to Christian parents; his father was bishop of the city. He studied rhetoric in Caesarea, Alexandria, and finally Athens, where he formed a lifelong friendship with Basil the Great.",
@@ -803,7 +803,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Copyrighted free use",
     "licenseUrl": "https://commons.wikimedia.org/wiki/File:Gregor-Chora_(cropped).jpg",
     "title": "Gregor-Chora_(cropped).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon29.url
@@ -813,7 +813,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Gregory",
   "epithet": "of Nyssa",
-  "shortDescription": "Cappadocian bishop and mystical theologian renowned for his writings on the Tr",
+  "shortDescription": "Cappadocian bishop and mystical theologian of the Trinity.",
   "tradition": "Eastern",
   "content": [
     "Saint Gregory of Nyssa (c. 335–c. 395) was the younger brother of Basil the Great and one of the three Cappadocian Fathers. Unlike his brother and friend Gregory of Nazianzus, he initially pursued a career as a rhetorician and briefly married before devoting himself fully to the church. Around 372, Basil ordained him bishop of the small town of Nyssa in Cappadocia.",
@@ -827,7 +827,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Gregory_of_Nyssa.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon30.url
@@ -837,7 +837,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Cyril",
   "epithet": "of Jerusalem",
-  "shortDescription": "Fourth-century bishop of Jerusalem whose Catechetical Lectures remain a founda",
+  "shortDescription": "Fourth-century bishop of Jerusalem whose Catechetical Lectures remain foundational.",
   "tradition": "Eastern",
   "content": [
     "Saint Cyril of Jerusalem (c. 313–386) became bishop of Jerusalem around 350, during a period of intense theological controversy between Nicene and Arian factions and amid complicated local jurisdictional disputes with the see of Caesarea. His episcopate was marked by repeated depositions and exiles—he was removed from his see three times over three decades, largely due to political and doctrinal conflicts with pro-Arian bishops and the metropolitan of Caesarea.",
@@ -861,7 +861,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Cyril",
   "epithet": "of Alexandria",
-  "shortDescription": "Patriarch of Alexandria and chief architect of Christological orthodoxy at the",
+  "shortDescription": "Patriarch of Alexandria and chief defender of Christ's divinity at Ephesus.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Saint Cyril of Alexandria (c. 376–444) succeeded his uncle Theophilus as patriarch of Alexandria in 412, inheriting one of the most powerful and often turbulent sees in the Christian world. His early episcopate was marked by conflicts with the city's Jewish community, the pagan philosopher Hypatia's murder by a mob (an episode that has long stained his historical reputation, though his direct involvement is disputed), and rivalry with the imperial prefect Orestes.",
@@ -875,7 +875,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "Chora-Kirche_2013-03-21zh_(cropped).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon32.url
@@ -885,7 +885,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Ephrem",
   "epithet": "the Syrian",
-  "shortDescription": "Syriac deacon",
+  "shortDescription": "Syriac deacon, poet and the greatest hymnographer of the early Church.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Saint Ephrem the Syrian (c. 306–373) was born in Nisibis in Mesopotamia and spent much of his life there as a teacher and deacon under a succession of bishops, until the city's cession to Persia in 363 forced him to flee to Edessa, where he continued his work until his death during a plague, reportedly caught while ministering to the sick.",
@@ -909,7 +909,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Isaac the Syrian",
   "epithet": "of Nineveh",
-  "shortDescription": "Seventh-century bishop and hermit of the Church of the East renowned for his a",
+  "shortDescription": "Seventh-century bishop and hermit renowned for his writings on divine mercy.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Saint Isaac the Syrian, also known as Isaac of Nineveh (c. 613–c. 700), was born in the region of Beth Qatraye in eastern Arabia. He entered monastic life with his brother at a young age and became known for his learning and ascetic rigor. Around 676, the Catholicos George I of the Church of the East ordained him bishop of Nineveh, but Isaac resigned the position after only five months, reportedly due to the pastoral burdens of city life conflicting with his contemplative calling, and withdrew to the solitude of Mount Matout.",
@@ -933,7 +933,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "John",
   "epithet": "of Damascus",
-  "shortDescription": "Eighth-century monk-theologian and hymnographer who defended icon veneration a",
+  "shortDescription": "Monk-theologian and hymnographer who defended icons and systematized Orthodox theology.",
   "tradition": "Eastern",
   "content": [
     "Saint John of Damascus (c. 675–749) was born into a prominent Christian family in Damascus under Umayyad rule; his father and grandfather had served as administrators to the caliphate, and John himself reportedly held a high civil post before renouncing it to become a monk at the monastery of Mar Saba near Jerusalem.",
@@ -947,7 +947,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Athonite_Fresco_Icon_of_Saint_John_of_Damascus.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon35.url
@@ -957,7 +957,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Maximus",
   "epithet": "the Confessor",
-  "shortDescription": "Byzantine monk-theologian who suffered mutilation for defending Christ's two w",
+  "shortDescription": "Byzantine monk-theologian who suffered for confessing Christ's two wills.",
   "tradition": "Eastern",
   "content": [
     "Saint Maximus the Confessor (c. 580–662) served in his early life as a high-ranking civil official in the court of Emperor Heraclius before entering monastic life, eventually becoming a leading spiritual and theological figure of his era, deeply versed in the Neoplatonic and patristic tradition inherited from Origen, the Cappadocians, and Dionysius the Areopagite.",
@@ -971,7 +971,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Athonite_Fresco_Icon_of_Saint_Maximos_the_Confessor_2.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon36.url
@@ -981,7 +981,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "John",
   "epithet": "Climacus",
-  "shortDescription": "Sixth-century abbot of Sinai whose Ladder of Divine Ascent became the foundati",
+  "shortDescription": "Sixth-century abbot of Sinai whose Ladder of Divine Ascent guides souls to God.",
   "tradition": "Eastern",
   "content": [
     "Saint John Climacus (c. 579–c. 649), also called John of the Ladder or John Scholasticus, entered the monastery of Saint Catherine at Mount Sinai around age sixteen, where he studied under the elder Martyrius before withdrawing to live as a hermit in the nearby desert of Tholas for some forty years, devoting himself to prayer, study, and spiritual direction of visitors who sought him out.",
@@ -995,7 +995,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Lestvichnik.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon37.url
@@ -1005,7 +1005,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Gregory the Wonderworker",
   "epithet": "Thaumaturgus",
-  "shortDescription": "Third-century bishop of Neocaesarea renowned for missionary success and miracl",
+  "shortDescription": "Third-century bishop of Neocaesarea renowned for miracles and missionary zeal.",
   "tradition": "Eastern",
   "content": [
     "Saint Gregory the Wonderworker (c. 213–c. 270), known in Greek as Gregory Thaumaturgus, was born to a pagan family in Neocaesarea in Pontus (Asia Minor) and originally trained in rhetoric and law. While journeying to study law in Berytus (Beirut), he and his brother were diverted to Caesarea in Palestine, where they came under the teaching of the great theologian Origen, an encounter that transformed Gregory's life and led to his conversion to Christianity and years of study under Origen's guidance, which he later described gratefully in his Oration of Thanksgiving to Origen.",
@@ -1029,7 +1029,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Spyridon",
   "epithet": "of Trimythous",
-  "shortDescription": "Fourth-century shepherd-bishop of Cyprus famed for his humility",
+  "shortDescription": "Fourth-century shepherd-bishop of Cyprus famed for humility and wonderworking.",
   "tradition": "Eastern",
   "content": [
     "Saint Spyridon (c. 270–348) was born to a poor family on the island of Cyprus and worked as a shepherd in his youth, a humble origin he never abandoned even after his elevation to the episcopate, continuing to tend flocks and work the land as bishop of Trimythous. He married and had a daughter, Irene, before being widowed, after which he devoted himself more fully to the Church.",
@@ -1043,7 +1043,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Saint_Spiridion_(17_c).JPG",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon39.url
@@ -1053,7 +1053,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Panteleimon",
   "epithet": "Great Martyr and Healer",
-  "shortDescription": "Fourth-century physician-martyr venerated as a patron of healing and one of th",
+  "shortDescription": "Fourth-century physician-martyr and patron of healing.",
   "tradition": "Eastern",
   "content": [
     "Saint Panteleimon (c. 275–305), originally named Pantoleon, was born in Nicomedia to a pagan father and a Christian mother, Saint Eubula, who raised him in the faith before her early death, after which his father's influence led him toward paganism. He trained as a physician under the renowned doctor Euphrosynos and became skilled enough to attract the attention of Emperor Galerius Maximian, who intended to make him a court physician.",
@@ -1077,7 +1077,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Demetrius",
   "epithet": "of Thessalonica",
-  "shortDescription": "Early fourth-century soldier-martyr and patron of Thessalonica",
+  "shortDescription": "Fourth-century soldier-martyr and patron of Thessalonica.",
   "tradition": "Eastern",
   "content": [
     "Saint Demetrius (c. 270–306) was, according to tradition, a high-ranking Roman officer and proconsul in Thessalonica who secretly professed and taught the Christian faith while serving under Emperor Galerius Maximian during the persecutions of the early fourth century. When his Christianity was discovered, likely around 304–306, he was imprisoned in the city's bathhouse complex.",
@@ -1101,7 +1101,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Barbara",
   "epithet": "Great Martyr",
-  "shortDescription": "Legendary virgin martyr imprisoned in a tower by her pagan father",
+  "shortDescription": "Virgin martyr, traditionally imprisoned in a tower by her pagan father.",
   "tradition": "Eastern",
   "content": [
     "Saint Barbara's story, as preserved in hagiographic tradition, tells of a young woman of great beauty born in the third century in Heliopolis or Nicomedia to a wealthy pagan father named Dioscorus, who, fearing suitors or wishing to shield her from Christian influence, confined her to a tower. While isolated there, Barbara is said to have secretly studied and embraced Christianity, reportedly through contact with Christian teachers, and to have ordered a third window added to her bathhouse in honor of the Holy Trinity, revealing her new faith to her father.",
@@ -1115,7 +1115,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Wilhelm_Kalteysen_-_Saint_Barbara_Altarpiece_-_Google_Art_Project.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon42.url
@@ -1125,7 +1125,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Paraskeva",
   "epithet": "of Iconium",
-  "shortDescription": "Early virgin martyr of Asia Minor",
+  "shortDescription": "Early virgin martyr of Asia Minor.",
   "tradition": "Eastern",
   "content": [
     "Saint Paraskeva of Iconium (also called Paraskeva the Martyr or Saint Piatnitsa in Slavic tradition) is venerated according to hagiographic tradition as a young Christian woman from Iconium in Asia Minor who lived during the persecutions of the second or early third century, though, as with many early virgin martyrs, the historical record about her is thin and largely transmitted through later devotional lives (synaxaria) rather than contemporary documentation.",
@@ -1139,7 +1139,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Paraskeva_(15th_c,_Vologda_museum).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon43.url
@@ -1149,7 +1149,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Seraphim",
   "epithet": "of Sarov",
-  "shortDescription": "Russian hieromonk",
+  "shortDescription": "Russian hieromonk renowned for gentleness and the call to acquire the Spirit of Peace.",
   "tradition": "Eastern",
   "content": [
     "Seraphim of Sarov (1754–1833), born Prokhor Moshnin in Kursk, entered the Sarov Hermitage as a young man and progressed through the stages of monastic life: cenobite, hermit in the forest, pillar-ascetic, and recluse, before finally becoming a startets (spiritual elder) who received thousands of pilgrims in his final years. He is considered the greatest of the nineteenth-century Russian elders and a bridge between the ancient hesychast tradition and the revival of eldership that shaped Optina Pustyn and later Russian spirituality.",
@@ -1163,7 +1163,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Seraphim of Sarov (after 1903, priv.coll).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon44.url
@@ -1197,7 +1197,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Silouan",
   "epithet": "the Athonite",
-  "shortDescription": "Russian monk of St. Panteleimon Monastery known for his teaching on love for e",
+  "shortDescription": "Athonite monk known for his teaching on love for enemies.",
   "tradition": "Eastern",
   "content": [
     "Silouan the Athonite (1866–1938), born Simeon Antonov in Tambov Province, Russia, left behind a peasant upbringing and brief military service to become a monk at the Russian St. Panteleimon Monastery on Mount Athos. There he lived a largely hidden life of manual labor and unceasing prayer, attracting little outside attention during his lifetime, yet he came to be regarded after his death as one of the great spiritual masters of twentieth-century Orthodoxy.",
@@ -1211,7 +1211,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Silouanicon.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon46.url
@@ -1245,7 +1245,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Nicodemus",
   "epithet": "the Hagiorite",
-  "shortDescription": "Substituted for Porphyrios of Kafsokalyvia (d. 1991)",
+  "shortDescription": "Athonite monk and scholar who revived Orthodox spiritual literature.",
   "tradition": "Eastern",
   "content": [
     "Nicodemus the Hagiorite (1749–1809) was a monk of Mount Athos and one of the most important scholar-ascetics of the eighteenth-century Orthodox revival movement known as the Kollyvades. Born Nicholas Kallivourtzis on the island of Naxos, he was educated at the Evangelical School of Smyrna before becoming a monk at the Monastery of Dionysiou on Mount Athos, where he devoted the remainder of his life to prayer, writing, and the editing of patristic texts.",
@@ -1269,7 +1269,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Dimitry",
   "epithet": "of Rostov",
-  "shortDescription": "Substituted for John of Kronstadt",
+  "shortDescription": "Bishop of Rostov and compiler of the great Lives of the Saints.",
   "tradition": "Eastern",
   "content": [
     "Dimitry of Rostov (1651–1709), born Daniel Tuptalo in Makarov near Kiev, was a monk, preacher, and bishop who became one of the most important literary and pastoral figures of the seventeenth-century Russian and Ukrainian Orthodox Church. Educated at the Kiev-Mohyla Academy, he was tonsured a monk at an early age and quickly became renowned throughout Ukraine and Russia for his eloquent preaching.",
@@ -1283,7 +1283,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Guardian Angel with 4 saints circle of Dikariev, circa 1900 (Sotheby's).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon49.url
@@ -1293,7 +1293,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Xenia of Saint Petersburg",
   "epithet": "of Petersburg",
-  "shortDescription": "Holy fool who gave away her wealth after her husband's death and lived homeles",
+  "shortDescription": "Holy fool who gave away her wealth and lived homeless for Christ.",
   "tradition": "Eastern",
   "content": [
     "Xenia of Saint Petersburg (c. 1731 – c. 1803) was a young widow who, after the sudden death of her husband, a court singer, gave away all her possessions, including her house, and began wandering the streets of Saint Petersburg dressed in her late husband's military coat, answering only to his name, Andrei Feodorovich. This behavior marked the beginning of her life as a \"fool for Christ\" (yurodivaya), a distinctively Orthodox form of radical asceticism in which sanity is feigned to be foolish as a form of self-emptying and prophetic witness.",
@@ -1307,7 +1307,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY 2.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
     "title": "Блаженная Ксения Петербурская (иконописная мастерская Елеон).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon50.url
@@ -1317,7 +1317,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Matrona",
   "epithet": "of Moscow",
-  "shortDescription": "Blind and paralyzed Russian eldress revered for prophecy and healing through t",
+  "shortDescription": "Blind Russian eldress revered for prophecy and healing.",
   "tradition": "Eastern",
   "content": [
     "Matrona of Moscow (1881–1952), born Matrona Nikonova in Tula Province, was born blind and, in her teenage years, lost the use of her legs, yet she became one of the most beloved spiritual figures of twentieth-century Russia, revered for her gifts of clairvoyance, prophecy, and healing despite — or through — her profound physical disability. From childhood she reportedly displayed unusual spiritual perception, and as a young woman pilgrims and the sick already began seeking her counsel.",
@@ -1331,7 +1331,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY 2.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
     "title": "Блаженная Матрона Московская (13899411716).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon51.url
@@ -1341,7 +1341,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Herman",
   "epithet": "of Alaska",
-  "shortDescription": "Russian monk-missionary who defended Native Alaskans against colonial exploita",
+  "shortDescription": "Russian monk-missionary who defended Native Alaskans against exploitation.",
   "tradition": "Eastern",
   "content": [
     "Herman of Alaska (c. 1756–1836) was a Russian monk from the Valaam Monastery who joined a missionary expedition sent by the Russian-American Company to Kodiak Island, Alaska, in 1794, becoming part of the first Orthodox mission to North America. Though not ordained a priest, Herman lived among and ministered to the Alutiiq and other Native peoples for the rest of his life, eventually settling alone on nearby Spruce Island, which he called \"New Valaam.\"",
@@ -1355,7 +1355,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "Glorification of Venerable Herman of Alaska, Wonderworker of All America wg.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon52.url
@@ -1365,7 +1365,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Innocent",
   "epithet": "of Alaska",
-  "shortDescription": "Linguist-missionary bishop who evangelized Alaska and Siberia and became Metro",
+  "shortDescription": "Missionary bishop who evangelized Alaska and Siberia in native languages.",
   "tradition": "Eastern",
   "content": [
     "Innocent of Alaska (1797–1879), born Ivan Veniaminov in Irkutsk Province, Siberia, volunteered as a young priest to serve the remote Russian-American colonies, arriving on Unalaska Island in the Aleutians in 1824. There he quickly distinguished himself not only as a pastor but as a scholar: he learned the Aleut and Tlingit languages, created written alphabets for them, and translated Scripture and liturgical texts, producing some of the first ethnographic and linguistic studies of Alaska Native peoples.",
@@ -1379,7 +1379,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "St Innocent of Alaska.JPG",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon53.url
@@ -1389,7 +1389,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Tikhon",
   "epithet": "of Zadonsk",
-  "shortDescription": "Bishop, spiritual writer and compassionate pastor",
+  "shortDescription": "Bishop, spiritual writer and compassionate pastor of the Russian Church.",
   "tradition": "Eastern",
   "content": [
     "Tikhon of Zadonsk (1724–1783), born Timofey Sokolov in northern Russia, grew up in poverty and received his education at the Novgorod seminary. He became a monk and teacher before his appointment as Bishop of Voronezh in 1763.",
@@ -1413,7 +1413,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "John",
   "epithet": "of Shanghai and San Francisco",
-  "shortDescription": "Russian émigré bishop known for asceticism",
+  "shortDescription": "Russian émigré bishop renowned for asceticism and boundless mercy.",
   "tradition": "Eastern",
   "content": [
     "John of Shanghai and San Francisco (1896–1966), born Mikhail Maximovitch in the Kharkov province of the Russian Empire, fled with his family after the Bolshevik Revolution and was tonsured a monk in Serbia, where he studied theology and was influenced by Metropolitan Anthony Khrapovitsky. He was consecrated bishop in 1934 and sent to Shanghai, China, to oversee the large community of Russian émigrés who had fled there after the revolution and civil war.",
@@ -1427,7 +1427,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "Icon of Our Holy Father John of Shanghai and San Francisco.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon55.url
@@ -1475,7 +1475,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Icon of S.Vladimir by anonymous after Vasnetsov (20 c, priv.coll).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon57.url
@@ -1485,7 +1485,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Olga",
   "epithet": "of Kyiv",
-  "shortDescription": "Regent of Kyivan Rus' and the first of its rulers to embrace Christianity.",
+  "shortDescription": "Regent of Kyivan Rus' and its first ruler to embrace Christianity.",
   "tradition": "Eastern",
   "content": [
     "Olga of Kyiv (c. 890–969) was the widow of Prince Igor of Kyiv who, after his assassination by the Drevlians, ruled Kyivan Rus' as regent for their young son Sviatoslav. The Primary Chronicle recounts her exacting a dramatic and ruthless vengeance upon the Drevlians for her husband's death, episodes that reveal her as a formidable political and military leader before her later transformation through faith.",
@@ -1499,7 +1499,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Gleb, Olga, guardian angel by O.Chirikov (1902, Novgorod museum).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon58.url
@@ -1509,7 +1509,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Cyril",
   "epithet": "Enlightener of the Slavs",
-  "shortDescription": "Byzantine monk and scholar who",
+  "shortDescription": "Byzantine monk and scholar who created the Slavonic alphabet.",
   "tradition": "Eastern",
   "content": [
     "Cyril (826-869), born Constantine in Thessalonica, was a gifted philosopher and linguist in the Byzantine imperial service before devoting himself, together with his elder brother Methodius, to a mission of evangelizing the Slavic peoples of Great Moravia at the invitation of Prince Rastislav. To make Scripture and liturgy accessible, Cyril devised the Glagolitic alphabet, the first script suited to Slavic phonetics, and translated the Gospels, Psalter, and liturgical texts into Old Church Slavonic.",
@@ -1533,7 +1533,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Methodius",
   "epithet": "Enlightener of the Slavs",
-  "shortDescription": "Byzantine monk and bishop who",
+  "shortDescription": "Byzantine monk and bishop who translated the Scriptures into Slavonic.",
   "tradition": "Eastern",
   "content": [
     "Methodius (c. 815-885), born Michael in Thessalonica, served as a Byzantine provincial governor before withdrawing to monastic life on Mount Olympus in Bithynia, where his younger brother Constantine (later Cyril) later joined him. In 863 the brothers were sent by Emperor Michael III to Great Moravia at Prince Rastislav’s request, bringing the Gospels and liturgy in a Slavic tongue readable by the common people through the Glagolitic alphabet Cyril had devised.",
@@ -1557,7 +1557,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Sava",
   "epithet": "of Serbia",
-  "shortDescription": "Founder of the autocephalous Serbian Church and author of its earliest legal a",
+  "shortDescription": "Founder of the autocephalous Serbian Church and its earliest lawgiver.",
   "tradition": "Eastern",
   "content": [
     "Sava of Serbia (c. 1174–1236), born Rastko Nemanjić, was the youngest son of the Serbian Grand Prince Stefan Nemanja who, against his family's wishes, secretly left the royal court as a teenager to become a monk on Mount Athos, taking the name Sava. His father later abdicated the throne and joined him in monastic life under the name Simeon, and together they founded the Serbian monastery of Hilandar on Athos, which remains a center of Serbian spiritual and cultural life to this day.",
@@ -1581,7 +1581,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Stephen",
   "epithet": "of Perm",
-  "shortDescription": "Substituted for Nikolaj Velimirović",
+  "shortDescription": "Russian missionary bishop who created an alphabet for the Komi people.",
   "tradition": "Eastern",
   "content": [
     "Stephen of Perm (c. 1340–1396) was a Russian monk and missionary bishop who undertook the evangelization of the Komi (Zyrian) people of the far northern Russian region of Perm, a Finno-Ugric people who had remained largely outside both Slavic settlement and Christian influence. Trained in Greek and well-read in patristic literature at the monastery of Rostov, Stephen possessed an unusually sophisticated education for a medieval missionary to a non-literate frontier people.",
@@ -1595,7 +1595,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Stefan Permskiy.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon62.url
@@ -1605,7 +1605,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Gregory",
   "epithet": "Palamas",
-  "shortDescription": "Defender of hesychasm and theologian of the distinction between God's essence ",
+  "shortDescription": "Defender of hesychasm and theologian of the uncreated light of Tabor.",
   "tradition": "Eastern",
   "content": [
     "Gregory Palamas (1296–1359) was a Byzantine monk of Mount Athos and later Archbishop of Thessalonica who became the preeminent theological defender of hesychasm, the contemplative tradition of inner prayer and stillness through which Athonite monks sought direct experiential union with God. Born to a noble family in Constantinople and educated in philosophy at the imperial court, Palamas abandoned a promising secular career to become a monk at around the age of twenty.",
@@ -1629,7 +1629,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Theodore",
   "epithet": "the Studite",
-  "shortDescription": "Monastic reformer and fierce defender of icon veneration during the Byzantine ",
+  "shortDescription": "Monastic reformer and defender of icons during the second Iconoclasm.",
   "tradition": "Eastern",
   "content": [
     "Theodore the Studite (759–826) was the abbot of the Stoudios Monastery in Constantinople, one of the most influential monastic reformers in Byzantine history and the leading monastic voice in defense of icon veneration during the second wave of Byzantine Iconoclasm. Under his leadership, Stoudios grew into the most important monastery in the empire, numbering hundreds of monks and becoming a center of manuscript copying, liturgical composition, and strict communal discipline that influenced monastic rules across the Byzantine and later Slavic worlds.",
@@ -1643,7 +1643,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "Studite.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon64.url
@@ -1653,7 +1653,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Symeon",
   "epithet": "the New Theologian",
-  "shortDescription": "Byzantine monastic mystic whose writings on direct personal experience of God ",
+  "shortDescription": "Byzantine mystic who wrote of direct experience of God's light.",
   "tradition": "Eastern",
   "content": [
     "Symeon the New Theologian (949–1022) was a Byzantine monk and abbot of the Monastery of St. Mamas in Constantinople, honored as one of only three figures in Orthodox tradition given the title \"Theologian\" (alongside St. John the Evangelist and St. Gregory Nazianzen), in recognition of the depth and originality of his writings on mystical experience of God. Before entering monastic life, he had served briefly at the imperial court, but was drawn away from secular advancement by his spiritual father, Symeon the Studite, under whose guidance he underwent a profound early experience of divine light.",
@@ -1677,7 +1677,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Pachomius",
   "epithet": "the Great",
-  "shortDescription": "Egyptian founder of communal (cenobitic) monasticism",
+  "shortDescription": "Egyptian founder of communal (cenobitic) monasticism.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Pachomius (c. 292–348) was an Egyptian ex-soldier who, after a vision in which he was called to serve humanity through organized communal life, founded the first cenobitic monastery at Tabennisi along the Nile. Unlike the solitary hermits of the desert tradition associated with Antony, Pachomius gathered monks into disciplined communities governed by a written Rule.",
@@ -1690,7 +1690,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:StPakhom.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon66.url
@@ -1700,7 +1700,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Paul",
   "epithet": "of Thebes",
-  "shortDescription": "Traditionally the earliest Christian desert hermit",
+  "shortDescription": "Traditionally the earliest Christian desert hermit.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Paul of Thebes (c. 227–341) is venerated as the first Christian hermit, having fled into the Egyptian desert during the persecution of Decius and remaining there in solitude for decades, surviving, according to tradition, on bread brought daily by a raven.",
@@ -1713,7 +1713,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Paul_of_Thebes.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon67.url
@@ -1723,7 +1723,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Macarius",
   "epithet": "the Great",
-  "shortDescription": "Desert Father of Scetis, disciple of Antony",
+  "shortDescription": "Desert Father of Scetis and disciple of Antony.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Macarius the Great (c. 300–391), also called Macarius of Egypt, was a disciple of St. Antony who settled in the desert of Scetis (Wadi El Natrun), which under his guidance grew into one of the great centers of Egyptian monasticism.",
@@ -1736,7 +1736,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Saint_Macarius_the_Egyptian.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon68.url
@@ -1746,7 +1746,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Shenouda",
   "epithet": "the Archimandrite",
-  "shortDescription": "Abbot of the White Monastery, father of Coptic literature",
+  "shortDescription": "Abbot of the White Monastery and father of Coptic literature.",
   "tradition": "Oriental",
   "content": [
     "Shenoute of Atripe (c. 348–465), known in Coptic tradition as Shenouda the Archimandrite, led the White Monastery near Sohag in Upper Egypt for over eighty years, transforming it into one of the largest and most disciplined monastic federations in Egypt, housing thousands of monks and nuns.",
@@ -1759,7 +1759,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Shenoute_of_Atripe.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon69.url
@@ -1769,7 +1769,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Bishoy",
   "epithet": "the Great",
-  "shortDescription": "Beloved desert ascetic of Wadi El Natrun",
+  "shortDescription": "Beloved desert ascetic of Wadi El Natrun.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Bishoy (320–417), also spelled Pishoy, was one of the most beloved ascetics of the Scetis desert, remembered in Coptic tradition for his deep humility and the intimate devotion of his prayer life, including the popular tradition that Christ personally appeared to him and allowed him to wash His feet.",
@@ -1782,7 +1782,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Agios_Pavsios_Dionysiou.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon70.url
@@ -1792,7 +1792,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Menas",
   "epithet": "the Wonderworker",
-  "shortDescription": "Martyred soldier-saint of Alexandria, patron of pilgrims",
+  "shortDescription": "Martyred soldier-saint of Alexandria and patron of pilgrims.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Menas (c. 285–309) was an Egyptian Christian serving in the Roman army in Phrygia who, refusing to participate in sacrifices honoring the gods during the persecution of Diocletian, openly confessed his faith and was tortured and beheaded.",
@@ -1805,7 +1805,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:S.Menas_by_E.Lambardos_(17th_c.).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon71.url
@@ -1815,7 +1815,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Mercurius",
   "epithet": "of Caesarea",
-  "shortDescription": "Roman soldier-martyr, Abu Seifein (\"Father of Two Swords\")",
+  "shortDescription": "Roman soldier-martyr known as Abu Seifein, Father of Two Swords.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Mercurius (died c. 250) was a Roman soldier of Scythian origin serving in the imperial army who, according to tradition, was aided by an angel who gave him a second sword in battle, earning him the Coptic epithet Abu Seifein, 'Father of the Two Swords.'",
@@ -1838,7 +1838,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Constantine",
   "epithet": "the Great",
-  "shortDescription": "Equal to the Apostles; first Christian Roman emperor",
+  "shortDescription": "Equal to the Apostles; first Christian Roman emperor.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Constantine (c. 272–337) became a Roman emperor in 306 and eventually ruled the reunited empire. Together with Licinius, he issued the agreement commonly called the Edict of Milan in 313, allowing Christians and others freedom of worship and restoring confiscated Christian property.",
@@ -1862,7 +1862,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Severus",
   "epithet": "of Antioch",
-  "shortDescription": "Non-Chalcedonian Patriarch of Antioch, theologian and hymn writer",
+  "shortDescription": "Patriarch of Antioch, theologian and hymn writer of the Oriental tradition.",
   "tradition": "Oriental",
   "content": [
     "Severus (c. 459–538) was a Pisidian-born rhetorician and lawyer who converted to monasticism and rose to become Patriarch of Antioch in 512, emerging as the foremost theological defender of the miaphysite position in the aftermath of the Council of Chalcedon.",
@@ -1875,7 +1875,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Severus_of_Antioch_(Coptic_icon).jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon74.url
@@ -1885,7 +1885,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Dioscorus",
   "epithet": "of Alexandria",
-  "shortDescription": "25th Pope of Alexandria, exiled for defending miaphysite Christology",
+  "shortDescription": "Patriarch of Alexandria, exiled for defending miaphysite Christology.",
   "tradition": "Oriental",
   "content": [
     "Dioscorus I (died 454) succeeded Cyril of Alexandria as Patriarch of Alexandria and presided over the Second Council of Ephesus in 449, which vindicated the miaphysite theology of Eutyches against what the Alexandrian party saw as a Nestorianizing drift in Constantinople.",
@@ -1908,7 +1908,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Jacob",
   "epithet": "of Serugh",
-  "shortDescription": "Syriac poet-theologian and bishop, prolific liturgical hymnographer",
+  "shortDescription": "Syriac poet-theologian and prolific liturgical hymnographer.",
   "tradition": "Oriental",
   "content": [
     "Jacob of Serugh (c. 451–521) was a Syriac Christian poet-theologian who served as a rural visitor (chorepiscopus) before becoming bishop of Batnan in the region of Serugh (modern southeastern Turkey) shortly before his death.",
@@ -1931,7 +1931,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Gregory",
   "epithet": "the Illuminator",
-  "shortDescription": "First official head of the Armenian Church, baptizer of a nation",
+  "shortDescription": "First head of the Armenian Church, baptizer of a nation.",
   "tradition": "Oriental",
   "content": [
     "Gregory the Illuminator (c. 257–331) was a Parthian-descended nobleman who, after years of imprisonment in a pit at Khor Virap for his Christian faith by King Tiridates III, was called upon to heal the king of a severe illness and subsequently converted him and the Armenian royal court to Christianity.",
@@ -1944,7 +1944,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "File:Gregory_the_Illuminator_Aghtamar_bas_relief.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon77.url
@@ -1954,7 +1954,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Hripsime",
   "epithet": "of Armenia",
-  "shortDescription": "Roman virgin martyred for refusing an Armenian king",
+  "shortDescription": "Roman virgin martyred for refusing an Armenian king.",
   "tradition": "Oriental",
   "content": [
     "Hripsime was a Roman Christian virgin who, fleeing with a community of nuns led by the abbess Gayane to escape forced marriage to Emperor Diocletian, took refuge in Armenia around 300 AD.",
@@ -1977,7 +1977,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Syncletica",
   "epithet": "of Alexandria",
-  "shortDescription": "Desert Mother of Alexandria, teacher of ascetic wisdom",
+  "shortDescription": "Desert Mother of Alexandria, teacher of ascetic wisdom.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Syncletica of Alexandria (c. 270–350) was born to a wealthy Macedonian family in Alexandria and, after the deaths of her parents, distributed her inheritance to the poor and withdrew with her blind sister into ascetic seclusion in a family tomb outside the city.",
@@ -2000,7 +2000,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Mesrop",
   "epithet": "Mashtots",
-  "shortDescription": "Armenian monk-scholar who created the Armenian script and translated Scripture",
+  "shortDescription": "Armenian monk-scholar who created the Armenian alphabet.",
   "tradition": "Oriental",
   "content": [
     "Mesrop Mashtots (c. 362–440) was an Armenian monk, theologian, and linguist who, concerned that Armenian Christians lacked a native script for Scripture and worship, devised the 36-letter Armenian alphabet around 405 AD with the support of Catholicos Sahak Partev and King Vramshapuh.",
@@ -2023,7 +2023,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Nino",
   "epithet": "of Georgia",
-  "shortDescription": "Cappadocian woman who converted the Kingdom of Georgia to Christianity",
+  "shortDescription": "Cappadocian woman who converted the Kingdom of Georgia to Christianity.",
   "tradition": "Eastern",
   "content": [
     "Nino (c. 296–338/340) was a Cappadocian Christian woman, traditionally said to be a relative of St. George, who came to the Kingdom of Iberia (eastern Georgia) around 320 AD, reportedly carrying a cross made of grapevine bound with her own hair.",
@@ -2036,7 +2036,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
     "title": "File:St._Nino_Icon1.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon81.url
@@ -2046,7 +2046,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Helena",
   "epithet": "Equal to the Apostles",
-  "shortDescription": "Roman empress credited with discovering the True Cross in Jerusalem",
+  "shortDescription": "Roman empress credited with discovering the True Cross.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Helena (c. 248–330) was the mother of Emperor Constantine the Great and, following her son's conversion and the Edict of Milan legalizing Christianity, became a devoted patron of the Church, using her position to support the building of churches and the care of the poor.",
@@ -2069,7 +2069,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Monica",
   "epithet": "of Hippo",
-  "shortDescription": "North African mother renowned for decades of prayer for her son's conversion",
+  "shortDescription": "North African mother whose prayers converted her son Augustine.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Monica (c. 331–387) was a devout Christian woman of Berber North African descent, born in Thagaste (modern Algeria), remembered above all for her unwavering prayer and tears over many years for the conversion of her brilliant but spiritually wayward son, Augustine.",
@@ -2082,7 +2082,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Monica_of_Hippo_by_Gozzoli.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon83.url
@@ -2092,7 +2092,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Macrina",
   "epithet": "the Younger",
-  "shortDescription": "Elder sister and spiritual guide of Basil the Great and Gregory of Nyssa",
+  "shortDescription": "Elder sister and spiritual guide of Basil the Great and Gregory of Nyssa.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Macrina the Younger (c. 330–379) was the eldest of ten children of a prominent Cappadocian Christian family, and after the death of her betrothed, she refused further marriage and dedicated herself to ascetic life, eventually transforming the family estate at Annisa into a monastic community together with her mother Emmelia.",
@@ -2115,7 +2115,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Marina (Margaret)",
   "epithet": "the Great Martyr",
-  "shortDescription": "Young virgin martyr of Pisidian Antioch",
+  "shortDescription": "Young virgin martyr of Pisidian Antioch.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Margaret, known in the East as Marina the Great Martyr (3rd–4th century), was a young Christian woman of Pisidian Antioch who, having consecrated her virginity to Christ, was denounced to the Roman governor by a suitor after refusing marriage on account of her faith.",
@@ -2128,7 +2128,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Margaret_the_Virgin.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon85.url
@@ -2138,7 +2138,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Thekla",
   "epithet": "of Iconium",
-  "shortDescription": "Equal to the Apostles; first martyr among women",
+  "shortDescription": "Equal to the Apostles; first martyr among women.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Thekla of Iconium, according to the apocryphal but ancient and widely venerated 'Acts of Paul and Thecla,' was a young noblewoman of Iconium converted to Christianity after hearing the Apostle Paul preach on virginity and the resurrection. She broke her betrothal to follow Paul's teaching, enduring the fury of her family and the civic authorities, who twice condemned her to death—first by burning, from which she was miraculously preserved, and then by wild beasts in the arena at Antioch, from which she likewise emerged unharmed.",
@@ -2161,7 +2161,7 @@ export const additionalSaints: SaintDetail[] = [
   "prefix": "St.",
   "name": "Anastasia",
   "epithet": "of Sirmium",
-  "shortDescription": "Early Roman martyr venerated for healing and protection from poison",
+  "shortDescription": "Early Roman martyr venerated for healing and protection from poison.",
   "tradition": "Eastern/Oriental",
   "content": [
     "Anastasia (died c. 304) was a Roman Christian woman of the late third and early fourth centuries, venerated as a martyr who suffered during the persecution of Diocletian, traditionally said to have ministered to imprisoned Christians before her own arrest and execution.",
@@ -2174,7 +2174,7 @@ export const additionalSaints: SaintDetail[] = [
     "license": "Public domain",
     "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
     "title": "File:Saint_Anastasia.jpg",
-    "modification": "Cropped to a square portrait and resized; original artwork unchanged. This adapted image retains the source license."
+    "modification": "Cropped to a square portrait, resized, and the plain background recolored to match the app's golden icon palette; artwork otherwise unchanged. This adapted image retains the source license."
   }
 ,
   "iconUrl": icon87.url
