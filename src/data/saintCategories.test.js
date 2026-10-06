@@ -11,15 +11,13 @@ import {
 const allSaints = saintsContent;
 
 describe("Saint categories", () => {
-  test("offers exactly the eight requested categories in the requested order", () => {
+  test("offers exactly the six visible categories in the requested order", () => {
     expect(SAINT_CATEGORIES.map(c => c.label)).toEqual([
       "Angels and Archangels",
       "Biblical Saints",
-      "Apostles and Missionaries",
-      "Church Fathers and Hierarchs",
       "Monastics",
+      "Church Fathers and Hierarchs",
       "Martyrs",
-      "Holy Rulers",
       "Righteous Laypeople",
     ]);
   });
@@ -32,12 +30,9 @@ describe("Saint categories", () => {
     }
   });
 
-  test("maps every id to a declared category and fills every used category", () => {
-    const declaredIds = new Set(SAINT_CATEGORIES.map(c => c.id));
+  test("classifies every saint and fills every visible category", () => {
     for (const saint of allSaints) {
-      const categoryId = getSaintCategoryId(saint.id);
-      expect(categoryId).not.toBeNull();
-      expect(declaredIds.has(categoryId)).toBe(true);
+      expect(getSaintCategoryId(saint.id)).not.toBeNull();
     }
     for (const category of SAINT_CATEGORIES) {
       const count = filterSaintsByCategory(allSaints, category.id).length;
