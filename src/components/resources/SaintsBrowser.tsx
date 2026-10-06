@@ -2,12 +2,12 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { saintsContent } from "@/data/saintsContent";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { CATEGORY_SUBCATEGORIES, getSubcategorySaints, getCategorySaints, getCategoryTags } from "@/data/saintBrowser";
+import { getSaintPageList, getSaintPageSubgroups } from "@/data/saintPageRoster";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
+import { SaintListCard } from "./SaintListCard";
 
 export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDetail) => void; onClose: () => void }) {
   const [category, setCategory] = useState<SaintCategoryId | null>(null);
@@ -15,10 +15,8 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   const [tag, setTag] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
   const selectedCategory = SAINT_CATEGORIES.find(item => item.id === category);
-  const subcategories = category ? CATEGORY_SUBCATEGORIES[category] : undefined;
-  const tags = category ? getCategoryTags(saintsContent, category) : [];
-  const categorySaints = getCategorySaints(saintsContent, category, query, tag);
-  const saints = getSubcategorySaints(categorySaints, category, subcategory);
+  const subcategories = category ? getSaintPageSubgroups(category) : undefined;
+  const saints = getSaintPageList(category, subcategory, query);
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
 
   function back() {
@@ -40,10 +38,7 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
           <>
             {subcategories && <SubcategoryPills items={["All", ...subcategories]} active={subcategory} onToggle={item => setSubcategory(item === "All" ? null : subcategory === item ? null : item)} />}
 
-            {!subcategories && tags.length > 0 && <div className="flex gap-2 overflow-x-auto pb-3 mb-2" aria-label="Saint tags">
-              <Button size="sm" variant={tag === null ? "secondary" : "ghost"} aria-pressed={tag === null} onClick={() => setTag(null)} className="shrink-0 rounded-full border border-border">All</Button>
-              {tags.map(item => <Button key={item.label} size="sm" variant={tag === item.label ? "secondary" : "ghost"} aria-pressed={tag === item.label} onClick={() => setTag(tag === item.label ? null : item.label)} className="shrink-0 rounded-full border border-border">{item.label}</Button>)}
-            </div>}
+            {saints.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No saints here yet.</p>}
             <SaintRows saints={saints} onSelect={onSelect} />
           </>
         ) : (
@@ -148,8 +143,5 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
 }
 
 function SaintRows({ saints, onSelect }: { saints: SaintDetail[]; onSelect: (saint: SaintDetail) => void }) {
-  return <div className="divide-y divide-border">{saints.map(saint => <Button key={saint.id} variant="ghost" onClick={() => onSelect(saint)} className="h-auto w-full justify-start gap-3 px-0 py-3 text-left">
-    <SaintPortrait saintId={saint.id} circular className="h-12 w-12" />
-    <span className="min-w-0 flex-1"><span className="block truncate text-sm font-medium">{[saint.prefix, saint.name, saint.epithet].filter(Boolean).join(" ")}</span><span className="mt-1 block truncate text-xs font-normal text-muted-foreground">{saint.shortDescription}</span></span>
-  </Button>)}</div>;
+  return <div className="space-y-2" aria-label="Saint list">{saints.map(saint => <SaintListCard key={saint.id} saint={saint} onSelect={onSelect} />)}</div>;
 }
