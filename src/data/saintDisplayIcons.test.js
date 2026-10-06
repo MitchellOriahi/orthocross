@@ -42,6 +42,15 @@ test("Biblical Saints use the owner-provided Theotokos icon with angel-style dis
   expect(icon.image_source).toContain("Provided by the app owner");
 });
 
+test("Church Fathers use the owner-provided Saint Nicholas icon with angel-style display", () => {
+  expect(SAINT_CATEGORY_DISPLAY_ICON["fathers-hierarchs"]).toBe("saint-nicholas-lrp");
+  const icon = SAINT_DISPLAY_ICONS["saint-nicholas-lrp"];
+  expect(icon).toBeDefined();
+  expect(icon.image_fit).toBe("contain");
+  expect(icon.image_glow).toBe(true);
+  expect(icon.image_source).toContain("Provided by the app owner");
+});
+
 test("unsuitable and unaudited images never fall back to legacy artwork", () => {
   expect(SAINT_DISPLAY_ICONS["vladimir-kyiv"]).toBeUndefined();
   expect(SAINT_DISPLAY_ICONS["saint-gregory-nazianzus"]).toBeUndefined();
