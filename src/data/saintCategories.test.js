@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { saintsContent } from "./saintsContent";
 import {
   SAINT_CATEGORY_THUMBNAIL_SAINT_ID,
+  SAINT_CATEGORY_THUMBNAIL_URL,
   SAINT_CATEGORIES,
   filterSaintsByCategory,
   getSaintCategoryId,
