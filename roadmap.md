@@ -1,6 +1,7 @@
 # Verse image sharing
 
 ## Saints
+- [x] Temporarily hide all saints without deleting their saved stories, icons, credits or presentation; keep exact restoration available.
 - [x] Add exactly 88 relevant saints with accurate lives, verified traditional icons and source/license credits.
 - [x] Verify all 100 Saints cards, portrait framing, alphabetical order and detail views; all portraits load, all 100 detail views open, and all 88 additions include icon credits.
 - [x] Put Theotokos first and apply a gold background with a light glow to her entire sticker, keeping the image unchanged.
