@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,24 +14,12 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
-  const subcategoryRowRef = useRef<HTMLDivElement | null>(null);
-  const [subcategoryRowScrolls, setSubcategoryRowScrolls] = useState(false);
   const selectedCategory = SAINT_CATEGORIES.find(item => item.id === category);
   const subcategories = category ? CATEGORY_SUBCATEGORIES[category] : undefined;
   const tags = category ? getCategoryTags(saintsContent, category) : [];
   const categorySaints = getCategorySaints(saintsContent, category, query, tag);
   const saints = subcategory ? categorySaints.filter(saint => SAINT_SUBCATEGORY_MEMBERS[subcategory]?.includes(saint.id)) : categorySaints;
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
-  useLayoutEffect(() => {
-    // Two rows of pills maximum; anything taller becomes a horizontal carousel.
-    const row = subcategoryRowRef.current;
-    if (!row) return;
-    const previousWrap = row.style.flexWrap;
-    row.style.flexWrap = "wrap"; // measure in wrapping mode regardless of current display mode
-    const rowCount = new Set(Array.from(row.querySelectorAll("button"), button => button.offsetTop)).size;
-    row.style.flexWrap = previousWrap;
-    setSubcategoryRowScrolls(rowCount > 2);
-  }, [category, subcategories]);
 
   function back() {
     if (category) { setCategory(null); setTag(null); setSubcategory(null); } else onClose();
@@ -50,10 +38,8 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         </div>
         {selectedCategory ? (
           <>
-            {subcategories && <div ref={subcategoryRowRef} className={`flex gap-2 pb-3 mb-2 ${subcategoryRowScrolls ? "overflow-x-auto" : "flex-wrap items-start"}`} aria-label="Sub-categories">
-              <Button size="sm" variant={subcategory === null ? "secondary" : "ghost"} aria-pressed={subcategory === null} onClick={() => setSubcategory(null)} className={`rounded-full border border-border ${subcategoryRowScrolls ? "shrink-0" : ""}`}>All</Button>
-              {subcategories.map(item => <Button key={item} size="sm" variant={subcategory === item ? "secondary" : "ghost"} aria-pressed={subcategory === item} onClick={() => setSubcategory(subcategory === item ? null : item)} className={`rounded-full border border-border ${subcategoryRowScrolls ? "shrink-0" : ""}`}>{item}</Button>)}
-            </div>}
+            {subcategories && <SubcategoryPills items={["All", ...subcategories]} active={subcategory} onToggle={item => setSubcategory(item === "All" ? null : subcategory === item ? null : item)} />}
+
             {!subcategories && tags.length > 0 && <div className="flex gap-2 overflow-x-auto pb-3 mb-2" aria-label="Saint tags">
               <Button size="sm" variant={tag === null ? "secondary" : "ghost"} aria-pressed={tag === null} onClick={() => setTag(null)} className="shrink-0 rounded-full border border-border">All</Button>
               {tags.map(item => <Button key={item.label} size="sm" variant={tag === item.label ? "secondary" : "ghost"} aria-pressed={tag === item.label} onClick={() => setTag(tag === item.label ? null : item.label)} className="shrink-0 rounded-full border border-border">{item.label}</Button>)}
@@ -90,6 +76,23 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
         )}
       </div>
     </section>
+  );
+}
+
+// Subcategory pills sit in two stacked rows; each row carousels sideways when its pills overflow.
+function SubcategoryPills({ items, active, onToggle }: { items: string[]; active: string | null; onToggle: (item: string) => void }) {
+  const mid = Math.ceil(items.length / 2);
+  const rows = [items.slice(0, mid), items.slice(mid)];
+  return (
+    <div className="flex flex-col gap-2 pb-3 mb-2" aria-label="Sub-categories">
+      {rows.map((row, rowIndex) => (
+        <div key={rowIndex} className="flex gap-2 overflow-x-auto">
+          {row.map(item => (
+            <Button key={item} size="sm" variant={item === "All" ? active === null ? "secondary" : "ghost" : active === item ? "secondary" : "ghost"} aria-pressed={item === "All" ? active === null : active === item} onClick={() => onToggle(item)} className="shrink-0 rounded-full border border-border">{item}</Button>
+          ))}
+        </div>
+      ))}
+    </div>
   );
 }
 
