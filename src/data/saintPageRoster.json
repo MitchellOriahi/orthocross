@@ -448,8 +448,8 @@
     ]
   },
   {
-    "id": "saint-isaac-syrian",
-    "savedId": "saint-isaac-syrian",
+    "id": "isaac",
+    "savedId": null,
     "name": "Isaac",
     "prefix": "Righteous",
     "tradition": "Eastern/Oriental",
@@ -458,10 +458,6 @@
       {
         "category": "biblical",
         "subgroup": "Forefathers"
-      },
-      {
-        "category": "fathers-hierarchs",
-        "subgroup": "Syriac"
       }
     ]
   },
@@ -2072,6 +2068,20 @@
     "prefix": "St.",
     "tradition": "Eastern/Oriental",
     "subtitle": "Hymnographer and theologian known as the Harp of the Spirit.",
+    "memberships": [
+      {
+        "category": "fathers-hierarchs",
+        "subgroup": "Syriac"
+      }
+    ]
+  },
+  {
+    "id": "saint-isaac-syrian",
+    "savedId": "saint-isaac-syrian",
+    "name": "Isaac of Nineveh",
+    "prefix": "St.",
+    "tradition": "Eastern/Oriental",
+    "subtitle": "Syriac bishop and ascetic writer on the spiritual life.",
     "memberships": [
       {
         "category": "fathers-hierarchs",
