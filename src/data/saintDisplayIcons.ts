@@ -1,4 +1,5 @@
 import michael from "@/assets/saints/display/archangel-michael-lrp.jpg.asset.json";
+import anthonyLrp from "@/assets/saints/display/saint-anthony-lrp.png.asset.json";
 import mary from "@/assets/saints/display/mary-magdalene.jpg.asset.json";
 import timothy from "@/assets/saints/display/timothy-apostle.jpg.asset.json";
 import peter from "@/assets/saints/display/peter-apostle.jpg.asset.json";
