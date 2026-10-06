@@ -25,8 +25,12 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   useLayoutEffect(() => {
     // Two rows of pills maximum; anything taller becomes a horizontal carousel.
     const row = subcategoryRowRef.current;
-    const pillHeight = row?.querySelector("button")?.offsetHeight ?? 32;
-    setSubcategoryRowScrolls(!!row && row.scrollHeight > pillHeight * 2 + 10);
+    if (!row) return;
+    const previousWrap = row.style.flexWrap;
+    row.style.flexWrap = "wrap"; // measure in wrapping mode regardless of current display mode
+    const rowCount = new Set(Array.from(row.querySelectorAll("button"), button => button.offsetTop)).size;
+    row.style.flexWrap = previousWrap;
+    setSubcategoryRowScrolls(rowCount > 2);
   }, [category, subcategories]);
 
   function back() {
