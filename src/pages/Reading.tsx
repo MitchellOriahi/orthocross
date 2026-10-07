@@ -1110,9 +1110,13 @@ const Reading = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Transform applies to the fixed nav itself; a transformed wrapper would become its containing block and keep it on screen. */}
       <div
-        className={`fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300 ${
-          showBottomNav ? "translate-y-0" : "translate-y-full"
+        aria-hidden={!showBottomNav}
+        className={`[&>nav]:transition-transform [&>nav]:duration-300 ${
+          showBottomNav
+            ? "[&>nav]:translate-y-0"
+            : "[&>nav]:translate-y-full [&>nav]:pointer-events-none"
         }`}
       >
         <BottomNavigation />
