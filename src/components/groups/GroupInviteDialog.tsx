@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Check, UserPlus } from "lucide-react";
+import { Check, Search, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import type { Friend } from "@/hooks/useFriendsData";
@@ -107,8 +108,8 @@ export const GroupInviteDialog = ({
       }
 
       toast({
-        title: "Invitations sent!",
-        description: `Sent ${newInvites.length} invitation${newInvites.length > 1 ? 's' : ''} to join "${groupName}"`
+        title: "Invite sent!",
+        duration: 4000
       });
 
       setSelectedFriends([]);
