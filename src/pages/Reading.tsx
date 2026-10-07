@@ -668,9 +668,9 @@ const Reading = () => {
     };
     const move = (y: number) => {
       if (startY === null || extremeY === null) return;
-      if (y < extremeY) extremeY = y;
-      const upExcursion = startY - extremeY; // > 0 when the finger moved up
-      const downExcursion = y - startY; // > 0 when the finger moved down
+      if (y > extremeY) extremeY = y;
+      const downExcursion = extremeY - startY; // > 0 when the finger moved down
+      const upExcursion = startY - y; // > 0 when the finger moved up
       if (downExcursion >= 12) {
         setShowBottomNav(true);
       } else if (upExcursion >= 25) {
@@ -680,7 +680,7 @@ const Reading = () => {
     const end = () => {
       if (startY !== null && extremeY !== null) {
         // A quick flick may deliver its whole travel between start and end.
-        if (startY - extremeY >= 8) setShowBottomNav(true);
+        if (extremeY - startY >= 8) setShowBottomNav(true);
       }
       startY = null;
       extremeY = null;
@@ -693,8 +693,8 @@ const Reading = () => {
     const onPointerDown = (e: PointerEvent) => start(e.clientY);
     const onPointerMove = (e: PointerEvent) => move(e.clientY);
     const onWheel = (e: WheelEvent) => {
-      if (e.deltaY > 20) setShowBottomNav(true);
-      else if (e.deltaY < -20) setShowBottomNav(false);
+      if (e.deltaY < -20) setShowBottomNav(true);
+      else if (e.deltaY > 20) setShowBottomNav(false);
     };
     const opts = { passive: true, capture: true } as const;
     window.addEventListener("touchstart", onTouchStart, opts);
