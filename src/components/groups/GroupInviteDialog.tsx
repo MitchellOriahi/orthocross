@@ -200,14 +200,14 @@ export const GroupInviteDialog = ({
                       <AvatarImage src={friend.profile_picture_url || undefined} />
                       <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
                     </Avatar>
+                    <span className="font-medium flex-1 truncate">{friend.username}</span>
                     {isInvited && (
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30 shrink-0">
                         Invited
                       </span>
                     )}
-                    <span className="font-medium flex-1">{friend.username}</span>
                     {isSelected && (
-                      <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0">
                         <Check className="h-4 w-4 text-primary-foreground" />
                       </div>
                     )}
