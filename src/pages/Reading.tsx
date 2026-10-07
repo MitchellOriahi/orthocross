@@ -654,23 +654,35 @@ const Reading = () => {
   };
 
   // Bottom bar stays hidden while reading; only an upward swipe gesture reveals it, a downward swipe hides it.
+  // Fast flicks deliver very few touchmove events, so the gesture is also judged
+  // by its total displacement when the finger lifts.
   useEffect(() => {
+    let startY: number | null = null;
+    let lastY: number | null = null;
     const start = (y: number) => {
-      touchStartYRef.current = y;
+      startY = y;
+      lastY = y;
     };
     const move = (y: number) => {
-      if (touchStartYRef.current === null) return;
-      const delta = y - touchStartYRef.current;
-      if (delta < -24) {
+      if (startY === null) return;
+      lastY = y;
+      const delta = y - startY;
+      if (delta < -20) {
         setShowBottomNav(true);
-        touchStartYRef.current = y;
-      } else if (delta > 24) {
+        startY = y;
+      } else if (delta > 20) {
         setShowBottomNav(false);
-        touchStartYRef.current = y;
+        startY = y;
       }
     };
     const end = () => {
-      touchStartYRef.current = null;
+      if (startY !== null && lastY !== null) {
+        const delta = lastY - startY;
+        if (delta < -12) setShowBottomNav(true);
+        else if (delta > 12) setShowBottomNav(false);
+      }
+      startY = null;
+      lastY = null;
     };
     const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientY ?? 0);
     const onTouchMove = (e: TouchEvent) => e.touches[0] && move(e.touches[0].clientY);
