@@ -820,8 +820,6 @@ const Reading = () => {
     if (r.bottom > bottomLimit || r.top < 160) el.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [speech.current, speech.status, speech.autoScroll]);
 
-  useEffect(() => {
-  }, [speech.error]);
 
   return (
     <div
