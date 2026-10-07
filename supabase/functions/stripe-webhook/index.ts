@@ -66,8 +66,15 @@ Deno.serve(async (req) => {
         ?? inv.lines?.data?.[0]?.metadata?.user_id ?? "";
       const subId = inv.parent?.subscription_details?.subscription ?? inv.subscription;
       if (!userId && subId) {
-        const sub = await stripe.subscriptions.retrieve(typeof subId === "string" ? subId : subId.id);
+        const sid = typeof subId === "string" ? subId : subId.id;
+        const sub = await stripe.subscriptions.retrieve(sid);
         userId = sub.metadata?.user_id ?? "";
+        if (!userId) {
+          // Older subscriptions only carry the donor on their checkout session
+          const sessions = await stripe.checkout.sessions.list({ subscription: sid, limit: 1 });
+          userId = sessions.data[0]?.metadata?.user_id ?? "";
+          if (userId) await stripe.subscriptions.update(sid, { metadata: { user_id: userId } });
+        }
       }
       const pi = await invoicePaymentIntent(inv.id);
       await recordDonation({ userId, amount: inv.amount_paid ?? 0, ref: pi || inv.id, type: "monthly" });
