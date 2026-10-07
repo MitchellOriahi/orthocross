@@ -803,15 +803,24 @@ const Reading = () => {
     if (vi !== undefined && vi !== currentVerseIndex) setCurrentVerseIndex(vi);
   }, [speech.current, speech.status, readingMode]);
 
-  // Gently keep the spoken word in view.
+  // Slowly and continuously glide the page so the spoken word stays in the reading zone.
+  const ttsCurrentRef = useRef(-1);
+  ttsCurrentRef.current = speech.current;
   useEffect(() => {
-    if (speech.status !== "playing" || !speech.autoScroll || speech.current < 0) return;
-    const el = contentRef.current?.querySelector(`[data-word="${speech.current}"]`);
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const bottomLimit = window.innerHeight - 140;
-    if (r.bottom > bottomLimit || r.top < 160) el.scrollIntoView({ block: "center", behavior: "smooth" });
-  }, [speech.current, speech.status, speech.autoScroll]);
+    if (speech.status !== "playing" || !speech.autoScroll) return;
+    let raf = 0;
+    const tick = () => {
+      const el = contentRef.current?.querySelector(`[data-word="${ttsCurrentRef.current}"]`);
+      if (el) {
+        const r = el.getBoundingClientRect();
+        const diff = r.top - window.innerHeight * 0.4;
+        if (Math.abs(diff) > 6) window.scrollBy(0, Math.sign(diff) * Math.min(Math.abs(diff) * 0.03, 6));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [speech.status, speech.autoScroll]);
 
   useEffect(() => {
     if (speech.error) toast({ description: speech.error });
@@ -935,6 +944,10 @@ const Reading = () => {
                             e.stopPropagation();
                             if (longPressTriggeredRef.current) {
                               longPressTriggeredRef.current = false;
+                              return;
+                            }
+                            if (wordsInteractive) {
+                              speech.seek(speechData.ranges[verseIdx]?.[0] ?? 0);
                               return;
                             }
                             handleVerseClick(verse.number);
