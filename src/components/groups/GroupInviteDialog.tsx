@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Check, UserPlus } from "lucide-react";
+import { Check, Search, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import type { Friend } from "@/hooks/useFriendsData";
@@ -32,10 +33,14 @@ export const GroupInviteDialog = ({
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [pendingInviteIds, setPendingInviteIds] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const { profile } = useProfileData();
 
   // Filter out friends who are already members
   const availableFriends = friends.filter(f => !existingMemberIds.includes(f.id));
+  const visibleFriends = searchQuery.trim()
+    ? availableFriends.filter(f => f.username?.toLowerCase().includes(searchQuery.trim().toLowerCase()))
+    : availableFriends;
 
   const toggleFriend = (friendId: string) => {
     setSelectedFriends(prev => 
@@ -107,8 +112,8 @@ export const GroupInviteDialog = ({
       }
 
       toast({
-        title: "Invitations sent!",
-        description: `Sent ${newInvites.length} invitation${newInvites.length > 1 ? 's' : ''} to join "${groupName}"`
+        title: "Invite sent!",
+        duration: 4000
       });
 
       setSelectedFriends([]);
@@ -139,13 +144,28 @@ export const GroupInviteDialog = ({
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4 flex-1 overflow-hidden flex flex-col">
+          {availableFriends.length > 0 && (
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by username..."
+                className="pl-9"
+              />
+            </div>
+          )}
           <div className="flex-1 overflow-y-auto space-y-2">
             {availableFriends.length === 0 ? (
               <div className="text-center text-muted-foreground py-8">
                 All your friends are already members of this group!
               </div>
+            ) : visibleFriends.length === 0 ? (
+              <div className="text-center text-muted-foreground py-8">
+                No friends match "{searchQuery.trim()}"
+              </div>
             ) : (
-              availableFriends.map((friend) => {
+              visibleFriends.map((friend) => {
                 const isSelected = selectedFriends.includes(friend.id);
                 return (
                   <div 
