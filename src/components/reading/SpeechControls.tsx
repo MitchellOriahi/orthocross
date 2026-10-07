@@ -64,7 +64,7 @@ export const SpeechControls = ({ speech, disabled }: { speech: Speech; disabled?
                   <span>Speed</span>
                   <span>{speech.rate.toFixed(2).replace(/0$/, "")}×</span>
                 </div>
-                <Slider value={[speech.rate]} min={0.5} max={1.75} step={0.25} onValueCommit={(v) => speech.setRate(v[0])} />
+                <Slider value={[speech.rate]} min={0.5} max={1.75} step={0.25} onValueChange={(v) => speech.setRate(v[0])} />
               </div>
               <p className="text-xs text-muted-foreground">Tap any word while listening to jump there.</p>
             </>
