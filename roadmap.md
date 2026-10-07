@@ -35,4 +35,6 @@
 - [x] Shared 72px circular icon, gold backing, uniform filter, hidden /icon-tuner (admins)
 - [x] Angels
 - [ ] Biblical Saints, Monastics, Church Fathers, Martyrs, Missionaries, Righteous Laypeople (next, on user's go-ahead)
+- [x] Donor tiers: keep the Donators heart red in both themes via a shared token; verified in preview, 65 tests pass.
 - [ ] Donor tiers: Stripe webhook endpoint + signing secret (waiting on user), then resend the Oct 7 $1 invoice.paid event to backfill
+
