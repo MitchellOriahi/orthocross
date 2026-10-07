@@ -710,14 +710,14 @@ const Reading = () => {
       }
     };
     const end = () => {
-      if (startY !== null && extremeY !== null) {
+      if (!ignoring && startY !== null && extremeY !== null) {
         // A quick flick may deliver its whole travel between start and end.
         if (extremeY - startY >= 4) setShowBottomNav(true);
       }
       // Horizontal swipe flips the page: left → next, right → previous.
       // Only when the gesture is clearly horizontal (60px+ travel, wider
       // than it is tall) so normal vertical scrolling never flips pages.
-      if (startX !== null && minX !== null && maxX !== null && startY !== null && extremeY !== null) {
+      if (!ignoring && startX !== null && minX !== null && maxX !== null && startY !== null && extremeY !== null) {
         const leftTravel = startX - minX;
         const rightTravel = maxX - startX;
         const horizontal = Math.max(leftTravel, rightTravel);
