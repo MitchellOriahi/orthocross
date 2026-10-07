@@ -1039,22 +1039,6 @@ const Reading = () => {
                 </div>
               )}
 
-              {/* Chapter completion bar (page mode only) */}
-              {readingMode === "page" && verses.length > 0 && (
-                <div className="pt-6">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
-                    <span>Chapter progress</span>
-                    <span>{currentVerseIndex + 1} / {verses.length}</span>
-                  </div>
-                  <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-primary transition-all duration-300"
-                      style={{ width: `${((currentVerseIndex + 1) / verses.length) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              )}
-
               {/* Navigation */}
               <div className="flex items-center justify-between pt-6 border-t gap-2 flex-wrap sm:flex-nowrap">
                 {readingMode === "page" ? (
