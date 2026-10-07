@@ -737,14 +737,15 @@ const Reading = () => {
       minX = null;
       maxX = null;
     };
-    const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientX ?? 0, e.touches[0]?.clientY ?? 0);
+    const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientX ?? 0, e.touches[0]?.clientY ?? 0, e.target);
     const onTouchMove = (e: TouchEvent) => e.touches[0] && move(e.touches[0].clientX, e.touches[0].clientY);
     // Any pointer type counts (touch, pen, mouse drag) so desktop preview,
     // touchscreen laptops and tablets all work; hover moves are ignored
     // because startY is only set while pressed.
-    const onPointerDown = (e: PointerEvent) => start(e.clientX, e.clientY);
+    const onPointerDown = (e: PointerEvent) => start(e.clientX, e.clientY, e.target);
     const onPointerMove = (e: PointerEvent) => move(e.clientX, e.clientY);
     const onWheel = (e: WheelEvent) => {
+      if (inOverlay(e.target)) return;
       if (e.deltaY < -5) setShowBottomNav(true);
       else if (e.deltaY > 5) setShowBottomNav(false);
     };
