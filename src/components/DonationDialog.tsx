@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
 import { CalendarHeart, Heart, Loader2 } from "lucide-react";
+import { DONOR_TEXT } from "@/config/donorTiers";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
 interface DonationDialogProps {
@@ -15,17 +16,32 @@ interface DonationDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const PRESET_AMOUNTS = [5, 10, 25, 50];
+const WEB_PRESETS = [1, 10, 25, 50, 100];
+const NATIVE_PRESETS = [5, 10, 25, 50];
 
 export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
   const [selectedAmount, setSelectedAmount] = useState(10);
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [monthly, setMonthly] = useState(false);
+  const [anonymous, setAnonymous] = useState(false);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const isNative = Capacitor.isNativePlatform();
+  const PRESET_AMOUNTS = isNative ? NATIVE_PRESETS : WEB_PRESETS;
+
+  useEffect(() => {
+    if (!open || !user) return;
+    supabase.from("profiles").select("donor_anonymous").eq("id", user.id).maybeSingle()
+      .then(({ data }) => setAnonymous(!!data?.donor_anonymous));
+  }, [open, user]);
+
+  const updateAnonymous = async (value: boolean) => {
+    setAnonymous(value);
+    if (user) await supabase.from("profiles").update({ donor_anonymous: value }).eq("id", user.id);
+  };
 
   // On native, check if IAP products are available when dialog opens
   useEffect(() => {
@@ -86,9 +102,15 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
       return;
     }
 
+    if (!user) {
+      toast({ title: "Please sign in", description: "Sign in to donate so your gift is tied to your account.", variant: "destructive" });
+      return;
+    }
+
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-monthly-donation", {
+      localStorage.setItem("orthocross:donation-started", new Date().toISOString());
+      const { data, error } = await supabase.functions.invoke(monthly ? "create-monthly-donation" : "create-donation", {
         body: { amount: Math.round(amount * 100) },
       });
       if (error) throw error;
@@ -130,7 +152,7 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
           {/* Preset amounts */}
           <div className="space-y-2">
             <Label>Choose an amount (USD)</Label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className={`grid gap-2 ${isNative ? "grid-cols-4" : "grid-cols-5"}`}>
               {PRESET_AMOUNTS.map((preset) => (
                 <Button
                   key={preset}
@@ -165,11 +187,23 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             </div>
           )}
 
+          {!isNative && (
+            <div className="grid grid-cols-2 gap-2">
+              <Button size="sm" variant={!monthly ? "default" : "outline"} onClick={() => setMonthly(false)}>One-time</Button>
+              <Button size="sm" variant={monthly ? "default" : "outline"} onClick={() => setMonthly(true)}>Monthly</Button>
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-2">
+            <Button size="sm" variant={!anonymous ? "secondary" : "ghost"} onClick={() => updateAnonymous(false)}>{DONOR_TEXT.showMyName}</Button>
+            <Button size="sm" variant={anonymous ? "secondary" : "ghost"} onClick={() => updateAnonymous(true)}>{DONOR_TEXT.donateAnonymously}</Button>
+          </div>
+
           {/* Platform note */}
           <p className="text-xs text-muted-foreground text-center">
             {isNative
               ? "One-time donation processed securely through the app store."
-              : "Recurring monthly donation processed securely via Stripe."}
+              : monthly ? "Recurring monthly donation processed securely via Stripe." : "One-time donation processed securely via Stripe."}
           </p>
 
           {/* Native warning if products not loaded yet */}
