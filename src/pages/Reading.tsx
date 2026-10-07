@@ -23,6 +23,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { VerseNoteDialog } from "@/components/VerseNoteDialog";
+import { BottomNavigation } from "@/components/BottomNavigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 interface VerseHighlight {
@@ -52,6 +53,9 @@ const Reading = () => {
   const { theme } = useTheme();
   const { playSound } = useMusic();
   const contentRef = useRef<HTMLDivElement>(null);
+  const [showBottomNav, setShowBottomNav] = useState(false);
+  const touchStartYRef = useRef<number | null>(null);
+  const lastScrollYRef = useRef(0);
   
   const state = location.state || {};
   const book = state.book || "John";
