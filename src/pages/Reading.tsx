@@ -54,7 +54,6 @@ const Reading = () => {
   const { playSound } = useMusic();
   const contentRef = useRef<HTMLDivElement>(null);
   const [showBottomNav, setShowBottomNav] = useState(false);
-  const touchStartYRef = useRef<number | null>(null);
   
   const state = location.state || {};
   const book = state.book || "John";
