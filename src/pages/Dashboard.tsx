@@ -480,10 +480,8 @@ const Dashboard = () => {
         </section>
 
         {/* Additional Sections */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Fasting Calendar */}
-          <FastingCalendar />
-        </div>
+        {/* Fasting Calendar */}
+        <FastingCalendar />
       </main>
 
       <BottomNavigation />
