@@ -36,6 +36,23 @@ export const GroupInviteDialog = ({
   const [searchQuery, setSearchQuery] = useState("");
   const { profile } = useProfileData();
 
+  const loadPendingInvites = useCallback(async () => {
+    const { data } = await supabase
+      .from('group_invitations')
+      .select('invitee_id')
+      .eq('group_id', groupId)
+      .eq('status', 'pending');
+    setPendingInviteIds(data?.map(i => i.invitee_id) || []);
+  }, [groupId]);
+
+  useEffect(() => {
+    if (open) {
+      loadPendingInvites();
+    } else {
+      setPendingInviteIds([]);
+    }
+  }, [open, loadPendingInvites]);
+
   // Filter out friends who are already members
   const availableFriends = friends.filter(f => !existingMemberIds.includes(f.id));
   const visibleFriends = searchQuery.trim()
