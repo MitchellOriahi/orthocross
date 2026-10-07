@@ -93,7 +93,8 @@ export const GroupInviteDialog = ({
       if (newInvites.length === 0) {
         toast({
           title: "Already invited",
-          description: "All selected friends have already been invited"
+          description: "All selected friends have already been invited",
+          duration: 4000
         });
         setSelectedFriends([]);
         return;
