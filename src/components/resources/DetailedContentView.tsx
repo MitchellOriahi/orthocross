@@ -119,7 +119,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
   };
 
   return (
-    <div className="fixed inset-x-0 top-0 bottom-[calc(6rem+env(safe-area-inset-bottom))] z-50 bg-background overflow-y-auto overscroll-contain">
+    <div className="fixed inset-x-0 top-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-50 bg-background overflow-y-auto overscroll-contain">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-top">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
