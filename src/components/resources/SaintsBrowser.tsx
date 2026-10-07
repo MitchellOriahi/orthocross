@@ -12,7 +12,12 @@ import { SaintListCard } from "./SaintListCard";
 
 export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDetail) => void; onClose: () => void }) {
   const [category, setCategory] = useState<SaintCategoryId | null>(null);
-  const [query, setQuery] = useState("");
+  // Landing and category searches are independent: backing out of a category
+  // must not carry its text into the general Saints search, and vice versa.
+  const [landingQuery, setLandingQuery] = useState("");
+  const [categoryQuery, setCategoryQuery] = useState("");
+  const query = category ? categoryQuery : landingQuery;
+  const setQuery = category ? setCategoryQuery : setLandingQuery;
   const [tag, setTag] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
   const [tradition, setTradition] = useState<SaintTraditionFilter>("all");
