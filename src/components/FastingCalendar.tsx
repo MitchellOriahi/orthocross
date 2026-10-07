@@ -254,18 +254,18 @@ export const FastingCalendar = () => {
 
   return (
     <div className="space-y-4">
-      <Card className="shadow-elevated border-border/50">
+      <Card className="min-w-0 shadow-elevated border-border/50">
         <CardHeader className="pb-0">
           <CardTitle className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-primary" />
-              {displayMonthName} {selectedYear} Fasts, Feasts & Holidays
+            <div className="flex min-w-0 items-center gap-2">
+              <Calendar className="w-5 h-5 shrink-0 text-primary" />
+              <span className="min-w-0 break-words">{displayMonthName} {selectedYear} Fasts, Feasts & Holidays</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" onClick={handlePreviousMonth}>
+            <div className="flex shrink-0 items-center gap-1">
+              <Button variant="ghost" size="icon" aria-label="Previous month" onClick={handlePreviousMonth}>
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleNextMonth}>
+              <Button variant="ghost" size="icon" aria-label="Next month" onClick={handleNextMonth}>
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
@@ -273,27 +273,27 @@ export const FastingCalendar = () => {
         </CardHeader>
         
         {/* Tradition + Calendar System Selectors */}
-        <div className="flex flex-col gap-4 py-4 px-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,15rem),1fr))] items-start gap-4 p-6">
           <RadioGroup
             value={selectedTradition}
             onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
-            className="flex flex-col gap-2 items-start"
+            className="flex min-w-0 flex-col gap-3 items-start"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Eastern Orthodox" id="eastern" />
-              <Label htmlFor="eastern" className="cursor-pointer whitespace-nowrap text-base sm:text-lg">
+              <RadioGroupItem value="Eastern Orthodox" id="eastern" className="shrink-0" />
+              <Label htmlFor="eastern" className="cursor-pointer text-base leading-snug sm:text-lg">
                 ⛪ Eastern Orthodox
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Oriental Orthodox" id="oriental" />
-              <Label htmlFor="oriental" className="cursor-pointer whitespace-nowrap text-base sm:text-lg">
+              <RadioGroupItem value="Oriental Orthodox" id="oriental" className="shrink-0" />
+              <Label htmlFor="oriental" className="cursor-pointer text-base leading-snug sm:text-lg">
                 ⛪ Oriental Orthodox
               </Label>
             </div>
           </RadioGroup>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex min-w-0 flex-col gap-3">
             <Label className="text-sm font-semibold text-muted-foreground">
               Calendar
             </Label>
@@ -303,14 +303,14 @@ export const FastingCalendar = () => {
               className="flex flex-col gap-2 items-start"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Gregorian" id="cal-gregorian" />
-                <Label htmlFor="cal-gregorian" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
+                <RadioGroupItem value="Gregorian" id="cal-gregorian" className="shrink-0" />
+                <Label htmlFor="cal-gregorian" className="cursor-pointer text-sm leading-snug sm:text-base">
                   Gregorian Calendar
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Julian" id="cal-julian" />
-                <Label htmlFor="cal-julian" className="cursor-pointer whitespace-nowrap text-sm sm:text-base">
+                <RadioGroupItem value="Julian" id="cal-julian" className="shrink-0" />
+                <Label htmlFor="cal-julian" className="cursor-pointer text-sm leading-snug sm:text-base">
                   Julian Calendar
                 </Label>
               </div>
