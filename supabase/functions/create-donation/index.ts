@@ -26,6 +26,11 @@ serve(async (req) => {
       const { data } = await supabaseClient.auth.getUser(token);
       user = data.user;
     }
+    if (!user?.id) {
+      return new Response(JSON.stringify({ error: "Please sign in to donate." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401,
+      });
+    }
 
     const { amount } = await req.json();
     
@@ -66,7 +71,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/dashboard?donation=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/dashboard?donation=cancelled`,
       metadata: {
-        user_id: user?.id || "anonymous",
+        user_id: user.id,
         donation_amount: amount.toString(),
       },
     });

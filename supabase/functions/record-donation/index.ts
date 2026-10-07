@@ -1,4 +1,3 @@
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -27,7 +26,6 @@ Deno.serve(async (req) => {
     if (authErr || !user) return json({ error: "Unauthorized" }, 401);
 
     const body = await req.json().catch(() => ({}));
-    const sessionId = typeof body.sessionId === "string" ? body.sessionId : null;
     const productId = typeof body.productId === "string" ? body.productId : null;
     const transactionId = typeof body.transactionId === "string" ? body.transactionId.slice(0, 200) : null;
 
@@ -35,18 +33,7 @@ Deno.serve(async (req) => {
     let ref = "";
     let donationType = "one-time";
 
-    if (sessionId) {
-      if (!/^cs_[A-Za-z0-9_]+$/.test(sessionId)) return json({ error: "Invalid session" }, 400);
-      const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      if (session.metadata?.user_id !== user.id) return json({ error: "Donation does not belong to user" }, 403);
-      if (session.payment_status !== "paid" && session.status !== "complete") {
-        return json({ error: "Donation not completed" }, 400);
-      }
-      amount = session.amount_total ?? 0;
-      ref = session.id;
-      donationType = session.mode === "subscription" ? "monthly" : "one-time";
-    } else if (productId && IAP_AMOUNTS[productId]) {
+    if (productId && IAP_AMOUNTS[productId]) {
       amount = IAP_AMOUNTS[productId];
       ref = `iap:${transactionId || `${user.id}:${Date.now()}`}`;
     } else {
