@@ -673,16 +673,16 @@ const Reading = () => {
       if (y > extremeY) extremeY = y;
       const downExcursion = extremeY - startY; // > 0 when the finger moved down
       const upExcursion = startY - y; // > 0 when the finger moved up
-      if (downExcursion >= 12) {
+      if (downExcursion >= 4) {
         setShowBottomNav(true);
-      } else if (upExcursion >= 25) {
+      } else if (upExcursion >= 6) {
         setShowBottomNav(false);
       }
     };
     const end = () => {
       if (startY !== null && extremeY !== null) {
         // A quick flick may deliver its whole travel between start and end.
-        if (extremeY - startY >= 8) setShowBottomNav(true);
+        if (extremeY - startY >= 4) setShowBottomNav(true);
       }
       startY = null;
       extremeY = null;
@@ -695,8 +695,8 @@ const Reading = () => {
     const onPointerDown = (e: PointerEvent) => start(e.clientY);
     const onPointerMove = (e: PointerEvent) => move(e.clientY);
     const onWheel = (e: WheelEvent) => {
-      if (e.deltaY < -20) setShowBottomNav(true);
-      else if (e.deltaY > 20) setShowBottomNav(false);
+      if (e.deltaY < -5) setShowBottomNav(true);
+      else if (e.deltaY > 5) setShowBottomNav(false);
     };
     const opts = { passive: true, capture: true } as const;
     window.addEventListener("touchstart", onTouchStart, opts);
@@ -1155,7 +1155,7 @@ const Reading = () => {
       {/* Transform applies to the fixed nav itself; a transformed wrapper would become its containing block and keep it on screen. */}
       <div
         aria-hidden={!showBottomNav}
-        className={`[&>nav]:transition-transform [&>nav]:duration-300 ${
+        className={`[&>nav]:transition-transform [&>nav]:duration-150 ${
           showBottomNav
             ? "[&>nav]:translate-y-0"
             : "[&>nav]:translate-y-full [&>nav]:pointer-events-none"
