@@ -594,10 +594,13 @@ const ChurchResources = () => {
             )}
 
             {selectedSection === "saints" && (
-              <SaintsBrowser onSelect={setSelectedSaint} onClose={() => setSelectedSection(null)} />
+              <div className={selectedSaint ? "hidden" : undefined}>
+                <SaintsBrowser onSelect={setSelectedSaint} onClose={() => setSelectedSection(null)} />
+              </div>
             )}
           </div>
         </main>
+        {saintStoryOverlay}
         <BottomNavigation />
       </div>
     );
