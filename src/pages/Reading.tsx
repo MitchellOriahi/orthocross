@@ -55,7 +55,6 @@ const Reading = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [showBottomNav, setShowBottomNav] = useState(false);
   const touchStartYRef = useRef<number | null>(null);
-  const lastScrollYRef = useRef(0);
   
   const state = location.state || {};
   const book = state.book || "John";
@@ -654,11 +653,9 @@ const Reading = () => {
     }
   };
 
-  // Bottom bar stays hidden while reading; an upward swipe (or scrolling up) reveals it, a downward swipe hides it.
+  // Bottom bar stays hidden while reading; only an upward swipe gesture reveals it, a downward swipe hides it.
   useEffect(() => {
-    const touchingRef = { current: false };
     const onTouchStart = (e: TouchEvent) => {
-      touchingRef.current = true;
       touchStartYRef.current = e.touches[0]?.clientY ?? null;
     };
     const onTouchMove = (e: TouchEvent) => {
@@ -668,25 +665,15 @@ const Reading = () => {
       else if (delta > 12) setShowBottomNav(false);
     };
     const onTouchEnd = () => {
-      touchingRef.current = false;
       touchStartYRef.current = null;
-    };
-    const onScroll = () => {
-      if (touchingRef.current) return; // touch swipes are handled above
-      const y = window.scrollY;
-      if (y < lastScrollYRef.current - 4) setShowBottomNav(true);
-      else if (y > lastScrollYRef.current + 4) setShowBottomNav(false);
-      lastScrollYRef.current = y;
     };
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
-    window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
