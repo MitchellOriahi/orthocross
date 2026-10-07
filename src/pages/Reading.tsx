@@ -652,42 +652,50 @@ const Reading = () => {
     }
   };
 
-  // Bottom bar stays hidden while reading; only an upward swipe gesture reveals it, a downward swipe hides it.
-  // Fast flicks deliver very few touchmove events, so the gesture is also judged
-  // by its total displacement when the finger lifts.
+  // Bottom bar stays hidden while reading. An upward swipe gesture anywhere on the
+  // page — including a swipe starting mid-page — reveals it; a separate downward
+  // swipe hides it. Each gesture is judged by its total excursion from where the
+  // finger (or cursor) first landed, so slow drags and fast flicks both count and
+  // natural finger wobble within one gesture can never hide the bar again.
+  // A trackpad/wheel swipe is recognized too (deltaY > 0 = page scrolls down =
+  // finger moved up; deltaY < 0 = finger moved down).
   useEffect(() => {
     let startY: number | null = null;
-    let lastY: number | null = null;
+    let extremeY: number | null = null; // furthest point reached during this gesture
     const start = (y: number) => {
       startY = y;
-      lastY = y;
+      extremeY = y;
     };
     const move = (y: number) => {
-      if (startY === null) return;
-      lastY = y;
-      const delta = y - startY;
-      if (delta < -20) {
+      if (startY === null || extremeY === null) return;
+      if (y < extremeY) extremeY = y;
+      const upExcursion = startY - extremeY; // > 0 when the finger moved up
+      const downExcursion = y - startY; // > 0 when the finger moved down
+      if (upExcursion >= 12) {
         setShowBottomNav(true);
-        startY = y;
-      } else if (delta > 20) {
+      } else if (downExcursion >= 25) {
         setShowBottomNav(false);
-        startY = y;
       }
     };
     const end = () => {
-      if (startY !== null && lastY !== null) {
-        const delta = lastY - startY;
-        if (delta < -12) setShowBottomNav(true);
-        else if (delta > 12) setShowBottomNav(false);
+      if (startY !== null && extremeY !== null) {
+        // A quick flick may deliver its whole travel between start and end.
+        if (startY - extremeY >= 8) setShowBottomNav(true);
       }
       startY = null;
-      lastY = null;
+      extremeY = null;
     };
     const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientY ?? 0);
     const onTouchMove = (e: TouchEvent) => e.touches[0] && move(e.touches[0].clientY);
-    // Mouse drag counts as a swipe too (desktop preview / laptop).
-    const onPointerDown = (e: PointerEvent) => e.pointerType === "mouse" && start(e.clientY);
-    const onPointerMove = (e: PointerEvent) => e.pointerType === "mouse" && move(e.clientY);
+    // Any pointer type counts (touch, pen, mouse drag) so desktop preview,
+    // touchscreen laptops and tablets all work; hover moves are ignored
+    // because startY is only set while pressed.
+    const onPointerDown = (e: PointerEvent) => start(e.clientY);
+    const onPointerMove = (e: PointerEvent) => move(e.clientY);
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY > 20) setShowBottomNav(true);
+      else if (e.deltaY < -20) setShowBottomNav(false);
+    };
     const opts = { passive: true, capture: true } as const;
     window.addEventListener("touchstart", onTouchStart, opts);
     window.addEventListener("touchmove", onTouchMove, opts);
@@ -696,6 +704,7 @@ const Reading = () => {
     window.addEventListener("pointerdown", onPointerDown, opts);
     window.addEventListener("pointermove", onPointerMove, opts);
     window.addEventListener("pointerup", end, opts);
+    window.addEventListener("wheel", onWheel, opts);
     return () => {
       window.removeEventListener("touchstart", onTouchStart, opts);
       window.removeEventListener("touchmove", onTouchMove, opts);
@@ -704,6 +713,7 @@ const Reading = () => {
       window.removeEventListener("pointerdown", onPointerDown, opts);
       window.removeEventListener("pointermove", onPointerMove, opts);
       window.removeEventListener("pointerup", end, opts);
+      window.removeEventListener("wheel", onWheel, opts);
     };
   }, []);
 
