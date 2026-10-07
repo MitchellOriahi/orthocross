@@ -171,7 +171,7 @@ const ChurchResources = () => {
 
 
   const saintStoryOverlay = selectedSaint && (
-    <div className="fixed inset-0 z-[60] overflow-y-auto bg-background pb-nav">
+    <div className="fixed inset-0 z-[60] bg-background">
       <DetailedContentView
         title={`${selectedSaint.prefix} ${selectedSaint.name}${selectedSaint.epithet ? ` ${selectedSaint.epithet}` : ''}`}
         subtitle={selectedSaint.shortDescription}
