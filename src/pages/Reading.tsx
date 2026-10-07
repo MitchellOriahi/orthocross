@@ -1054,7 +1054,7 @@ const Reading = () => {
                       <span className="hidden sm:inline">Previous</span>
                     </Button>
 
-                    {readingMode === "page" && verses.length > 0 && (
+                    {verses.length > 0 && (
                       <div
                         className="h-1.5 flex-1 min-w-[3rem] rounded-full bg-muted overflow-hidden"
                         aria-label="Chapter progress"
