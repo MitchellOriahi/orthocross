@@ -491,3 +491,11 @@ All colors MUST be HSL.
 @media (prefers-reduced-motion: reduce) {
   .donor-rays, .donor-sticker { animation: none; }
 }
+
+/* Donators section: the heart stays red in both themes */
+@layer base {
+  :root, .dark {
+    --donor-heart: 0 84% 60%;
+  }
+}
+
