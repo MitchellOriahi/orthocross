@@ -113,6 +113,8 @@ export const GroupInviteDialog = ({
 
       if (error) throw error;
 
+      setPendingInviteIds(prev => [...prev, ...newInvites]);
+
       // Send push notifications to all invited users
       const inviterName = profile?.username || profile?.display_name || 'Someone';
       for (const inviteeId of newInvites) {
