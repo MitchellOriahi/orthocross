@@ -625,8 +625,17 @@ const Reading = () => {
     return bookmarks.some(b => b.verse_number === verseNumber);
   };
 
+  // Refs so the window-level swipe listener always calls the latest
+  // navigation handlers without re-registering on every render.
+  const swipeNavRef = useRef<{ next: () => void; prev: () => void }>({ next: () => {}, prev: () => {} });
+  const swipeHandledAtRef = useRef(0);
+
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!contentRef.current) return;
+    // A horizontal swipe across the text also produces a click — ignore it
+    // so a page flip doesn't immediately trigger a second navigation.
+    if (Date.now() - swipeHandledAtRef.current < 400) return;
+    
     const rect = contentRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const halfWidth = rect.width / 2;
