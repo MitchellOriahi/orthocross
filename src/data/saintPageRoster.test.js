@@ -44,6 +44,13 @@ test("search stays within the selected subgroup", () => {
   expect(getSaintPageList("angels", "Guardians", "Michael")).toEqual([]);
   expect(getSaintPageList("laypeople", "Modern", "Matrona").map(s => s.name)).toEqual(["Matrona of Moscow"]);
 });
+test("search matches names only, not subtitles", () => {
+  const names = getSaintPageList(null, null, "John").map(s => s.name);
+  expect(names).toContain("John Chrysostom");
+  expect(names).not.toContain("Anthusa");
+  expect(names).not.toContain("Elizabeth");
+  expect(names.every(name => name.toLowerCase().includes("john"))).toBe(true);
+});
 test("lists sort alphabetically ignoring honorifics", () => {
   for (const prefix of ["St.", "Prophet", "Righteous", "Archangel", "Abba", "Amma", "The"]) expect(saintSortName(`${prefix} Adam`)).toBe("Adam");
   const list = getSaintPageList("biblical");
