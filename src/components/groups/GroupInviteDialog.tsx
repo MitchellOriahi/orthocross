@@ -144,13 +144,28 @@ export const GroupInviteDialog = ({
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4 flex-1 overflow-hidden flex flex-col">
+          {availableFriends.length > 0 && (
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by username..."
+                className="pl-9"
+              />
+            </div>
+          )}
           <div className="flex-1 overflow-y-auto space-y-2">
             {availableFriends.length === 0 ? (
               <div className="text-center text-muted-foreground py-8">
                 All your friends are already members of this group!
               </div>
+            ) : visibleFriends.length === 0 ? (
+              <div className="text-center text-muted-foreground py-8">
+                No friends match "{searchQuery.trim()}"
+              </div>
             ) : (
-              availableFriends.map((friend) => {
+              visibleFriends.map((friend) => {
                 const isSelected = selectedFriends.includes(friend.id);
                 return (
                   <div 
