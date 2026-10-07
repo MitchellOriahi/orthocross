@@ -714,7 +714,9 @@ const Reading = () => {
         const rightTravel = maxX - startX;
         const horizontal = Math.max(leftTravel, rightTravel);
         const vertical = Math.max(extremeY - startY, startY - extremeY);
+        console.log("[swipe-debug] end", { startX, minX, maxX, horizontal, vertical });
         if (horizontal >= 60 && horizontal > vertical * 1.5) {
+          console.log("[swipe-debug] navigating", leftTravel >= rightTravel ? "next" : "prev");
           swipeHandledAtRef.current = Date.now();
           if (leftTravel >= rightTravel) {
             swipeNavRef.current.next();
