@@ -671,9 +671,9 @@ const Reading = () => {
       if (y < extremeY) extremeY = y;
       const upExcursion = startY - extremeY; // > 0 when the finger moved up
       const downExcursion = y - startY; // > 0 when the finger moved down
-      if (upExcursion >= 12) {
+      if (downExcursion >= 12) {
         setShowBottomNav(true);
-      } else if (downExcursion >= 25) {
+      } else if (upExcursion >= 25) {
         setShowBottomNav(false);
       }
     };
