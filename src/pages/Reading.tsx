@@ -1155,7 +1155,7 @@ const Reading = () => {
       {/* Transform applies to the fixed nav itself; a transformed wrapper would become its containing block and keep it on screen. */}
       <div
         aria-hidden={!showBottomNav}
-        className={`[&>nav]:transition-transform [&>nav]:duration-300 ${
+        className={`[&>nav]:transition-transform [&>nav]:duration-150 ${
           showBottomNav
             ? "[&>nav]:translate-y-0"
             : "[&>nav]:translate-y-full [&>nav]:pointer-events-none"
