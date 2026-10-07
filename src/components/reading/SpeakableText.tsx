@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { spokenForm } from "@/lib/speech/audioTiming";
 
 export interface Token {
   t: string;
@@ -11,7 +12,7 @@ export function tokenize(text: string, start: number): { tokens: Token[]; words:
   const words: string[] = [];
   for (const part of text.split(/(\s+)/)) {
     if (!part) continue;
-    if (/^\s+$/.test(part)) tokens.push({ t: part, i: null });
+    if (/^\s+$/.test(part) || !spokenForm(part)) tokens.push({ t: part, i: null });
     else {
       tokens.push({ t: part, i: start + words.length });
       words.push(part);
