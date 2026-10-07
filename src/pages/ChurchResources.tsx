@@ -170,41 +170,39 @@ const ChurchResources = () => {
   };
 
 
-  if (selectedSaint) {
-    return (
-      <div className="pb-nav">
-        <DetailedContentView
-          title={`${selectedSaint.prefix} ${selectedSaint.name}${selectedSaint.epithet ? ` ${selectedSaint.epithet}` : ''}`}
-          subtitle={selectedSaint.shortDescription}
-          content={selectedSaint.content}
-          iconCredit={selectedSaint.iconCredit}
-          onClose={() => {
-            setSelectedSaint(null);
-            setSelectedSection("saints");
-          }}
-          showProgress={true}
-          onComplete={() => {
-            playSound('saint');
-            setShowCongratulations(true);
-          }}
-        />
-        <CongratulationsModal
-          isOpen={showCongratulations}
-          onClose={() => {
-            setShowCongratulations(false);
-            setSelectedSaint(null);
-            setSelectedSection("saints");
-          }}
-          streakDays={0}
-          isNewStreak={false}
-          saintName={selectedSaint?.name}
-          saintIcon={selectedSaint?.iconUrl}
-          saintPrefix={selectedSaint?.prefix}
-        />
-        <BottomNavigation />
-      </div>
-    );
-  }
+  const saintStoryOverlay = selectedSaint && (
+    <div className="fixed inset-0 z-[60] overflow-y-auto bg-background pb-nav">
+      <DetailedContentView
+        title={`${selectedSaint.prefix} ${selectedSaint.name}${selectedSaint.epithet ? ` ${selectedSaint.epithet}` : ''}`}
+        subtitle={selectedSaint.shortDescription}
+        content={selectedSaint.content}
+        iconCredit={selectedSaint.iconCredit}
+        onClose={() => {
+          setSelectedSaint(null);
+          setSelectedSection("saints");
+        }}
+        showProgress={true}
+        onComplete={() => {
+          playSound('saint');
+          setShowCongratulations(true);
+        }}
+      />
+      <CongratulationsModal
+        isOpen={showCongratulations}
+        onClose={() => {
+          setShowCongratulations(false);
+          setSelectedSaint(null);
+          setSelectedSection("saints");
+        }}
+        streakDays={0}
+        isNewStreak={false}
+        saintName={selectedSaint?.name}
+        saintIcon={selectedSaint?.iconUrl}
+        saintPrefix={selectedSaint?.prefix}
+      />
+      <BottomNavigation />
+    </div>
+  );
 
   if (selectedPrayer) {
     return (
