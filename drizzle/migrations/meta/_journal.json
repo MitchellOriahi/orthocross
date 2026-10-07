@@ -8,6 +8,13 @@
       "when": 1791358363136,
       "tag": "0000_saint_icon_overrides",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791358398242,
+      "tag": "0001_saint_icons_read",
+      "breakpoints": true
     }
   ]
 }
