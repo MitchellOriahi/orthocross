@@ -55,7 +55,6 @@ const Reading = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [showBottomNav, setShowBottomNav] = useState(false);
   const touchStartYRef = useRef<number | null>(null);
-  const lastScrollYRef = useRef(0);
   
   const state = location.state || {};
   const book = state.book || "John";
