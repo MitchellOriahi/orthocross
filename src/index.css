@@ -465,3 +465,14 @@ All colors MUST be HSL.
 .dark [contenteditable] p[style*="color:#3b82f6"] {
   color: #3b82f6 !important;
 }
+
+/* Saint card icons: one shared frame and filter for every saint icon */
+@layer base {
+  :root, .dark {
+    --saint-icon-border: 0 0% 23%;
+    --saint-icon-gold: 42 55% 54%;
+  }
+}
+@layer components {
+  .saint-card-icon-img { filter: saturate(1.05) contrast(1.05) sepia(0.15); }
+}

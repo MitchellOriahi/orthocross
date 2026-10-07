@@ -1,0 +1,1 @@
+CREATE POLICY "Admins read saint icons" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'saint-icons' AND public.has_role(auth.uid(), 'admin'));

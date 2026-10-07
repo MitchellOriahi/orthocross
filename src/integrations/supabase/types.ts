@@ -1226,6 +1226,45 @@ export type Database = {
         }
         Relationships: []
       }
+      saint_icon_overrides: {
+        Row: {
+          focus_x: number
+          focus_y: number
+          image_attribution: string | null
+          image_license: string | null
+          image_source: string | null
+          image_url: string | null
+          saint_id: string
+          updated_at: string
+          updated_by: string | null
+          zoom: number
+        }
+        Insert: {
+          focus_x?: number
+          focus_y?: number
+          image_attribution?: string | null
+          image_license?: string | null
+          image_source?: string | null
+          image_url?: string | null
+          saint_id: string
+          updated_at?: string
+          updated_by?: string | null
+          zoom?: number
+        }
+        Update: {
+          focus_x?: number
+          focus_y?: number
+          image_attribution?: string | null
+          image_license?: string | null
+          image_source?: string | null
+          image_url?: string | null
+          saint_id?: string
+          updated_at?: string
+          updated_by?: string | null
+          zoom?: number
+        }
+        Relationships: []
+      }
       saints_read: {
         Row: {
           created_at: string

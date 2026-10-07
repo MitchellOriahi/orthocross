@@ -31,3 +31,7 @@
 ## Saints gold backgrounds and descriptions
 - [x] Recolor the 88 added saints' plain backgrounds to the app's golden icon palette (53 icons recolored; photos, mosaics, frescoes and stained glass keep their authentic backgrounds).
 - [x] Rewrite all 88 short descriptions to clean one-sentence versions; removed internal notes; data tests pass (4).
+## Saint card icons (one category at a time)
+- [x] Shared 72px circular icon, gold backing, uniform filter, hidden /icon-tuner (admins)
+- [x] Angels
+- [ ] Biblical Saints, Monastics, Church Fathers, Martyrs, Missionaries, Righteous Laypeople (next, on user's go-ahead)
