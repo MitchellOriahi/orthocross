@@ -500,20 +500,25 @@ All colors MUST be HSL.
 }
 
 
-/* Read-aloud word glow */
+/* Read-aloud word glow: a steady blue in both themes. */
+@layer base {
+  :root, .dark {
+    --tts-glow: 217 91% 60%;
+  }
+}
 .tts-word {
   transition: text-shadow 150ms ease-out, filter 150ms ease-out, opacity 600ms ease-out;
 }
 .tts-spoken {
-  text-shadow: 0 0 6px hsl(var(--primary) / 0.45);
+  text-shadow: 0 0 6px hsl(var(--tts-glow) / 0.5);
   filter: brightness(1.08);
 }
 .tts-current {
-  text-shadow: 0 0 7px hsl(var(--primary) / 0.6);
+  text-shadow: 0 0 8px hsl(var(--tts-glow) / 0.75);
   filter: brightness(1.14);
 }
 .tts-fade-out .tts-spoken {
-  text-shadow: 0 0 6px hsl(var(--primary) / 0);
+  text-shadow: 0 0 6px hsl(var(--tts-glow) / 0);
   filter: none;
   transition: text-shadow 700ms ease-out, filter 700ms ease-out;
 }
