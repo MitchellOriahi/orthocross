@@ -787,7 +787,7 @@ const Reading = () => {
     });
     return { words, verseTokens, wordVerse, ranges };
   }, [verses]);
-  const speech = useScriptureSpeech(speechData.words, `${book}|${chapter}|${currentTranslation}`);
+  const speech = useScriptureSpeech(speechData.words, `${book}|${chapter}|${currentTranslation.id}`);
   const spokenUpToFor = (vi: number) => {
     if (!speech.active || speech.current < 0) return -1;
     const [a, b] = speechData.ranges[vi] ?? [0, -1];
