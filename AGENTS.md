@@ -19,3 +19,4 @@
 - Reset island detail scroll before paint on each island selection, because same-page selection does not trigger route scroll restoration.
 - Keep additional saint lives in a typed catalog with stored icon pointers and per-icon provenance, merging alphabetically with the original saints so additions preserve existing identities and presentation.- Show Synaxaria-researched roster stories from a separate id-keyed stories file ahead of preserved biographies, so expanded lives never overwrite the saved catalog.
 - Resolve saint card icons through a bundled roster-keyed registry with focus/zoom crop values, overridden by admin-saved database rows from the hidden icon tuner, so icons can be replaced or re-cropped without touching card layout.
+- Count donations only from verified Stripe webhook events (idempotent on the Stripe reference) and compute tiers/leaderboards server-side from a single shared tier config, so browsers can never fake or reveal donation amounts.
