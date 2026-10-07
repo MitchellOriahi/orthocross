@@ -1054,6 +1054,18 @@ const Reading = () => {
                       <span className="hidden sm:inline">Previous</span>
                     </Button>
 
+                    {readingMode === "page" && verses.length > 0 && (
+                      <div
+                        className="h-1.5 flex-1 min-w-[3rem] rounded-full bg-muted overflow-hidden"
+                        aria-label="Chapter progress"
+                      >
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-300"
+                          style={{ width: `${((currentVerseIndex + 1) / verses.length) * 100}%` }}
+                        />
+                      </div>
+                    )}
+
                     {verses.length > 0 && currentVerseIndex === verses.length - 1 && (
                       <Button variant="sacred" onClick={markChapterComplete} size="sm" className="text-xs sm:text-sm">
                         <BookMarked className="w-4 h-4 sm:mr-2" />
