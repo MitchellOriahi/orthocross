@@ -676,12 +676,20 @@ const Reading = () => {
   // A trackpad/wheel swipe is recognized too (deltaY < 0 = scrolling up =
   // reveal; deltaY > 0 = scrolling down = hide).
   useEffect(() => {
+    // Gestures that begin inside an overlay — the translation picker popup or
+    // its details dialog — never move the bar; scrolling those lists is just
+    // browsing options, not reading navigation.
+    const inOverlay = (target: EventTarget | null) =>
+      target instanceof Element &&
+      !!(target.closest("[data-radix-popper-content-wrapper]") || target.closest('[role="dialog"]'));
+    let ignoring = false;
     let startY: number | null = null;
     let extremeY: number | null = null; // furthest point reached during this gesture
     let startX: number | null = null;
     let minX: number | null = null; // furthest left reached
     let maxX: number | null = null; // furthest right reached
-    const start = (x: number, y: number) => {
+    const start = (x: number, y: number, target: EventTarget | null) => {
+      ignoring = inOverlay(target);
       startY = y;
       extremeY = y;
       startX = x;
@@ -689,7 +697,7 @@ const Reading = () => {
       maxX = x;
     };
     const move = (x: number, y: number) => {
-      if (startY === null || extremeY === null) return;
+      if (ignoring || startY === null || extremeY === null) return;
       if (y > extremeY) extremeY = y;
       if (minX !== null && x < minX) minX = x;
       if (maxX !== null && x > maxX) maxX = x;
