@@ -1058,6 +1058,10 @@ const Reading = () => {
                             longPressTriggeredRef.current = false;
                             return;
                           }
+                          if (wordsInteractive) {
+                            speech.seek(speechData.ranges[currentVerseIndex]?.[0] ?? 0);
+                            return;
+                          }
                           handleVerseClick(verses[currentVerseIndex].number);
                         }}
 
