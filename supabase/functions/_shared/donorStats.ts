@@ -64,4 +64,14 @@ export async function sendThankYouOnce(admin: Admin, donationId: string) {
   }).catch((e) => console.error("thank-you email failed", e));
 }
 
-export const TIER_ICON_IDS: Record<string, string> = {};
+export const TIER_ICON_IDS: Record<string, string> = {
+  angel: "76947e96-8b8b-4539-bae4-6c7b6e51a4a7",
+  archangel: "d4a692d6-aa1e-48d9-a067-840a3892a836",
+  cherub: "8be593b4-f6b6-47fd-9d7d-636abd71509e",
+  dominion: "b8dce3bc-1d6c-43e0-8988-86a6e5e0ef05",
+  power: "ba38012e-158b-41c6-8d19-d6a0a62aadb2",
+  principality: "484e586b-83fc-4076-89e4-c3e7e5a3e952",
+  seraph: "c5c37dbe-5078-4b63-80c1-ae581093cac2",
+  throne: "de9d8b5d-18bc-4bb1-9d15-ebb986b8f4d7",
+  virtue: "a2e6adff-c65a-4d60-a5eb-5e32c6c81850",
+};
