@@ -655,25 +655,44 @@ const Reading = () => {
 
   // Bottom bar stays hidden while reading; only an upward swipe gesture reveals it, a downward swipe hides it.
   useEffect(() => {
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartYRef.current = e.touches[0]?.clientY ?? null;
+    const start = (y: number) => {
+      touchStartYRef.current = y;
     };
-    const onTouchMove = (e: TouchEvent) => {
+    const move = (y: number) => {
       if (touchStartYRef.current === null) return;
-      const delta = e.touches[0].clientY - touchStartYRef.current;
-      if (delta < -12) setShowBottomNav(true);
-      else if (delta > 12) setShowBottomNav(false);
+      const delta = y - touchStartYRef.current;
+      if (delta < -24) {
+        setShowBottomNav(true);
+        touchStartYRef.current = y;
+      } else if (delta > 24) {
+        setShowBottomNav(false);
+        touchStartYRef.current = y;
+      }
     };
-    const onTouchEnd = () => {
+    const end = () => {
       touchStartYRef.current = null;
     };
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientY ?? 0);
+    const onTouchMove = (e: TouchEvent) => e.touches[0] && move(e.touches[0].clientY);
+    // Mouse drag counts as a swipe too (desktop preview / laptop).
+    const onPointerDown = (e: PointerEvent) => e.pointerType === "mouse" && start(e.clientY);
+    const onPointerMove = (e: PointerEvent) => e.pointerType === "mouse" && move(e.clientY);
+    const opts = { passive: true, capture: true } as const;
+    window.addEventListener("touchstart", onTouchStart, opts);
+    window.addEventListener("touchmove", onTouchMove, opts);
+    window.addEventListener("touchend", end, opts);
+    window.addEventListener("touchcancel", end, opts);
+    window.addEventListener("pointerdown", onPointerDown, opts);
+    window.addEventListener("pointermove", onPointerMove, opts);
+    window.addEventListener("pointerup", end, opts);
     return () => {
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchstart", onTouchStart, opts);
+      window.removeEventListener("touchmove", onTouchMove, opts);
+      window.removeEventListener("touchend", end, opts);
+      window.removeEventListener("touchcancel", end, opts);
+      window.removeEventListener("pointerdown", onPointerDown, opts);
+      window.removeEventListener("pointermove", onPointerMove, opts);
+      window.removeEventListener("pointerup", end, opts);
     };
   }, []);
 
