@@ -202,7 +202,7 @@ export const GroupInviteDialog = ({
                     </Avatar>
                     <span className="font-medium flex-1 truncate">{friend.username}</span>
                     {isInvited && (
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30 shrink-0">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-400/30 shrink-0">
                         Invited
                       </span>
                     )}
