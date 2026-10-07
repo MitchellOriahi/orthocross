@@ -50,6 +50,9 @@ test("search matches names only, not subtitles", () => {
   expect(names).not.toContain("Anthusa");
   expect(names).not.toContain("Elizabeth");
   expect(names.every(name => name.toLowerCase().includes("john"))).toBe(true);
+  const josephs = getSaintPageList(null, null, "Joseph").map(s => s.name);
+  expect(josephs.length).toBeGreaterThan(0);
+  expect(josephs.every(name => name.toLowerCase().includes("joseph"))).toBe(true);
 });
 test("lists sort alphabetically ignoring honorifics", () => {
   for (const prefix of ["St.", "Prophet", "Righteous", "Archangel", "Abba", "Amma", "The"]) expect(saintSortName(`${prefix} Adam`)).toBe("Adam");
