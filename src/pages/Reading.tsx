@@ -676,12 +676,20 @@ const Reading = () => {
   // A trackpad/wheel swipe is recognized too (deltaY < 0 = scrolling up =
   // reveal; deltaY > 0 = scrolling down = hide).
   useEffect(() => {
+    // Gestures that begin inside an overlay — the translation picker popup or
+    // its details dialog — never move the bar; scrolling those lists is just
+    // browsing options, not reading navigation.
+    const inOverlay = (target: EventTarget | null) =>
+      target instanceof Element &&
+      !!(target.closest("[data-radix-popper-content-wrapper]") || target.closest('[role="dialog"]'));
+    let ignoring = false;
     let startY: number | null = null;
     let extremeY: number | null = null; // furthest point reached during this gesture
     let startX: number | null = null;
     let minX: number | null = null; // furthest left reached
     let maxX: number | null = null; // furthest right reached
-    const start = (x: number, y: number) => {
+    const start = (x: number, y: number, target: EventTarget | null) => {
+      ignoring = inOverlay(target);
       startY = y;
       extremeY = y;
       startX = x;
@@ -689,7 +697,7 @@ const Reading = () => {
       maxX = x;
     };
     const move = (x: number, y: number) => {
-      if (startY === null || extremeY === null) return;
+      if (ignoring || startY === null || extremeY === null) return;
       if (y > extremeY) extremeY = y;
       if (minX !== null && x < minX) minX = x;
       if (maxX !== null && x > maxX) maxX = x;
@@ -702,14 +710,14 @@ const Reading = () => {
       }
     };
     const end = () => {
-      if (startY !== null && extremeY !== null) {
+      if (!ignoring && startY !== null && extremeY !== null) {
         // A quick flick may deliver its whole travel between start and end.
         if (extremeY - startY >= 4) setShowBottomNav(true);
       }
       // Horizontal swipe flips the page: left → next, right → previous.
       // Only when the gesture is clearly horizontal (60px+ travel, wider
       // than it is tall) so normal vertical scrolling never flips pages.
-      if (startX !== null && minX !== null && maxX !== null && startY !== null && extremeY !== null) {
+      if (!ignoring && startX !== null && minX !== null && maxX !== null && startY !== null && extremeY !== null) {
         const leftTravel = startX - minX;
         const rightTravel = maxX - startX;
         const horizontal = Math.max(leftTravel, rightTravel);
@@ -729,14 +737,15 @@ const Reading = () => {
       minX = null;
       maxX = null;
     };
-    const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientX ?? 0, e.touches[0]?.clientY ?? 0);
+    const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientX ?? 0, e.touches[0]?.clientY ?? 0, e.target);
     const onTouchMove = (e: TouchEvent) => e.touches[0] && move(e.touches[0].clientX, e.touches[0].clientY);
     // Any pointer type counts (touch, pen, mouse drag) so desktop preview,
     // touchscreen laptops and tablets all work; hover moves are ignored
     // because startY is only set while pressed.
-    const onPointerDown = (e: PointerEvent) => start(e.clientX, e.clientY);
+    const onPointerDown = (e: PointerEvent) => start(e.clientX, e.clientY, e.target);
     const onPointerMove = (e: PointerEvent) => move(e.clientX, e.clientY);
     const onWheel = (e: WheelEvent) => {
+      if (inOverlay(e.target)) return;
       if (e.deltaY < -5) setShowBottomNav(true);
       else if (e.deltaY > 5) setShowBottomNav(false);
     };
