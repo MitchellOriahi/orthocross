@@ -476,3 +476,18 @@ All colors MUST be HSL.
 @layer components {
   .saint-card-icon-img { filter: saturate(1.05) contrast(1.05) sepia(0.15); }
 }
+
+/* Donation celebration */
+.donor-rays {
+  background: repeating-conic-gradient(from 0deg at 50% 40%, hsl(var(--primary) / 0.07) 0deg 6deg, transparent 6deg 18deg);
+  mask-image: radial-gradient(circle at 50% 40%, black 0%, transparent 60%);
+  animation: donor-rays-spin 40s linear infinite;
+}
+.donor-sticker { animation: donor-float 4s ease-in-out infinite; box-shadow: 0 0 40px hsl(var(--primary) / 0.35); }
+.donor-sticker-rise { box-shadow: 0 0 70px hsl(var(--primary) / 0.6); }
+.donor-glow { box-shadow: 0 0 10px hsl(var(--primary) / 0.35); }
+@keyframes donor-rays-spin { to { transform: rotate(360deg); } }
+@keyframes donor-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) {
+  .donor-rays, .donor-sticker { animation: none; }
+}
