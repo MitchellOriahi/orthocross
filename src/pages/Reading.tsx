@@ -629,6 +629,11 @@ const Reading = () => {
   // navigation handlers without re-registering on every render.
   const swipeNavRef = useRef<{ next: () => void; prev: () => void }>({ next: () => {}, prev: () => {} });
   const swipeHandledAtRef = useRef(0);
+  // Keep the swipe listener's handlers current: page mode flips verses,
+  // scroll mode flips chapters.
+  swipeNavRef.current = readingMode === "page"
+    ? { next: handleNextVerse, prev: handlePrevVerse }
+    : { next: handleNextChapter, prev: handlePrevChapter };
 
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!contentRef.current) return;
