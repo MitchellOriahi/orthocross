@@ -499,3 +499,24 @@ All colors MUST be HSL.
   }
 }
 
+
+/* Read-aloud word glow */
+.tts-word {
+  transition: text-shadow 150ms ease-out, filter 150ms ease-out, opacity 600ms ease-out;
+}
+.tts-spoken {
+  text-shadow: 0 0 6px hsl(var(--primary) / 0.45);
+  filter: brightness(1.08);
+}
+.tts-current {
+  text-shadow: 0 0 7px hsl(var(--primary) / 0.6);
+  filter: brightness(1.14);
+}
+.tts-fade-out .tts-spoken {
+  text-shadow: 0 0 6px hsl(var(--primary) / 0);
+  filter: none;
+  transition: text-shadow 700ms ease-out, filter 700ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tts-word, .tts-fade-out .tts-spoken { transition: none; }
+}

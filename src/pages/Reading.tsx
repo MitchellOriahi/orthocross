@@ -1,4 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useScriptureSpeech } from "@/hooks/useScriptureSpeech";
+import { SpeakableText, tokenize, type Token } from "@/components/reading/SpeakableText";
+import { SpeechControls } from "@/components/reading/SpeechControls";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Settings as SettingsIcon, Scroll, Type, ChevronLeft, ChevronRight, BookMarked, Highlighter, BookOpen, Bookmark, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -770,6 +773,50 @@ const Reading = () => {
     };
   }, []);
 
+  const speechData = useMemo(() => {
+    const words: string[] = [];
+    const verseTokens: Token[][] = [];
+    const wordVerse: number[] = [];
+    const ranges: Array<[number, number]> = [];
+    verses.forEach((v, vi) => {
+      const { tokens, words: w } = tokenize(v.text, words.length);
+      ranges.push([words.length, words.length + w.length - 1]);
+      w.forEach(() => wordVerse.push(vi));
+      words.push(...w);
+      verseTokens.push(tokens);
+    });
+    return { words, verseTokens, wordVerse, ranges };
+  }, [verses]);
+  const speech = useScriptureSpeech(speechData.words, `${book}|${chapter}|${currentTranslation.id}`);
+  const spokenUpToFor = (vi: number) => {
+    if (!speech.active || speech.current < 0) return -1;
+    const [a, b] = speechData.ranges[vi] ?? [0, -1];
+    return speech.current < a ? -1 : Math.min(speech.current, b);
+  };
+  const handleWordTap = useCallback((i: number) => speech.seek(i), [speech.seek]);
+  const wordsInteractive = speech.status === "playing" || speech.status === "paused";
+
+  // Page mode follows the voice from verse to verse.
+  useEffect(() => {
+    if (readingMode !== "page" || speech.status !== "playing" || speech.current < 0) return;
+    const vi = speechData.wordVerse[speech.current];
+    if (vi !== undefined && vi !== currentVerseIndex) setCurrentVerseIndex(vi);
+  }, [speech.current, speech.status, readingMode]);
+
+  // Gently keep the spoken word in view.
+  useEffect(() => {
+    if (speech.status !== "playing" || !speech.autoScroll || speech.current < 0) return;
+    const el = contentRef.current?.querySelector(`[data-word="${speech.current}"]`);
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const bottomLimit = window.innerHeight - 140;
+    if (r.bottom > bottomLimit || r.top < 160) el.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [speech.current, speech.status, speech.autoScroll]);
+
+  useEffect(() => {
+    if (speech.error) toast({ description: speech.error });
+  }, [speech.error]);
+
   return (
     <div
       className="min-h-screen gradient-peaceful"
@@ -824,6 +871,7 @@ const Reading = () => {
             </div>
             
             <div className="flex items-center gap-1 sm:gap-2">
+              <SpeechControls speech={speech} disabled={loadingVerses || verses.length === 0} />
               <Button
                 variant={readingMode === "scroll" ? "default" : "outline"}
                 size="sm"
@@ -851,7 +899,7 @@ const Reading = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <Card className="p-8 shadow-sacred">
-            <div className="space-y-6" ref={contentRef}>
+            <div className={`space-y-6 ${speech.status === "fading" ? "tts-fade-out" : ""}`} ref={contentRef}>
               <div className="text-center border-b pb-4">
                 <h1 className="text-3xl font-bold">{bookName}</h1>
                 <p className="text-muted-foreground mt-2">Chapter {chapter}</p>
@@ -872,7 +920,7 @@ const Reading = () => {
                       </div>
                     </div>
                   ) : verses.length > 0 ? (
-                    verses.map((verse) => {
+                    verses.map((verse, verseIdx) => {
                       const highlightColor = getHighlightColor(verse.number);
                       const bookmarked = isBookmarked(verse.number);
                       return (
@@ -902,7 +950,7 @@ const Reading = () => {
                         >
                           <span className="font-bold text-primary mr-2">{verse.number}</span>
                           {bookmarked && <Bookmark className="w-3 h-3 inline-block mr-1 fill-primary text-primary" />}
-                          <span>{verse.text}</span>
+                          <span><SpeakableText tokens={speechData.verseTokens[verseIdx] ?? []} spokenUpTo={spokenUpToFor(verseIdx)} currentIndex={speech.current} interactive={wordsInteractive} onWordTap={handleWordTap} /></span>
                           
                           {selectedVerse === verse.number && (
                             <div className="absolute right-2 top-2 flex gap-2">
@@ -1015,7 +1063,7 @@ const Reading = () => {
                               <Bookmark className="w-4 h-4 inline-block mr-2 fill-primary text-primary" />
                             )}
                           </div>
-                          <p className="leading-relaxed">{verses[currentVerseIndex].text}</p>
+                          <p className="leading-relaxed"><SpeakableText tokens={speechData.verseTokens[currentVerseIndex] ?? []} spokenUpTo={spokenUpToFor(currentVerseIndex)} currentIndex={speech.current} interactive={wordsInteractive} onWordTap={handleWordTap} /></p>
                           
                           {selectedVerse === verses[currentVerseIndex].number && (
                             <div className="flex justify-center gap-2 mt-4">
