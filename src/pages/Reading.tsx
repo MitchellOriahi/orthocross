@@ -23,6 +23,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { VerseNoteDialog } from "@/components/VerseNoteDialog";
+import { BottomNavigation } from "@/components/BottomNavigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 interface VerseHighlight {
@@ -52,6 +53,9 @@ const Reading = () => {
   const { theme } = useTheme();
   const { playSound } = useMusic();
   const contentRef = useRef<HTMLDivElement>(null);
+  const [showBottomNav, setShowBottomNav] = useState(false);
+  const touchStartYRef = useRef<number | null>(null);
+  const lastScrollYRef = useRef(0);
   
   const state = location.state || {};
   const book = state.book || "John";
@@ -650,8 +654,47 @@ const Reading = () => {
     }
   };
 
+  // Bottom bar stays hidden while reading; an upward swipe (or scrolling up) reveals it, a downward swipe hides it.
+  useEffect(() => {
+    const touchingRef = { current: false };
+    const onTouchStart = (e: TouchEvent) => {
+      touchingRef.current = true;
+      touchStartYRef.current = e.touches[0]?.clientY ?? null;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (touchStartYRef.current === null) return;
+      const delta = e.touches[0].clientY - touchStartYRef.current;
+      if (delta < -12) setShowBottomNav(true);
+      else if (delta > 12) setShowBottomNav(false);
+    };
+    const onTouchEnd = () => {
+      touchingRef.current = false;
+      touchStartYRef.current = null;
+    };
+    const onScroll = () => {
+      if (touchingRef.current) return; // touch swipes are handled above
+      const y = window.scrollY;
+      if (y < lastScrollYRef.current - 4) setShowBottomNav(true);
+      else if (y > lastScrollYRef.current + 4) setShowBottomNav(false);
+      lastScrollYRef.current = y;
+    };
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen gradient-peaceful">
+    <div
+      className="min-h-screen gradient-peaceful"
+      style={{ paddingBottom: showBottomNav ? "4.5rem" : undefined }}
+    >
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">
@@ -1079,6 +1122,14 @@ const Reading = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300 ${
+          showBottomNav ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <BottomNavigation />
+      </div>
     </div>
   );
 };
