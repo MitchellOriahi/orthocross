@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,23 @@ export const GroupInviteDialog = ({
   const [pendingInviteIds, setPendingInviteIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const { profile } = useProfileData();
+
+  const loadPendingInvites = useCallback(async () => {
+    const { data } = await supabase
+      .from('group_invitations')
+      .select('invitee_id')
+      .eq('group_id', groupId)
+      .eq('status', 'pending');
+    setPendingInviteIds(data?.map(i => i.invitee_id) || []);
+  }, [groupId]);
+
+  useEffect(() => {
+    if (open) {
+      loadPendingInvites();
+    } else {
+      setPendingInviteIds([]);
+    }
+  }, [open, loadPendingInvites]);
 
   // Filter out friends who are already members
   const availableFriends = friends.filter(f => !existingMemberIds.includes(f.id));
@@ -76,7 +93,8 @@ export const GroupInviteDialog = ({
       if (newInvites.length === 0) {
         toast({
           title: "Already invited",
-          description: "All selected friends have already been invited"
+          description: "All selected friends have already been invited",
+          duration: 4000
         });
         setSelectedFriends([]);
         return;
@@ -94,6 +112,8 @@ export const GroupInviteDialog = ({
         .insert(invitations);
 
       if (error) throw error;
+
+      setPendingInviteIds(prev => [...prev, ...newInvites]);
 
       // Send push notifications to all invited users
       const inviterName = profile?.username || profile?.display_name || 'Someone';
@@ -167,6 +187,7 @@ export const GroupInviteDialog = ({
             ) : (
               visibleFriends.map((friend) => {
                 const isSelected = selectedFriends.includes(friend.id);
+                const isInvited = pendingInviteIds.includes(friend.id);
                 return (
                   <div 
                     key={friend.id}
@@ -179,6 +200,11 @@ export const GroupInviteDialog = ({
                       <AvatarImage src={friend.profile_picture_url || undefined} />
                       <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
                     </Avatar>
+                    {isInvited && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+                        Invited
+                      </span>
+                    )}
                     <span className="font-medium flex-1">{friend.username}</span>
                     {isSelected && (
                       <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
