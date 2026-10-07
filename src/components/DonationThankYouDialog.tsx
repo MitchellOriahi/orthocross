@@ -1,80 +1,105 @@
-import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Heart, Sparkles } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useSearchParams } from "react-router-dom";
+import { Loader2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { DONOR_TEXT, DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
 
 export const DONATION_COMPLETED_EVENT = "orthocross:donation-completed";
 
+interface DonorStatus {
+  tierKey: string | null;
+  nextTierKey: string | null;
+  remainingCents: number;
+  name: string;
+  latestDonation: { id: string; previousTierKey: string | null } | null;
+}
+
+const tierByKey = (k: string | null) => DONOR_TIERS.find((t) => t.key === k) ?? null;
+
 export const DonationThankYouDialog = () => {
-  const [showThankYou, setShowThankYou] = useState(false);
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState<DonorStatus | null>(null);
+  const [timedOut, setTimedOut] = useState(false);
 
-  // Native (in-app purchase) donations announce themselves via a window event
-  useEffect(() => {
-    const onDone = () => setShowThankYou(true);
-    window.addEventListener(DONATION_COMPLETED_EVENT, onDone);
-    return () => window.removeEventListener(DONATION_COMPLETED_EVENT, onDone);
+  const waitForConfirmation = useCallback(async (since: string) => {
+    setOpen(true); setStatus(null); setTimedOut(false);
+    for (let i = 0; i < 30; i++) {
+      const { data } = await supabase.functions.invoke("donor-status", { body: { since } });
+      if (data?.latestDonation) { setStatus(data); window.dispatchEvent(new Event("orthocross:donors-changed")); return; }
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+    setTimedOut(true);
   }, []);
 
-  // Web (Stripe) donations return with ?donation=...&session_id=...
+  useEffect(() => {
+    const onDone = () => waitForConfirmation(new Date(Date.now() - 60_000).toISOString());
+    window.addEventListener(DONATION_COMPLETED_EVENT, onDone);
+    return () => window.removeEventListener(DONATION_COMPLETED_EVENT, onDone);
+  }, [waitForConfirmation]);
+
   useEffect(() => {
     if (!user) return;
-    const donationResult = searchParams.get("donation");
-    if (donationResult !== "success" && donationResult !== "monthly_success") return;
-
-    const isMonthly = donationResult === "monthly_success";
-    const sessionId = searchParams.get("session_id");
-
-    setShowThankYou(true);
-
-    if (sessionId) {
-      // Records the donation (Donators list) and sends the thank-you email + message
-      supabase.functions.invoke("record-donation", { body: { sessionId } }).catch(console.error);
-    }
-
-    const now = new Date().toISOString();
-    if (isMonthly) localStorage.setItem(`monthly_donor_${user.id}`, "true");
-    else localStorage.setItem(`last_one_time_donation_${user.id}`, now);
-    localStorage.setItem(`donation_thank_you_${user.id}`, now);
-
+    const result = searchParams.get("donation");
+    if (result !== "success" && result !== "monthly_success") return;
+    const started = localStorage.getItem("orthocross:donation-started");
+    const since = new Date((started ? Date.parse(started) : Date.now() - 3_600_000) - 60_000).toISOString();
+    localStorage.setItem(`donation_thank_you_${user.id}`, new Date().toISOString());
+    if (result === "monthly_success") localStorage.setItem(`monthly_donor_${user.id}`, "true");
     searchParams.delete("donation");
     searchParams.delete("session_id");
     setSearchParams(searchParams, { replace: true });
-  }, [user, searchParams, setSearchParams]);
+    waitForConfirmation(since);
+  }, [user, searchParams, setSearchParams, waitForConfirmation]);
 
-  const handleClose = () => setShowThankYou(false);
+  if (!open) return null;
 
-  return (
-    <Dialog open={showThankYou} onOpenChange={handleClose}>
-      <DialogContent className="w-[86vw] max-w-sm rounded-2xl border-0 bg-gradient-to-b from-primary/5 to-background">
-        <DialogHeader className="text-center items-center space-y-6 pt-8 pb-6">
-          <div className="relative">
-            <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center animate-scale-in">
-              <Heart className="w-16 h-16 text-primary fill-primary animate-pulse" />
-            </div>
-            <Sparkles className="w-8 h-8 text-primary absolute -top-2 -right-2 animate-bounce" />
-            <Sparkles className="w-6 h-6 text-primary absolute -bottom-1 -left-1 animate-bounce delay-150" />
+  const tier = tierByKey(status?.tierKey ?? null);
+  const prev = tierByKey(status?.latestDonation?.previousTierKey ?? null);
+  const next = tierByKey(status?.nextTierKey ?? null);
+  const rose = !!tier && tier.key !== prev?.key;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-sm p-6 animate-fade-in" role="dialog" aria-modal="true">
+      <div className="donor-rays pointer-events-none absolute inset-0 overflow-hidden" aria-hidden />
+      <button onClick={() => setOpen(false)} className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] rounded-full p-2 text-muted-foreground hover:text-foreground" aria-label="Close">
+        <X className="h-6 w-6" />
+      </button>
+
+      <div className="relative w-full max-w-sm text-center space-y-5">
+        {!status ? (
+          <div className="space-y-4 text-muted-foreground">
+            {timedOut ? (
+              <p>Stripe hasn't confirmed your donation yet. It will appear in the Donators section as soon as it does. Thank you!</p>
+            ) : (
+              <><Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" /><p>{DONOR_TEXT.pending}</p></>
+            )}
           </div>
-          <DialogTitle className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Thank You!
-          </DialogTitle>
-          <DialogDescription className="text-lg text-center">
-            <span className="block font-semibold text-foreground">Your generosity helps spread the Gospel.</span>
-            <span className="block text-primary font-medium mt-2">May God bless you abundantly! 🙏</span>
-            <span className="block text-muted-foreground text-sm mt-3">A thank you email and message are on their way to you.</span>
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="pt-2 pb-4">
-          <Button variant="sacred" onClick={handleClose} className="w-full">
-            Continue
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+        ) : (
+          <>
+            {tier && (
+              <img src={TIER_ICONS[tier.key]} alt={tier.name} width={160} height={160}
+                className={`donor-sticker mx-auto h-40 w-40 rounded-full object-cover ring-1 ring-primary/60 ${rose ? "donor-sticker-rise" : ""}`} />
+            )}
+            <h2 className="text-3xl font-serif text-primary">{DONOR_TEXT.thankYouTitle(status.name)}</h2>
+            <p className="text-foreground/90 leading-relaxed">{DONOR_TEXT.thankYouBody}</p>
+            {tier && <p className="text-lg font-semibold text-foreground">{DONOR_TEXT.youAreNow(tier)}</p>}
+            {rose && tier ? (
+              <p className="text-xl font-semibold text-primary">{DONOR_TEXT.risen(prev, tier)}</p>
+            ) : next ? (
+              <p className="text-sm text-muted-foreground">{DONOR_TEXT.toNext(status.remainingCents, next)}</p>
+            ) : (
+              <p className="text-sm text-muted-foreground">{DONOR_TEXT.topTier}</p>
+            )}
+          </>
+        )}
+        <Button variant="sacred" className="w-full" onClick={() => setOpen(false)}>Close</Button>
+      </div>
+    </div>,
+    document.body,
   );
 };

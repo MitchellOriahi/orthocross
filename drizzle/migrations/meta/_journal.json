@@ -15,6 +15,13 @@
       "when": 1791358398242,
       "tag": "0001_saint_icons_read",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791403613019,
+      "tag": "0002_donor_tiers",
+      "breakpoints": true
     }
   ]
 }

@@ -224,29 +224,47 @@ export type Database = {
       donations: {
         Row: {
           amount: number
+          checkout_session_id: string | null
           created_at: string
           currency: string
           donated_at: string
+          donation_type: string
           id: string
+          refunded_amount: number
+          status: string
+          stripe_charge_id: string | null
           stripe_payment_intent_id: string | null
+          thank_you_sent_at: string | null
           user_id: string
         }
         Insert: {
           amount: number
+          checkout_session_id?: string | null
           created_at?: string
           currency?: string
           donated_at?: string
+          donation_type?: string
           id?: string
+          refunded_amount?: number
+          status?: string
+          stripe_charge_id?: string | null
           stripe_payment_intent_id?: string | null
+          thank_you_sent_at?: string | null
           user_id: string
         }
         Update: {
           amount?: number
+          checkout_session_id?: string | null
           created_at?: string
           currency?: string
           donated_at?: string
+          donation_type?: string
           id?: string
+          refunded_amount?: number
+          status?: string
+          stripe_charge_id?: string | null
           stripe_payment_intent_id?: string | null
+          thank_you_sent_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -1102,6 +1120,7 @@ export type Database = {
           activity_visible: boolean | null
           created_at: string
           display_name: string | null
+          donor_anonymous: boolean
           fasting_notifications_enabled: boolean | null
           friends_notifications_enabled: boolean | null
           id: string
@@ -1120,6 +1139,7 @@ export type Database = {
           activity_visible?: boolean | null
           created_at?: string
           display_name?: string | null
+          donor_anonymous?: boolean
           fasting_notifications_enabled?: boolean | null
           friends_notifications_enabled?: boolean | null
           id: string
@@ -1138,6 +1158,7 @@ export type Database = {
           activity_visible?: boolean | null
           created_at?: string
           display_name?: string | null
+          donor_anonymous?: boolean
           fasting_notifications_enabled?: boolean | null
           friends_notifications_enabled?: boolean | null
           id?: string
