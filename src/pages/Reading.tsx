@@ -787,14 +787,7 @@ const Reading = () => {
     });
     return { words, verseTokens, wordVerse, ranges };
   }, [verses]);
-  const audioTotalChapters = BIBLE_BOOKS.find((b) => b.title === book)?.totalChapters ?? 0;
-  const speech = useScriptureSpeech(speechData.words, {
-    translation: currentTranslation.id,
-    book,
-    chapter: Number(chapter),
-    nextChapter: Number(chapter) < audioTotalChapters ? Number(chapter) + 1 : null,
-    title: `${book} ${chapter}`,
-  });
+  const speech = useScriptureSpeech(speechData.words, `${book}|${chapter}|${currentTranslation.id}`);
   const spokenUpToFor = (vi: number) => {
     if (!speech.active || speech.current < 0) return -1;
     const [a, b] = speechData.ranges[vi] ?? [0, -1];
@@ -820,6 +813,9 @@ const Reading = () => {
     if (r.bottom > bottomLimit || r.top < 160) el.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [speech.current, speech.status, speech.autoScroll]);
 
+  useEffect(() => {
+    if (speech.error) toast({ description: speech.error });
+  }, [speech.error]);
 
   return (
     <div

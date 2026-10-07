@@ -1,1 +1,0 @@
-CREATE POLICY "Signed-in users can read bible audio" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'bible-audio');

@@ -18,7 +18,6 @@ import { TutorialIntro } from "@/components/TutorialIntro";
 import { NotificationManager } from "@/components/NotificationManager";
 import Auth from "./pages/Auth";
 import IconTuner from "./pages/IconTuner";
-import AudioAdmin from "./pages/AudioAdmin";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -92,7 +91,6 @@ const AppContent = () => {
           />
           <Route path="/home" element={<Home />} />
           <Route path="/index" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-          <Route path="/audio-admin" element={<AdminRoute><AudioAdmin /></AdminRoute>} />
           <Route path="/icon-tuner" element={<AdminRoute><IconTuner /></AdminRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/reading" element={<ProtectedRoute><Reading /></ProtectedRoute>} />
