@@ -625,8 +625,22 @@ const Reading = () => {
     return bookmarks.some(b => b.verse_number === verseNumber);
   };
 
+  // Refs so the window-level swipe listener always calls the latest
+  // navigation handlers without re-registering on every render.
+  const swipeNavRef = useRef<{ next: () => void; prev: () => void }>({ next: () => {}, prev: () => {} });
+  const swipeHandledAtRef = useRef(0);
+  // Keep the swipe listener's handlers current: page mode flips verses,
+  // scroll mode flips chapters.
+  swipeNavRef.current = readingMode === "page"
+    ? { next: handleNextVerse, prev: handlePrevVerse }
+    : { next: handleNextChapter, prev: handlePrevChapter };
+
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!contentRef.current) return;
+    // A horizontal swipe across the text also produces a click — ignore it
+    // so a page flip doesn't immediately trigger a second navigation.
+    if (Date.now() - swipeHandledAtRef.current < 400) return;
+    
     const rect = contentRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const halfWidth = rect.width / 2;
@@ -664,13 +678,21 @@ const Reading = () => {
   useEffect(() => {
     let startY: number | null = null;
     let extremeY: number | null = null; // furthest point reached during this gesture
-    const start = (y: number) => {
+    let startX: number | null = null;
+    let minX: number | null = null; // furthest left reached
+    let maxX: number | null = null; // furthest right reached
+    const start = (x: number, y: number) => {
       startY = y;
       extremeY = y;
+      startX = x;
+      minX = x;
+      maxX = x;
     };
-    const move = (y: number) => {
+    const move = (x: number, y: number) => {
       if (startY === null || extremeY === null) return;
       if (y > extremeY) extremeY = y;
+      if (minX !== null && x < minX) minX = x;
+      if (maxX !== null && x > maxX) maxX = x;
       const downExcursion = extremeY - startY; // > 0 when the finger moved down
       const upExcursion = startY - y; // > 0 when the finger moved up
       if (downExcursion >= 4) {
@@ -684,16 +706,36 @@ const Reading = () => {
         // A quick flick may deliver its whole travel between start and end.
         if (extremeY - startY >= 4) setShowBottomNav(true);
       }
+      // Horizontal swipe flips the page: left → next, right → previous.
+      // Only when the gesture is clearly horizontal (60px+ travel, wider
+      // than it is tall) so normal vertical scrolling never flips pages.
+      if (startX !== null && minX !== null && maxX !== null && startY !== null && extremeY !== null) {
+        const leftTravel = startX - minX;
+        const rightTravel = maxX - startX;
+        const horizontal = Math.max(leftTravel, rightTravel);
+        const vertical = Math.max(extremeY - startY, startY - extremeY);
+        if (horizontal >= 60 && horizontal > vertical * 1.5) {
+          swipeHandledAtRef.current = Date.now();
+          if (leftTravel >= rightTravel) {
+            swipeNavRef.current.next();
+          } else {
+            swipeNavRef.current.prev();
+          }
+        }
+      }
       startY = null;
       extremeY = null;
+      startX = null;
+      minX = null;
+      maxX = null;
     };
-    const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientY ?? 0);
-    const onTouchMove = (e: TouchEvent) => e.touches[0] && move(e.touches[0].clientY);
+    const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientX ?? 0, e.touches[0]?.clientY ?? 0);
+    const onTouchMove = (e: TouchEvent) => e.touches[0] && move(e.touches[0].clientX, e.touches[0].clientY);
     // Any pointer type counts (touch, pen, mouse drag) so desktop preview,
     // touchscreen laptops and tablets all work; hover moves are ignored
     // because startY is only set while pressed.
-    const onPointerDown = (e: PointerEvent) => start(e.clientY);
-    const onPointerMove = (e: PointerEvent) => move(e.clientY);
+    const onPointerDown = (e: PointerEvent) => start(e.clientX, e.clientY);
+    const onPointerMove = (e: PointerEvent) => move(e.clientX, e.clientY);
     const onWheel = (e: WheelEvent) => {
       if (e.deltaY < -5) setShowBottomNav(true);
       else if (e.deltaY > 5) setShowBottomNav(false);
