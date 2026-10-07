@@ -652,13 +652,15 @@ const Reading = () => {
     }
   };
 
-  // Bottom bar stays hidden while reading. An upward swipe gesture anywhere on the
-  // page — including a swipe starting mid-page — reveals it; a separate downward
-  // swipe hides it. Each gesture is judged by its total excursion from where the
-  // finger (or cursor) first landed, so slow drags and fast flicks both count and
-  // natural finger wobble within one gesture can never hide the bar again.
-  // A trackpad/wheel swipe is recognized too (deltaY > 0 = page scrolls down =
-  // finger moved up; deltaY < 0 = finger moved down).
+  // Bottom bar stays hidden while reading. Pulling the text back up (scrolling
+  // up, finger moving down) anywhere on the page — including a swipe starting
+  // mid-page — reveals it; scrolling down through the verses hides it again,
+  // matching the YouVersion behavior. Each gesture is judged by its total
+  // excursion from where the finger (or cursor) first landed, so slow drags and
+  // fast flicks both count and natural finger wobble within one gesture can
+  // never hide the bar again.
+  // A trackpad/wheel swipe is recognized too (deltaY < 0 = scrolling up =
+  // reveal; deltaY > 0 = scrolling down = hide).
   useEffect(() => {
     let startY: number | null = null;
     let extremeY: number | null = null; // furthest point reached during this gesture
@@ -668,19 +670,19 @@ const Reading = () => {
     };
     const move = (y: number) => {
       if (startY === null || extremeY === null) return;
-      if (y < extremeY) extremeY = y;
-      const upExcursion = startY - extremeY; // > 0 when the finger moved up
-      const downExcursion = y - startY; // > 0 when the finger moved down
-      if (upExcursion >= 12) {
+      if (y > extremeY) extremeY = y;
+      const downExcursion = extremeY - startY; // > 0 when the finger moved down
+      const upExcursion = startY - y; // > 0 when the finger moved up
+      if (downExcursion >= 12) {
         setShowBottomNav(true);
-      } else if (downExcursion >= 25) {
+      } else if (upExcursion >= 25) {
         setShowBottomNav(false);
       }
     };
     const end = () => {
       if (startY !== null && extremeY !== null) {
         // A quick flick may deliver its whole travel between start and end.
-        if (startY - extremeY >= 8) setShowBottomNav(true);
+        if (extremeY - startY >= 8) setShowBottomNav(true);
       }
       startY = null;
       extremeY = null;
@@ -693,8 +695,8 @@ const Reading = () => {
     const onPointerDown = (e: PointerEvent) => start(e.clientY);
     const onPointerMove = (e: PointerEvent) => move(e.clientY);
     const onWheel = (e: WheelEvent) => {
-      if (e.deltaY > 20) setShowBottomNav(true);
-      else if (e.deltaY < -20) setShowBottomNav(false);
+      if (e.deltaY < -20) setShowBottomNav(true);
+      else if (e.deltaY > 20) setShowBottomNav(false);
     };
     const opts = { passive: true, capture: true } as const;
     window.addEventListener("touchstart", onTouchStart, opts);
