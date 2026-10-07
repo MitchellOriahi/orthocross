@@ -194,10 +194,16 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-2">
-            <Button size="sm" variant={!anonymous ? "secondary" : "ghost"} onClick={() => updateAnonymous(false)}>{DONOR_TEXT.showMyName}</Button>
-            <Button size="sm" variant={anonymous ? "secondary" : "ghost"} onClick={() => updateAnonymous(true)}>{DONOR_TEXT.donateAnonymously}</Button>
-          </div>
+          <Button
+            size="sm"
+            variant={anonymous ? "secondary" : "outline"}
+            className="w-full justify-center"
+            aria-pressed={anonymous}
+            onClick={() => updateAnonymous(!anonymous)}
+          >
+            {DONOR_TEXT.donateAnonymously}
+          </Button>
+
 
           {/* Platform note */}
           <p className="text-xs text-muted-foreground text-center">
