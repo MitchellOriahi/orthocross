@@ -33,10 +33,14 @@ export const GroupInviteDialog = ({
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [pendingInviteIds, setPendingInviteIds] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const { profile } = useProfileData();
 
   // Filter out friends who are already members
   const availableFriends = friends.filter(f => !existingMemberIds.includes(f.id));
+  const visibleFriends = searchQuery.trim()
+    ? availableFriends.filter(f => f.username?.toLowerCase().includes(searchQuery.trim().toLowerCase()))
+    : availableFriends;
 
   const toggleFriend = (friendId: string) => {
     setSelectedFriends(prev => 
