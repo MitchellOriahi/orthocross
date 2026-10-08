@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { speechEngine, type VoiceOption } from "@/lib/speech/speechEngine";
+import { prefetchSpeech, speechEngine, type VoiceOption } from "@/lib/speech/speechEngine";
 
 export type SpeechStatus = "idle" | "playing" | "paused" | "finished" | "fading";
 
@@ -36,6 +36,13 @@ export function useScriptureSpeech(words: string[], resetKey: string) {
       setVoiceIdState((prev) => (prev && v.some((x) => x.id === prev) ? prev : speechEngine.pickDefaultVoice(v)));
     });
   }, [supported]);
+
+  // Prepare the chapter's first audio in the background as soon as it opens,
+  // so pressing Play starts almost instantly.
+  useEffect(() => {
+    if (!supported || !voiceId || words.length === 0) return;
+    prefetchSpeech(words, voiceId);
+  }, [supported, voiceId, words]);
 
   const clearFades = () => {
     fadeTimers.current.forEach(clearTimeout);
