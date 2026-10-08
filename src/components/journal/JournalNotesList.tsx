@@ -18,6 +18,7 @@ interface JournalNotesListProps {
   notes: JournalNote[];
   selectedNoteId: string | null;
   onNoteSelect: (noteId: string) => void;
+  onNoteExpand?: (noteId: string) => void;
   onNoteCreate: () => void;
   onNoteDelete: (noteId: string) => void;
   onNotePin: (noteId: string) => void;
@@ -31,6 +32,7 @@ export const JournalNotesList = ({
   notes,
   selectedNoteId,
   onNoteSelect,
+  onNoteExpand,
   onNoteCreate,
   onNoteDelete,
   onNotePin,
@@ -132,6 +134,7 @@ export const JournalNotesList = ({
       >
         <button
           onClick={() => onNoteSelect(note.id)}
+          onDoubleClick={() => onNoteExpand?.(note.id)}
           className="w-full text-left"
         >
           <div className="font-medium text-sm truncate mb-1 pr-16">
@@ -192,6 +195,7 @@ export const JournalNotesList = ({
       >
         <button
           onClick={() => onNoteSelect(note.id)}
+          onDoubleClick={() => onNoteExpand?.(note.id)}
           className="w-full text-left bg-card rounded-lg overflow-hidden block"
         >
           <div className="aspect-square bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center overflow-hidden">

@@ -9,7 +9,7 @@ import { JournalEditor } from "./journal/JournalEditor";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Menu, Play, Pause, Volume2, X } from "lucide-react";
+import { ChevronLeft, Menu, Play, Pause, Volume2, X, Minimize2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
 
@@ -47,6 +47,7 @@ export const Journal = () => {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isNoteExpanded, setIsNoteExpanded] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [showNotesList, setShowNotesList] = useState(true);
@@ -374,6 +375,7 @@ export const Journal = () => {
   const handleClose = () => {
     discardUntouchedDraft();
     setIsFullScreen(false);
+    setIsNoteExpanded(false);
     setShowSidebar(false);
     setShowNotesList(true);
   };
@@ -581,6 +583,17 @@ export const Journal = () => {
                 </Button>
               )}
               <div className="flex-1" />
+              {!isMobile && isNoteExpanded && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsNoteExpanded(false)}
+                  aria-label="Exit full-screen note"
+                  title="Exit full-screen note"
+                >
+                  <Minimize2 className="h-5 w-5" />
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="icon"
@@ -595,7 +608,7 @@ export const Journal = () => {
               {/* Desktop: Always show sidebar */}
               {/* Mobile: Show sidebar only when toggled */}
               {(!isMobile || showSidebar) && (
-                <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background' : 'w-48 shrink-0 min-w-0'}`}>
+                <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background' : 'w-48 shrink-0 min-w-0'} ${!isMobile && isNoteExpanded ? 'hidden' : ''}`}>
                   {isMobile && (
                     <div className="p-2 border-b border-border flex items-center safe-top">
                       <Button
@@ -625,11 +638,15 @@ export const Journal = () => {
               {/* Desktop: Always show notes list */}
               {/* Mobile: Show notes list only when no note is selected or when navigating back */}
               {(!isMobile || showNotesList) && (
-                <div className={`${isMobile ? 'flex-1 min-w-0' : 'w-64 shrink-0 min-w-0'}`}>
+                <div className={`${isMobile ? 'flex-1 min-w-0' : 'w-64 shrink-0 min-w-0'} ${!isMobile && isNoteExpanded ? 'hidden' : ''}`}>
                   <JournalNotesList
                     notes={filteredNotes}
                     selectedNoteId={selectedNoteId}
                     onNoteSelect={handleNoteSelect}
+                    onNoteExpand={isMobile ? undefined : async (noteId) => {
+                      await handleNoteSelect(noteId);
+                      setIsNoteExpanded(true);
+                    }}
                     onNoteCreate={handleNoteCreate}
                     onNoteDelete={handleNoteDelete}
                     onNotePin={handleNotePin}
