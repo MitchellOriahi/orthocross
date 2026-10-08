@@ -9,6 +9,14 @@ import { SAINT_CARD_ICONS } from "./saintCardIcons";
 
 type Membership = { category: string; subgroup: string };
 const savedById = new Map(saintsContent.map(saint => [saint.id, saint]));
+// These are the same people under alternate roster spellings, not new saints.
+const portraitAliases: Record<string, string> = {
+  "jude-thaddaeus": "jude-thaddeus",
+  paul: "paul-apostle",
+  philip: "philip-apostle",
+  cyril: "cyril-slavs",
+  "mark-the-evangelist": "mark",
+};
 const memberships = new Map<string, Membership[]>();
 
 export function saintSortName(name: string) {
@@ -17,6 +25,7 @@ export function saintSortName(name: string) {
 
 export const saintPageRoster: SaintDetail[] = roster.map(record => {
   const saved = record.savedId ? savedById.get(record.savedId) : undefined;
+  const savedPortrait = saved ?? savedById.get(portraitAliases[record.id]);
   const portrait = SAINT_CARD_ICONS[record.id];
   memberships.set(record.id, record.memberships);
   return {
@@ -26,7 +35,7 @@ export const saintPageRoster: SaintDetail[] = roster.map(record => {
     epithet: "",
     shortDescription: record.subtitle,
     tradition: record.tradition as SaintDetail["tradition"],
-    iconUrl: portrait?.image_url ?? saved?.iconUrl ?? "",
+    iconUrl: portrait?.image_url ?? savedPortrait?.iconUrl ?? "",
     iconCredit: portrait ? {
       source: portrait.image_source,
       author: portrait.image_attribution,
@@ -38,7 +47,7 @@ export const saintPageRoster: SaintDetail[] = roster.map(record => {
           : `https://creativecommons.org/licenses/${portrait.image_license.includes("BY-SA") ? "by-sa" : "by"}/${portrait.image_license.match(/\d\.\d/)?.[0] ?? "4.0"}/`,
       title: [record.prefix, record.name].filter(Boolean).join(" "),
       modification: "Original painted icon; resized and face-focused for the circular profile picture. Artwork otherwise unchanged.",
-    } : saved?.iconCredit,
+    } : savedPortrait?.iconCredit,
     content: (saintStories as Record<string, string[]>)[record.id] ?? saved?.content ?? [record.subtitle],
   };
 });
