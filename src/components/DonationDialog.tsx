@@ -228,7 +228,7 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             {loading ? (
               <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</>
             ) : (
-              <><Heart className="w-4 h-4 mr-2 text-[hsl(var(--donor-heart))] fill-[hsl(var(--donor-heart))]" />Donate ${useCustom ? (parseFloat(customAmount) || 0).toFixed(2) : selectedAmount}</>
+              <><Heart className="w-4 h-4 mr-2 text-[hsl(var(--donor-heart))]" />Donate ${useCustom ? (parseFloat(customAmount) || 0).toFixed(2) : selectedAmount}</>
             )}
           </Button>
         </div>
