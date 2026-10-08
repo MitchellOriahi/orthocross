@@ -1,3 +1,5 @@
+import online_sarah_of_the_desert from "@/assets/saints/card-icons/sarah-of-the-desert-online.jpg.asset.json";
+import online_theophano from "@/assets/saints/card-icons/theophano-online.jpg.asset.json";
 import online_armenian_genocide_martyrs from "@/assets/saints/card-icons/armenian-genocide-martyrs-online.jpg.asset.json";
 import online_barachiel from "@/assets/saints/card-icons/barachiel-online.jpg.asset.json";
 import online_jeremiel from "@/assets/saints/card-icons/jeremiel-online.jpg.asset.json";
@@ -321,4 +323,7 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "angel-of-the-lord": { image_url: online_angel_of_the_lord.url, "image_source": "https://commons.wikimedia.org/wiki/File:Pieter_Lastman_-_The_Angel_of_the_Lord_Preventing_Abraham_from_Sacrificing_his_Son_Isaac_-_WGA12483.jpg", "image_license": "Public domain", "image_attribution": "Pieter Lastman / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 
   "armenian-genocide-martyrs": { image_url: online_armenian_genocide_martyrs.url, "image_source": "https://commons.wikimedia.org/wiki/File:Stamp_of_Armenia_-_2017_-_Colnect_755422_-_Icon_of_the_Martyrs_of_the_Armenian_Genocide.jpeg", "image_license": "Public domain", "image_attribution": "Post of Armenia", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "sarah-of-the-desert": { image_url: online_sarah_of_the_desert.url, "image_source": "https://commons.wikimedia.org/wiki/File:Sarah_the_hermit_print_by_Maerten_de_Vos,_S.I_811,_Prints_Department,_Royal_Library_of_Belgium.jpg", "image_license": "Public domain", "image_attribution": "Adriaen Collaert / Maerten de Vos / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "theophano": { image_url: online_theophano.url, "image_source": "https://commons.wikimedia.org/wiki/File:Santa_Te%C3%B3fano_y_Le%C3%B3n_VI_el_Sabio.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
