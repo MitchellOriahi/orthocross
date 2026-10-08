@@ -1,3 +1,4 @@
+import { OrientalEtiquette } from "@/components/resources/OrientalEtiquette";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -424,87 +425,7 @@ const ChurchResources = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="before-entering">
-                      <AccordionTrigger>Before Entering</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Arrive before the service begins</li>
-                          <li>• Remove shoes in some traditions (Ethiopian, Eritrean)</li>
-                          <li>• Women cover their heads with a scarf</li>
-                          <li>• Turn off all electronic devices</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="upon-entering">
-                      <AccordionTrigger>Upon Entering</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Make the sign of the cross (may differ by tradition)</li>
-                          <li>• Bow or prostrate before the altar</li>
-                          <li>• Kiss icons and crosses respectfully</li>
-                          <li>• Take your place quietly</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="during-service">
-                      <AccordionTrigger>During the Service</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Stand for the entire service (traditional practice)</li>
-                          <li>• Make prostrations at designated times</li>
-                          <li>• Use prayer ropes or rosaries for personal prayer</li>
-                          <li>• Maintain silence and focus on worship</li>
-                          <li>• Follow the congregation in responses and hymns</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="holy-communion">
-                      <AccordionTrigger>Holy Communion</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Fast from midnight or for designated hours</li>
-                          <li>• Confess sins and receive absolution</li>
-                          <li>• Men typically receive before women and children</li>
-                          <li>• Receive with reverence and humility</li>
-                          <li>• Some churches use a spoon, others intinction</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="dress-code">
-                      <AccordionTrigger>Dress Code</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Dress in white or light colors for special feasts</li>
-                          <li>• Women: Long dresses/skirts, arms and shoulders covered</li>
-                          <li>• Men: Long pants, shirts with sleeves</li>
-                          <li>• Traditional garments are often worn</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="cultural-practices">
-                      <AccordionTrigger>Cultural Practices</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Kiss hands of clergy as a sign of respect</li>
-                          <li>• Receive blessings from priests after service</li>
-                          <li>• Participate in coffee and fellowship after liturgy</li>
-                          <li>• Learn and use traditional greetings in the church language</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="special-notes">
-                      <AccordionTrigger>Special Notes</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Services are often longer than Western services</li>
-                          <li>• Ancient languages may be used (Coptic, Armenian, Syriac, etc.)</li>
-                          <li>• Incense and elaborate rituals are common</li>
-                          <li>• Respect photography restrictions during services</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                  <OrientalEtiquette />
                 </CardContent>
               </Card>
             )}
