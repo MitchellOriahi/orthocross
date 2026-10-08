@@ -399,7 +399,7 @@ export default function GroupDetail() {
                           rank={index + 1}
                           consecutiveCount={member.consecutive_rank_count}
                           totalPoints={member.total_points}
-                          className={canManage && member.user_id !== user?.id && member.role !== 'owner' ? 'pr-12' : undefined}
+                          className={canManage ? 'pr-12' : undefined}
                           onClick={() => navigate(`/friends/${member.user_id}`)}
                         />
                         {canManage && member.user_id !== user?.id && member.role !== 'owner' && (
