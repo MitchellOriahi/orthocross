@@ -29,12 +29,24 @@ export function useSaintReadingProgress() {
       if (!user) throw new Error("Please sign in to save your saint reading progress.");
       // Await the full lifetime history before evaluating the final-story award.
       const current = await client.fetchQuery({ queryKey, queryFn: loadProgress });
-      if (!current.has(saintId)) {
+      const monthStart = `${new Date().toISOString().slice(0, 7)}-01`;
+      const { data: monthlyRead, error: readError } = await supabase.from("saints_read")
+        .select("id").eq("user_id", user.id).eq("saint_id", saintId).gte("read_at", monthStart).limit(1);
+      if (readError) throw readError;
+      if (!monthlyRead?.length) {
         const { error } = await supabase.from("saints_read").insert({ user_id: user.id, saint_id: saintId });
         if (error) throw error;
+        await supabase.rpc("award_leaderboard_point", { p_activity: "saint" });
       }
       const after = new Set(current).add(saintId);
       client.setQueryData(queryKey, after);
+      const { updateUserStreak } = await import("@/utils/streakManager");
+      await updateUserStreak(user.id);
+      const saint = (await import("@/data/saintPageRoster")).saintPageRoster.find(record => record.id === saintId);
+      if (saint) await supabase.rpc("log_friend_activity", {
+        p_activity_type: "saint_completed",
+        p_activity_data: { saint_name: `${saint.prefix} ${saint.name}` },
+      });
       return { earnedAward: earnsAllSaintsAward(current, after) };
     },
   });
