@@ -36,7 +36,7 @@ test("New prayers use only the required placeholder, exact supplied names and tr
 });
 
 test("Six macro categories and all 31 micro categories retain their supplied order", () => {
-  expect(PRAYER_CATEGORIES.map(category => category.label)).toEqual(["Foundational Prayers", "Daily Prayers", "Prayers to Christ and the Saints", "Psalms and Canticles", "Holy Communion and Liturgy", "Needs and Occasions"]);
+  expect(PRAYER_CATEGORIES.map(category => category.label)).toEqual(["Foundational Prayers", "Daily Prayers", "Prayers to Christ and the Saints", "Holy Communion and Liturgy", "Needs and Occasions", "Psalms and Canticles"]);
   expect(PRAYER_CATEGORIES.flatMap(category => category.subgroups)).toHaveLength(31);
   for (const category of PRAYER_CATEGORIES) expect(getPrayerSubgroups(category.id)).toEqual([...category.subgroups]);
 });
