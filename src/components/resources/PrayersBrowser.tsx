@@ -72,7 +72,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
         </> : <>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {PRAYER_CATEGORIES.map(item => <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setCategoryQuery(""); setSubgroup(null); onTraditionChange("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
-              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "daily" || item.id === "christ-saints" ? "object-top" : "object-[center_30%]"}`} /></span>
+              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-top scale-[1.06]" : item.id === "daily" ? "object-top" : "object-[center_30%]"}`} /></span>
               <span className="mt-2 min-h-10 w-full text-sm font-medium leading-5">{item.label}</span>
             </Button>)}
           </div>
