@@ -55,18 +55,18 @@ export const GroupMemberBadge = ({
 
   // Each top-three place gets its own ring and disc shade, so the picture
   // circle never blends into its tinted row (silver especially). The ring is a
-  // 1.5px hairline — lighter than a full border, but still opaque so it never
-  // disappears into a grey photo or the tinted row behind it.
+  // 1.5px hairline drawn as a shadow ring: a real border gets rounded up to a
+  // whole pixel by the browser, and a full 2px reads as too heavy.
   const getAvatarStyles = () => {
     switch (rank) {
       case 1:
-        return { ring: { borderColor: "hsl(var(--podium-gold))" }, disc: "bg-[hsl(var(--podium-gold)/0.3)] text-foreground" };
+        return { ring: "0 0 0 1.5px hsl(var(--podium-gold))", disc: "bg-[hsl(var(--podium-gold)/0.3)] text-foreground" };
       case 2:
-        return { ring: { borderColor: "hsl(var(--podium-silver))" }, disc: "bg-[hsl(var(--podium-silver)/0.35)] text-foreground" };
+        return { ring: "0 0 0 1.5px hsl(var(--podium-silver))", disc: "bg-[hsl(var(--podium-silver)/0.35)] text-foreground" };
       case 3:
-        return { ring: { borderColor: "hsl(var(--podium-bronze))" }, disc: "bg-[hsl(var(--podium-bronze)/0.3)] text-foreground" };
+        return { ring: "0 0 0 1.5px hsl(var(--podium-bronze))", disc: "bg-[hsl(var(--podium-bronze)/0.3)] text-foreground" };
       default:
-        return { ring: undefined, disc: "" };
+        return { ring: "", disc: "" };
     }
   };
   const avatarStyles = getAvatarStyles();
@@ -85,7 +85,7 @@ export const GroupMemberBadge = ({
       </div>
       <Avatar
         className="h-10 w-10 shrink-0"
-        style={{ borderWidth: 1.5, borderStyle: "solid", ...(avatarStyles.ring ?? {}) }}
+        style={avatarStyles.ring ? { boxShadow: avatarStyles.ring } : undefined}
       >
         <AvatarImage src={profilePictureUrl || undefined} />
         <AvatarFallback className={avatarStyles.disc}>{username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
