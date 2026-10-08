@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,6 +45,17 @@ const ChurchResources = () => {
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [locatingChurches, setLocatingChurches] = useState(false);
+  const saintsScrollRef = useRef(0);
+
+  const closeSaintStory = () => {
+    setSelectedSaint(null);
+    setSelectedSection("saints");
+    const y = saintsScrollRef.current;
+    // Wait for the saints browser to un-hide and restore page height first.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => window.scrollTo(0, y));
+    });
+  };
   const handleFindChurchesNearMe = () => {
     // Apple devices default to Apple Maps; everyone else gets Google Maps.
     const isApple =
@@ -98,6 +109,13 @@ const ChurchResources = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Always open the prayers section at the top of the page
+  useEffect(() => {
+    if (selectedSection === "prayers" && !selectedPrayer) {
+      window.scrollTo(0, 0);
+    }
+  }, [selectedSection, selectedPrayer]);
 
 
   // Load pinned prayers
@@ -177,10 +195,7 @@ const ChurchResources = () => {
         subtitle={selectedSaint.shortDescription}
         content={selectedSaint.content}
         iconCredit={selectedSaint.iconCredit}
-        onClose={() => {
-          setSelectedSaint(null);
-          setSelectedSection("saints");
-        }}
+        onClose={closeSaintStory}
         showProgress={true}
         onComplete={() => {
           playSound('saint');
@@ -191,8 +206,7 @@ const ChurchResources = () => {
         isOpen={showCongratulations}
         onClose={() => {
           setShowCongratulations(false);
-          setSelectedSaint(null);
-          setSelectedSection("saints");
+          closeSaintStory();
         }}
         streakDays={0}
         isNewStreak={false}
@@ -595,7 +609,7 @@ const ChurchResources = () => {
 
             {selectedSection === "saints" && (
               <div className={selectedSaint ? "hidden" : undefined}>
-                <SaintsBrowser onSelect={setSelectedSaint} onClose={() => setSelectedSection(null)} />
+                <SaintsBrowser onSelect={(saint) => { saintsScrollRef.current = window.scrollY; setSelectedSaint(saint); }} onClose={() => setSelectedSection(null)} />
               </div>
             )}
           </div>

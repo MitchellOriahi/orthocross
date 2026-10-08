@@ -110,7 +110,10 @@ export default function Friends() {
     const saved = localStorage.getItem('friendsListOpen');
     return saved !== null ? JSON.parse(saved) : true;
   });
-  const [donatorsExpanded, setDonatorsExpanded] = useState(false);
+  const [donatorsExpanded, setDonatorsExpanded] = useState(() => {
+    const saved = localStorage.getItem('donatorsExpanded');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
@@ -133,6 +136,10 @@ export default function Friends() {
   useEffect(() => {
     localStorage.setItem('friendsListOpen', JSON.stringify(friendsListOpen));
   }, [friendsListOpen]);
+
+  useEffect(() => {
+    localStorage.setItem('donatorsExpanded', JSON.stringify(donatorsExpanded));
+  }, [donatorsExpanded]);
 
   // Sync unread count from hook
   useEffect(() => {
