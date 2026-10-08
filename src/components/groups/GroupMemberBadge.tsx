@@ -11,7 +11,7 @@ interface GroupMemberBadgeProps {
   totalPoints: number;
   onClick?: () => void;
   className?: string;
-  nameTag?: React.ReactNode;
+  pointsTag?: React.ReactNode;
 }
 
 export const GroupMemberBadge = ({
@@ -22,7 +22,7 @@ export const GroupMemberBadge = ({
   totalPoints,
   onClick,
   className,
-  nameTag
+  pointsTag
 }: GroupMemberBadgeProps) => {
   const isTopThree = rank !== null && rank >= 1 && rank <= 3;
   
@@ -99,8 +99,8 @@ export const GroupMemberBadge = ({
         {isTopThree && (
           <GroupCrown rank={rank as 1 | 2 | 3} consecutiveCount={consecutiveCount} size="sm" />
         )}
-        {nameTag}
       </div>
+      {pointsTag}
       <span className="shrink-0 whitespace-nowrap text-sm opacity-80 flex items-baseline gap-1 tabular-nums">
         <span className="min-w-[3ch] text-right">{totalPoints}</span>
         <span className="w-[3ch] text-left">{totalPoints === 1 ? 'pt' : 'pts'}</span>
