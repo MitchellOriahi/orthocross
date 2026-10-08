@@ -60,6 +60,34 @@ async function fetchChunkAudio(text: string, voiceId: string, signal: AbortSigna
   return new Blob([await res.arrayBuffer()], { type: "audio/wav" });
 }
 
+// Cache of prepared chunk audio so replays, re-seeks and the next chunk start
+// instantly instead of waiting for the server to render the voice again.
+const audioCache = new Map<string, Promise<Blob>>();
+const CACHE_LIMIT = 80;
+const cacheKey = (text: string, voiceId: string) => `${voiceId}|${text}`;
+
+function cacheAudio(key: string, p: Promise<Blob>) {
+  audioCache.set(key, p);
+  p.catch(() => audioCache.delete(key));
+  if (audioCache.size > CACHE_LIMIT) {
+    const oldest = audioCache.keys().next().value;
+    if (oldest !== undefined) audioCache.delete(oldest);
+  }
+}
+
+/** Prepares the chapter's first audio chunks in the background, before Play. */
+export function prefetchSpeech(words: string[], voiceId: string) {
+  void (async () => {
+    const chunks = buildChunks(words, 0).slice(0, 2);
+    for (const c of chunks) {
+      const key = cacheKey(c.text, voiceId);
+      if (!audioCache.has(key)) {
+        cacheAudio(key, fetchChunkAudio(c.text, voiceId, new AbortController().signal));
+      }
+    }
+  })();
+}
+
 export const cloudSpeechEngine: SpeechEngine = {
   isSupported: () => typeof window !== "undefined" && typeof Audio !== "undefined",
 
@@ -87,7 +115,14 @@ export const cloudSpeechEngine: SpeechEngine = {
     currentAbort = abort;
     const get = (k: number) => {
       if (!blobs[k]) {
-        blobs[k] = fetchChunkAudio(chunks[k].text, voiceId, abort.signal);
+        const key = cacheKey(chunks[k].text, voiceId);
+        const cached = audioCache.get(key);
+        if (cached) {
+          blobs[k] = cached;
+        } else {
+          blobs[k] = fetchChunkAudio(chunks[k].text, voiceId, abort.signal);
+          cacheAudio(key, blobs[k]!);
+        }
         blobs[k]!.catch(() => {});
       }
       return blobs[k]!;

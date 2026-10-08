@@ -178,4 +178,4 @@ export const webSpeechEngine: SpeechEngine = {
 
 // The app reads scripture aloud with the cloud engine's soothing voices.
 // The device engine stays available here as a drop-in replacement.
-export { cloudSpeechEngine as speechEngine } from "./cloudSpeechEngine";
+export { cloudSpeechEngine as speechEngine, prefetchSpeech } from "./cloudSpeechEngine";
