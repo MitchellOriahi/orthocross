@@ -45,7 +45,7 @@ export const CongratulationsModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent 
-        className={`max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto${allSaintStories ? " saint-collection-award" : ""}`}
+        className={`z-[100] max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto${allSaintStories ? " saint-collection-award" : ""}`}
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
