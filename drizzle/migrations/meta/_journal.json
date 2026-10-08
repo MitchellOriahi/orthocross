@@ -29,6 +29,13 @@
       "when": 1791442939808,
       "tag": "0003_streak_nudges",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791449345213,
+      "tag": "0004_migration",
+      "breakpoints": true
     }
   ]
 }
