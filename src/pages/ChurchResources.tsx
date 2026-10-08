@@ -188,10 +188,7 @@ const ChurchResources = () => {
         subtitle={selectedSaint.shortDescription}
         content={selectedSaint.content}
         iconCredit={selectedSaint.iconCredit}
-        onClose={() => {
-          setSelectedSaint(null);
-          setSelectedSection("saints");
-        }}
+        onClose={closeSaintStory}
         showProgress={true}
         onComplete={() => {
           playSound('saint');
@@ -202,8 +199,7 @@ const ChurchResources = () => {
         isOpen={showCongratulations}
         onClose={() => {
           setShowCongratulations(false);
-          setSelectedSaint(null);
-          setSelectedSection("saints");
+          closeSaintStory();
         }}
         streakDays={0}
         isNewStreak={false}
