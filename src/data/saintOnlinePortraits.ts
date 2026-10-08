@@ -1,3 +1,53 @@
+import online_john_of_ioannina from "@/assets/saints/card-icons/john-of-ioannina-online.jpg.asset.json";
+import online_macarius_of_optina from "@/assets/saints/card-icons/macarius-of-optina-online.jpg.asset.json";
+import online_isidore_of_rostov from "@/assets/saints/card-icons/isidore-of-rostov-online.jpg.asset.json";
+import online_gorgonia from "@/assets/saints/card-icons/gorgonia-online.jpg.asset.json";
+import online_aquila from "@/assets/saints/card-icons/aquila-online.jpg.asset.json";
+import online_andrew_the_fool_for_christ from "@/assets/saints/card-icons/andrew-the-fool-for-christ-online.jpg.asset.json";
+import online_agapetus_the_unmercenary_physician from "@/assets/saints/card-icons/agapetus-the-unmercenary-physician-online.jpg.asset.json";
+import online_peter_and_fevronia_of_murom from "@/assets/saints/card-icons/peter-and-fevronia-of-murom-online.jpg.asset.json";
+import online_sarah_of_the_desert from "@/assets/saints/card-icons/sarah-of-the-desert-online.jpg.asset.json";
+import online_theophano from "@/assets/saints/card-icons/theophano-online.jpg.asset.json";
+import online_armenian_genocide_martyrs from "@/assets/saints/card-icons/armenian-genocide-martyrs-online.jpg.asset.json";
+import online_barachiel from "@/assets/saints/card-icons/barachiel-online.jpg.asset.json";
+import online_jeremiel from "@/assets/saints/card-icons/jeremiel-online.jpg.asset.json";
+import online_dominions from "@/assets/saints/card-icons/dominions-online.jpg.asset.json";
+import online_powers from "@/assets/saints/card-icons/powers-online.jpg.asset.json";
+import online_principalities from "@/assets/saints/card-icons/principalities-online.jpg.asset.json";
+import online_four_living_creatures from "@/assets/saints/card-icons/four-living-creatures-online.jpg.asset.json";
+import online_twenty_four_elders from "@/assets/saints/card-icons/twenty-four-elders-online.jpg.asset.json";
+import online_gregory_of_narek from "@/assets/saints/card-icons/gregory-of-narek-online.jpg.asset.json";
+import online_luke_the_stylite from "@/assets/saints/card-icons/luke-the-stylite-online.jpg.asset.json";
+import online_peter_of_alexandria from "@/assets/saints/card-icons/peter-of-alexandria-online.jpg.asset.json";
+import online_clement_of_ancyra from "@/assets/saints/card-icons/clement-of-ancyra-online.jpg.asset.json";
+import online_samuel_the_confessor from "@/assets/saints/card-icons/samuel-the-confessor-online.jpg.asset.json";
+import online_nicholas_of_pskov from "@/assets/saints/card-icons/nicholas-of-pskov-online.jpg.asset.json";
+import online_angel_of_the_lord from "@/assets/saints/card-icons/angel-of-the-lord-online.jpg.asset.json";
+import online_felicity from "@/assets/saints/card-icons/felicity-online.jpg.asset.json";
+import online_perpetua from "@/assets/saints/card-icons/perpetua-online.jpg.asset.json";
+import online_paisius_velichkovsky from "@/assets/saints/card-icons/paisius-velichkovsky-online.jpg.asset.json";
+import online_the_holy_innocents from "@/assets/saints/card-icons/the-holy-innocents-online.jpg.asset.json";
+import online_blandina_of_lyons from "@/assets/saints/card-icons/blandina-of-lyons-online.jpg.asset.json";
+import online_constantine_br_ncoveanu from "@/assets/saints/card-icons/constantine-br-ncoveanu-online.jpg.asset.json";
+import online_the_21_martyrs_of_libya from "@/assets/saints/card-icons/the-21-martyrs-of-libya-online.jpg.asset.json";
+import online_theodora_of_constantinople from "@/assets/saints/card-icons/theodora-of-constantinople-online.jpg.asset.json";
+import online_lalibela from "@/assets/saints/card-icons/lalibela-online.jpg.asset.json";
+import online_stephen_the_great_of_moldavia from "@/assets/saints/card-icons/stephen-the-great-of-moldavia-online.jpg.asset.json";
+import online_emmelia from "@/assets/saints/card-icons/emmelia-online.jpg.asset.json";
+import online_juliana_of_lazarevo from "@/assets/saints/card-icons/juliana-of-lazarevo-online.jpg.asset.json";
+import online_theodora_of_arta from "@/assets/saints/card-icons/theodora-of-arta-online.jpg.asset.json";
+import online_macarius_of_altai from "@/assets/saints/card-icons/macarius-of-altai-online.jpg.asset.json";
+import online_macarius_of_alexandria from "@/assets/saints/card-icons/macarius-of-alexandria-online.jpg.asset.json";
+import online_poemen from "@/assets/saints/card-icons/poemen-online.jpg.asset.json";
+import online_kaleb_of_axum from "@/assets/saints/card-icons/kaleb-of-axum-online.jpg.asset.json";
+import online_dmitry_donskoy from "@/assets/saints/card-icons/dmitry-donskoy-online.jpg.asset.json";
+import online_pulcheria from "@/assets/saints/card-icons/pulcheria-online.jpg.asset.json";
+import online_nonna from "@/assets/saints/card-icons/nonna-online.jpg.asset.json";
+import online_elizabeth from "@/assets/saints/card-icons/elizabeth-online.jpg.asset.json";
+import online_silas from "@/assets/saints/card-icons/silas-online.jpg.asset.json";
+import online_thrones from "@/assets/saints/card-icons/thrones-online.jpg.asset.json";
+import online_virtues from "@/assets/saints/card-icons/virtues-online.jpg.asset.json";
+import online_angels from "@/assets/saints/card-icons/angels-online.jpg.asset.json";
 import online_gabriel_of_bia_ystok from "@/assets/saints/card-icons/gabriel-of-bia-ystok-online.jpg.asset.json";
 import online_philaret_the_merciful from "@/assets/saints/card-icons/philaret-the-merciful-online.jpg.asset.json";
 import online_arsenius_the_great from "@/assets/saints/card-icons/arsenius-the-great-online.jpg.asset.json";
@@ -236,4 +286,67 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "diomedes-the-physician": { image_url: online_diomedes_the_physician.url, "image_source": "https://commons.wikimedia.org/wiki/File:FrescoDiomedes.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "cosmas-and-damian-of-rome": { image_url: online_cosmas_and_damian_of_rome.url, "image_source": "https://commons.wikimedia.org/wiki/File:Cosmas_of_Rome_by_O.Chirikov_(Muz.ist.relig).jpg", "image_license": "Public domain", "image_attribution": "Osip Semenovich Chirikov", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "cosmas-and-damian-of-asia": { image_url: online_cosmas_and_damian_of_asia.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%9A%D0%BE%D1%81%D0%BC%D0%B0_%D0%B8_%D0%94%D0%B0%D0%BC%D0%B8%D0%B0%D0%BD.jpg", "image_license": "Public domain", "image_attribution": "иконописател", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "macarius-of-altai": { image_url: online_macarius_of_altai.url, "image_source": "https://commons.wikimedia.org/wiki/File:Makari_Glucharew.jpg", "image_license": "Public domain", "image_attribution": "Unknown authorUnknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "macarius-of-alexandria": { image_url: online_macarius_of_alexandria.url, "image_source": "https://commons.wikimedia.org/wiki/File:Macarius_the_Younger_Full_Body_Length_Icon.jpg", "image_license": "Public domain", "image_attribution": "Солнцев, Фёдор Григорьевич", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "poemen": { image_url: online_poemen.url, "image_source": "https://commons.wikimedia.org/wiki/File:Hosios_Loukas_(nave,_vault_over_south-west_bay)_-_S.Poimen.jpg", "image_license": "Public domain", "image_attribution": "Unknown artistUnknown artist", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "kaleb-of-axum": { image_url: online_kaleb_of_axum.url, "image_source": "https://commons.wikimedia.org/wiki/File:Kaleb.jpg", "image_license": "CC BY-SA 3.0", "image_attribution": "Classical Numismatic Group", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "dmitry-donskoy": { image_url: online_dmitry_donskoy.url, "image_source": "https://commons.wikimedia.org/wiki/File:Dmitri_Donskoy.jpg", "image_license": "Public domain", "image_attribution": "Unknown.  Died over 100 years ago", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "pulcheria": { image_url: online_pulcheria.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%96%D0%B8%D1%82%D0%B8%D1%8F_%D0%A1%D0%B2%D1%8F%D1%82%D1%8B%D1%85_(1903-1911)_-_%D0%B8%D0%BA%D0%BE%D0%BD%D0%B0_01102_%D0%9F%D1%83%D0%BB%D1%8C%D1%85%D0%B5%D1%80%D0%B8%D1%8F.png", "image_license": "Public domain", "image_attribution": "Unknown authorUnknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "nonna": { image_url: online_nonna.url, "image_source": "https://commons.wikimedia.org/wiki/File:Nonna_by_O.Chirikov_(Hermitage).jpg", "image_license": "Public domain", "image_attribution": "Osip Semenovich Chirikov", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "elizabeth": { image_url: online_elizabeth.url, "image_source": "https://commons.wikimedia.org/wiki/File:Albertinelli_Visitation.jpg", "image_license": "Public domain", "image_attribution": "Mariotto Albertinelli (1474–1515), \"The Visitation\" (1503), oil on panel, Uffizi Gallery, Florence. Depicts Mary (left, blue mantle) and Elizabeth, mother of John the Baptist (right, older woman in white veil and gold mantle). Source: Wikimedia Commons, public domain.", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "silas": { image_url: online_silas.url, "image_source": "https://commons.wikimedia.org/wiki/File:Michael_V%C3%A1clav_Halbax_-_St_Paul_and_Silas_in_Prison_-_O_2303_-_National_Gallery_Prague_(cropped).jpg", "image_license": "Public domain", "image_attribution": "Michael Václav Halbax (c.1661–1711), detail (cropped) from \"St Paul and Silas in Prison\" (O 2303), National Gallery Prague, c.1700. Cropped detail used as the official depicted-subject image for Silas on Wikidata (Q312376). Source: Wikimedia Commons, public domain.", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "thrones": { image_url: online_thrones.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_troni.JPG", "image_license": "CC BY 3.0", "image_attribution": "Sailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "virtues": { image_url: online_virtues.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_virt%C3%B9.JPG", "image_license": "CC BY 3.0", "image_attribution": "Sailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "angels": { image_url: online_angels.url, "image_source": "https://commons.wikimedia.org/wiki/File:Nine_orders_of_angels.jpeg", "image_license": "Public domain", "image_attribution": "Unknown historical artist / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "paisius-velichkovsky": { image_url: online_paisius_velichkovsky.url, "image_source": "https://commons.wikimedia.org/wiki/File:Paisius.jpg", "image_license": "Public domain", "image_attribution": " / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "the-holy-innocents": { image_url: online_the_holy_innocents.url, "image_source": "https://commons.wikimedia.org/wiki/File:0_La_Vierge_%C3%A0_l%27Enfant_entour%C3%A9e_des_saints_Innocents_-_Louvre_-_(2).JPG", "image_license": "Public domain", "image_attribution": "Peter Paul Rubens / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "blandina-of-lyons": { image_url: online_blandina_of_lyons.url, "image_source": "https://commons.wikimedia.org/wiki/File:Santa_Blandina.jpg", "image_license": "Public domain", "image_attribution": "Jan Luyken (1649-1712) / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "constantine-br-ncoveanu": { image_url: online_constantine_br_ncoveanu.url, "image_source": "https://commons.wikimedia.org/wiki/File:M%C4%83n%C4%83stirea_Hurezi_(10_iulie_2020)_%E2%80%93_Tablou_votiv_Constantin_Br%C3%A2ncoveanu_(cropped).jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Dan Mihai Pitea / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "the-21-martyrs-of-libya": { image_url: online_the_21_martyrs_of_libya.url, "image_source": "https://commons.wikimedia.org/wiki/File:Altar_of_the_church_of_Libyan_Martyrs_in_Minya.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "松照庵 / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "theodora-of-constantinople": { image_url: online_theodora_of_constantinople.url, "image_source": "https://commons.wikimedia.org/wiki/File:Theodora_in_the_Madrid_Skylitzes2.png", "image_license": "Public domain", "image_attribution": "unknown Byzantine artist / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "lalibela": { image_url: online_lalibela.url, "image_source": "https://commons.wikimedia.org/wiki/File:Gebre_Mesqel_Lalibela.png", "image_license": "Public domain", "image_attribution": "unknown artist, originally made in Lalibela area, Ethiopia / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "stephen-the-great-of-moldavia": { image_url: online_stephen_the_great_of_moldavia.url, "image_source": "https://commons.wikimedia.org/wiki/File:%C5%9Etefan_cel_Mare_(Stephen_the_Great)_1488,_Vorone%C5%A3_Monastery.jpg", "image_license": "CC0", "image_attribution": "Ninhursag3 / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "emmelia": { image_url: online_emmelia.url, "image_source": "https://commons.wikimedia.org/wiki/File:St._Emmelia_Met_DP890979.jpg", "image_license": "CC0", "image_attribution": "Jacques Callot / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "juliana-of-lazarevo": { image_url: online_juliana_of_lazarevo.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Juliana_the_Merciful.jpg", "image_license": "CC BY-SA 2.0", "image_attribution": "Ted (Original) Wolfymoza (Commons upload) / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "theodora-of-arta": { image_url: online_theodora_of_arta.url, "image_source": "https://commons.wikimedia.org/wiki/File:Agia_Theodora_of_Arta_Fresco.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "felicity": { image_url: online_felicity.url, "image_source": "https://commons.wikimedia.org/wiki/File:Sanctae_Perpetua_Felicitas.jpg", "image_license": "Public domain", "image_attribution": "Sailko", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "perpetua": { image_url: online_perpetua.url, "image_source": "https://commons.wikimedia.org/wiki/File:Sanctae_Perpetua_Felicitas.jpg", "image_license": "Public domain", "image_attribution": "Sailko", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "barachiel": { image_url: online_barachiel.url, "image_source": "https://commons.wikimedia.org/wiki/File:El_Arc%C3%A1ngel_Baraquiel_esparciendo_flores,_de_Bartolom%C3%A9_Rom%C3%A1n_(Museo_del_Prado).jpg", "image_license": "Public domain", "image_attribution": "Bartolomé Román / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "jeremiel": { image_url: online_jeremiel.url, "image_source": "https://commons.wikimedia.org/wiki/File:Archangel_Jeremiel,_St_Michael_and_All_Angels,_Hughenden.jpg", "image_license": "CC BY-SA 2.0", "image_attribution": "John Salmon / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "dominions": { image_url: online_dominions.url, "image_source": "https://commons.wikimedia.org/wiki/File:Angelic_Hierarchy_in_Christianity,_St_Michael_and_All_Angels%27,_Somerton.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Andrewrabbott / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "powers": { image_url: online_powers.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_potest%C3%A0.JPG", "image_license": "CC BY 3.0", "image_attribution": "\nSailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "principalities": { image_url: online_principalities.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_principati.JPG", "image_license": "CC BY 3.0", "image_attribution": "\nSailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "four-living-creatures": { image_url: online_four_living_creatures.url, "image_source": "https://commons.wikimedia.org/wiki/File:Tetramorphe_Cherubim_aus_der_Vision_des_Ezechiel_(Cattedrale_di_Anagni)_%E2%80%94_13th_c..jpg", "image_license": "Public domain", "image_attribution": " / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "twenty-four-elders": { image_url: online_twenty_four_elders.url, "image_source": "https://commons.wikimedia.org/wiki/File:The_Vision_of_the_Throne_of_God_and_the_Twenty-Four_Elders_-_Google_Art_Project.jpg", "image_license": "Public domain", "image_attribution": "\nUnknown  – illuminator / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "gregory-of-narek": { image_url: online_gregory_of_narek.url, "image_source": "https://commons.wikimedia.org/wiki/File:Grigor_Narekatsi_1.jpg", "image_license": "Public domain", "image_attribution": "MarshallBagramyan / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "luke-the-stylite": { image_url: online_luke_the_stylite.url, "image_source": "https://commons.wikimedia.org/wiki/File:Luke_the_Stylites_(Menologion_of_Basil_II).jpg", "image_license": "Public domain", "image_attribution": "\n\n\n\nAuthors of Menologion of Basil II (circa 985 AC, Constantinople), Byzantine manuscript illuminators[1]:\nPantoleon with Georgios, Michael the Younger, Michael of Blachernae, Symeon, Symeon of Blachernae, Menas, and Nestor \n(Online on Vatican site)\n\n / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "peter-of-alexandria": { image_url: online_peter_of_alexandria.url, "image_source": "https://commons.wikimedia.org/wiki/File:Clemens_of_Rome,_Peter_of_Alex.,_Blaise_(16-17th_c.,_Rublev_museum)_by_shakko.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "shakko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "clement-of-ancyra": { image_url: online_clement_of_ancyra.url, "image_source": "https://commons.wikimedia.org/wiki/File:Clement_of_Ohrid,_an_icon_from_the_second_half_of_the_14th_century_(2).jpg", "image_license": "Public domain", "image_attribution": " / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "samuel-the-confessor": { image_url: online_samuel_the_confessor.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D8%AF%D9%8A%D8%B1_%D8%A7%D9%84%D8%A3%D9%86%D8%A8%D8%A7_%D8%A5%D8%A8%D8%B1%D8%A7%D9%85_63.jpg", "image_license": "CC0", "image_attribution": "ديفيد عادل وهبة خليل 2 / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "nicholas-of-pskov": { image_url: online_nicholas_of_pskov.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%98%D0%BE%D0%B0%D0%BD%D0%BD_%D0%93%D1%80%D0%BE%D0%B7%D0%BD%D1%8B%D0%B9_%D1%81_%D0%BF%D1%80%D0%B8%D0%B1%D0%BB%D0%B8%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%BC%D0%B8.jpg", "image_license": "Public domain", "image_attribution": "Andrei Petrovich Ryabushkin / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "angel-of-the-lord": { image_url: online_angel_of_the_lord.url, "image_source": "https://commons.wikimedia.org/wiki/File:Pieter_Lastman_-_The_Angel_of_the_Lord_Preventing_Abraham_from_Sacrificing_his_Son_Isaac_-_WGA12483.jpg", "image_license": "Public domain", "image_attribution": "Pieter Lastman / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "armenian-genocide-martyrs": { image_url: online_armenian_genocide_martyrs.url, "image_source": "https://commons.wikimedia.org/wiki/File:Stamp_of_Armenia_-_2017_-_Colnect_755422_-_Icon_of_the_Martyrs_of_the_Armenian_Genocide.jpeg", "image_license": "Public domain", "image_attribution": "Post of Armenia", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "sarah-of-the-desert": { image_url: online_sarah_of_the_desert.url, "image_source": "https://commons.wikimedia.org/wiki/File:Sarah_the_hermit_print_by_Maerten_de_Vos,_S.I_811,_Prints_Department,_Royal_Library_of_Belgium.jpg", "image_license": "Public domain", "image_attribution": "Adriaen Collaert / Maerten de Vos / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "theophano": { image_url: online_theophano.url, "image_source": "https://commons.wikimedia.org/wiki/File:Santa_Te%C3%B3fano_y_Le%C3%B3n_VI_el_Sabio.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "agapetus-the-unmercenary-physician": { image_url: online_agapetus_the_unmercenary_physician.url, "image_source": "https://commons.wikimedia.org/wiki/File:Agapetus_Pechorskiy.jpg", "image_license": "CC BY-SA 3.0", "image_attribution": "Sergey Nikitin / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "peter-and-fevronia-of-murom": { image_url: online_peter_and_fevronia_of_murom.url, "image_source": "https://commons.wikimedia.org/wiki/File:Murom_pokrov.jpg", "image_license": "Public domain", "image_attribution": "мастерская царицы Ирины Федоровны Годуновой / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "andrew-the-fool-for-christ": { image_url: online_andrew_the_fool_for_christ.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrew_of_Constantinople.jpg", "image_license": "Public domain", "image_attribution": "Anonymous historical icon painter / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "aquila": { image_url: online_aquila.url, "image_source": "https://commons.wikimedia.org/wiki/File:Jan_van_de_Venne_-_Saint_Paul_with_Saints_Aquila_and_Priscilla.jpg", "image_license": "CC0", "image_attribution": "Jan van der Venne / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "gorgonia": { image_url: online_gorgonia.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Gorgoniya.jpg", "image_license": "Public domain", "image_attribution": "Anonymous Byzantine illuminator, Gregory of Nazianzus manuscript gr. 510, folio 43v / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "isidore-of-rostov": { image_url: online_isidore_of_rostov.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%A1%D0%B2%D1%8F%D1%82%D0%B8%D1%82%D0%B5%D0%BB%D1%8C_%D0%98%D0%B0%D0%BA%D0%BE%D0%B2,_%D0%BF%D1%80%D0%B5%D0%BF%D0%BE%D0%B4%D0%BE%D0%B1%D0%BD%D1%8B%D0%B9_%D0%90%D0%B2%D1%80%D0%B0%D0%B0%D0%BC%D0%B8%D0%B9_%D0%B8_%D0%B1%D0%BB%D0%B0%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9_%D0%98%D1%81%D0%B8%D0%B4%D0%BE%D1%80_%D0%A2%D0%B2%D0%B5%D1%80%D0%B4%D0%B8%D1%81%D0%BB%D0%BE%D0%B2_%D0%A0%D0%BE%D1%81%D1%82%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B5.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Савин Истома / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "macarius-of-optina": { image_url: online_macarius_of_optina.url, "image_source": "https://icons.pstgu.ru/icon/1390", "image_license": "Public domain", "image_attribution": "Hieromonk Gabriel, 1854; Russian State Library, Moscow; PSTGU iconography archive; cropped", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "john-of-ioannina": { image_url: online_john_of_ioannina.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%98%D0%BE%D0%B0%D0%BD%D0%BD_%D0%9D%D0%BE%D0%B2%D1%8B%D0%B9.jpg", "image_license": "CC0", "image_attribution": "Wikivorker / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
