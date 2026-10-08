@@ -1,3 +1,9 @@
+import online_gabriel_of_bia_ystok from "@/assets/saints/card-icons/gabriel-of-bia-ystok-online.jpg.asset.json";
+import online_philaret_the_merciful from "@/assets/saints/card-icons/philaret-the-merciful-online.jpg.asset.json";
+import online_arsenius_the_great from "@/assets/saints/card-icons/arsenius-the-great-online.jpg.asset.json";
+import online_diomedes_the_physician from "@/assets/saints/card-icons/diomedes-the-physician-online.jpg.asset.json";
+import online_cosmas_and_damian_of_rome from "@/assets/saints/card-icons/cosmas-and-damian-of-rome-online.jpg.asset.json";
+import online_cosmas_and_damian_of_asia from "@/assets/saints/card-icons/cosmas-and-damian-of-asia-online.jpg.asset.json";
 import online_apollos from "@/assets/saints/card-icons/apollos-online.jpg.asset.json";
 import online_hezekiah from "@/assets/saints/card-icons/hezekiah-online.jpg.asset.json";
 import online_josiah from "@/assets/saints/card-icons/josiah-online.jpg.asset.json";
@@ -223,4 +229,11 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "longinus-the-centurion": { image_url: online_longinus_the_centurion.url, "image_source": "https://commons.wikimedia.org/wiki/File:LonginusFyodorZubov.jpg", "image_license": "Public domain", "image_attribution": "Fyodor Zubov / Фёдор Зубов (? — 1689) / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "mary-the-wife-of-clopas": { image_url: online_mary_the_wife_of_clopas.url, "image_source": "https://commons.wikimedia.org/wiki/File:St._Mary_Cleophas_Met_DP890913.jpg", "image_license": "CC0", "image_attribution": "Jacques Callot / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "susanna": { image_url: online_susanna.url, "image_source": "https://commons.wikimedia.org/wiki/File:Santa_Susanna_disciple_of_Jesus_MyrrhbearerB.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Unknown historical artist / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "gabriel-of-bia-ystok": { image_url: online_gabriel_of_bia_ystok.url, "image_source": "https://commons.wikimedia.org/wiki/File:GavriilBelostok.jpg", "image_license": "Public domain", "image_attribution": "Unknown authorUnknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "philaret-the-merciful": { image_url: online_philaret_the_merciful.url, "image_source": "https://commons.wikimedia.org/wiki/File:Icon_Filaret_Milostiviy.jpg", "image_license": "Public domain", "image_attribution": "Anonymous Russian icon painter (before 1917)Public domain image (according to PD-Russia-expired)", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "arsenius-the-great": { image_url: online_arsenius_the_great.url, "image_source": "https://commons.wikimedia.org/wiki/File:Hosios_Luka_-_Arsenios.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "diomedes-the-physician": { image_url: online_diomedes_the_physician.url, "image_source": "https://commons.wikimedia.org/wiki/File:FrescoDiomedes.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "cosmas-and-damian-of-rome": { image_url: online_cosmas_and_damian_of_rome.url, "image_source": "https://commons.wikimedia.org/wiki/File:Cosmas_of_Rome_by_O.Chirikov_(Muz.ist.relig).jpg", "image_license": "Public domain", "image_attribution": "Osip Semenovich Chirikov", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "cosmas-and-damian-of-asia": { image_url: online_cosmas_and_damian_of_asia.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%9A%D0%BE%D1%81%D0%BC%D0%B0_%D0%B8_%D0%94%D0%B0%D0%BC%D0%B8%D0%B0%D0%BD.jpg", "image_license": "Public domain", "image_attribution": "иконописател", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
