@@ -1,4 +1,5 @@
 # Verse image sharing
+- [ ] Rotate three designs and matching names daily; New Image adds up to three unique replacements per day's verse, preserved on reopening.
 
 ## Saints
 - [x] Add persistent completed-story golden portrait rings and a heartfelt award for finishing every unique saint story; exact-identity and final-story rules pass tests, and simulated completion/reload/award flows pass in preview.

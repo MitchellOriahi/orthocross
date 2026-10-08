@@ -11,7 +11,7 @@
 - Render the monthly leaderboard's top three through a dedicated presentation component using existing profile data, keeping ranking and data fetching unchanged.
 - Derive the next journey island from ordered islands and completion progress through a shared pure selector, so the highlight advances without hardcoded island IDs.
 - Render the Board daily verse through a dedicated card using the original deterministic local verse selector and existing share dialog, keeping notification delivery unchanged.
-- Preload licensed verse photo backgrounds when the share dialog mounts, compose the verse locally on opening, and cache each style's composed image, so sharing does not wait on AI or require sign-in.
+- Preload licensed photos and compose locally; use date-keyed artwork selection, cached compositions and persistent extra-image choices so daily rotation and replacements never wait on AI or sign-in.
 - Share composed verse images as file-only payloads through native attachment sharing or browser file sharing, downloading when unsupported; text-only email/SMS links cannot carry image attachments.
 - Validate the image function's bearer token explicitly with getUser(token) on a stateless auth client, because global request headers do not create an SDK session.
 - Keep the legacy server-side verse artwork function isolated from photo-based sharing, so the current dialog never invokes a billed image-generation request.
