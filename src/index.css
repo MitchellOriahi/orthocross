@@ -334,13 +334,15 @@ All colors MUST be HSL.
   position: absolute;
   bottom: -10px;
   left: calc(50% - 13px);
+  z-index: 3;
   display: grid;
   place-items: center;
   width: 26px;
   height: 26px;
-  border: 1px solid hsl(var(--podium-tone) / 0.8);
+  border: 1px solid hsl(var(--podium-tone));
   border-radius: 50%;
-  background: hsl(var(--podium-tone) / 0.2);
+  /* Fully opaque so the profile picture never shows through the number. */
+  background: hsl(var(--background));
   color: hsl(var(--podium-tone));
   font-weight: 700;
   font-size: 14px;
