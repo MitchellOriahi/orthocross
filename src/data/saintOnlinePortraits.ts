@@ -1,3 +1,14 @@
+import online_paisius_velichkovsky from "@/assets/saints/card-icons/paisius-velichkovsky-online.jpg.asset.json";
+import online_the_holy_innocents from "@/assets/saints/card-icons/the-holy-innocents-online.jpg.asset.json";
+import online_blandina_of_lyons from "@/assets/saints/card-icons/blandina-of-lyons-online.jpg.asset.json";
+import online_constantine_br_ncoveanu from "@/assets/saints/card-icons/constantine-br-ncoveanu-online.jpg.asset.json";
+import online_the_21_martyrs_of_libya from "@/assets/saints/card-icons/the-21-martyrs-of-libya-online.jpg.asset.json";
+import online_theodora_of_constantinople from "@/assets/saints/card-icons/theodora-of-constantinople-online.jpg.asset.json";
+import online_lalibela from "@/assets/saints/card-icons/lalibela-online.jpg.asset.json";
+import online_stephen_the_great_of_moldavia from "@/assets/saints/card-icons/stephen-the-great-of-moldavia-online.jpg.asset.json";
+import online_emmelia from "@/assets/saints/card-icons/emmelia-online.jpg.asset.json";
+import online_juliana_of_lazarevo from "@/assets/saints/card-icons/juliana-of-lazarevo-online.jpg.asset.json";
+import online_theodora_of_arta from "@/assets/saints/card-icons/theodora-of-arta-online.jpg.asset.json";
 import online_macarius_of_altai from "@/assets/saints/card-icons/macarius-of-altai-online.jpg.asset.json";
 import online_macarius_of_alexandria from "@/assets/saints/card-icons/macarius-of-alexandria-online.jpg.asset.json";
 import online_poemen from "@/assets/saints/card-icons/poemen-online.jpg.asset.json";
@@ -261,4 +272,16 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "thrones": { image_url: online_thrones.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_troni.JPG", "image_license": "CC BY 3.0", "image_attribution": "Sailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "virtues": { image_url: online_virtues.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_virt%C3%B9.JPG", "image_license": "CC BY 3.0", "image_attribution": "Sailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "angels": { image_url: online_angels.url, "image_source": "https://commons.wikimedia.org/wiki/File:Nine_orders_of_angels.jpeg", "image_license": "Public domain", "image_attribution": "Unknown historical artist / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "paisius-velichkovsky": { image_url: online_paisius_velichkovsky.url, "image_source": "https://commons.wikimedia.org/wiki/File:Paisius.jpg", "image_license": "Public domain", "image_attribution": " / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "the-holy-innocents": { image_url: online_the_holy_innocents.url, "image_source": "https://commons.wikimedia.org/wiki/File:0_La_Vierge_%C3%A0_l%27Enfant_entour%C3%A9e_des_saints_Innocents_-_Louvre_-_(2).JPG", "image_license": "Public domain", "image_attribution": "Peter Paul Rubens / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "blandina-of-lyons": { image_url: online_blandina_of_lyons.url, "image_source": "https://commons.wikimedia.org/wiki/File:Santa_Blandina.jpg", "image_license": "Public domain", "image_attribution": "Jan Luyken (1649-1712) / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "constantine-br-ncoveanu": { image_url: online_constantine_br_ncoveanu.url, "image_source": "https://commons.wikimedia.org/wiki/File:M%C4%83n%C4%83stirea_Hurezi_(10_iulie_2020)_%E2%80%93_Tablou_votiv_Constantin_Br%C3%A2ncoveanu_(cropped).jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Dan Mihai Pitea / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "the-21-martyrs-of-libya": { image_url: online_the_21_martyrs_of_libya.url, "image_source": "https://commons.wikimedia.org/wiki/File:Altar_of_the_church_of_Libyan_Martyrs_in_Minya.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "松照庵 / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "theodora-of-constantinople": { image_url: online_theodora_of_constantinople.url, "image_source": "https://commons.wikimedia.org/wiki/File:Theodora_in_the_Madrid_Skylitzes2.png", "image_license": "Public domain", "image_attribution": "unknown Byzantine artist / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "lalibela": { image_url: online_lalibela.url, "image_source": "https://commons.wikimedia.org/wiki/File:Gebre_Mesqel_Lalibela.png", "image_license": "Public domain", "image_attribution": "unknown artist, originally made in Lalibela area, Ethiopia / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "stephen-the-great-of-moldavia": { image_url: online_stephen_the_great_of_moldavia.url, "image_source": "https://commons.wikimedia.org/wiki/File:%C5%9Etefan_cel_Mare_(Stephen_the_Great)_1488,_Vorone%C5%A3_Monastery.jpg", "image_license": "CC0", "image_attribution": "Ninhursag3 / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "emmelia": { image_url: online_emmelia.url, "image_source": "https://commons.wikimedia.org/wiki/File:St._Emmelia_Met_DP890979.jpg", "image_license": "CC0", "image_attribution": "Jacques Callot / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "juliana-of-lazarevo": { image_url: online_juliana_of_lazarevo.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Juliana_the_Merciful.jpg", "image_license": "CC BY-SA 2.0", "image_attribution": "Ted (Original) Wolfymoza (Commons upload) / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "theodora-of-arta": { image_url: online_theodora_of_arta.url, "image_source": "https://commons.wikimedia.org/wiki/File:Agia_Theodora_of_Arta_Fresco.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
