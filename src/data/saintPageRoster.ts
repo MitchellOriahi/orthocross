@@ -5,6 +5,7 @@ import { saintsContent } from "./saintsContent";
 import type { SaintDetail } from "./saintTypes";
 import type { SaintCategoryId } from "./saintCategories";
 import { CATEGORY_SUBCATEGORIES } from "./saintBrowser";
+import { SAINT_CARD_ICONS } from "./saintCardIcons";
 
 type Membership = { category: string; subgroup: string };
 const savedById = new Map(saintsContent.map(saint => [saint.id, saint]));
@@ -16,6 +17,7 @@ export function saintSortName(name: string) {
 
 export const saintPageRoster: SaintDetail[] = roster.map(record => {
   const saved = record.savedId ? savedById.get(record.savedId) : undefined;
+  const portrait = SAINT_CARD_ICONS[record.id];
   memberships.set(record.id, record.memberships);
   return {
     id: record.id,
@@ -24,8 +26,19 @@ export const saintPageRoster: SaintDetail[] = roster.map(record => {
     epithet: "",
     shortDescription: record.subtitle,
     tradition: record.tradition as SaintDetail["tradition"],
-    iconUrl: saved?.iconUrl ?? "",
-    iconCredit: saved?.iconCredit,
+    iconUrl: portrait?.image_url ?? saved?.iconUrl ?? "",
+    iconCredit: portrait ? {
+      source: portrait.image_source,
+      author: portrait.image_attribution,
+      license: portrait.image_license,
+      licenseUrl: portrait.image_license === "Public domain"
+        ? "https://creativecommons.org/publicdomain/mark/1.0/"
+        : portrait.image_license === "CC0"
+          ? "https://creativecommons.org/publicdomain/zero/1.0/"
+          : `https://creativecommons.org/licenses/${portrait.image_license.includes("BY-SA") ? "by-sa" : "by"}/${portrait.image_license.match(/\d\.\d/)?.[0] ?? "4.0"}/`,
+      title: [record.prefix, record.name].filter(Boolean).join(" "),
+      modification: "Original painted icon; resized and face-focused for the circular profile picture. Artwork otherwise unchanged.",
+    } : saved?.iconCredit,
     content: (saintStories as Record<string, string[]>)[record.id] ?? saved?.content ?? [record.subtitle],
   };
 });
