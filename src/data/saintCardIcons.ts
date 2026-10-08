@@ -1,5 +1,6 @@
 import portrait_fyodor_ushakov from "@/assets/saints/card-icons/fyodor-ushakov-portrait.jpg.asset.json";
 import { SAINT_ONLINE_PORTRAITS } from "./saintOnlinePortraits";
+import { SAINT_FACE_PORTRAIT_UPDATES } from "./saintFacePortraitUpdates";
 import portrait_sampson_the_hospitable from "@/assets/saints/card-icons/sampson-the-hospitable-portrait.jpg.asset.json";
 import portrait_eustathius_placidas from "@/assets/saints/card-icons/eustathius-placidas-portrait.jpg.asset.json";
 import portrait_irene from "@/assets/saints/card-icons/irene-portrait.jpg.asset.json";
@@ -196,4 +197,5 @@ export const SAINT_CARD_ICONS: Record<string, SaintCardIcon> = {
   "philothei-of-athens": { image_url: portrait_philothei_of_athens.url, "image_source": "https://commons.wikimedia.org/wiki/File:Agia-philothei.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "melania-the-younger": { image_url: portrait_melania_the_younger.url, "image_source": "https://commons.wikimedia.org/wiki/File:Melanieyounger.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "cecilia": { image_url: portrait_cecilia.url, "image_source": "https://commons.wikimedia.org/wiki/File:Kikilia.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  ...SAINT_FACE_PORTRAIT_UPDATES,
 };
