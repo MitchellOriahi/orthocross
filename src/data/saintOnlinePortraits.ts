@@ -1,3 +1,12 @@
+import online_aidan_of_lindisfarne from "@/assets/saints/card-icons/aidan-of-lindisfarne-online.jpg.asset.json";
+import online_aregawi from "@/assets/saints/card-icons/aregawi-online.jpg.asset.json";
+import online_mirian_of_georgia from "@/assets/saints/card-icons/mirian-of-georgia-online.jpg.asset.json";
+import online_nerses_shnorhali from "@/assets/saints/card-icons/nerses-shnorhali-online.jpg.asset.json";
+import online_pantelewon from "@/assets/saints/card-icons/pantelewon-online.jpg.asset.json";
+import online_philoxenus_of_mabbug from "@/assets/saints/card-icons/philoxenus-of-mabbug-online.jpg.asset.json";
+import online_sophronius_of_jerusalem from "@/assets/saints/card-icons/sophronius-of-jerusalem-online.jpg.asset.json";
+import online_tekle_haymanot from "@/assets/saints/card-icons/tekle-haymanot-online.jpg.asset.json";
+import online_tryphon_of_pechenga from "@/assets/saints/card-icons/tryphon-of-pechenga-online.jpg.asset.json";
 import online_adam from "@/assets/saints/card-icons/adam-online.jpg.asset.json";
 import online_abraham from "@/assets/saints/card-icons/abraham-online.jpg.asset.json";
 import online_isaac from "@/assets/saints/card-icons/isaac-online.jpg.asset.json";
@@ -31,4 +40,14 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "salome": { image_url: online_salome.url, "image_source": "https://commons.wikimedia.org/wiki/File:Maria_Salome,_objectno_PK.OP.00766.tif", "image_license": "Public domain", "image_attribution": "Karel van Mallery after Maerten de Vos, engraving of Mary Salome, c.1590-1595, Museum Plantin-Moretus", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "zacchaeus": { image_url: online_zacchaeus.url, "image_source": "https://commons.wikimedia.org/wiki/File:Monasterio_Griego_Ortodoxo_del_profeta_Eliseo_-_Sicomoro_de_Zaqueo_-_2.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Photo by ProtoplasmaKid, Orthodox icon of Zacchaeus in the sycamore tree, Greek Orthodox Monastery of the Prophet Elisha, Jericho; via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "joseph-of-arimathea": { image_url: online_joseph_of_arimathea.url, "image_source": "https://commons.wikimedia.org/wiki/File:St_Joseph_of_Arimathea.jpg", "image_license": "Public domain", "image_attribution": "Russian icon of St. Joseph of Arimathea (19th c.), via ru.wikipedia / Wikimedia Commons (low resolution source)", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "aidan-of-lindisfarne": { image_url: online_aidan_of_lindisfarne.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%90%D0%B9%D0%B4%D0%B0%D0%BD_%D0%9B%D0%B8%D0%BD%D0%B4%D0%B8%D1%81%D1%84%D0%B0%D1%80%D0%BD%D1%81%D0%BA%D0%B8%D0%B9_(%D0%B8%D0%BA%D0%BE%D0%BD%D0%B0).jpg", "image_license": "Public domain", "image_attribution": "Unknown authorUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "aregawi": { image_url: online_aregawi.url, "image_source": "https://commons.wikimedia.org/wiki/File:Addis_abeba,_cattedrale_di_san_giorgio,_interno,_dipinto_di_abuna_aregawi_e_il_serpente.jpg", "image_license": "CC BY 3.0", "image_attribution": "Sailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "mirian-of-georgia": { image_url: online_mirian_of_georgia.url, "image_source": "https://commons.wikimedia.org/wiki/File:King_Mirian,_a_17th-century_fresco_from_Svetitskhoveli_Cathedral_(Mtskheta,_Georgia).jpg", "image_license": "Public domain", "image_attribution": "Kober / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "nerses-shnorhali": { image_url: online_nerses_shnorhali.url, "image_source": "https://commons.wikimedia.org/wiki/File:Nerses_Gracious.jpg", "image_license": "Public domain", "image_attribution": "Unknown authorUnknown author icon painter from monastery / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "pantelewon": { image_url: online_pantelewon.url, "image_source": "https://commons.wikimedia.org/wiki/File:Abba_pantelewon_paintinb.png", "image_license": "CC0", "image_attribution": "Unknown authorUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "philoxenus-of-mabbug": { image_url: online_philoxenus_of_mabbug.url, "image_source": "https://commons.wikimedia.org/wiki/File:St._Philoxenus_of_Mabbug.jpg", "image_license": "CC0", "image_attribution": "Gcopt / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "sophronius-of-jerusalem": { image_url: online_sophronius_of_jerusalem.url, "image_source": "https://commons.wikimedia.org/wiki/File:Fresco_Icon_of_Saint_Sophronios_of_Jerusalem.jpg", "image_license": "Public domain", "image_attribution": "Unknown authorUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "tekle-haymanot": { image_url: online_tekle_haymanot.url, "image_source": "https://commons.wikimedia.org/wiki/File:Icon_of_Saint_Tekle_Haymanot_of_Ethiopia.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Maor X / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "tryphon-of-pechenga": { image_url: online_tryphon_of_pechenga.url, "image_source": "https://commons.wikimedia.org/wiki/File:Tryphon_of_Pechenga.jpg", "image_license": "Public domain", "image_attribution": "anonimus / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
