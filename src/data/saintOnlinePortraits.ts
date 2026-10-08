@@ -1,3 +1,5 @@
+import online_agapetus_the_unmercenary_physician from "@/assets/saints/card-icons/agapetus-the-unmercenary-physician-online.jpg.asset.json";
+import online_peter_and_fevronia_of_murom from "@/assets/saints/card-icons/peter-and-fevronia-of-murom-online.jpg.asset.json";
 import online_sarah_of_the_desert from "@/assets/saints/card-icons/sarah-of-the-desert-online.jpg.asset.json";
 import online_theophano from "@/assets/saints/card-icons/theophano-online.jpg.asset.json";
 import online_armenian_genocide_martyrs from "@/assets/saints/card-icons/armenian-genocide-martyrs-online.jpg.asset.json";
@@ -326,4 +328,7 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
 
   "sarah-of-the-desert": { image_url: online_sarah_of_the_desert.url, "image_source": "https://commons.wikimedia.org/wiki/File:Sarah_the_hermit_print_by_Maerten_de_Vos,_S.I_811,_Prints_Department,_Royal_Library_of_Belgium.jpg", "image_license": "Public domain", "image_attribution": "Adriaen Collaert / Maerten de Vos / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "theophano": { image_url: online_theophano.url, "image_source": "https://commons.wikimedia.org/wiki/File:Santa_Te%C3%B3fano_y_Le%C3%B3n_VI_el_Sabio.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "agapetus-the-unmercenary-physician": { image_url: online_agapetus_the_unmercenary_physician.url, "image_source": "https://commons.wikimedia.org/wiki/File:Agapetus_Pechorskiy.jpg", "image_license": "CC BY-SA 3.0", "image_attribution": "Sergey Nikitin / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "peter-and-fevronia-of-murom": { image_url: online_peter_and_fevronia_of_murom.url, "image_source": "https://commons.wikimedia.org/wiki/File:Murom_pokrov.jpg", "image_license": "Public domain", "image_attribution": "мастерская царицы Ирины Федоровны Годуновой / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
