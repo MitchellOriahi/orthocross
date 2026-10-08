@@ -22,9 +22,10 @@ export function LeaderboardPodium({ entries }: { entries: PodiumUser[] }) {
                   {place === 1 && <Crown className="podium-crown" aria-label="First place" />}
                   <Avatar className="podium-avatar">
                     <AvatarImage src={entry.profile_picture_url || undefined} alt={`${entry.username}'s profile picture`} className="object-cover" />
-                    <AvatarFallback className="bg-muted text-foreground">
+                    <AvatarFallback className="podium-avatar-fallback">
                       {entry.username.substring(0, 2).toUpperCase() || 'U'}
                     </AvatarFallback>
+                    <span className="podium-avatar-edge" aria-hidden="true" />
                   </Avatar>
                   <span className="podium-rank" aria-label={`Rank ${place}`}>{place}</span>
                 </div>

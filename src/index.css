@@ -60,9 +60,10 @@ All colors MUST be HSL.
     --radius: 0.75rem;
     --tradition-eastern: 217 91% 60%;
     --tradition-oriental: 25 95% 53%;
-    --podium-gold: 43 88% 55%;
-    --podium-silver: 220 7% 58%;
-    --podium-bronze: 26 78% 35%;
+    /* Light mode: deep enough to read against a white page. */
+    --podium-gold: 40 85% 42%;
+    --podium-silver: 220 10% 42%;
+    --podium-bronze: 24 75% 40%;
     --theotokos-gold: 43 80% 57%;
     --saint-completion-gold: 43 85% 58%;
     --saint-completion-glow: 0 0 0 1px hsl(var(--saint-completion-gold)), 0 0 12px 3px hsl(var(--saint-completion-gold) / 0.5), 0 0 22px 5px hsl(var(--saint-completion-gold) / 0.2);
@@ -90,6 +91,10 @@ All colors MUST be HSL.
 
   .dark {
     --journey-glow: 0 0% 100%;
+    /* Dark mode: bright enough to read against black. */
+    --podium-gold: 43 88% 55%;
+    --podium-silver: 220 12% 78%;
+    --podium-bronze: 28 72% 50%;
     /* Dark mode - black background, white text */
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
@@ -294,8 +299,26 @@ All colors MUST be HSL.
 .podium-avatar {
   width: 64px;
   height: 64px;
-  border: 3px solid hsl(var(--podium-tone) / 0.75);
+  /* Solid, fully opaque ring: never washes out against a grey or busy photo. */
+  border: 3px solid hsl(var(--podium-tone));
+  /* Each place gets its own disc tint, so no two circles share a shade. */
+  background: hsl(var(--podium-tone) / 0.18);
+  box-shadow: 0 0 10px 2px hsl(var(--podium-tone) / 0.28);
   font-size: 22px;
+}
+/* Dark hairline between the ring and the picture: keeps the circle's edge
+   readable even when the profile picture is the same colour as the ring. */
+.podium-avatar-edge {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 9999px;
+  box-shadow: inset 0 0 0 3px hsl(var(--background));
+  pointer-events: none;
+}
+.podium-avatar-fallback {
+  background: hsl(var(--podium-tone) / 0.22);
+  color: hsl(var(--foreground));
 }
 .podium-place-1 .podium-avatar { width: 76px; height: 76px; }
 .podium-crown {
