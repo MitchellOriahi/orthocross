@@ -9,7 +9,7 @@ import { JournalEditor } from "./journal/JournalEditor";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Menu, Play, Pause, Volume2, X, Minimize2 } from "lucide-react";
+import { ChevronLeft, Menu, Play, Pause, Volume2, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
 
@@ -562,6 +562,18 @@ export const Journal = () => {
           <SheetTitle className="sr-only">Journal Editor</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="border-b border-border pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 px-2 min-h-16 flex items-center bg-card">
+              {!isMobile && isNoteExpanded && (
+                <Button
+                  variant="ghost"
+                  onClick={() => setIsNoteExpanded(false)}
+                  aria-label="Back to Journal"
+                  title="Back to Journal"
+                  className="mr-1 shrink-0 gap-1"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                  <span className="text-sm">Back</span>
+                </Button>
+              )}
               {isMobile && selectedNoteId && !showNotesList && (
                 <Button
                   variant="ghost"
@@ -583,17 +595,6 @@ export const Journal = () => {
                 </Button>
               )}
               <div className="flex-1" />
-              {!isMobile && isNoteExpanded && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsNoteExpanded(false)}
-                  aria-label="Exit full-screen note"
-                  title="Exit full-screen note"
-                >
-                  <Minimize2 className="h-5 w-5" />
-                </Button>
-              )}
               <Button
                 variant="ghost"
                 size="icon"
