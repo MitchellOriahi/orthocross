@@ -61,6 +61,23 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('musicEnabled', JSON.stringify(isPlaying));
   }, [isPlaying]);
 
+  // Browsers block sound until the user taps. Retry music and wake the
+  // sound-effects engine on the first interactions until playback succeeds.
+  useEffect(() => {
+    const events = ['pointerdown', 'touchend', 'keydown', 'click'];
+    const unlock = () => {
+      sfxCtxRef.current?.resume().catch(() => {});
+      const el = audioRef.current;
+      if (!el) return;
+      if (!isPlayingRef.current) { done(); return; }
+      if (!el.paused) { done(); return; }
+      el.play().then(done).catch(() => {});
+    };
+    const done = () => events.forEach(e => document.removeEventListener(e, unlock, true));
+    events.forEach(e => document.addEventListener(e, unlock, true));
+    return done;
+  }, []);
+
   useEffect(() => {
     // Pause on background, resume on foreground. iOS suspends audio on
     // background and never un-suspends it for us, so both directions are
