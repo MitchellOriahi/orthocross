@@ -30,8 +30,9 @@ serve(async (req) => {
       { auth: { persistSession: false, autoRefreshToken: false } }
     );
     const token = authHeader.slice("Bearer ".length);
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
-    if (authError || !user) {
+    // Local token check (no extra round-trip) so the voice starts sooner.
+    const { data: claimsData, error: authError } = await supabaseClient.auth.getClaims(token);
+    if (authError || !claimsData?.claims?.sub) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
