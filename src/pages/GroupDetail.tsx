@@ -399,12 +399,15 @@ export default function GroupDetail() {
                           rank={index + 1}
                           consecutiveCount={member.consecutive_rank_count}
                           totalPoints={member.total_points}
+                          className={canManage && member.user_id !== user?.id && member.role !== 'owner' ? 'pr-12' : undefined}
                           onClick={() => navigate(`/friends/${member.user_id}`)}
                         />
                         {canManage && member.user_id !== user?.id && member.role !== 'owner' && (
                           <Button
                             variant="ghost"
                             size="icon"
+                            aria-label={`Remove ${member.username} from group`}
+                            title={`Remove ${member.username} from group`}
                             className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 text-destructive hover:text-destructive hover:bg-destructive/10"
                             onClick={(e) => {
                               e.stopPropagation();
