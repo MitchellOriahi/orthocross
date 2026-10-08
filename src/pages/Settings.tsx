@@ -34,18 +34,6 @@ const Settings = () => {
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
   const [activityVisible, setActivityVisible] = useState(true);
-  const [donorAnonymous, setDonorAnonymous] = useState(false);
-  useEffect(() => {
-    if (!user) return;
-    supabase.from('profiles').select('donor_anonymous').eq('id', user.id).maybeSingle()
-      .then(({ data }) => setDonorAnonymous(!!data?.donor_anonymous));
-  }, [user]);
-  const handleToggleDonorAnonymous = async (anon: boolean) => {
-    if (!user) return;
-    setDonorAnonymous(anon);
-    await supabase.from('profiles').update({ donor_anonymous: anon }).eq('id', user.id);
-    toast.success(anon ? "You'll appear as Anonymous Donor" : "Your name will show in the Donators list");
-  };
   const [timezone, setTimezone] = useState('America/New_York');
 
   // Common timezone options
@@ -357,18 +345,6 @@ const Settings = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                <div className="space-y-1 pr-4">
-                  <p className="font-medium">Show My Name as a Donor</p>
-                  <p className="text-sm text-muted-foreground">
-                    Off = "Donate anonymously": you'll appear as Anonymous Donor but keep your rank
-                  </p>
-                </div>
-                <Switch
-                  checked={!donorAnonymous}
-                  onCheckedChange={(v) => handleToggleDonorAnonymous(!v)}
-                />
-              </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="space-y-1 pr-4">
