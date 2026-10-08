@@ -591,11 +591,11 @@ export const Journal = () => {
               </Button>
             </div>
             
-            <div className="flex-1 flex overflow-hidden">
+            <div className="flex-1 min-h-0 min-w-0 flex overflow-hidden">
               {/* Desktop: Always show sidebar */}
               {/* Mobile: Show sidebar only when toggled */}
               {(!isMobile || showSidebar) && (
-                <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background' : 'w-48'}`}>
+                <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background' : 'w-48 shrink-0 min-w-0'}`}>
                   {isMobile && (
                     <div className="p-2 border-b border-border flex items-center safe-top">
                       <Button
@@ -625,7 +625,7 @@ export const Journal = () => {
               {/* Desktop: Always show notes list */}
               {/* Mobile: Show notes list only when no note is selected or when navigating back */}
               {(!isMobile || showNotesList) && (
-                <div className={`${isMobile ? 'flex-1' : 'w-64'}`}>
+                <div className={`${isMobile ? 'flex-1 min-w-0' : 'w-64 shrink-0 min-w-0'}`}>
                   <JournalNotesList
                     notes={filteredNotes}
                     selectedNoteId={selectedNoteId}
@@ -644,7 +644,7 @@ export const Journal = () => {
               {/* Desktop: Always show editor area */}
               {/* Mobile: Show editor only when a note is selected and notes list is hidden */}
               {(!isMobile || (selectedNoteId && !showNotesList)) && (
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   {selectedNoteId ? (
                     <JournalEditor
                       title={currentTitle}
@@ -655,7 +655,7 @@ export const Journal = () => {
                       noteId={selectedNoteId}
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full text-muted-foreground">
+                    <div className="flex items-center justify-center h-full p-4 text-center text-muted-foreground">
                       Select a note or create a new one
                     </div>
                   )}

@@ -249,7 +249,7 @@ export const JournalNotesList = ({
   };
 
   return (
-    <div className="flex flex-col h-full border-r border-border bg-card/30">
+    <div className="flex flex-col h-full min-h-0 min-w-0 w-full border-r border-border bg-card/30">
       <div className="p-3 border-b border-border space-y-2">
         <div className="flex items-center justify-end">
           <div className="flex items-center gap-1">
@@ -282,7 +282,7 @@ export const JournalNotesList = ({
         </div>
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0 min-w-0 w-full [&_[data-radix-scroll-area-viewport]>div]:!block">
         <div className={cn("p-2 pr-4", viewMode === 'gallery' && "grid grid-cols-2 gap-2 pr-4")}>
           {notes.length === 0 ? (
             <>
@@ -500,8 +500,8 @@ export const JournalNotesList = ({
                         className="flex transition-transform duration-300 ease-out"
                         style={{ transform: activeTab === 'bible' ? 'translateX(-100%)' : 'translateX(0)' }}
                       >
-                        <div className="w-full shrink-0">{renderPersonal()}</div>
-                        <div className="w-full shrink-0">{renderBible()}</div>
+                        <div className="w-full min-w-0 shrink-0">{renderPersonal()}</div>
+                        <div className="w-full min-w-0 shrink-0">{renderBible()}</div>
                       </div>
                     </div>
                   </div>
