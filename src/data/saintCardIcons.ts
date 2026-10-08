@@ -1,3 +1,23 @@
+import portrait_lazar_of_serbia from "@/assets/saints/card-icons/lazar-of-serbia-portrait.jpg.asset.json";
+import portrait_hermogenes_of_moscow from "@/assets/saints/card-icons/hermogenes-of-moscow-portrait.jpg.asset.json";
+import portrait_euphemia from "@/assets/saints/card-icons/euphemia-portrait.jpg.asset.json";
+import portrait_theodore_tiron from "@/assets/saints/card-icons/theodore-tiron-portrait.jpg.asset.json";
+import portrait_symeon_the_stylite_the_younger from "@/assets/saints/card-icons/symeon-the-stylite-the-younger-portrait.jpg.asset.json";
+import portrait_photini_the_samaritan_woman from "@/assets/saints/card-icons/photini-the-samaritan-woman-portrait.jpg.asset.json";
+import portrait_solomon from "@/assets/saints/card-icons/solomon-portrait.jpg.asset.json";
+import portrait_jonah from "@/assets/saints/card-icons/jonah-portrait.jpg.asset.json";
+import portrait_joshua from "@/assets/saints/card-icons/joshua-portrait.jpg.asset.json";
+import portrait_sarah from "@/assets/saints/card-icons/sarah-portrait.jpg.asset.json";
+import portrait_david from "@/assets/saints/card-icons/david-portrait.jpg.asset.json";
+import portrait_daniel from "@/assets/saints/card-icons/daniel-portrait.jpg.asset.json";
+import portrait_theodosius_of_the_kiev_caves from "@/assets/saints/card-icons/theodosius-of-the-kiev-caves-portrait.jpg.asset.json";
+import portrait_anthony_of_the_kiev_caves from "@/assets/saints/card-icons/anthony-of-the-kiev-caves-portrait.jpg.asset.json";
+import portrait_gleb from "@/assets/saints/card-icons/gleb-portrait.jpg.asset.json";
+import portrait_boris from "@/assets/saints/card-icons/boris-portrait.jpg.asset.json";
+import portrait_simeon_of_verkhoturye from "@/assets/saints/card-icons/simeon-of-verkhoturye-portrait.jpg.asset.json";
+import portrait_noah from "@/assets/saints/card-icons/noah-portrait.jpg.asset.json";
+import portrait_elijah from "@/assets/saints/card-icons/elijah-portrait.jpg.asset.json";
+import portrait_moses from "@/assets/saints/card-icons/moses-portrait.jpg.asset.json";
 import i_michael from "@/assets/saints/card-icons/michael-byzantine.jpg.asset.json";
 import i_gabriel from "@/assets/saints/card-icons/gabriel.jpg.asset.json";
 import i_raphael from "@/assets/saints/card-icons/raphael.jpg.asset.json";
@@ -130,4 +150,24 @@ export const SAINT_CARD_ICONS: Record<string, SaintCardIcon> = {
   "tamar-of-georgia": { image_url: i_tamar_of_georgia.url, image_source: "https://commons.wikimedia.org/wiki/File:Tamar_icon_(56).jpg", image_license: "CC BY 2.0", image_attribution: "tomasz przechlewski from Sopot, Poland", focus_x: 30, focus_y: 20, zoom: 3 },
   "nil-sorsky": { image_url: i_nil_sorsky.url, image_source: "https://commons.wikimedia.org/wiki/File:Nil_Sorsky_(20th_c.,_Atheism_museum).jpg", image_license: "Public domain", image_attribution: "Anonymous Russian icon painter (before 1917)Public domain image (according to PD-Russia-expired)", focus_x: 50, focus_y: 40, zoom: 3.5 },
   "george": { image_url: i_george.url, image_source: "https://commons.wikimedia.org/wiki/File:Novgorod_George.jpg", image_license: "Public domain", image_attribution: "AnonymousUnknown author", focus_x: 50, focus_y: 15, zoom: 3 },
+  "lazar-of-serbia": { image_url: portrait_lazar_of_serbia.url, "image_source": "https://commons.wikimedia.org/wiki/File:Holy_Martyr_Tsar_Lazar,_icon_detail.jpg", "image_license": "CC BY-SA 3.0", "image_attribution": "Unknown iconographer", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "hermogenes-of-moscow": { image_url: portrait_hermogenes_of_moscow.url, "image_source": "https://commons.wikimedia.org/wiki/File:Patriarch_Germogen_icon_(1915).jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "euphemia": { image_url: portrait_euphemia.url, "image_source": "https://commons.wikimedia.org/wiki/File:St_Euphemia.jpg", "image_license": "Public domain", "image_attribution": "Anonymous Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "theodore-tiron": { image_url: portrait_theodore_tiron.url, "image_source": "https://commons.wikimedia.org/wiki/File:Theodore_Tyron_by_O.Chirikov_(1891,_Abramov%27s_icon_museum).jpg", "image_license": "Public domain", "image_attribution": "Osip Semenovich Chirikov", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "symeon-the-stylite-the-younger": { image_url: portrait_symeon_the_stylite_the_younger.url, "image_source": "https://commons.wikimedia.org/wiki/File:Simeon_Stylites_the_Younger.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "photini-the-samaritan-woman": { image_url: portrait_photini_the_samaritan_woman.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Photina.jpg", "image_license": "Public domain", "image_attribution": "Anonymous Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "solomon": { image_url: portrait_solomon.url, "image_source": "https://commons.wikimedia.org/wiki/File:King-Solomon-Russian-icon.jpg", "image_license": "Public domain", "image_attribution": "18 century icon painter", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "jonah": { image_url: portrait_jonah.url, "image_source": "https://commons.wikimedia.org/wiki/File:Jonah.jpg", "image_license": "Public domain", "image_attribution": "18 century icon painter", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "joshua": { image_url: portrait_joshua.url, "image_source": "https://commons.wikimedia.org/wiki/File:Joshua._Russian_orthodox_icon.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "sarah": { image_url: portrait_sarah.url, "image_source": "https://commons.wikimedia.org/wiki/File:Righteous_Sarah.jpg", "image_license": "Public domain", "image_attribution": "Солнцев Ф.", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "david": { image_url: portrait_david.url, "image_source": "https://commons.wikimedia.org/wiki/File:David-icon.jpg", "image_license": "Public domain", "image_attribution": "18 century icon painter", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "daniel": { image_url: portrait_daniel.url, "image_source": "https://commons.wikimedia.org/wiki/File:Icon_of_the_Prophet_Daniel_and_the_Three_Holy_Youths.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "theodosius-of-the-kiev-caves": { image_url: portrait_theodosius_of_the_kiev_caves.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Anthony_and_Saint_Theodosius_of_the_Caves_Historical_Museum,_Sanok,_Poland.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "anthony-of-the-kiev-caves": { image_url: portrait_anthony_of_the_kiev_caves.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Anthony_and_Saint_Theodosius_of_the_Caves_Historical_Museum,_Sanok,_Poland.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "gleb": { image_url: portrait_gleb.url, "image_source": "https://commons.wikimedia.org/wiki/File:Russian_Icon_of_Boris_and_Gleb.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "boris": { image_url: portrait_boris.url, "image_source": "https://commons.wikimedia.org/wiki/File:Russian_Icon_of_Boris_and_Gleb.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "simeon-of-verkhoturye": { image_url: portrait_simeon_of_verkhoturye.url, "image_source": "https://commons.wikimedia.org/wiki/File:Simeon_Verkhoturskii_(detail).jpg", "image_license": "Public domain", "image_attribution": "Anonymous Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "noah": { image_url: portrait_noah.url, "image_source": "https://commons.wikimedia.org/wiki/File:Noah_icon_17c..jpg", "image_license": "Public domain", "image_attribution": "Anonymous Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "elijah": { image_url: portrait_elijah.url, "image_source": "https://commons.wikimedia.org/wiki/File:Elijah_icon.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "moses": { image_url: portrait_moses.url, "image_source": "https://commons.wikimedia.org/wiki/File:Moses-icon.jpg", "image_license": "Public domain", "image_attribution": "18 century icon painter", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
