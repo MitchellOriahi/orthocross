@@ -1,3 +1,4 @@
+import online_quadratus_of_athens from "@/assets/saints/card-icons/quadratus-of-athens-online.jpg.asset.json";
 import online_kyranna_of_thessalonica from "@/assets/saints/card-icons/kyranna-of-thessalonica-online.jpg.asset.json";
 import online_dmitry_of_uglich from "@/assets/saints/card-icons/dmitry-of-uglich-online.jpg.asset.json";
 import online_alexander_nevsky from "@/assets/saints/card-icons/alexander-nevsky-online.jpg.asset.json";
@@ -191,4 +192,6 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "grand-duchess-anastasia": { image_url: online_grand_duchess_anastasia.url, "image_source": "https://commons.wikimedia.org/wiki/File:Anastasia.jpg", "image_license": "Public domain", "image_attribution": "Grand Duchess Anastasia Nikolaevna, 1910 photograph, Romanov court photographer (LOC); via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "maria-of-paris": { image_url: online_maria_of_paris.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%95%D0%BB%D0%B8%D0%B7%D0%B0%D0%B2%D0%B5%D1%82%D0%B0_%D0%A1%D0%BA%D0%BE%D0%B1%D1%86%D0%BE%D0%B2%D0%B0.jpg", "image_license": "Public domain", "image_attribution": "Elizaveta (Maria) Skobtsova, historic photograph, unknown author; via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "alexander-schmorell": { image_url: online_alexander_schmorell.url, "image_source": "https://commons.wikimedia.org/wiki/File:Gestapo_photo_of_Alexander_Schmorell.jpg", "image_license": "Public domain", "image_attribution": "Alexander Schmorell, 1943 identification photograph (only clearly reusable PD photo located; a casual pre-arrest portrait exists in press archives but lacks a confirmed free license); via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "quadratus-of-athens": { image_url: online_quadratus_of_athens.url, "image_source": "https://commons.wikimedia.org/wiki/File:Quadratus_of_Athens_(Menologion_of_Basil_II).jpg", "image_license": "Public domain", "image_attribution": "Authors of Menologion of Basil II (circa 985 AC, Constantinople), Byzantine manuscript illuminators[1]:\nPantoleon with Georgios, Michael the Younger, Michael of Blachernae, Symeon, Symeon of Blachernae, Menas, and Nestor \n(Online on Vatican site) / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
