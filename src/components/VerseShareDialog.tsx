@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Share2, Download, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { drawVerseTypography } from "@/components/verseImageTypography";
-import { VERSE_IMAGE_STYLES } from "@/components/verseImageStyles";
+import { VERSE_ARTWORK_POOL, EXTRA_IMAGE_LIMIT, verseArtworkDay, restoreVerseArtwork, replaceVerseArtwork, type VerseImageStyle } from "@/components/verseImageStyles";
 import { loadVerseBackground, preloadVerseBackgrounds } from "@/components/versePhotoBackgrounds";
 import { downloadVerseImage, shareVerseImage } from "@/components/verseImageSharing";
 
@@ -20,13 +20,27 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState(0);
-  const images = useRef<Record<number, string>>({});
+  const [day, setDay] = useState(() => verseArtworkDay());
+  const storageKey = `orthocross-verse-art:${day}:${verseReference}|${verseText}`;
+  const restored = useMemo(() => {
+    try { return restoreVerseArtwork(day, localStorage.getItem(storageKey)); }
+    catch { return restoreVerseArtwork(day, null); }
+  }, [day, storageKey]);
+  const [saved, setSaved] = useState({ key: storageKey, session: restored });
+  const session = saved.key === storageKey ? saved.session : restored;
+  const styles = session.ids.map(id => VERSE_ARTWORK_POOL.find(style => style.id === id) ?? VERSE_ARTWORK_POOL[0]);
+  const selectedArtwork = styles[selectedStyle] ?? styles[0];
+  const images = useRef<Record<string, string>>({});
   const generation = useRef(0);
-  const startedVerse = useRef("");
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setDay(verseArtworkDay()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => { preloadVerseBackgrounds(); }, []);
 
-  const generateImage = useCallback(async (styleIndex: number) => {
+  const generateImage = useCallback(async (style: VerseImageStyle, cacheKey: string) => {
     const requestId = ++generation.current;
     setIsGenerating(true);
     setGenerationError(null);
@@ -38,15 +52,14 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("Canvas is unavailable");
 
-      const style = VERSE_IMAGE_STYLES[styleIndex] ?? VERSE_IMAGE_STYLES[0];
       const img = await loadVerseBackground(style.id);
       const cropSize = Math.min(img.naturalWidth, img.naturalHeight);
       ctx.drawImage(img, (img.naturalWidth - cropSize) / 2, (img.naturalHeight - cropSize) / 2, cropSize, cropSize, 0, 0, size, size);
-      drawVerseTypography(ctx, size, style.id, verseText, verseReference);
+      drawVerseTypography(ctx, size, style.treatment, verseText, verseReference);
 
       if (generation.current !== requestId) return;
       const result = canvas.toDataURL("image/png");
-      images.current[styleIndex] = result;
+      images.current[cacheKey] = result;
       setImageUrl(result);
     } catch (error) {
       console.error('Error generating verse image:', error);
@@ -60,23 +73,27 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
   }, [verseReference, verseText]);
 
   useEffect(() => {
-    const verseKey = `${verseReference}|${verseText}`;
     if (!open) { generation.current++; setIsGenerating(false); return; }
-    if (startedVerse.current === verseKey && imageUrl) return;
-    if (startedVerse.current === verseKey) { void generateImage(selectedStyle); return; }
-    startedVerse.current = verseKey;
-    images.current = {};
-    setSelectedStyle(0);
-    setImageUrl(null);
-    void generateImage(0);
-  }, [generateImage, open, verseReference, verseText]);
+    const cacheKey = `${storageKey}:${selectedArtwork.id}`;
+    const cached = images.current[cacheKey];
+    setImageUrl(cached ?? null);
+    setGenerationError(null);
+    if (cached) { generation.current++; setIsGenerating(false); }
+    else void generateImage(selectedArtwork, cacheKey);
+    return () => { generation.current++; };
+  }, [generateImage, open, storageKey, selectedArtwork.id]);
 
   const selectStyle = (index: number) => {
     if (isGenerating || index === selectedStyle) return;
     setSelectedStyle(index);
-    const cached = images.current[index];
-    setImageUrl(cached ?? null);
-    if (!cached) void generateImage(index);
+  };
+
+  const newImage = () => {
+    if (isGenerating) return;
+    const next = replaceVerseArtwork(day, session, selectedStyle);
+    if (next === session) return;
+    setSaved({ key: storageKey, session: next });
+    try { localStorage.setItem(storageKey, JSON.stringify(next)); } catch { /* In-memory choices still work. */ }
   };
 
   const filename = `orthocross-verse-${verseReference.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
@@ -122,7 +139,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
           </div>
 
           <div role="tablist" aria-label="Verse image styles" className="grid grid-cols-3 gap-2">
-            {VERSE_IMAGE_STYLES.map((style, index) => (
+            {styles.map((style, index) => (
               <Button
                 key={style.id}
                 role="tab"
@@ -151,8 +168,8 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
 
           <div className="flex gap-2">
             <Button
-              onClick={() => generationError ? void generateImage(selectedStyle) : selectStyle((selectedStyle + 1) % VERSE_IMAGE_STYLES.length)}
-              disabled={isGenerating}
+              onClick={() => generationError ? void generateImage(selectedArtwork, `${storageKey}:${selectedArtwork.id}`) : newImage()}
+              disabled={isGenerating || (!generationError && session.replacements >= EXTRA_IMAGE_LIMIT)}
               variant="secondary"
               className="flex-1 gap-2"
             >
