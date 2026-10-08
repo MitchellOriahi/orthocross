@@ -110,6 +110,13 @@ const ChurchResources = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Always open the prayers section at the top of the page
+  useEffect(() => {
+    if (selectedSection === "prayers" && !selectedPrayer) {
+      window.scrollTo(0, 0);
+    }
+  }, [selectedSection, selectedPrayer]);
+
 
   // Load pinned prayers
   useEffect(() => {
@@ -602,7 +609,7 @@ const ChurchResources = () => {
 
             {selectedSection === "saints" && (
               <div className={selectedSaint ? "hidden" : undefined}>
-                <SaintsBrowser onSelect={setSelectedSaint} onClose={() => setSelectedSection(null)} />
+                <SaintsBrowser onSelect={(saint) => { saintsScrollRef.current = window.scrollY; setSelectedSaint(saint); }} onClose={() => setSelectedSection(null)} />
               </div>
             )}
           </div>
