@@ -34,7 +34,7 @@
 ## Saint card icons (one category at a time)
 - [x] Shared 72px circular icon, gold backing, uniform filter, hidden /icon-tuner (admins)
 - [x] Angels
-- [ ] Biblical Saints, Monastics, Church Fathers, Martyrs, Missionaries, Righteous Laypeople (next, on user's go-ahead)
+- [ ] Biblical Saints, Monastics, Church Fathers, Martyrs, Missionaries, Righteous Laypeople (portrait research authorized; in progress)
 - [x] Donor tiers: keep the Donators heart red in both themes via a shared token; verified in preview, 65 tests pass.
 - [x] Donation window: single "Donate anonymously" toggle replaces the two-option name pair; verified in preview, 65 tests pass.
 - [ ] Donor tiers: Stripe webhook endpoint + signing secret (waiting on user), then resend the Oct 7 $1 invoice.paid event to backfill
@@ -46,4 +46,5 @@
 
 ## Saint profile pictures
 - [x] Michael replaced with Gabriel-style Byzantine icon; Raphael recropped; 48 more saints given face-focused Commons icons.
-- [ ] Remaining ~280 saints: no clearly suitable free icon found by automated search yet; continue category by category (or use the icon tuner).
+- [x] Added 32 more verified online painted portraits with individual face/halo crops and retained PD/CC credits; reused five identical saints' existing portraits under alternate roster names. Cards and saved biographies are unchanged. Coverage: 168 of 343 roster saints; 175 remain. Rejected incorrect namesakes, unrelated group images, photos and failed/rate-limited downloads rather than assigning inaccurate icons. Portrait, provenance and roster tests: 24 passed; Monastics preview opened without runtime errors.
+- [ ] Give every remaining saint a matching freely reusable online painted icon, prioritizing gold backgrounds and bust-up face/halo crops; preserve existing portraits and card layout.
