@@ -4,7 +4,7 @@ import face_pelagia_the_penitent from "@/assets/saints/card-icons/pelagia-the-pe
 import face_cyricus_and_julitta from "@/assets/saints/card-icons/cyricus-and-julitta-face.jpg.asset.json";
 import face_john_theologian from "@/assets/saints/card-icons/john-theologian-face.jpg.asset.json";
 import face_basil_the_blessed from "@/assets/saints/card-icons/basil-the-blessed-face.jpg.asset.json";
-import face_dominions from "@/assets/saints/card-icons/dominions-face.jpg.asset.json";
+import face_dominions from "@/assets/saints/card-icons/dominions-complete-face.jpg.asset.json";
 import face_nicholas_of_pskov from "@/assets/saints/card-icons/nicholas-of-pskov-face.jpg.asset.json";
 import face_dimiana_and_the_forty_virgins from "@/assets/saints/card-icons/dimiana-and-the-forty-virgins-face.jpg.asset.json";
 import { SAINT_ONLINE_PORTRAITS } from "./saintOnlinePortraits";
