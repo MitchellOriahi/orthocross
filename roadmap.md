@@ -45,4 +45,5 @@
 - [x] Continuous listening option: mark finished chapter complete, auto-play next chapter, keep playing with screen off.
 
 ## Saint profile pictures
-- [ ] Give every roster saint a face-focused, gold-background Commons icon; make Michael and Raphael match Gabriel's style.
+- [x] Michael replaced with Gabriel-style Byzantine icon; Raphael recropped; 48 more saints given face-focused Commons icons.
+- [ ] Remaining ~280 saints: no clearly suitable free icon found by automated search yet; continue category by category (or use the icon tuner).
