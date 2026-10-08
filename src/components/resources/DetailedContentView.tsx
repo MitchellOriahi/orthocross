@@ -16,11 +16,12 @@ interface DetailedContentViewProps {
   onClose: () => void;
   showProgress?: boolean;
   onComplete?: () => void;
+  completing?: boolean;
   iconUrl?: string;
   iconCredit?: SaintIconCredit;
 }
 
-export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete, iconUrl, iconCredit }: DetailedContentViewProps) => {
+export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete, completing = false, iconUrl, iconCredit }: DetailedContentViewProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   // If iconUrl exists, we'll show it on page 0, content starts from page 1
@@ -222,6 +223,8 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
                 {showProgress && isComplete && onComplete ? (
                   <Button
                     onClick={onComplete}
+                    disabled={completing}
+                    aria-label="Finish"
                     size="lg"
                     variant="sacred"
                     className="flex-1 min-w-0"
@@ -297,6 +300,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
             <div className="flex justify-center mt-6 pt-6 border-t">
               <Button
                 onClick={showProgress && onComplete ? onComplete : onClose}
+                disabled={completing}
                 size="lg"
                 variant="sacred"
               >

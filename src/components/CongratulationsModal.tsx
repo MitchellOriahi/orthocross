@@ -16,6 +16,7 @@ interface CongratulationsModalProps {
   saintName?: string;
   saintIcon?: string;
   saintPrefix?: string;
+  allSaintStories?: boolean;
 }
 
 export const CongratulationsModal = ({
@@ -25,7 +26,8 @@ export const CongratulationsModal = ({
   isNewStreak,
   saintName,
   saintIcon,
-  saintPrefix
+  saintPrefix,
+  allSaintStories = false
 }: CongratulationsModalProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const { theme } = useTheme();
@@ -43,15 +45,15 @@ export const CongratulationsModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent 
-        className="max-w-md"
+        className={`max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto${allSaintStories ? " saint-collection-award" : ""}`}
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
-        <DialogTitle className="sr-only">Reading Complete</DialogTitle>
+        <DialogTitle className="sr-only">{allSaintStories ? "All Saints Stories Complete" : "Reading Complete"}</DialogTitle>
         <div className="flex flex-col items-center justify-center py-8 px-4 space-y-6">
           {/* Animated Cross Logo or Saint Icon */}
           <div className="relative">
-            {saintIcon ? (
+            {saintIcon && !allSaintStories ? (
               <img 
                 src={saintIcon} 
                 alt={`${saintPrefix} ${saintName}`}
@@ -61,7 +63,7 @@ export const CongratulationsModal = ({
               <img 
                 src={crossLogo} 
                 alt="Orthodox Cross"
-                className="w-32 h-32 object-contain animate-bounce"
+                className={`w-32 h-32 object-contain${allSaintStories ? "" : " motion-safe:animate-bounce"}`}
               />
             )}
             {showConfetti && (
@@ -88,12 +90,19 @@ export const CongratulationsModal = ({
               Congratulations!
             </h2>
             <p className="text-lg text-muted-foreground">
-              {saintName 
+              {allSaintStories
+                ? "You've read every saint's story!"
+                : saintName 
                 ? `You've learned about ${saintPrefix} ${saintName}!`
                 : isNewStreak 
                   ? "You've completed today's reading!"
                   : "Reading completed!"}
             </p>
+            {allSaintStories && <>
+              <p className="saint-award-title text-sm font-semibold pt-2">A heart inspired by the saints</p>
+              <p className="text-base leading-relaxed text-muted-foreground pt-2">One story at a time, you made room in your heart for lives of faith, courage, and love. Your dedication is something beautiful.</p>
+              <p className="text-base leading-relaxed text-muted-foreground pt-2">May their example stay with you, bring you hope in difficult moments, and draw you closer to Christ. Congratulations on this wonderful journey.</p>
+            </>}
           </div>
 
           {/* Streak Display */}
