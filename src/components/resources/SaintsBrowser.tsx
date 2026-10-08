@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { getSaintMemberships, getSaintPageList, getSaintPageSubgroups, type SaintTraditionFilter } from "@/data/saintPageRoster";
+import { getSaintMemberships, getSaintStoryReturnMembership, getSaintPageList, getSaintPageSubgroups, type SaintTraditionFilter } from "@/data/saintPageRoster";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 import { SaintCardIcon } from "./SaintCardIcon";
@@ -27,10 +27,7 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
   useLayoutEffect(() => {
     if (!returnToSaint) return;
-    const memberships = getSaintMemberships(returnToSaint.saintId);
-    const membership = memberships.find(item => item.category === category && item.subgroup === subcategory)
-      ?? memberships.find(item => item.category === category)
-      ?? memberships[0];
+    const membership = getSaintStoryReturnMembership(returnToSaint.saintId, category, subcategory);
     if (!membership) return;
     const targetCategory = SAINT_CATEGORIES.find(item => item.id === membership.category);
     if (!targetCategory) return;
