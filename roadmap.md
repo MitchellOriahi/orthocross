@@ -46,4 +46,4 @@
 
 ## Saint profile pictures
 - [x] Michael replaced with Gabriel-style Byzantine icon; Raphael recropped; 48 more saints given face-focused Commons icons.
-- [ ] Remaining ~280 saints: no clearly suitable free icon found by automated search yet; continue category by category (or use the icon tuner).
+- [ ] Give every remaining saint a matching freely reusable online painted icon, prioritizing gold backgrounds and bust-up face/halo crops; preserve existing portraits and card layout.
