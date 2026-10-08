@@ -8,7 +8,7 @@ import { PRAYER_CATEGORIES, PRAYER_PLACEMENTS, type PrayerCategoryId } from "@/d
 import { getPrayerList, getPrayerSubgroups } from "@/data/prayerCatalog";
 import peter from "@/assets/saints/display/peter-apostle.jpg.asset.json";
 import david from "@/assets/saints/card-icons/david-portrait.jpg.asset.json";
-import seraphim from "@/assets/prayers/categories/daily-prayers-seraphim.jpg.asset.json";
+import orans from "@/assets/prayers/categories/daily-prayers-orans.jpg.asset.json";
 import christ from "@/assets/prayers/categories/christ_pantocrator_sinai.jpg.asset.json";
 import supper from "@/assets/prayers/categories/holy_communion_last_supper.jpg.asset.json";
 import healing from "@/assets/prayers/categories/needs_healing_eustratius.jpg.asset.json";
@@ -17,7 +17,7 @@ import { PrayerListCard } from "./PrayerListCard";
 // Prayer artwork is independent of the Saints category portrait registry.
 const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string; author: string }> = {
   foundational: { url: peter.url, source: "St_Peter_Icon_Sinai_7th_century.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 7th century" },
-  daily: { url: seraphim.url, source: "Seraphim_of_Sarov_(after_1903,_priv.coll).jpg", author: "Anonymous Russian icon painter, Seraphimo-Diveevsky Monastery workshop, after 1903" },
+  daily: { url: orans.url, source: "Oranta-Kyiv.jpg", author: "Unknown mosaicist, Saint Sophia Cathedral, Kyiv, 11th century" },
   "christ-saints": { url: christ.url, source: "Spas_vsederzhitel_sinay.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 6th century" },
   psalms: { url: david.url, source: "David-icon.jpg", author: "18th-century icon painter" },
   communion: { url: supper.url, source: "Icon_last_supper.jpg", author: "Unknown Russian icon painter, 1497" },
@@ -72,7 +72,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
         </> : <>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {PRAYER_CATEGORIES.map(item => <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setCategoryQuery(""); setSubgroup(null); onTraditionChange("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
-              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-top scale-[1.06]" : item.id === "daily" ? "object-top" : "object-[center_30%]"}`} /></span>
+              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-top scale-[1.06]" : "object-[center_30%]"}`} /></span>
               <span className="mt-2 min-h-10 w-full text-sm font-medium leading-5">{item.label}</span>
             </Button>)}
           </div>
