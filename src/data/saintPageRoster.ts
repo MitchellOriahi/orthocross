@@ -46,7 +46,7 @@ export const saintPageRoster: SaintDetail[] = roster.map(record => {
           ? "https://creativecommons.org/publicdomain/zero/1.0/"
           : `https://creativecommons.org/licenses/${portrait.image_license.includes("BY-SA") ? "by-sa" : "by"}/${portrait.image_license.match(/\d\.\d/)?.[0] ?? "4.0"}/`,
       title: [record.prefix, record.name].filter(Boolean).join(" "),
-      modification: "Original painted icon; resized and face-focused for the circular profile picture. Artwork otherwise unchanged.",
+      modification: "Source image resized and face-focused for the circular profile picture; no recoloring or generated artwork.",
     } : savedPortrait?.iconCredit,
     content: (saintStories as Record<string, string[]>)[record.id] ?? saved?.content ?? [record.subtitle],
   };

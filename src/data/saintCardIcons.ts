@@ -1,4 +1,5 @@
 import portrait_fyodor_ushakov from "@/assets/saints/card-icons/fyodor-ushakov-portrait.jpg.asset.json";
+import { SAINT_ONLINE_PORTRAITS } from "./saintOnlinePortraits";
 import portrait_sampson_the_hospitable from "@/assets/saints/card-icons/sampson-the-hospitable-portrait.jpg.asset.json";
 import portrait_eustathius_placidas from "@/assets/saints/card-icons/eustathius-placidas-portrait.jpg.asset.json";
 import portrait_irene from "@/assets/saints/card-icons/irene-portrait.jpg.asset.json";
@@ -104,6 +105,7 @@ export interface SaintCardIcon {
 }
 
 export const SAINT_CARD_ICONS: Record<string, SaintCardIcon> = {
+  ...SAINT_ONLINE_PORTRAITS,
   "michael": { image_url: i_michael.url, image_source: "https://commons.wikimedia.org/wiki/File:Icon_with_the_Archangel_Michael_(14th_cent.)_at_the_Byzantine_and_Christian_Museum_on_12_April_2019.jpg", image_license: "CC BY-SA 4.0", image_attribution: "George E. Koronaios (photo); 14th-century Byzantine icon", focus_x: 52, focus_y: 24, zoom: 2.2 },
   "gabriel": { image_url: i_gabriel.url, image_source: "https://commons.wikimedia.org/wiki/File:Archangel_Gabriel_-_Orthodox_Icon.jpg", image_license: "CC BY-SA 4.0", image_attribution: "33milos33", focus_x: 55, focus_y: 28, zoom: 1.8 },
   "raphael": { image_url: i_raphael.url, image_source: "https://commons.wikimedia.org/wiki/File:%22St.Archangel_Raphael%22,egg_tempera,_goldleaf_on_wood,_sm_32x24.jpeg", image_license: "CC BY-SA 3.0", image_attribution: "Tjaarke Maas", focus_x: 45, focus_y: 28, zoom: 1.4 },
