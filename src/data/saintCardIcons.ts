@@ -1,4 +1,4 @@
-import i_michael from "@/assets/saints/card-icons/michael.jpg.asset.json";
+import i_michael from "@/assets/saints/card-icons/michael-byzantine.jpg.asset.json";
 import i_gabriel from "@/assets/saints/card-icons/gabriel.jpg.asset.json";
 import i_raphael from "@/assets/saints/card-icons/raphael.jpg.asset.json";
 import i_uriel from "@/assets/saints/card-icons/uriel.jpg.asset.json";
@@ -23,7 +23,7 @@ export interface SaintCardIcon {
 }
 
 export const SAINT_CARD_ICONS: Record<string, SaintCardIcon> = {
-  "michael": { image_url: i_michael.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Michael_(Yaroslavl,_13th_c.,_GTG).jpg", image_license: "Public domain", image_attribution: "Unknown iconographer", focus_x: 50, focus_y: 11, zoom: 3 },
+  "michael": { image_url: i_michael.url, image_source: "https://commons.wikimedia.org/wiki/File:Icon_with_the_Archangel_Michael_(14th_cent.)_at_the_Byzantine_and_Christian_Museum_on_12_April_2019.jpg", image_license: "CC BY-SA 4.0", image_attribution: "George E. Koronaios (photo); 14th-century Byzantine icon", focus_x: 52, focus_y: 24, zoom: 2.2 },
   "gabriel": { image_url: i_gabriel.url, image_source: "https://commons.wikimedia.org/wiki/File:Archangel_Gabriel_-_Orthodox_Icon.jpg", image_license: "CC BY-SA 4.0", image_attribution: "33milos33", focus_x: 55, focus_y: 28, zoom: 1.8 },
   "raphael": { image_url: i_raphael.url, image_source: "https://commons.wikimedia.org/wiki/File:%22St.Archangel_Raphael%22,egg_tempera,_goldleaf_on_wood,_sm_32x24.jpeg", image_license: "CC BY-SA 3.0", image_attribution: "Tjaarke Maas", focus_x: 45, focus_y: 26, zoom: 1.8 },
   "uriel": { image_url: i_uriel.url, image_source: "https://commons.wikimedia.org/wiki/File:Icon_of_the_Archangel_Uriel_01.jpg", image_license: "CC BY-SA 4.0", image_attribution: "Mark Czekanski (Marek Czeka\u0144ski)", focus_x: 50, focus_y: 28, zoom: 2.6 },
