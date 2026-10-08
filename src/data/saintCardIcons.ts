@@ -1,3 +1,15 @@
+import portrait_fyodor_ushakov from "@/assets/saints/card-icons/fyodor-ushakov-portrait.jpg.asset.json";
+import portrait_sampson_the_hospitable from "@/assets/saints/card-icons/sampson-the-hospitable-portrait.jpg.asset.json";
+import portrait_eustathius_placidas from "@/assets/saints/card-icons/eustathius-placidas-portrait.jpg.asset.json";
+import portrait_irene from "@/assets/saints/card-icons/irene-portrait.jpg.asset.json";
+import portrait_daniel_the_stylite from "@/assets/saints/card-icons/daniel-the-stylite-portrait.jpg.asset.json";
+import portrait_theodosius_the_cenobiarch from "@/assets/saints/card-icons/theodosius-the-cenobiarch-portrait.jpg.asset.json";
+import portrait_john_cassian from "@/assets/saints/card-icons/john-cassian-portrait.jpg.asset.json";
+import portrait_tikhon_of_moscow from "@/assets/saints/card-icons/tikhon-of-moscow-portrait.jpg.asset.json";
+import portrait_john_the_russian from "@/assets/saints/card-icons/john-the-russian-portrait.jpg.asset.json";
+import portrait_philothei_of_athens from "@/assets/saints/card-icons/philothei-of-athens-portrait.jpg.asset.json";
+import portrait_melania_the_younger from "@/assets/saints/card-icons/melania-the-younger-portrait.jpg.asset.json";
+import portrait_cecilia from "@/assets/saints/card-icons/cecilia-portrait.jpg.asset.json";
 import portrait_lazar_of_serbia from "@/assets/saints/card-icons/lazar-of-serbia-portrait.jpg.asset.json";
 import portrait_hermogenes_of_moscow from "@/assets/saints/card-icons/hermogenes-of-moscow-portrait.jpg.asset.json";
 import portrait_euphemia from "@/assets/saints/card-icons/euphemia-portrait.jpg.asset.json";
@@ -170,4 +182,16 @@ export const SAINT_CARD_ICONS: Record<string, SaintCardIcon> = {
   "noah": { image_url: portrait_noah.url, "image_source": "https://commons.wikimedia.org/wiki/File:Noah_icon_17c..jpg", "image_license": "Public domain", "image_attribution": "Anonymous Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "elijah": { image_url: portrait_elijah.url, "image_source": "https://commons.wikimedia.org/wiki/File:Elijah_icon.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "moses": { image_url: portrait_moses.url, "image_source": "https://commons.wikimedia.org/wiki/File:Moses-icon.jpg", "image_license": "Public domain", "image_attribution": "18 century icon painter", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "fyodor-ushakov": { image_url: portrait_fyodor_ushakov.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%A4%D0%B5%D0%BE%D0%B4%D0%BE%D1%80_%D0%A3%D1%88%D0%B0%D0%BA%D0%BE%D0%B2.jpg", "image_license": "CC BY-SA 3.0", "image_attribution": "CatFish2013", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "sampson-the-hospitable": { image_url: portrait_sampson_the_hospitable.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Sampson_the_Hospitable.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "zavar_vera", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "eustathius-placidas": { image_url: portrait_eustathius_placidas.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Eustace,_Cretan_school,_17_c..jpg", "image_license": "Public domain", "image_attribution": "Cretan School", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "irene": { image_url: portrait_irene.url, "image_source": "https://commons.wikimedia.org/wiki/File:Rila_Mon._-_Fresco_mir._icon_021_Irene_of_Macedonia.jpg", "image_license": "Public domain", "image_attribution": "Димитър Христов и Зафир. 1843", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "daniel-the-stylite": { image_url: portrait_daniel_the_stylite.url, "image_source": "https://commons.wikimedia.org/wiki/File:Daniel_Stylites_(Kirillo-Belozersk).jpg", "image_license": "Public domain", "image_attribution": "School of Dionisius", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "theodosius-the-cenobiarch": { image_url: portrait_theodosius_the_cenobiarch.url, "image_source": "https://commons.wikimedia.org/wiki/File:Theodosius_the_Cenobiarch.jpg", "image_license": "Public domain", "image_attribution": "Anonymous icon painter", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "john-cassian": { image_url: portrait_john_cassian.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%98%D0%BE%D0%B0%D0%BD%D0%BD_%D0%9A%D0%B0%D1%81%D1%81%D0%B8%D0%B0%D0%BD_%D0%A0%D0%B8%D0%BC%D0%BB%D1%8F%D0%BD%D0%B8%D0%BD_%E2%80%93_%D0%A1%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D0%BA.jpg", "image_license": "Public domain", "image_attribution": "Anonymous Russian icon painter (before 1917)", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "tikhon-of-moscow": { image_url: portrait_tikhon_of_moscow.url, "image_source": "https://commons.wikimedia.org/wiki/File:Icon_of_Saint_Tikhon_in_Dormition_Cathedral,_Yaroslavl_(Russia).jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Pierre André Leclercq", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "john-the-russian": { image_url: portrait_john_the_russian.url, "image_source": "https://commons.wikimedia.org/wiki/File:DETAIL_OF_ROYAL_DOORS_Holy_Ascension_Russian_Orthodox_Church_(Unalaska).jpg", "image_license": "Public domain", "image_attribution": "Jet Lowe", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "philothei-of-athens": { image_url: portrait_philothei_of_athens.url, "image_source": "https://commons.wikimedia.org/wiki/File:Agia-philothei.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "melania-the-younger": { image_url: portrait_melania_the_younger.url, "image_source": "https://commons.wikimedia.org/wiki/File:Melanieyounger.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "cecilia": { image_url: portrait_cecilia.url, "image_source": "https://commons.wikimedia.org/wiki/File:Kikilia.jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
