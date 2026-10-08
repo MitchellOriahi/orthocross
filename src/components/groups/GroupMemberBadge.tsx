@@ -9,6 +9,7 @@ interface GroupMemberBadgeProps {
   consecutiveCount: number;
   totalPoints: number;
   onClick?: () => void;
+  className?: string;
 }
 
 export const GroupMemberBadge = ({
@@ -17,7 +18,8 @@ export const GroupMemberBadge = ({
   rank,
   consecutiveCount,
   totalPoints,
-  onClick
+  onClick,
+  className
 }: GroupMemberBadgeProps) => {
   const isTopThree = rank !== null && rank >= 1 && rank <= 3;
   
@@ -55,14 +57,15 @@ export const GroupMemberBadge = ({
     <div 
       className={cn(
         "flex items-center gap-3 p-3 rounded-lg transition-all cursor-pointer hover:opacity-90",
-        getNameTagStyles()
+        getNameTagStyles(),
+        className
       )}
       onClick={onClick}
     >
-      <div className={cn("w-8 h-8 flex items-center justify-center rounded-full font-bold", getRankBgColor())}>
+      <div className={cn("w-8 h-8 shrink-0 flex items-center justify-center rounded-full font-bold", getRankBgColor())}>
         {rank || '-'}
       </div>
-      <Avatar className="h-10 w-10">
+      <Avatar className="h-10 w-10 shrink-0">
         <AvatarImage src={profilePictureUrl || undefined} />
         <AvatarFallback>{username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
       </Avatar>
@@ -72,7 +75,7 @@ export const GroupMemberBadge = ({
           <GroupCrown rank={rank as 1 | 2 | 3} consecutiveCount={consecutiveCount} size="sm" />
         )}
       </div>
-      <span className="text-sm opacity-80">
+      <span className="shrink-0 whitespace-nowrap text-sm opacity-80">
         {totalPoints} {totalPoints === 1 ? 'pt' : 'pts'}
       </span>
     </div>
