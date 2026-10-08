@@ -45,6 +45,7 @@
 - [x] Continuous listening option: mark finished chapter complete, auto-play next chapter, keep playing with screen off.
 
 ## Saint profile pictures
+- [ ] Complete Athonite matching/review and remaining correct online portraits. BLOCKED: the first saint-icons JSON collection returned HTTP 429 from the deployed cloud importer; stopped as instructed, without retries, bypass or HTML scraping. Waiting for Athonite product/image files or permission to resume after access is restored. Existing portraits unchanged; 19 targeted tests passed.
 - [x] Michael replaced with Gabriel-style Byzantine icon; Raphael recropped; 48 more saints given face-focused Commons icons.
 - [x] Added 32 more verified online painted portraits with individual face/halo crops and retained PD/CC credits; reused five identical saints' existing portraits under alternate roster names. Cards and saved biographies are unchanged. Coverage: 168 of 343 roster saints; 175 remain. Rejected incorrect namesakes, unrelated group images, photos and failed/rate-limited downloads rather than assigning inaccurate icons. Portrait, provenance and roster tests: 24 passed; Monastics preview opened without runtime errors.
 - [ ] Give every remaining saint a matching freely reusable online painted icon, prioritizing gold backgrounds and bust-up face/halo crops; preserve existing portraits and card layout.
