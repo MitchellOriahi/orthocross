@@ -43,7 +43,7 @@ export const SpeechControls = ({ speech, disabled }: { speech: Speech; disabled?
               <label className="block space-y-1">
                 <span className="text-xs text-muted-foreground">Voice</span>
                 <select
-                  className="w-full rounded-md border border-input bg-background px-2 py-1.5 text-sm"
+                  className="w-full rounded-md border border-input bg-background px-2 py-1.5 text-sm focus:outline-none focus:ring-0 focus:border-input"
                   value={speech.voiceId ?? ""}
                   onChange={(e) => speech.setVoiceId(e.target.value)}
                 >
