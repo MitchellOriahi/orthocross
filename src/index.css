@@ -60,9 +60,10 @@ All colors MUST be HSL.
     --radius: 0.75rem;
     --tradition-eastern: 217 91% 60%;
     --tradition-oriental: 25 95% 53%;
-    --podium-gold: 43 88% 55%;
-    --podium-silver: 220 12% 78%;
-    --podium-bronze: 28 72% 50%;
+    /* Light mode: deep enough to read against a white page. */
+    --podium-gold: 40 85% 42%;
+    --podium-silver: 220 10% 42%;
+    --podium-bronze: 24 75% 40%;
     --theotokos-gold: 43 80% 57%;
     --saint-completion-gold: 43 85% 58%;
     --saint-completion-glow: 0 0 0 1px hsl(var(--saint-completion-gold)), 0 0 12px 3px hsl(var(--saint-completion-gold) / 0.5), 0 0 22px 5px hsl(var(--saint-completion-gold) / 0.2);
@@ -90,6 +91,10 @@ All colors MUST be HSL.
 
   .dark {
     --journey-glow: 0 0% 100%;
+    /* Dark mode: bright enough to read against black. */
+    --podium-gold: 43 88% 55%;
+    --podium-silver: 220 12% 78%;
+    --podium-bronze: 28 72% 50%;
     /* Dark mode - black background, white text */
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
