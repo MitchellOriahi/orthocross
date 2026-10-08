@@ -46,6 +46,7 @@ const ChurchResources = () => {
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [showAllSaintsAward, setShowAllSaintsAward] = useState(false);
+  const [saintReturn, setSaintReturn] = useState<{ saintId: string; sequence: number } | null>(null);
   const { completion } = useSaintReadingProgress();
   const [locatingChurches, setLocatingChurches] = useState(false);
   const saintsScrollRef = useRef(0);
@@ -207,11 +208,7 @@ const ChurchResources = () => {
             const { earnedAward } = await completion.mutateAsync(selectedSaint.id);
             playSound('saint');
             setShowAllSaintsAward(earnedAward);
-            if (earnedAward) {
-              setShowCongratulations(true);
-            } else {
-              closeSaintStory();
-            }
+            setShowCongratulations(true);
           } catch (error) {
             toast({ description: error instanceof Error ? error.message : "Your progress could not be saved. Please try again.", variant: "destructive" });
           }
@@ -221,15 +218,28 @@ const ChurchResources = () => {
         isOpen={showCongratulations}
         onClose={() => {
           setShowCongratulations(false);
-          setShowAllSaintsAward(false);
-          closeSaintStory();
+          if (!showAllSaintsAward) {
+            setSaintReturn(previous => ({ saintId: selectedSaint.id, sequence: (previous?.sequence ?? 0) + 1 }));
+            setSelectedSaint(null);
+          }
         }}
         streakDays={0}
         isNewStreak={false}
         saintName={selectedSaint?.name}
         saintIcon={selectedSaint?.iconUrl}
         saintPrefix={selectedSaint?.prefix}
-        allSaintStories={showAllSaintsAward}
+        saintId={selectedSaint.id}
+      />
+      <CongratulationsModal
+        isOpen={!showCongratulations && showAllSaintsAward}
+        onClose={() => {
+          setShowAllSaintsAward(false);
+          setSaintReturn(previous => ({ saintId: selectedSaint.id, sequence: (previous?.sequence ?? 0) + 1 }));
+          setSelectedSaint(null);
+        }}
+        streakDays={0}
+        isNewStreak={false}
+        allSaintStories
       />
       <BottomNavigation />
     </div>
@@ -626,7 +636,7 @@ const ChurchResources = () => {
 
             {selectedSection === "saints" && (
               <div className={selectedSaint ? "hidden" : undefined}>
-                <SaintsBrowser onSelect={(saint) => { saintsScrollRef.current = window.scrollY; setSelectedSaint(saint); }} onClose={() => setSelectedSection(null)} />
+                <SaintsBrowser returnToSaint={saintReturn} onSelect={(saint) => { saintsScrollRef.current = window.scrollY; setSelectedSaint(saint); }} onClose={() => setSelectedSection(null)} />
               </div>
             )}
           </div>

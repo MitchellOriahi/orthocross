@@ -7,6 +7,7 @@ import { Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
 import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
 import orthodoxCrossWhite from "@/assets/orthodox-cross-white-new.png";
+import { SaintCardIcon } from "@/components/resources/SaintCardIcon";
 
 interface CongratulationsModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ interface CongratulationsModalProps {
   saintIcon?: string;
   saintPrefix?: string;
   allSaintStories?: boolean;
+  saintId?: string;
 }
 
 export const CongratulationsModal = ({
@@ -27,7 +29,8 @@ export const CongratulationsModal = ({
   saintName,
   saintIcon,
   saintPrefix,
-  allSaintStories = false
+  allSaintStories = false,
+  saintId
 }: CongratulationsModalProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const { theme } = useTheme();
@@ -43,9 +46,9 @@ export const CongratulationsModal = ({
   }, [isOpen]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={open => { if (!open) onClose(); }}>
       <DialogContent 
-        className={`z-[100] max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto${allSaintStories ? " saint-collection-award" : ""}`}
+        className={`z-[100] max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto${allSaintStories || saintId ? " saint-collection-award" : ""}`}
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
@@ -53,7 +56,9 @@ export const CongratulationsModal = ({
         <div className="flex flex-col items-center justify-center py-8 px-4 space-y-6">
           {/* Animated Cross Logo or Saint Icon */}
           <div className="relative">
-            {saintIcon && !allSaintStories ? (
+            {saintId && !allSaintStories ? (
+              <SaintCardIcon saintId={saintId} fallbackUrl={saintIcon} className="!h-36 !w-36 saint-story-completed" />
+            ) : saintIcon && !allSaintStories ? (
               <img 
                 src={saintIcon} 
                 alt={`${saintPrefix} ${saintName}`}
@@ -93,11 +98,12 @@ export const CongratulationsModal = ({
               {allSaintStories
                 ? "You've read every saint's story!"
                 : saintName 
-                ? `You've learned about ${saintPrefix} ${saintName}!`
+                ? `You've completed the story of ${[saintPrefix, saintName].filter(Boolean).join(" ")}!`
                 : isNewStreak 
                   ? "You've completed today's reading!"
                   : "Reading completed!"}
             </p>
+            {saintId && !allSaintStories && <p className="text-base leading-relaxed text-muted-foreground pt-2">May this saint's faith and love inspire your journey with Christ.</p>}
             {allSaintStories && <>
               <p className="saint-award-title text-sm font-semibold pt-2">A heart inspired by the saints</p>
               <p className="text-base leading-relaxed text-muted-foreground pt-2">One story at a time, you made room in your heart for lives of faith, courage, and love. Your dedication is something beautiful.</p>
