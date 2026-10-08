@@ -1,19 +1,11 @@
 import golden from "@/assets/verse-backgrounds/golden.asset.json";
 import pilgrim from "@/assets/verse-backgrounds/pilgrim.asset.json";
 import midnight from "@/assets/verse-backgrounds/midnight.asset.json";
-import dawn from "@/assets/verse-backgrounds/dawn.jpg";
-import mountain from "@/assets/verse-backgrounds/mountain.jpg";
-import candlelight from "@/assets/verse-backgrounds/candlelight.jpg";
-import desert from "@/assets/verse-backgrounds/desert.jpg";
 
 export const VERSE_PHOTO_BACKGROUNDS: Record<string, string> = {
   golden: golden.url,
   pilgrim: pilgrim.url,
   midnight: midnight.url,
-  dawn,
-  mountain,
-  candlelight,
-  desert,
 };
 
 const loaded = new Map<string, Promise<HTMLImageElement>>();

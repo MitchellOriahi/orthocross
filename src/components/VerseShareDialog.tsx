@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Share2, Download, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { drawVerseTypography } from "@/components/verseImageTypography";
-import { VERSE_IMAGE_STYLES, dailyVerseStyleIndex } from "@/components/verseImageStyles";
+import { VERSE_IMAGE_STYLES } from "@/components/verseImageStyles";
 import { loadVerseBackground, preloadVerseBackgrounds } from "@/components/versePhotoBackgrounds";
 import { downloadVerseImage, shareVerseImage } from "@/components/verseImageSharing";
 
@@ -66,10 +66,9 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     if (startedVerse.current === verseKey) { void generateImage(selectedStyle); return; }
     startedVerse.current = verseKey;
     images.current = {};
-    const daily = dailyVerseStyleIndex();
-    setSelectedStyle(daily);
+    setSelectedStyle(0);
     setImageUrl(null);
-    void generateImage(daily);
+    void generateImage(0);
   }, [generateImage, open, verseReference, verseText]);
 
   const selectStyle = (index: number) => {
@@ -122,7 +121,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
             )}
           </div>
 
-          <div role="tablist" aria-label="Verse image styles" className="flex flex-wrap justify-center gap-2">
+          <div role="tablist" aria-label="Verse image styles" className="grid grid-cols-3 gap-2">
             {VERSE_IMAGE_STYLES.map((style, index) => (
               <Button
                 key={style.id}

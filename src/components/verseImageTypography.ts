@@ -1,4 +1,4 @@
-type StyleId = "golden" | "pilgrim" | "midnight" | "dawn" | "mountain" | "candlelight" | "desert";
+type StyleId = "golden" | "pilgrim" | "midnight";
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, width: number) {
   const lines: string[] = [];
@@ -30,12 +30,10 @@ export function drawVerseTypography(ctx: CanvasRenderingContext2D, size: number,
   const tokens = getComputedStyle(document.documentElement);
   const color = (name: string, opacity = 1) => `hsl(${tokens.getPropertyValue(`--verse-art-${name}`).trim()} / ${opacity})`;
   const ink = color("ink");
-  const lightStyles: StyleId[] = ["golden", "dawn", "candlelight"];
-  const accent = color(style === "pilgrim" || style === "mountain" ? "mist" : "gold");
-  const isLight = lightStyles.includes(style);
+  const accent = color(style === "pilgrim" ? "mist" : "gold");
   const shade = ctx.createLinearGradient(0, 0, 0, 1080);
-  shade.addColorStop(0, color("night", isLight ? 0.18 : 0.45));
-  shade.addColorStop(0.5, color("night", isLight ? 0.45 : 0.65));
+  shade.addColorStop(0, color("night", style === "golden" ? 0.18 : 0.45));
+  shade.addColorStop(0.5, color("night", style === "golden" ? 0.45 : 0.65));
   shade.addColorStop(1, color("night", 0.85));
   ctx.fillStyle = shade;
   ctx.fillRect(0, 0, 1080, 1080);
@@ -56,7 +54,7 @@ export function drawVerseTypography(ctx: CanvasRenderingContext2D, size: number,
     ctx.fillText(reference.toUpperCase(), x, y, 780);
   };
 
-  if (style === "golden" || style === "dawn" || style === "candlelight") {
+  if (style === "golden") {
     // A quiet, monumental serif quote floating over the sunset.
     cross(540, 210);
     ctx.textAlign = "center"; ctx.fillStyle = ink;
@@ -64,7 +62,7 @@ export function drawVerseTypography(ctx: CanvasRenderingContext2D, size: number,
     const top = 540 - block.lines.length * block.lineHeight / 2;
     block.lines.forEach((line, i) => ctx.fillText(line, 540, top + i * block.lineHeight));
     label(540, 860, "center");
-  } else if (style === "pilgrim" || style === "mountain") {
+  } else if (style === "pilgrim") {
     // An asymmetrical editorial composition with a large opening phrase.
     cross(128, 170);
     ctx.strokeStyle = color("mist", 0.55); ctx.lineWidth = 1;
