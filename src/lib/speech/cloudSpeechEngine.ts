@@ -115,7 +115,14 @@ export const cloudSpeechEngine: SpeechEngine = {
     currentAbort = abort;
     const get = (k: number) => {
       if (!blobs[k]) {
-        blobs[k] = fetchChunkAudio(chunks[k].text, voiceId, abort.signal);
+        const key = cacheKey(chunks[k].text, voiceId);
+        const cached = audioCache.get(key);
+        if (cached) {
+          blobs[k] = cached;
+        } else {
+          blobs[k] = fetchChunkAudio(chunks[k].text, voiceId, abort.signal);
+          cacheAudio(key, blobs[k]!);
+        }
         blobs[k]!.catch(() => {});
       }
       return blobs[k]!;
