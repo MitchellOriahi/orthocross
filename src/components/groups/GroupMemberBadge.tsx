@@ -75,8 +75,9 @@ export const GroupMemberBadge = ({
           <GroupCrown rank={rank as 1 | 2 | 3} consecutiveCount={consecutiveCount} size="sm" />
         )}
       </div>
-      <span className="shrink-0 whitespace-nowrap text-sm opacity-80">
-        {totalPoints} {totalPoints === 1 ? 'pt' : 'pts'}
+      <span className="shrink-0 whitespace-nowrap text-sm opacity-80 flex items-baseline gap-1 tabular-nums">
+        <span className="min-w-[3ch] text-right">{totalPoints}</span>
+        <span className="w-[3ch] text-left">{totalPoints === 1 ? 'pt' : 'pts'}</span>
       </span>
     </div>
   );
