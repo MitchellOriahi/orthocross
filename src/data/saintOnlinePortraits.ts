@@ -1,3 +1,15 @@
+import online_macarius_of_altai from "@/assets/saints/card-icons/macarius-of-altai-online.jpg.asset.json";
+import online_macarius_of_alexandria from "@/assets/saints/card-icons/macarius-of-alexandria-online.jpg.asset.json";
+import online_poemen from "@/assets/saints/card-icons/poemen-online.jpg.asset.json";
+import online_kaleb_of_axum from "@/assets/saints/card-icons/kaleb-of-axum-online.jpg.asset.json";
+import online_dmitry_donskoy from "@/assets/saints/card-icons/dmitry-donskoy-online.jpg.asset.json";
+import online_pulcheria from "@/assets/saints/card-icons/pulcheria-online.jpg.asset.json";
+import online_nonna from "@/assets/saints/card-icons/nonna-online.jpg.asset.json";
+import online_elizabeth from "@/assets/saints/card-icons/elizabeth-online.jpg.asset.json";
+import online_silas from "@/assets/saints/card-icons/silas-online.jpg.asset.json";
+import online_thrones from "@/assets/saints/card-icons/thrones-online.jpg.asset.json";
+import online_virtues from "@/assets/saints/card-icons/virtues-online.jpg.asset.json";
+import online_angels from "@/assets/saints/card-icons/angels-online.jpg.asset.json";
 import online_gabriel_of_bia_ystok from "@/assets/saints/card-icons/gabriel-of-bia-ystok-online.jpg.asset.json";
 import online_philaret_the_merciful from "@/assets/saints/card-icons/philaret-the-merciful-online.jpg.asset.json";
 import online_arsenius_the_great from "@/assets/saints/card-icons/arsenius-the-great-online.jpg.asset.json";
@@ -236,4 +248,17 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "diomedes-the-physician": { image_url: online_diomedes_the_physician.url, "image_source": "https://commons.wikimedia.org/wiki/File:FrescoDiomedes.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "cosmas-and-damian-of-rome": { image_url: online_cosmas_and_damian_of_rome.url, "image_source": "https://commons.wikimedia.org/wiki/File:Cosmas_of_Rome_by_O.Chirikov_(Muz.ist.relig).jpg", "image_license": "Public domain", "image_attribution": "Osip Semenovich Chirikov", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "cosmas-and-damian-of-asia": { image_url: online_cosmas_and_damian_of_asia.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%9A%D0%BE%D1%81%D0%BC%D0%B0_%D0%B8_%D0%94%D0%B0%D0%BC%D0%B8%D0%B0%D0%BD.jpg", "image_license": "Public domain", "image_attribution": "иконописател", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "macarius-of-altai": { image_url: online_macarius_of_altai.url, "image_source": "https://commons.wikimedia.org/wiki/File:Makari_Glucharew.jpg", "image_license": "Public domain", "image_attribution": "Unknown authorUnknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "macarius-of-alexandria": { image_url: online_macarius_of_alexandria.url, "image_source": "https://commons.wikimedia.org/wiki/File:Macarius_the_Younger_Full_Body_Length_Icon.jpg", "image_license": "Public domain", "image_attribution": "Солнцев, Фёдор Григорьевич", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "poemen": { image_url: online_poemen.url, "image_source": "https://commons.wikimedia.org/wiki/File:Hosios_Loukas_(nave,_vault_over_south-west_bay)_-_S.Poimen.jpg", "image_license": "Public domain", "image_attribution": "Unknown artistUnknown artist", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "kaleb-of-axum": { image_url: online_kaleb_of_axum.url, "image_source": "https://commons.wikimedia.org/wiki/File:Kaleb.jpg", "image_license": "CC BY-SA 3.0", "image_attribution": "Classical Numismatic Group", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "dmitry-donskoy": { image_url: online_dmitry_donskoy.url, "image_source": "https://commons.wikimedia.org/wiki/File:Dmitri_Donskoy.jpg", "image_license": "Public domain", "image_attribution": "Unknown.  Died over 100 years ago", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "pulcheria": { image_url: online_pulcheria.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%96%D0%B8%D1%82%D0%B8%D1%8F_%D0%A1%D0%B2%D1%8F%D1%82%D1%8B%D1%85_(1903-1911)_-_%D0%B8%D0%BA%D0%BE%D0%BD%D0%B0_01102_%D0%9F%D1%83%D0%BB%D1%8C%D1%85%D0%B5%D1%80%D0%B8%D1%8F.png", "image_license": "Public domain", "image_attribution": "Unknown authorUnknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "nonna": { image_url: online_nonna.url, "image_source": "https://commons.wikimedia.org/wiki/File:Nonna_by_O.Chirikov_(Hermitage).jpg", "image_license": "Public domain", "image_attribution": "Osip Semenovich Chirikov", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "elizabeth": { image_url: online_elizabeth.url, "image_source": "https://commons.wikimedia.org/wiki/File:Albertinelli_Visitation.jpg", "image_license": "Public domain", "image_attribution": "Mariotto Albertinelli (1474–1515), \"The Visitation\" (1503), oil on panel, Uffizi Gallery, Florence. Depicts Mary (left, blue mantle) and Elizabeth, mother of John the Baptist (right, older woman in white veil and gold mantle). Source: Wikimedia Commons, public domain.", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "silas": { image_url: online_silas.url, "image_source": "https://commons.wikimedia.org/wiki/File:Michael_V%C3%A1clav_Halbax_-_St_Paul_and_Silas_in_Prison_-_O_2303_-_National_Gallery_Prague_(cropped).jpg", "image_license": "Public domain", "image_attribution": "Michael Václav Halbax (c.1661–1711), detail (cropped) from \"St Paul and Silas in Prison\" (O 2303), National Gallery Prague, c.1700. Cropped detail used as the official depicted-subject image for Silas on Wikidata (Q312376). Source: Wikimedia Commons, public domain.", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "thrones": { image_url: online_thrones.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_troni.JPG", "image_license": "CC BY 3.0", "image_attribution": "Sailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "virtues": { image_url: online_virtues.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_virt%C3%B9.JPG", "image_license": "CC BY 3.0", "image_attribution": "Sailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "angels": { image_url: online_angels.url, "image_source": "https://commons.wikimedia.org/wiki/File:Nine_orders_of_angels.jpeg", "image_license": "Public domain", "image_attribution": "Unknown historical artist / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
