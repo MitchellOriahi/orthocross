@@ -2,6 +2,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { SaintCardIcon as Icon } from "@/data/saintCardIcons";
 import { resolveSaintCardIcon, useSaintIconOverrides } from "@/hooks/useSaintIconOverrides";
+import { useSaintReadingProgress } from "@/hooks/useSaintReadingProgress";
 
 export function SaintIconCircle({ icon, className }: { icon: Icon | null; className?: string }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
@@ -29,6 +30,7 @@ export function SaintIconCircle({ icon, className }: { icon: Icon | null; classN
 
 export function SaintCardIcon({ saintId, fallbackUrl, className }: { saintId: string; fallbackUrl?: string; className?: string }) {
   const { data } = useSaintIconOverrides();
+  const { completed } = useSaintReadingProgress();
   const icon = resolveSaintCardIcon(saintId, fallbackUrl, data);
-  return <SaintIconCircle key={icon?.image_url ?? "none"} icon={icon} className={className} />;
+  return <SaintIconCircle key={icon?.image_url ?? "none"} icon={icon} className={cn(className, completed.has(saintId) && "saint-story-completed")} />;
 }

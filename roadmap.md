@@ -1,6 +1,7 @@
 # Verse image sharing
 
 ## Saints
+- [x] Add persistent completed-story golden portrait rings and a heartfelt award for finishing every unique saint story; exact-identity and final-story rules pass tests, and simulated completion/reload/award flows pass in preview.
 - [x] Add Prayers-matched All/Eastern/Oriental toggles to every category heading; all seven categories verified in preview, combined filtering works, and nine roster tests pass.
 - [x] Populate category pages from the supplied roster with shared identities, original-style cards and short subtitles; verified subgroup/search/empty states and preserved biographies.
 - [x] Update all seven requested subgroup sets; verified two filled rows before shared carousel overflow, Angels without scrolling, and hidden saints preserved; 19 targeted tests pass.

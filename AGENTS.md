@@ -1,4 +1,5 @@
 # Architecture Rules
+- Track lifetime saint-story completion by exact roster ID in the existing private reading records and shared query cache; derive the all-stories award from unique roster IDs so same-name saints and cross-category memberships cannot inflate completion.
 
 - Pause the Saints display through a dedicated visibility selector without modifying the catalog or its presentation, so restoring visibility preserves the exact saved collection.
 - Keep the refined Saints browser separate from the preserved catalog and resolve displayed portraits through audited replaceable online provenance registries, so new imagery preserves identities, original portraits and saved classifications.

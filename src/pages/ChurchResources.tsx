@@ -28,6 +28,7 @@ import { prayersContent, PrayerDetail } from "@/data/prayersContent";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
 import { useMusic } from "@/contexts/MusicContext";
+import { useSaintReadingProgress } from "@/hooks/useSaintReadingProgress";
 
 type SectionType = "eastern" | "oriental" | "prayers" | "saints" | null;
 type PrayerFilterType = "all" | "Eastern" | "Oriental";
@@ -44,6 +45,8 @@ const ChurchResources = () => {
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
   const [showCongratulations, setShowCongratulations] = useState(false);
+  const [showAllSaintsAward, setShowAllSaintsAward] = useState(false);
+  const { completion } = useSaintReadingProgress();
   const [locatingChurches, setLocatingChurches] = useState(false);
   const saintsScrollRef = useRef(0);
 
@@ -197,15 +200,24 @@ const ChurchResources = () => {
         iconCredit={selectedSaint.iconCredit}
         onClose={closeSaintStory}
         showProgress={true}
-        onComplete={() => {
-          playSound('saint');
-          setShowCongratulations(true);
+        completing={completion.isPending}
+        onComplete={async () => {
+          if (completion.isPending) return;
+          try {
+            const { earnedAward } = await completion.mutateAsync(selectedSaint.id);
+            playSound('saint');
+            setShowAllSaintsAward(earnedAward);
+            setShowCongratulations(true);
+          } catch (error) {
+            toast({ description: error instanceof Error ? error.message : "Your progress could not be saved. Please try again.", variant: "destructive" });
+          }
         }}
       />
       <CongratulationsModal
         isOpen={showCongratulations}
         onClose={() => {
           setShowCongratulations(false);
+          setShowAllSaintsAward(false);
           closeSaintStory();
         }}
         streakDays={0}
@@ -213,6 +225,7 @@ const ChurchResources = () => {
         saintName={selectedSaint?.name}
         saintIcon={selectedSaint?.iconUrl}
         saintPrefix={selectedSaint?.prefix}
+        allSaintStories={showAllSaintsAward}
       />
       <BottomNavigation />
     </div>
