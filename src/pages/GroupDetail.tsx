@@ -420,21 +420,28 @@ export default function GroupDetail() {
                           consecutiveCount={member.consecutive_rank_count}
                           totalPoints={member.total_points}
                           className={canManage ? 'pr-12' : undefined}
-                          nameTag={member.user_id !== user?.id ? (
+                          pointsTag={
                             <button
                               type="button"
-                              onClick={(e) => { e.stopPropagation(); handleNudge(member.user_id, member.username); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (member.user_id === user?.id) {
+                                  toast({ title: "That's you!", description: "You can't nudge yourself.", duration: 4000 });
+                                  return;
+                                }
+                                handleNudge(member.user_id, member.username);
+                              }}
                               aria-label={`Nudge ${member.username} about their streak`}
-                              className={`text-xs px-2 py-0.5 rounded-full border shrink-0 transition-opacity ${
-                                index === 0 ? 'bg-[hsl(var(--podium-gold)/0.15)] text-[hsl(var(--podium-gold))] border-[hsl(var(--podium-gold)/0.4)]'
-                                : index === 1 ? 'bg-[hsl(var(--podium-silver)/0.15)] text-[hsl(var(--podium-silver))] border-[hsl(var(--podium-silver)/0.4)]'
-                                : index === 2 ? 'bg-[hsl(var(--podium-bronze)/0.15)] text-[hsl(var(--podium-bronze))] border-[hsl(var(--podium-bronze)/0.4)]'
-                                : 'bg-muted text-muted-foreground border-border'
+                              className={`text-xs px-2 py-0.5 rounded-full border shrink-0 transition-all ${
+                                index === 0 ? 'bg-[hsl(var(--podium-gold)/0.15)] text-[hsl(var(--podium-gold))] border-[hsl(var(--podium-gold)/0.4)] hover:shadow-[0_0_10px_2px_hsl(var(--podium-gold)/0.5)]'
+                                : index === 1 ? 'bg-[hsl(var(--podium-silver)/0.15)] text-[hsl(var(--podium-silver))] border-[hsl(var(--podium-silver)/0.4)] hover:shadow-[0_0_10px_2px_hsl(var(--podium-silver)/0.5)]'
+                                : index === 2 ? 'bg-[hsl(var(--podium-bronze)/0.15)] text-[hsl(var(--podium-bronze))] border-[hsl(var(--podium-bronze)/0.4)] hover:shadow-[0_0_10px_2px_hsl(var(--podium-bronze)/0.5)]'
+                                : 'bg-muted text-muted-foreground border-border hover:shadow-[0_0_10px_2px_hsl(var(--foreground)/0.25)]'
                               } ${nudgedToday.has(member.user_id) ? 'opacity-50' : ''}`}
                             >
                               {nudgedToday.has(member.user_id) ? 'Nudged' : 'Nudge'}
                             </button>
-                          ) : undefined}
+                          }
                           onClick={() => navigate(`/friends/${member.user_id}`)}
                         />
                         {canManage && member.user_id !== user?.id && member.role !== 'owner' && (
