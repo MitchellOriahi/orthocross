@@ -489,7 +489,7 @@ const ChurchResources = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="relative mb-4">
+                  <div className="relative -mt-2 mb-4">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                     <Input
                       type="search"
