@@ -52,15 +52,43 @@ export const saintPageRoster: SaintDetail[] = roster.map(record => {
   };
 });
 
+// Some subgroups are ranked rather than alphabetical: the angelic choirs are
+// listed highest first, as in the traditional heavenly hierarchy.
+const SUBGROUP_RANK_ORDER: Record<string, string[]> = {
+  "angels:Heavenly Orders": [
+    "seraphim",
+    "cherubim",
+    "thrones",
+    "dominions",
+    "virtues",
+    "powers",
+    "principalities",
+    "angels",
+  ],
+};
+
 export type SaintTraditionFilter = "all" | "Eastern" | "Oriental";
 
 export function getSaintPageList(category: SaintCategoryId | null, subgroup: string | null = null, query = "", tradition: SaintTraditionFilter = "all") {
   const needle = query.trim().toLocaleLowerCase();
-  return saintPageRoster.filter(saint =>
+  const rankOrder = subgroup
+    ? SUBGROUP_RANK_ORDER[`${category}:${subgroup}`] ?? SUBGROUP_RANK_ORDER[`:${subgroup}`]
+    : undefined;
+  const matches = saintPageRoster.filter(saint =>
     (tradition === "all" || saint.tradition === tradition || saint.tradition === "Eastern/Oriental") &&
     (!category || memberships.get(saint.id)?.some(item => item.category === category && (!subgroup || item.subgroup === subgroup))) &&
     (!needle || `${saint.prefix} ${saint.name}`.toLocaleLowerCase().includes(needle))
-  ).sort((a, b) => saintSortName(a.name).localeCompare(saintSortName(b.name), "en"));
+  );
+  return matches.sort((a, b) => {
+    if (rankOrder) {
+      const rankA = rankOrder.indexOf(a.id);
+      const rankB = rankOrder.indexOf(b.id);
+      if (rankA !== -1 && rankB !== -1) return rankA - rankB;
+      if (rankA !== -1) return -1;
+      if (rankB !== -1) return 1;
+    }
+    return saintSortName(a.name).localeCompare(saintSortName(b.name), "en");
+  });
 }
 
 export function getSaintMemberships(saintId: string): Membership[] {

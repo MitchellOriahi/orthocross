@@ -60,6 +60,13 @@ test("lists sort alphabetically ignoring honorifics", () => {
   expect(list[0].name).toBe("Abel");
   expect(list.map(s => saintSortName(s.name))).toEqual(list.map(s => saintSortName(s.name)).sort((a,b) => a.localeCompare(b,"en")));
 });
+test("Heavenly Orders lists the angelic ranks highest first", () => {
+  expect(getSaintPageList("angels", "Heavenly Orders").map(s => s.name)).toEqual([
+    "Seraphim", "Cherubim", "Thrones", "Dominions", "Virtues", "Powers", "Principalities", "Angels",
+  ]);
+  expect(getSaintPageList("angels", "Heavenly Orders", "", "Eastern").map(s => s.name)[0]).toBe("Seraphim");
+  expect(getSaintPageList("angels", "Heavenly Orders", "powers").map(s => s.name)).toEqual(["Powers"]);
+});
 test("the roster keeps supplied traditions and saved biographies intact", () => {
   expect(getSaintPageList("angels", "Archangels", "Raguel")[0].tradition).toBe("Oriental");
   expect(getSaintPageList("fathers-hierarchs", "Apostolic", "Irenaeus")[0].tradition).toBe("Eastern");
