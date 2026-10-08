@@ -384,6 +384,7 @@ const ChurchResources = () => {
                           <li>• Fast from midnight and confess your sins beforehand</li>
                           <li>• Approach with arms crossed over your chest and open your mouth to receive from the spoon</li>
                           <li>• Guests may usually receive antidoron (blessed bread), offered by the priest after the dismissal</li>
+                          <li>• In some traditions a cup of warm watered wine or juice is also offered alongside the antidoron</li>
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
