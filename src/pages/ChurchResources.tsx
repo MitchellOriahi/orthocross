@@ -400,6 +400,20 @@ const ChurchResources = () => {
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
+                    <AccordionItem value="tradition-differences">
+                      <AccordionTrigger>Small Differences by Tradition</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                          <li>• <span className="text-foreground font-medium">Greek:</span> standing is the norm through most of the service; head coverings are optional; prostrations are rare outside Lent</li>
+                          <li>• <span className="text-foreground font-medium">Russian and other Slavic:</span> expect frequent prostrations during Lent, women's head coverings commonly worn, and coffee or a meal shared after Liturgy</li>
+                          <li>• <span className="text-foreground font-medium">Antiochian:</span> sitting is more common, prostrations are kept in Lent, and the name-day and patronal feast of a parish carry special weight</li>
+                          <li>• <span className="text-foreground font-medium">Romanian:</span> more seated participation, and the antidoron is often broken and distributed by the faithful themselves</li>
+                          <li>• <span className="text-foreground font-medium">Georgian:</span> head coverings are widely observed, chanting and polyphony are distinctive, and the priest's blessing is received with cupped hands</li>
+                          <li>• <span className="text-foreground font-medium">American and OCA parishes:</span> customs blend from many homelands, so practice varies parish to parish — ask your own priest</li>
+                          <li>• The golden rule everywhere: watch what those around you do, or simply ask the priest — no one is offended by the question</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
                   </Accordion>
                 </CardContent>
               </Card>
