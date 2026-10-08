@@ -45,6 +45,17 @@ const ChurchResources = () => {
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [locatingChurches, setLocatingChurches] = useState(false);
+  const saintsScrollRef = useRef(0);
+
+  const closeSaintStory = () => {
+    setSelectedSaint(null);
+    setSelectedSection("saints");
+    const y = saintsScrollRef.current;
+    // Wait for the saints browser to un-hide and restore page height first.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => window.scrollTo(0, y));
+    });
+  };
   const handleFindChurchesNearMe = () => {
     // Apple devices default to Apple Maps; everyone else gets Google Maps.
     const isApple =
