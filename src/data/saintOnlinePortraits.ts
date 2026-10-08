@@ -1,3 +1,17 @@
+import online_apollos from "@/assets/saints/card-icons/apollos-online.jpg.asset.json";
+import online_hezekiah from "@/assets/saints/card-icons/hezekiah-online.jpg.asset.json";
+import online_josiah from "@/assets/saints/card-icons/josiah-online.jpg.asset.json";
+import online_mary_of_bethany from "@/assets/saints/card-icons/mary-of-bethany-online.jpg.asset.json";
+import online_rebecca from "@/assets/saints/card-icons/rebecca-online.jpg.asset.json";
+import online_nicodemus from "@/assets/saints/card-icons/nicodemus-online.jpg.asset.json";
+import online_lazarus_of_bethany from "@/assets/saints/card-icons/lazarus-of-bethany-online.jpg.asset.json";
+import online_the_repentant_thief from "@/assets/saints/card-icons/the-repentant-thief-online.jpg.asset.json";
+import online_joanna from "@/assets/saints/card-icons/joanna-online.jpg.asset.json";
+import online_joseph_the_betrothed from "@/assets/saints/card-icons/joseph-the-betrothed-online.jpg.asset.json";
+import online_zacharias from "@/assets/saints/card-icons/zacharias-online.jpg.asset.json";
+import online_longinus_the_centurion from "@/assets/saints/card-icons/longinus-the-centurion-online.jpg.asset.json";
+import online_mary_the_wife_of_clopas from "@/assets/saints/card-icons/mary-the-wife-of-clopas-online.jpg.asset.json";
+import online_susanna from "@/assets/saints/card-icons/susanna-online.jpg.asset.json";
 import online_quadratus_of_athens from "@/assets/saints/card-icons/quadratus-of-athens-online.jpg.asset.json";
 import online_kyranna_of_thessalonica from "@/assets/saints/card-icons/kyranna-of-thessalonica-online.jpg.asset.json";
 import online_dmitry_of_uglich from "@/assets/saints/card-icons/dmitry-of-uglich-online.jpg.asset.json";
@@ -194,4 +208,19 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "alexander-schmorell": { image_url: online_alexander_schmorell.url, "image_source": "https://commons.wikimedia.org/wiki/File:Gestapo_photo_of_Alexander_Schmorell.jpg", "image_license": "Public domain", "image_attribution": "Alexander Schmorell, 1943 identification photograph (only clearly reusable PD photo located; a casual pre-arrest portrait exists in press archives but lacks a confirmed free license); via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 
   "quadratus-of-athens": { image_url: online_quadratus_of_athens.url, "image_source": "https://commons.wikimedia.org/wiki/File:Quadratus_of_Athens_(Menologion_of_Basil_II).jpg", "image_license": "Public domain", "image_attribution": "Authors of Menologion of Basil II (circa 985 AC, Constantinople), Byzantine manuscript illuminators[1]:\nPantoleon with Georgios, Michael the Younger, Michael of Blachernae, Symeon, Symeon of Blachernae, Menas, and Nestor \n(Online on Vatican site) / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "apollos": { image_url: online_apollos.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%95%D0%BF%D0%B0%D1%84%D1%80%D0%BE%D0%B4%D0%B8%D1%82,_%D0%A1%D0%BE%D1%81%D1%84%D0%B5%D0%BD,_%D0%90%D0%BF%D0%BE%D0%BB%D0%BB%D0%BE%D1%81,_%D0%9A%D0%B8%D1%84%D0%B0_%D0%B8_%D0%9A%D0%B5%D1%81%D0%B0%D1%80%D1%8C_(Apollo_cropped).jpg", "image_license": "Public domain", "image_attribution": "Unknown authorUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "hezekiah": { image_url: online_hezekiah.url, "image_source": "https://commons.wikimedia.org/wiki/File:Ezechias-Hezekiah.png", "image_license": "Public domain", "image_attribution": "Guillaume Rouille / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "josiah": { image_url: online_josiah.url, "image_source": "https://commons.wikimedia.org/wiki/File:Depiction_of_King_Josiah_on_the_mosaic_of_the_genealogy_of_the_Virgin_Mary_in_the_Chora_Church,_in_the_north_dome_of_the_inner_narthex,_Istanbul,_Turkey_(14th_century).jpg", "image_license": "CC0", "image_attribution": "Alennov / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "mary-of-bethany": { image_url: online_mary_of_bethany.url, "image_source": "https://commons.wikimedia.org/wiki/File:Johannes_(Jan)_Vermeer_-_Christ_in_the_House_of_Martha_and_Mary_-_Google_Art_Project_(cropped).jpg", "image_license": "Public domain", "image_attribution": "Johannes Vermeer / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "rebecca": { image_url: online_rebecca.url, "image_source": "https://commons.wikimedia.org/wiki/File:018.Eliezer_and_Rebekah_at_the_Well.jpg", "image_license": "Public domain", "image_attribution": "Gustave Doré / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "nicodemus": { image_url: online_nicodemus.url, "image_source": "https://commons.wikimedia.org/wiki/File:Brooklyn_Museum_-_Nicodemus_(Nicod%C3%A8me)_-_James_Tissot_-_overall.jpg", "image_license": "Public domain", "image_attribution": "James Tissot / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "lazarus-of-bethany": { image_url: online_lazarus_of_bethany.url, "image_source": "https://commons.wikimedia.org/wiki/File:Eduard_von_Gebhardt_-_The_Raising_of_Lazarus_-_Google_Art_Project_(cropped).jpg", "image_license": "Public domain", "image_attribution": "Eduard von Gebhardt / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "the-repentant-thief": { image_url: online_the_repentant_thief.url, "image_source": "https://commons.wikimedia.org/wiki/File:Good_thief_(16th_c.,_Rostov_Kremlin).jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "photo: Shakko\n\n\n\n<a href=\"//commons.wikimedia.o / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "joanna": { image_url: online_joanna.url, "image_source": "https://commons.wikimedia.org/wiki/File:Joanna_wife_of_Chuza.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Unknown historical artist / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "joseph-the-betrothed": { image_url: online_joseph_the_betrothed.url, "image_source": "https://commons.wikimedia.org/wiki/File:Guido_Reni_-_St_Joseph_with_the_Infant_Jesus_-_WGA19304.jpg", "image_license": "Public domain", "image_attribution": "Guido Reni / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "zacharias": { image_url: online_zacharias.url, "image_source": "https://commons.wikimedia.org/wiki/File:Gospel_of_Luke_Chapter_1-2_(Bible_Illustrations_by_Sweet_Media).jpg", "image_license": "CC BY-SA 3.0", "image_attribution": "Jim Padgett / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "longinus-the-centurion": { image_url: online_longinus_the_centurion.url, "image_source": "https://commons.wikimedia.org/wiki/File:LonginusFyodorZubov.jpg", "image_license": "Public domain", "image_attribution": "Fyodor Zubov / Фёдор Зубов (? — 1689) / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "mary-the-wife-of-clopas": { image_url: online_mary_the_wife_of_clopas.url, "image_source": "https://commons.wikimedia.org/wiki/File:St._Mary_Cleophas_Met_DP890913.jpg", "image_license": "CC0", "image_attribution": "Jacques Callot / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "susanna": { image_url: online_susanna.url, "image_source": "https://commons.wikimedia.org/wiki/File:Santa_Susanna_disciple_of_Jesus_MyrrhbearerB.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Unknown historical artist / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
