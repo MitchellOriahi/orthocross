@@ -787,7 +787,23 @@ const Reading = () => {
     });
     return { words, verseTokens, wordVerse, ranges };
   }, [verses]);
-  const speech = useScriptureSpeech(speechData.words, `${book}|${chapter}|${currentTranslation.id}`);
+  // Continuous listening: finished chapter is marked complete and the next one plays.
+  const autoNextRef = useRef<string[] | null>(null);
+  const handleSpeechChapterEnd = async () => {
+    await markChapterComplete();
+    if (chapter < totalChapters) {
+      autoNextRef.current = speechData.words;
+      handleNextChapter();
+    }
+  };
+  const speech = useScriptureSpeech(speechData.words, `${book}|${chapter}|${currentTranslation.id}`, handleSpeechChapterEnd);
+  useEffect(() => {
+    const prev = autoNextRef.current;
+    if (!prev || loadingVerses || speechData.words.length === 0 || speechData.words === prev) return;
+    autoNextRef.current = null;
+    setCurrentVerseIndex(0);
+    speech.play();
+  }, [speechData.words, loadingVerses, speech.play]);
   const spokenUpToFor = (vi: number) => {
     if (!speech.active || speech.current < 0) return -1;
     const [a, b] = speechData.ranges[vi] ?? [0, -1];

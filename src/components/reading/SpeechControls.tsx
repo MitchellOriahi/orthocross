@@ -2,6 +2,7 @@ import { Pause, Play, Square, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import type { useScriptureSpeech } from "@/hooks/useScriptureSpeech";
 
 type Speech = ReturnType<typeof useScriptureSpeech>;
@@ -66,6 +67,13 @@ export const SpeechControls = ({ speech, disabled }: { speech: Speech; disabled?
                 </div>
                 <Slider value={[speech.rate]} min={0.5} max={1.75} step={0.25} onValueChange={(v) => speech.setRate(v[0])} />
               </div>
+              <label className="flex items-center justify-between gap-3">
+                <span className="space-y-0.5">
+                  <span className="block text-sm">Continuous listening</span>
+                  <span className="block text-xs text-muted-foreground">Marks each chapter complete, moves to the next, and keeps playing with the screen off.</span>
+                </span>
+                <Switch checked={speech.autoContinue} onCheckedChange={speech.setAutoContinue} />
+              </label>
               <p className="text-xs text-muted-foreground">Tap any word while listening to jump there.</p>
             </>
           )}
