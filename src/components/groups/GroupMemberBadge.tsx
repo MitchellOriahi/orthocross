@@ -53,6 +53,22 @@ export const GroupMemberBadge = ({
     }
   };
 
+  // Each top-three place gets its own ring and disc shade, so the picture
+  // circle never blends into its tinted row (silver especially).
+  const getAvatarStyles = () => {
+    switch (rank) {
+      case 1:
+        return { ring: "border-2 border-[hsl(var(--podium-gold))]", disc: "bg-[hsl(var(--podium-gold)/0.3)] text-foreground" };
+      case 2:
+        return { ring: "border-2 border-[hsl(var(--podium-silver))]", disc: "bg-[hsl(var(--podium-silver)/0.35)] text-foreground" };
+      case 3:
+        return { ring: "border-2 border-[hsl(var(--podium-bronze))]", disc: "bg-[hsl(var(--podium-bronze)/0.3)] text-foreground" };
+      default:
+        return { ring: "", disc: "" };
+    }
+  };
+  const avatarStyles = getAvatarStyles();
+
   return (
     <div 
       className={cn(
@@ -65,9 +81,9 @@ export const GroupMemberBadge = ({
       <div className={cn("w-8 h-8 shrink-0 flex items-center justify-center rounded-full font-bold", getRankBgColor())}>
         {rank || '-'}
       </div>
-      <Avatar className="h-10 w-10 shrink-0">
+      <Avatar className={cn("h-10 w-10 shrink-0", avatarStyles.ring)}>
         <AvatarImage src={profilePictureUrl || undefined} />
-        <AvatarFallback>{username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+        <AvatarFallback className={avatarStyles.disc}>{username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
       </Avatar>
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <span className="font-medium truncate">{username}</span>
