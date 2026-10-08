@@ -128,7 +128,32 @@ export function trimWav(buf: ArrayBuffer): Prepared {
   }
 }
 
+// Saved-on-device audio: once a section is generated it is kept across app
+// restarts, so re-listening never waits on the network again.
+const DISK_CACHE = "read-aloud-v1";
+const diskUrl = (text: string, voiceId: string) =>
+  `https://read-aloud.local/${encodeURIComponent(voiceId)}/${encodeURIComponent(text)}`;
+
+async function diskGet(text: string, voiceId: string): Promise<ArrayBuffer | null> {
+  try {
+    if (typeof caches === "undefined") return null;
+    const res = await (await caches.open(DISK_CACHE)).match(diskUrl(text, voiceId));
+    return res ? await res.arrayBuffer() : null;
+  } catch { return null; }
+}
+
+function diskPut(text: string, voiceId: string, buf: ArrayBuffer) {
+  try {
+    if (typeof caches === "undefined") return;
+    void caches.open(DISK_CACHE)
+      .then((c) => c.put(diskUrl(text, voiceId), new Response(buf, { headers: { "Content-Type": "audio/wav" } })))
+      .catch(() => {});
+  } catch { /* storage unavailable */ }
+}
+
 async function fetchChunkAudio(text: string, voiceId: string, signal: AbortSignal): Promise<Prepared> {
+  const saved = await diskGet(text, voiceId);
+  if (saved) return trimWav(saved);
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.access_token) throw new Error("Please sign in to use read aloud.");
   const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/read-aloud`;
@@ -142,7 +167,9 @@ async function fetchChunkAudio(text: string, voiceId: string, signal: AbortSigna
     if (res.status === 401) throw new Error("Please sign in to use read aloud.");
     throw new Error("The voice couldn't be prepared. Tap play to try again.");
   }
-  return trimWav(await res.arrayBuffer());
+  const buf = await res.arrayBuffer();
+  diskPut(text, voiceId, buf.slice(0));
+  return trimWav(buf);
 }
 
 // Cache of prepared chunk audio so replays, re-seeks, resumes and the next
@@ -170,7 +197,7 @@ const chapterChunks = (words: string[]) => buildChunks(words, 0, REST_SIZING, FI
 
 /** Prepares the chapter's first audio chunks in the background, before Play. */
 export function prefetchSpeech(words: string[], voiceId: string) {
-  for (const c of chapterChunks(words).slice(0, 2)) void cachedAudio(c.text, voiceId).catch(() => {});
+  for (const c of chapterChunks(words).slice(0, 4)) void cachedAudio(c.text, voiceId).catch(() => {});
 }
 
 /**
