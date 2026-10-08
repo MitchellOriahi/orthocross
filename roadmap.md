@@ -40,3 +40,9 @@
 - [ ] Donor tiers: Stripe webhook endpoint + signing secret (waiting on user), then resend the Oct 7 $1 invoice.paid event to backfill
 
 
+
+## Read aloud
+- [x] Continuous listening option: mark finished chapter complete, auto-play next chapter, keep playing with screen off.
+
+## Saint profile pictures
+- [ ] Give every roster saint a face-focused, gold-background Commons icon; make Michael and Raphael match Gabriel's style.
