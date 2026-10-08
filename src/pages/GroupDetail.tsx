@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, Settings as SettingsIcon, UserPlus, Trophy, Activity, Crown, ChevronDown, ChevronUp, MoreVertical, LogOut, UserMinus, Check, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,9 @@ export default function GroupDetail() {
   
   const { members, activities, joinRequests, isLoading, refetch } = useGroupDetail(groupId, user?.id);
   
-  const [group, setGroup] = useState<{ name: string; description: string | null; is_public: boolean } | null>(null);
+  const [group, setGroup] = useState<{ name: string; description: string | null; is_public: boolean; avatar_url?: string | null } | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -65,7 +67,7 @@ export default function GroupDetail() {
     const loadGroupInfo = async () => {
       const { data } = await supabase
         .from('groups')
-        .select('name, description, is_public')
+        .select('name, description, is_public, avatar_url')
         .eq('id', groupId)
         .single();
       
@@ -84,6 +86,33 @@ export default function GroupDetail() {
 
   const isActive = members.length >= 3;
   const canManage = currentUserRole === 'owner' || currentUserRole === 'admin';
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !groupId || !canManage) return;
+    if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
+      toast({ title: "Please choose an image under 5 MB", variant: "destructive" });
+      return;
+    }
+    setUploadingAvatar(true);
+    try {
+      const ext = file.name.split('.').pop() || 'jpg';
+      const path = `${groupId}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from('group-avatars').upload(path, file, { contentType: file.type });
+      if (upErr) throw upErr;
+      const { data: signed, error: urlErr } = await supabase.storage.from('group-avatars').createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+      if (urlErr || !signed) throw urlErr;
+      const { error: dbErr } = await supabase.from('groups').update({ avatar_url: signed.signedUrl }).eq('id', groupId);
+      if (dbErr) throw dbErr;
+      setGroup(g => g ? { ...g, avatar_url: signed.signedUrl } : g);
+      toast({ title: "Group picture updated" });
+    } catch {
+      toast({ title: "Couldn't update the group picture", variant: "destructive" });
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
 
   const handleLeaveGroup = async () => {
     if (!user || !groupId) return;
@@ -273,9 +302,21 @@ export default function GroupDetail() {
               <Button variant="ghost" size="icon" onClick={() => navigate('/friends')}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                <Users className="h-5 w-5 text-primary" />
-              </div>
+              <button
+                type="button"
+                aria-label={canManage ? "Change group picture" : "Group picture"}
+                disabled={!canManage || uploadingAvatar}
+                onClick={() => avatarInputRef.current?.click()}
+                className="relative w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden shrink-0 disabled:cursor-default enabled:hover:ring-2 enabled:hover:ring-primary/40"
+              >
+                {group?.avatar_url ? (
+                  <img src={group.avatar_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <Users className="h-5 w-5 text-primary" />
+                )}
+                {uploadingAvatar && <span className="absolute inset-0 bg-background/60" />}
+              </button>
+              <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
               <div>
                 <h1 className="text-xl font-bold">{group?.name || 'Group'}</h1>
                 <p className="text-xs text-muted-foreground">{members.length} members</p>

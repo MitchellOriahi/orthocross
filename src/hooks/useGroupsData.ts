@@ -6,6 +6,7 @@ export interface Group {
   id: string;
   name: string;
   description: string | null;
+  avatar_url?: string | null;
   is_public: boolean;
   created_by: string;
   created_at: string;
@@ -86,6 +87,7 @@ const loadUserGroups = async (userId: string): Promise<Group[]> => {
         id: group.id,
         name: group.name,
         description: group.description,
+        avatar_url: (group as any).avatar_url ?? null,
         is_public: group.is_public,
         created_by: group.created_by,
         created_at: group.created_at,

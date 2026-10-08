@@ -165,15 +165,16 @@ export const GroupsList = ({
                   }`}
                   onClick={() => onGroupClick(group.id)}
                 >
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Users className="h-5 w-5 text-primary" />
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden shrink-0">
+                    {group.avatar_url ? (
+                      <img src={group.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <Users className="h-5 w-5 text-primary" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="font-medium truncate">{group.name}</p>
-                      {group.user_role === 'owner' && (
-                        <Crown className="h-3 w-3 text-amber-400" />
-                      )}
                       {isPinned && (
                         <Pin className="h-3 w-3 text-primary fill-primary" />
                       )}
