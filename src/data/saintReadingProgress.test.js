@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { saintPageRoster } from "./saintPageRoster";
+import { saintPageRoster, getSaintStoryReturnMembership } from "./saintPageRoster";
 import { completedSaintIds, allSaintStoriesCompleted, earnsAllSaintsAward } from "./saintReadingProgress";
 
 test("completion belongs to the exact saint, not every saint sharing a first name", () => {
@@ -25,4 +25,12 @@ test("the award is earned on the final unique completion, not on rereading", () 
   expect(earnsAllSaintsAward(partial, all)).toBe(true);
   expect(earnsAllSaintsAward(all, all)).toBe(false);
   expect(earnsAllSaintsAward(new Set(), partial)).toBe(false);
+});
+
+test("John of Damascus completion returns to his Theologians subcategory even from a general search", () => {
+  expect(getSaintStoryReturnMembership("saint-john-damascus", null, null)).toEqual({ category: "fathers-hierarchs", subgroup: "Theologians" });
+});
+
+test("completion preserves a shared saint's selected subcategory", () => {
+  expect(getSaintStoryReturnMembership("seraphim", "angels", "Heavenly Orders")).toEqual({ category: "angels", subgroup: "Heavenly Orders" });
 });

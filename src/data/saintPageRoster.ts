@@ -95,6 +95,13 @@ export function getSaintMemberships(saintId: string): Membership[] {
   return memberships.get(saintId) ?? [];
 }
 
+export function getSaintStoryReturnMembership(saintId: string, category: SaintCategoryId | null, subgroup: string | null): Membership | undefined {
+  const entries = getSaintMemberships(saintId);
+  return entries.find(item => item.category === category && item.subgroup === subgroup)
+    ?? entries.find(item => item.category === category)
+    ?? entries[0];
+}
+
 export function getSaintPageSubgroups(category: SaintCategoryId) {
   return (CATEGORY_SUBCATEGORIES[category] ?? []).filter(subgroup => getSaintPageList(category, subgroup).length > 0);
 }

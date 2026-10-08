@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { SaintDetail } from "@/data/saintTypes";
 import { SAINT_CATEGORIES, type SaintCategoryId } from "@/data/saintCategories";
-import { getSaintMemberships, getSaintPageList, getSaintPageSubgroups, type SaintTraditionFilter } from "@/data/saintPageRoster";
+import { getSaintMemberships, getSaintStoryReturnMembership, getSaintPageList, getSaintPageSubgroups, type SaintTraditionFilter } from "@/data/saintPageRoster";
 import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
 import { SaintPortrait } from "./SaintPortrait";
 import { SaintCardIcon } from "./SaintCardIcon";
 import { SaintListCard } from "./SaintListCard";
 
-export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDetail) => void; onClose: () => void }) {
+export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: (saint: SaintDetail) => void; onClose: () => void; returnToSaint?: { saintId: string; sequence: number } | null }) {
   const [category, setCategory] = useState<SaintCategoryId | null>(null);
   // Landing and category searches are independent: backing out of a category
   // must not carry its text into the general Saints search, and vice versa.
@@ -25,6 +25,27 @@ export function SaintsBrowser({ onSelect, onClose }: { onSelect: (saint: SaintDe
   const subcategories = category ? getSaintPageSubgroups(category) : undefined;
   const saints = getSaintPageList(category, subcategory, query, tradition);
   useLayoutEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [category]);
+  useLayoutEffect(() => {
+    if (!returnToSaint) return;
+    const membership = getSaintStoryReturnMembership(returnToSaint.saintId, category, subcategory);
+    if (!membership) return;
+    const targetCategory = SAINT_CATEGORIES.find(item => item.id === membership.category);
+    if (!targetCategory) return;
+    setLandingQuery("");
+    setCategoryQuery("");
+    setCategory(targetCategory.id);
+    setSubcategory(membership.subgroup);
+    // Preserve the chosen tradition if it includes this saint.
+    if (!getSaintPageList(targetCategory.id, membership.subgroup, "", tradition).some(saint => saint.id === returnToSaint.saintId)) setTradition("all");
+    const frame = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.querySelector(`[data-saint-id="${CSS.escape(returnToSaint.saintId)}"]`)?.scrollIntoView({ block: "center", behavior: "instant" });
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+    // Run only on sticker dismissal, not subsequent category/filter changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [returnToSaint]);
 
   function back() {
     if (category) { setCategory(null); setTag(null); setSubcategory(null); setTradition("all"); } else onClose();
@@ -164,7 +185,7 @@ function SubcategoryPills({ items, active, onToggle }: { items: string[]; active
 }
 
 function SaintRows({ saints, onSelect }: { saints: SaintDetail[]; onSelect: (saint: SaintDetail) => void }) {
-  return <div className="space-y-2" aria-label="Saint list">{saints.map(saint => <SaintListCard key={saint.id} saint={saint} onSelect={onSelect} />)}</div>;
+  return <div className="space-y-2" aria-label="Saint list">{saints.map(saint => <div key={saint.id} data-saint-id={saint.id}><SaintListCard saint={saint} onSelect={onSelect} /></div>)}</div>;
 }
 
 // Landing-page search results: mini cards showing each match with its
