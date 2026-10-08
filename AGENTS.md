@@ -1,7 +1,7 @@
 # Architecture Rules
 
 - Pause the Saints display through a dedicated visibility selector without modifying the catalog or its presentation, so restoring visibility preserves the exact saved collection.
-- Keep the refined Saints browser separate from the preserved catalog, derive counts and tag thresholds from saved records, and resolve displayed portraits only through an audited replaceable Commons provenance registry so hidden lists and unsuitable artwork cannot leak into the new presentation.
+- Keep the refined Saints browser separate from the preserved catalog and resolve displayed portraits through audited replaceable online provenance registries, so new imagery preserves identities, original portraits and saved classifications.
 - Keep the supplied browser roster separate from preserved biographies, with category-qualified many-to-many memberships and shared identities, so cross-category saints are not duplicated or old classifications overwritten.
 - Apply Saints tradition filtering in the roster selector alongside category, subgroup and search; shared-tradition records belong to both filters so presentation never rewrites classifications.
 
