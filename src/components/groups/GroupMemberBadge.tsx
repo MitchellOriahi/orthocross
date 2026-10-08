@@ -83,7 +83,10 @@ export const GroupMemberBadge = ({
       <div className={cn("w-8 h-8 shrink-0 flex items-center justify-center rounded-full font-bold", getRankBgColor())}>
         {rank || '-'}
       </div>
-      <Avatar className={cn("h-10 w-10 shrink-0", avatarStyles.ring)}>
+      <Avatar
+        className="h-10 w-10 shrink-0"
+        style={{ borderWidth: 1.5, borderStyle: "solid", ...(avatarStyles.ring ?? {}) }}
+      >
         <AvatarImage src={profilePictureUrl || undefined} />
         <AvatarFallback className={avatarStyles.disc}>{username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
       </Avatar>
