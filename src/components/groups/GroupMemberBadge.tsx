@@ -54,17 +54,19 @@ export const GroupMemberBadge = ({
   };
 
   // Each top-three place gets its own ring and disc shade, so the picture
-  // circle never blends into its tinted row (silver especially).
+  // circle never blends into its tinted row (silver especially). The ring is a
+  // 1.5px hairline — lighter than a full border, but still opaque so it never
+  // disappears into a grey photo or the tinted row behind it.
   const getAvatarStyles = () => {
     switch (rank) {
       case 1:
-        return { ring: "border-[length:1.5px] border-[hsl(var(--podium-gold))]", disc: "bg-[hsl(var(--podium-gold)/0.3)] text-foreground" };
+        return { ring: { borderColor: "hsl(var(--podium-gold))" }, disc: "bg-[hsl(var(--podium-gold)/0.3)] text-foreground" };
       case 2:
-        return { ring: "border-[length:1.5px] border-[hsl(var(--podium-silver))]", disc: "bg-[hsl(var(--podium-silver)/0.35)] text-foreground" };
+        return { ring: { borderColor: "hsl(var(--podium-silver))" }, disc: "bg-[hsl(var(--podium-silver)/0.35)] text-foreground" };
       case 3:
-        return { ring: "border-[length:1.5px] border-[hsl(var(--podium-bronze))]", disc: "bg-[hsl(var(--podium-bronze)/0.3)] text-foreground" };
+        return { ring: { borderColor: "hsl(var(--podium-bronze))" }, disc: "bg-[hsl(var(--podium-bronze)/0.3)] text-foreground" };
       default:
-        return { ring: "", disc: "" };
+        return { ring: undefined, disc: "" };
     }
   };
   const avatarStyles = getAvatarStyles();
