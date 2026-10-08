@@ -1,5 +1,34 @@
+import online_adam from "@/assets/saints/card-icons/adam-online.jpg.asset.json";
+import online_abraham from "@/assets/saints/card-icons/abraham-online.jpg.asset.json";
+import online_isaac from "@/assets/saints/card-icons/isaac-online.jpg.asset.json";
+import online_jacob from "@/assets/saints/card-icons/jacob-online.jpg.asset.json";
+import online_joseph_the_patriarch from "@/assets/saints/card-icons/joseph-the-patriarch-online.jpg.asset.json";
+import online_job from "@/assets/saints/card-icons/job-online.jpg.asset.json";
+import online_amos from "@/assets/saints/card-icons/amos-online.jpg.asset.json";
+import online_malachi from "@/assets/saints/card-icons/malachi-online.jpg.asset.json";
+import online_the_three_holy_youths from "@/assets/saints/card-icons/the-three-holy-youths-online.jpg.asset.json";
+import online_joachim from "@/assets/saints/card-icons/joachim-online.jpg.asset.json";
+import online_martha_of_bethany from "@/assets/saints/card-icons/martha-of-bethany-online.jpg.asset.json";
+import online_salome from "@/assets/saints/card-icons/salome-online.jpg.asset.json";
+import online_zacchaeus from "@/assets/saints/card-icons/zacchaeus-online.jpg.asset.json";
+import online_joseph_of_arimathea from "@/assets/saints/card-icons/joseph-of-arimathea-online.jpg.asset.json";
 // Audited online portraits for previously uncovered roster identities.
 // Asset URLs are stored locally through Lovable Assets, never hotlinked.
 import type { SaintCardIcon } from "./saintCardIcons";
 
-export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {};
+export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
+  "adam": { image_url: online_adam.url, "image_source": "https://commons.wikimedia.org/wiki/File:John_in_Korovniki_church_-_patriarch_07_Adam_(c._1654,_Yaroslavl).jpg", "image_license": "Public domain", "image_attribution": "Forefathers tier icon, Church of St. John Chrysostom, Korovniki, Yaroslavl, c.1654 (anonymous); via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "abraham": { image_url: online_abraham.url, "image_source": "https://commons.wikimedia.org/wiki/File:John_in_Korovniki_church_-_patriarch_09_Abraham_(c._1654,_Yaroslavl).jpg", "image_license": "Public domain", "image_attribution": "Forefathers tier icon, Church of St. John Chrysostom, Korovniki, Yaroslavl, c.1654 (anonymous); via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "isaac": { image_url: online_isaac.url, "image_source": "https://commons.wikimedia.org/wiki/File:John_in_Korovniki_church_-_patriarch_10_Isaak_(c._1654,_Yaroslavl).jpg", "image_license": "Public domain", "image_attribution": "Forefathers tier icon, Church of St. John Chrysostom, Korovniki, Yaroslavl, c.1654 (anonymous); via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "jacob": { image_url: online_jacob.url, "image_source": "https://commons.wikimedia.org/wiki/File:John_in_Korovniki_church_-_patriarch_02_Jacob_(c._1654,_Yaroslavl).jpg", "image_license": "Public domain", "image_attribution": "Forefathers tier icon, Church of St. John Chrysostom, Korovniki, Yaroslavl, c.1654 (anonymous); via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "joseph-the-patriarch": { image_url: online_joseph_the_patriarch.url, "image_source": "https://commons.wikimedia.org/wiki/File:John_in_Korovniki_church_-_patriarch_05_Joseph_(c._1654,_Yaroslavl).jpg", "image_license": "Public domain", "image_attribution": "Forefathers tier icon, Church of St. John Chrysostom, Korovniki, Yaroslavl, c.1654 (anonymous); via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "job": { image_url: online_job.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%98%D0%BE%D0%B2_%D0%9C%D0%BD%D0%BE%D0%B3%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%B4%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9._%D0%A7%D1%82%D0%B5%D1%86.jpg", "image_license": "Public domain", "image_attribution": "North Russian (Mstera) icon of Righteous Job the Long-suffering; via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "amos": { image_url: online_amos.url, "image_source": "https://commons.wikimedia.org/wiki/File:Amos-prophet.jpg", "image_license": "Public domain", "image_attribution": "Prophet Amos, 18th-century Russian icon, iconostasis of Kizhi Monastery; via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "malachi": { image_url: online_malachi.url, "image_source": "https://commons.wikimedia.org/wiki/File:Malachi.jpg", "image_license": "Public domain", "image_attribution": "Prophet Malachi, 18th-century Russian icon, iconostasis of Kizhi Monastery; via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "the-three-holy-youths": { image_url: online_the_three_holy_youths.url, "image_source": "https://commons.wikimedia.org/wiki/File:Icon_of_the_Prophet_Daniel_and_the_Three_Holy_Youths.jpg", "image_license": "Public domain", "image_attribution": "Icon of the Prophet Daniel and the Three Holy Youths (16th-18th c.); via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "joachim": { image_url: online_joachim.url, "image_source": "https://commons.wikimedia.org/wiki/File:0670Ha._Hermitage_Museum_(Hall_143)._Icon_Meeting_of_Joachim_and_Anna_at_the_Golden_Gate.jpg", "image_license": "Public domain", "image_attribution": "Icon of the Meeting of Joachim and Anna at the Golden Gate, 1st half 17th c. (Arkhangelsk), State Hermitage Museum; via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "martha-of-bethany": { image_url: online_martha_of_bethany.url, "image_source": "https://commons.wikimedia.org/wiki/File:Marta_Martha_(titel_op_object)_Beroemde_vrouwen_uit_het_Nieuwe_Testament_(serietitel)_Icones_Illvstrivm_Feminarvm_Novi_Testamenti_(serietitel),_RP-P-1887-A-11784.jpg", "image_license": "CC0 1.0", "image_attribution": "Karel van Mallery after Maerten de Vos, engraving of Martha of Bethany, c.1595-1599, Rijksmuseum (CC0)", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "salome": { image_url: online_salome.url, "image_source": "https://commons.wikimedia.org/wiki/File:Maria_Salome,_objectno_PK.OP.00766.tif", "image_license": "Public domain", "image_attribution": "Karel van Mallery after Maerten de Vos, engraving of Mary Salome, c.1590-1595, Museum Plantin-Moretus", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "zacchaeus": { image_url: online_zacchaeus.url, "image_source": "https://commons.wikimedia.org/wiki/File:Monasterio_Griego_Ortodoxo_del_profeta_Eliseo_-_Sicomoro_de_Zaqueo_-_2.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Photo by ProtoplasmaKid, Orthodox icon of Zacchaeus in the sycamore tree, Greek Orthodox Monastery of the Prophet Elisha, Jericho; via Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "joseph-of-arimathea": { image_url: online_joseph_of_arimathea.url, "image_source": "https://commons.wikimedia.org/wiki/File:St_Joseph_of_Arimathea.jpg", "image_license": "Public domain", "image_attribution": "Russian icon of St. Joseph of Arimathea (19th c.), via ru.wikipedia / Wikimedia Commons (low resolution source)", "focus_x": 50, "focus_y": 50, "zoom": 1},
+};
