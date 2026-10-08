@@ -56,7 +56,7 @@ export function drawVerseTypography(ctx: CanvasRenderingContext2D, size: number,
     ctx.fillText(reference.toUpperCase(), x, y, 780);
   };
 
-  if (style === "golden") {
+  if (style === "golden" || style === "dawn" || style === "candlelight") {
     // A quiet, monumental serif quote floating over the sunset.
     cross(540, 210);
     ctx.textAlign = "center"; ctx.fillStyle = ink;
@@ -64,7 +64,7 @@ export function drawVerseTypography(ctx: CanvasRenderingContext2D, size: number,
     const top = 540 - block.lines.length * block.lineHeight / 2;
     block.lines.forEach((line, i) => ctx.fillText(line, 540, top + i * block.lineHeight));
     label(540, 860, "center");
-  } else if (style === "pilgrim") {
+  } else if (style === "pilgrim" || style === "mountain") {
     // An asymmetrical editorial composition with a large opening phrase.
     cross(128, 170);
     ctx.strokeStyle = color("mist", 0.55); ctx.lineWidth = 1;
