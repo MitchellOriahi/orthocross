@@ -1,7 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import { dailyVerseArtwork, initialVerseArtwork, replaceVerseArtwork, restoreVerseArtwork } from "./verseImageStyles";
+import { VERSE_ARTWORK_POOL } from "./verseImageStyles";
+import { VERSE_PHOTO_BACKGROUNDS } from "./versePhotoBackgrounds";
 
 describe("daily verse artwork", () => {
+  test("every daily or extra design has its own stored photo", () => {
+    expect(VERSE_ARTWORK_POOL).toHaveLength(12);
+    expect(new Set(VERSE_ARTWORK_POOL.map(style => VERSE_PHOTO_BACKGROUNDS[style.id])).size).toBe(12);
+    for (const style of VERSE_ARTWORK_POOL) expect(VERSE_PHOTO_BACKGROUNDS[style.id]).toStartWith("/__l5e/assets-v1/");
+  });
   test("all three designs change each local day and remain stable within it", () => {
     const first = dailyVerseArtwork("2026-10-08");
     const next = dailyVerseArtwork("2026-10-09");

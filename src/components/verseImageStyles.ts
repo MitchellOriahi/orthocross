@@ -11,15 +11,15 @@ export const EXTRA_IMAGE_LIMIT = 3;
 // Each column keeps its own typographic treatment while the scenery changes.
 export const VERSE_ARTWORK_POOL: readonly VerseImageStyle[] = [
   ...VERSE_IMAGE_STYLES,
-  { id: "mountain", title: "Mountain Dawn", treatment: "golden" },
+  { id: "mountain", title: "Sunlit Peaks", treatment: "golden" },
   { id: "river", title: "River Peace", treatment: "pilgrim" },
-  { id: "moon", title: "Moonlit Sky", treatment: "midnight" },
+  { id: "moon", title: "Twilight Hills", treatment: "midnight" },
   { id: "sea", title: "Ocean Light", treatment: "golden" },
   { id: "flowers", title: "Wildflower Joy", treatment: "pilgrim" },
-  { id: "aurora", title: "Northern Lights", treatment: "midnight" },
+  { id: "aurora", title: "Moonlit Peaks", treatment: "midnight" },
   { id: "desert", title: "Desert Stillness", treatment: "golden" },
-  { id: "forest", title: "Forest Mist", treatment: "pilgrim" },
-  { id: "night", title: "Evening Peaks", treatment: "midnight" },
+  { id: "forest", title: "Forest Sunlight", treatment: "pilgrim" },
+  { id: "night", title: "Crescent Night", treatment: "midnight" },
 ];
 
 export function verseArtworkDay(date = new Date()) {
