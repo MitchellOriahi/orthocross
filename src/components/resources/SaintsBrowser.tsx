@@ -74,7 +74,7 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
             <div role="listbox" aria-label="Saint search suggestions" className="absolute inset-x-0 top-full z-30 mt-1 max-h-96 overflow-y-auto rounded-lg border border-border bg-popover p-2 shadow-lg">
               {saints.length === 0
                 ? <p className="py-4 text-center text-sm text-muted-foreground">No saints found matching “{query}”</p>
-                : <SaintSearchRows saints={saints} onSelect={onSelect} />}
+                : <SaintSearchRows saints={saints} onSelect={onSelect} onClearQuery={() => setLandingQuery("")} />}
             </div>
           )}
         </div>
@@ -189,18 +189,19 @@ function SaintRows({ saints, onSelect }: { saints: SaintDetail[]; onSelect: (sai
 }
 
 // Landing-page search results: mini cards showing each match with its
-// category → subgroup path and tradition tag.
-function SaintSearchRows({ saints, onSelect }: { saints: SaintDetail[]; onSelect: (saint: SaintDetail) => void }) {
-  return <div className="space-y-2" aria-label="Saint search results">{saints.map(saint => <SaintSearchCard key={saint.id} saint={saint} onSelect={onSelect} />)}</div>;
+// category → subgroup path and tradition tag. Choosing one clears the search
+// text so the dropdown never reopens over the opened story.
+function SaintSearchRows({ saints, onSelect, onClearQuery }: { saints: SaintDetail[]; onSelect: (saint: SaintDetail) => void; onClearQuery: () => void }) {
+  return <div className="space-y-2" aria-label="Saint search results">{saints.map(saint => <SaintSearchCard key={saint.id} saint={saint} onSelect={onSelect} onClearQuery={onClearQuery} />)}</div>;
 }
 
-function SaintSearchCard({ saint, onSelect }: { saint: SaintDetail; onSelect: (saint: SaintDetail) => void }) {
+function SaintSearchCard({ saint, onSelect, onClearQuery }: { saint: SaintDetail; onSelect: (saint: SaintDetail) => void; onClearQuery: () => void }) {
   const paths = getSaintMemberships(saint.id).map(item => {
     const label = SAINT_CATEGORIES.find(category => category.id === item.category)?.label ?? item.category;
     return `${label} → ${item.subgroup}`;
   });
   return (
-    <Button variant="ghost" onClick={() => onSelect(saint)} className="relative h-auto w-full items-start justify-start gap-3 whitespace-normal rounded-lg border border-border p-3 text-left hover:border-primary hover:bg-accent">
+    <Button variant="ghost" onClick={() => { onClearQuery(); onSelect(saint); }} className="relative h-auto w-full items-start justify-start gap-3 whitespace-normal rounded-lg border border-border p-3 text-left hover:border-primary hover:bg-accent">
       <SaintCardIcon saintId={saint.id} fallbackUrl={saint.iconUrl} className="!h-12 !w-12" />
       <span className="min-w-0 flex-1">
         <span className="block pr-14 text-sm font-semibold leading-5 break-words">
