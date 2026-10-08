@@ -1,3 +1,4 @@
+import online_gorgonia from "@/assets/saints/card-icons/gorgonia-online.jpg.asset.json";
 import online_aquila from "@/assets/saints/card-icons/aquila-online.jpg.asset.json";
 import online_andrew_the_fool_for_christ from "@/assets/saints/card-icons/andrew-the-fool-for-christ-online.jpg.asset.json";
 import online_agapetus_the_unmercenary_physician from "@/assets/saints/card-icons/agapetus-the-unmercenary-physician-online.jpg.asset.json";
@@ -337,4 +338,6 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "andrew-the-fool-for-christ": { image_url: online_andrew_the_fool_for_christ.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrew_of_Constantinople.jpg", "image_license": "Public domain", "image_attribution": "Anonymous historical icon painter / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 
   "aquila": { image_url: online_aquila.url, "image_source": "https://commons.wikimedia.org/wiki/File:Jan_van_de_Venne_-_Saint_Paul_with_Saints_Aquila_and_Priscilla.jpg", "image_license": "CC0", "image_attribution": "Jan van der Venne / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "gorgonia": { image_url: online_gorgonia.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Gorgoniya.jpg", "image_license": "Public domain", "image_attribution": "Anonymous Byzantine illuminator, Gregory of Nazianzus manuscript gr. 510, folio 43v / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
