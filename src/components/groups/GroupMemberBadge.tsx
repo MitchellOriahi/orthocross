@@ -1,3 +1,4 @@
+import type React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GroupCrown } from "./GroupCrown";
 import { cn } from "@/lib/utils";
@@ -10,6 +11,7 @@ interface GroupMemberBadgeProps {
   totalPoints: number;
   onClick?: () => void;
   className?: string;
+  nameTag?: React.ReactNode;
 }
 
 export const GroupMemberBadge = ({
@@ -19,7 +21,8 @@ export const GroupMemberBadge = ({
   consecutiveCount,
   totalPoints,
   onClick,
-  className
+  className,
+  nameTag
 }: GroupMemberBadgeProps) => {
   const isTopThree = rank !== null && rank >= 1 && rank <= 3;
   
@@ -96,6 +99,7 @@ export const GroupMemberBadge = ({
         {isTopThree && (
           <GroupCrown rank={rank as 1 | 2 | 3} consecutiveCount={consecutiveCount} size="sm" />
         )}
+        {nameTag}
       </div>
       <span className="shrink-0 whitespace-nowrap text-sm opacity-80 flex items-baseline gap-1 tabular-nums">
         <span className="min-w-[3ch] text-right">{totalPoints}</span>

@@ -37,6 +37,26 @@ export default function GroupDetail() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [activityOpen, setActivityOpen] = useState(true);
   const [rankingOpen, setRankingOpen] = useState(true);
+  const [nudgedToday, setNudgedToday] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    if (!user) return;
+    const today = new Date().toISOString().slice(0, 10);
+    supabase.from("streak_nudges").select("receiver_id").eq("sender_id", user.id).eq("nudge_date", today)
+      .then(({ data }) => setNudgedToday(new Set((data ?? []).map((r) => r.receiver_id))));
+  }, [user]);
+  const handleNudge = async (toUserId: string, username: string) => {
+    if (nudgedToday.has(toUserId)) {
+      toast({ title: "Already nudged today", description: `You can nudge ${username} again tomorrow.`, duration: 4000 });
+      return;
+    }
+    const { data, error } = await supabase.functions.invoke("send-streak-nudge", { body: { to_user_id: toUserId } });
+    if (error || (!data?.ok && data?.error !== "already_nudged")) {
+      toast({ title: "Couldn't send nudge", variant: "destructive", duration: 4000 });
+      return;
+    }
+    setNudgedToday((prev) => new Set(prev).add(toUserId));
+    toast({ title: data?.ok ? "Nudge sent!" : "Already nudged today", duration: 4000 });
+  };
   const [currentUserRole, setCurrentUserRole] = useState<'owner' | 'admin' | 'member' | null>(null);
 
   useEffect(() => {
@@ -400,6 +420,21 @@ export default function GroupDetail() {
                           consecutiveCount={member.consecutive_rank_count}
                           totalPoints={member.total_points}
                           className={canManage ? 'pr-12' : undefined}
+                          nameTag={member.user_id !== user?.id ? (
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); handleNudge(member.user_id, member.username); }}
+                              aria-label={`Nudge ${member.username} about their streak`}
+                              className={`text-xs px-2 py-0.5 rounded-full border shrink-0 transition-opacity ${
+                                index === 0 ? 'bg-[hsl(var(--podium-gold)/0.15)] text-[hsl(var(--podium-gold))] border-[hsl(var(--podium-gold)/0.4)]'
+                                : index === 1 ? 'bg-[hsl(var(--podium-silver)/0.15)] text-[hsl(var(--podium-silver))] border-[hsl(var(--podium-silver)/0.4)]'
+                                : index === 2 ? 'bg-[hsl(var(--podium-bronze)/0.15)] text-[hsl(var(--podium-bronze))] border-[hsl(var(--podium-bronze)/0.4)]'
+                                : 'bg-muted text-muted-foreground border-border'
+                              } ${nudgedToday.has(member.user_id) ? 'opacity-50' : ''}`}
+                            >
+                              {nudgedToday.has(member.user_id) ? 'Nudged' : 'Nudge'}
+                            </button>
+                          ) : undefined}
                           onClick={() => navigate(`/friends/${member.user_id}`)}
                         />
                         {canManage && member.user_id !== user?.id && member.role !== 'owner' && (
