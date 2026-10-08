@@ -55,3 +55,4 @@
 ## Monthly leaderboard podium
 - [x] Keep every place circle visible: own ring shade per place, tuned for light and dark pages, with a page-coloured hairline between ring and picture; verified against grey and brown pictures in both themes, build clean.
 - [x] Group ranking rows: top-three picture ring lightened to a 1.5px hairline (shadow ring, since a real border is rounded up to a whole pixel and 2px read as too bold); verified gold/silver/bronze outlines still clearly visible on the group page, build clean.
+- [x] Group ranking rows: soft glow added to each top-three picture circle in its own metal — gold first, silver second, bronze third — ring and glow share one tone per place and all three differ; verified in preview, build clean.
