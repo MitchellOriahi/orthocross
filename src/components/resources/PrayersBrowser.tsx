@@ -8,7 +8,7 @@ import { PRAYER_CATEGORIES, PRAYER_PLACEMENTS, type PrayerCategoryId } from "@/d
 import { getPrayerList, getPrayerSubgroups } from "@/data/prayerCatalog";
 import peter from "@/assets/saints/display/peter-apostle.jpg.asset.json";
 import david from "@/assets/saints/card-icons/david-portrait.jpg.asset.json";
-import elijah from "@/assets/prayers/categories/daily_prayers_elijah.jpg.asset.json";
+import seraphim from "@/assets/prayers/categories/daily-prayers-seraphim.jpg.asset.json";
 import christ from "@/assets/prayers/categories/christ_pantocrator_sinai.jpg.asset.json";
 import supper from "@/assets/prayers/categories/holy_communion_last_supper.jpg.asset.json";
 import healing from "@/assets/prayers/categories/needs_healing_eustratius.jpg.asset.json";
@@ -17,7 +17,7 @@ import { PrayerListCard } from "./PrayerListCard";
 // Prayer artwork is independent of the Saints category portrait registry.
 const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string; author: string }> = {
   foundational: { url: peter.url, source: "St_Peter_Icon_Sinai_7th_century.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 7th century" },
-  daily: { url: elijah.url, source: "Elijah_Icon_Sinai_c1200.jpg", author: "Stephanos, Sinai, circa 1200" },
+  daily: { url: seraphim.url, source: "Seraphim_of_Sarov_(after_1903,_priv.coll).jpg", author: "Anonymous Russian icon painter, Seraphimo-Diveevsky Monastery workshop, after 1903" },
   "christ-saints": { url: christ.url, source: "Spas_vsederzhitel_sinay.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 6th century" },
   psalms: { url: david.url, source: "David-icon.jpg", author: "18th-century icon painter" },
   communion: { url: supper.url, source: "Icon_last_supper.jpg", author: "Unknown Russian icon painter, 1497" },
