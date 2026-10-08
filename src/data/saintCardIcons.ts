@@ -9,6 +9,55 @@ import i_seraphim from "@/assets/saints/card-icons/seraphim.jpg.asset.json";
 import i_cherubim from "@/assets/saints/card-icons/cherubim.jpg.asset.json";
 import i_guardian_angels from "@/assets/saints/card-icons/guardian-angels.jpg.asset.json";
 
+import i_abel from "@/assets/saints/card-icons/abel.jpg.asset.json";
+import i_seth from "@/assets/saints/card-icons/seth.jpg.asset.json";
+import i_enoch from "@/assets/saints/card-icons/enoch.jpg.asset.json";
+import i_melchizedek from "@/assets/saints/card-icons/melchizedek.jpg.asset.json";
+import i_samuel from "@/assets/saints/card-icons/samuel.jpg.asset.json";
+import i_elisha from "@/assets/saints/card-icons/elisha.jpg.asset.json";
+import i_isaiah from "@/assets/saints/card-icons/isaiah.jpg.asset.json";
+import i_jeremiah from "@/assets/saints/card-icons/jeremiah.jpg.asset.json";
+import i_ezekiel from "@/assets/saints/card-icons/ezekiel.jpg.asset.json";
+import i_hosea from "@/assets/saints/card-icons/hosea.jpg.asset.json";
+import i_anna from "@/assets/saints/card-icons/anna.jpg.asset.json";
+import i_john_the_baptist from "@/assets/saints/card-icons/john-the-baptist.jpg.asset.json";
+import i_mary_magdalene from "@/assets/saints/card-icons/mary-magdalene.jpg.asset.json";
+import i_simeon_the_god_receiver from "@/assets/saints/card-icons/simeon-the-god-receiver.jpg.asset.json";
+import i_anna_the_prophetess from "@/assets/saints/card-icons/anna-the-prophetess.jpg.asset.json";
+import i_peter_apostle from "@/assets/saints/card-icons/peter-apostle.jpg.asset.json";
+import i_dionysius_the_areopagite from "@/assets/saints/card-icons/dionysius-the-areopagite.jpg.asset.json";
+import i_clement_of_ohrid from "@/assets/saints/card-icons/clement-of-ohrid.jpg.asset.json";
+import i_herman_alaska from "@/assets/saints/card-icons/herman-alaska.jpg.asset.json";
+import i_saint_gregory_nyssa from "@/assets/saints/card-icons/saint-gregory-nyssa.jpg.asset.json";
+import i_saint_spyridon_trimythous from "@/assets/saints/card-icons/saint-spyridon-trimythous.jpg.asset.json";
+import i_nektarios_aegina from "@/assets/saints/card-icons/nektarios-aegina.jpg.asset.json";
+import i_dionysios_of_zakynthos from "@/assets/saints/card-icons/dionysios-of-zakynthos.jpg.asset.json";
+import i_luke_of_crimea from "@/assets/saints/card-icons/luke-of-crimea.jpg.asset.json";
+import i_mark_of_ephesus from "@/assets/saints/card-icons/mark-of-ephesus.jpg.asset.json";
+import i_tarasios from "@/assets/saints/card-icons/tarasios.jpg.asset.json";
+import i_saint_john_damascus from "@/assets/saints/card-icons/saint-john-damascus.jpg.asset.json";
+import i_severus_antioch from "@/assets/saints/card-icons/severus-antioch.jpg.asset.json";
+import i_leo_the_great from "@/assets/saints/card-icons/leo-the-great.jpg.asset.json";
+import i_paul_of_thebes from "@/assets/saints/card-icons/paul-of-thebes.jpg.asset.json";
+import i_euthymius_the_great from "@/assets/saints/card-icons/euthymius-the-great.jpg.asset.json";
+import i_procopius_of_ustyug from "@/assets/saints/card-icons/procopius-of-ustyug.jpg.asset.json";
+import i_silouan_athonite from "@/assets/saints/card-icons/silouan-athonite.jpg.asset.json";
+import i_joseph_the_hesychast from "@/assets/saints/card-icons/joseph-the-hesychast.jpg.asset.json";
+import i_seraphim_sarov from "@/assets/saints/card-icons/seraphim-sarov.jpg.asset.json";
+import i_ambrose_of_optina from "@/assets/saints/card-icons/ambrose-of-optina.jpg.asset.json";
+import i_john_of_rila from "@/assets/saints/card-icons/john-of-rila.jpg.asset.json";
+import i_catherine from "@/assets/saints/card-icons/catherine.jpg.asset.json";
+import i_anastasia_sirmium from "@/assets/saints/card-icons/anastasia-sirmium.jpg.asset.json";
+import i_hilarion_troitsky from "@/assets/saints/card-icons/hilarion-troitsky.jpg.asset.json";
+import i_tatiana_of_rome from "@/assets/saints/card-icons/tatiana-of-rome.jpg.asset.json";
+import i_agatha from "@/assets/saints/card-icons/agatha.jpg.asset.json";
+import i_shushanik from "@/assets/saints/card-icons/shushanik.jpg.asset.json";
+import i_tsar_nicholas_ii from "@/assets/saints/card-icons/tsar-nicholas-ii.jpg.asset.json";
+import i_peter_the_aleut from "@/assets/saints/card-icons/peter-the-aleut.jpg.asset.json";
+import i_tamar_of_georgia from "@/assets/saints/card-icons/tamar-of-georgia.jpg.asset.json";
+import i_nil_sorsky from "@/assets/saints/card-icons/nil-sorsky.jpg.asset.json";
+import i_george from "@/assets/saints/card-icons/george.jpg.asset.json";
+
 // Card icon for each roster saint (keyed by roster id). To replace an icon, change
 // only its entry here (or save it from /icon-tuner); the card layout is untouched.
 // Saints without an entry show the neutral cross placeholder.
@@ -33,4 +82,52 @@ export const SAINT_CARD_ICONS: Record<string, SaintCardIcon> = {
   "seraphim": { image_url: i_seraphim.url, image_source: "https://commons.wikimedia.org/wiki/File:The_Dormition_of_Mother_of_God_(Detail)_-_Seraph.jpg", image_license: "Public domain", image_attribution: "Onouphrios Cypriotes", focus_x: 52, focus_y: 42, zoom: 1.6 },
   "cherubim": { image_url: i_cherubim.url, image_source: "https://commons.wikimedia.org/wiki/File:Nine_orders_of_angels_cherubim.jpg", image_license: "Public domain", image_attribution: "Unknown iconographer", focus_x: 50, focus_y: 50, zoom: 1 },
   "guardian-angels": { image_url: i_guardian_angels.url, image_source: "https://commons.wikimedia.org/wiki/File:Guardian_Angel,_Old_Believers_icon_(19th_c,_priv.coll).jpg", image_license: "Public domain", image_attribution: "Anonymous Russian icon painter (before 1917)", focus_x: 50, focus_y: 22, zoom: 3.2 },
+  "abel": { image_url: i_abel.url, image_source: "https://commons.wikimedia.org/wiki/File:Abel_(Russia,_18_c.)_by_shakko.jpg", image_license: "CC BY-SA 3.0", image_attribution: "shakko", focus_x: 50, focus_y: 10, zoom: 2.5 },
+  "seth": { image_url: i_seth.url, image_source: "https://commons.wikimedia.org/wiki/File:Zhdan_Dementiyev_01_Seth_(1630).jpg", image_license: "CC BY-SA 3.0", image_attribution: "Unknown", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "enoch": { image_url: i_enoch.url, image_source: "https://commons.wikimedia.org/wiki/File:MHS_Eliasz_i_Enoch_XVII_w_p_(cropped).jpg", image_license: "Public domain", image_attribution: "Przykuta", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "melchizedek": { image_url: i_melchizedek.url, image_source: "https://commons.wikimedia.org/wiki/File:0172Hb._Forefather_Melchizedek,_2nd_half_of_the_19th_century.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "samuel": { image_url: i_samuel.url, image_source: "https://commons.wikimedia.org/wiki/File:Prophet_Samuel,_Russian_Icon,_private_gallery,_London.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "elisha": { image_url: i_elisha.url, image_source: "https://commons.wikimedia.org/wiki/File:Elisha-Eliseus.jpg", image_license: "Public domain", image_attribution: "18 century icon painter", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "isaiah": { image_url: i_isaiah.url, image_source: "https://commons.wikimedia.org/wiki/File:Icon_of_Isaiah_(19th_c,_priv.coll.).jpg", image_license: "Public domain", image_attribution: "Anonymous Russian icon painter (before 1917)Public domain image (according to PD-Russia-expired)", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "jeremiah": { image_url: i_jeremiah.url, image_source: "https://commons.wikimedia.org/wiki/File:Icon_of_Jeremiah_(17th_c.,_North_Russia,_priv._coll.).jpg", image_license: "Public domain", image_attribution: "AnonymousUnknown author", focus_x: 35, focus_y: 20, zoom: 2.0 },
+  "ezekiel": { image_url: i_ezekiel.url, image_source: "https://commons.wikimedia.org/wiki/File:Ezekiel-icon.jpg", image_license: "Public domain", image_attribution: "18 century icon painter", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "hosea": { image_url: i_hosea.url, image_source: "https://commons.wikimedia.org/wiki/File:Hosea.jpg", image_license: "Public domain", image_attribution: "18 century icon painter", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "anna": { image_url: i_anna.url, image_source: "https://commons.wikimedia.org/wiki/File:Prophetess_Anna_Icon.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 40, focus_y: 20, zoom: 2.0 },
+  "john-the-baptist": { image_url: i_john_the_baptist.url, image_source: "https://commons.wikimedia.org/wiki/File:Greek_School_-_Icon_of_Saint_John_the_Baptist_-_1102557_-_National_Trust.jpg", image_license: "Public domain", image_attribution: "anonymous", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "mary-magdalene": { image_url: i_mary_magdalene.url, image_source: "https://commons.wikimedia.org/wiki/File:Mary_Magdalene_by_Constantin_Tzanes_(17th_c.).jpg", image_license: "Public domain", image_attribution: "Konstantinos Tzanes", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "simeon-the-god-receiver": { image_url: i_simeon_the_god_receiver.url, image_source: "https://commons.wikimedia.org/wiki/File:Simeon_the_God-Receiver,_Old_Believer_(c.1800,_priv.coll).jpg", image_license: "Public domain", image_attribution: "Anonymous Russian icon painter (before 1917)Public domain image (according to PD-Russia-expired)", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "anna-the-prophetess": { image_url: i_anna_the_prophetess.url, image_source: "https://commons.wikimedia.org/wiki/File:Prophetess_Anna_Icon.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 40, focus_y: 20, zoom: 2.0 },
+  "peter-apostle": { image_url: i_peter_apostle.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Peter-Sinai_(6th_Century).jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 30, zoom: 2.0 },
+  "dionysius-the-areopagite": { image_url: i_dionysius_the_areopagite.url, image_source: "https://commons.wikimedia.org/wiki/File:Emmanuel_Tzanes_-_Dionysius_the_Areopagite_-_NG.M.01774_-_National_Museum_of_Art,_Architecture_and_Design.jpg", image_license: "Public domain", image_attribution: "Emmanuel Tzanes", focus_x: 50, focus_y: 15, zoom: 3 },
+  "clement-of-ohrid": { image_url: i_clement_of_ohrid.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Clement_of_Ohrid_(icon,_13th-14th_century).jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "herman-alaska": { image_url: i_herman_alaska.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Herman_of_Alaska.jpg", image_license: "CC BY-SA 3.0", image_attribution: "AlexEleon", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "saint-gregory-nyssa": { image_url: i_saint_gregory_nyssa.url, image_source: "https://commons.wikimedia.org/wiki/File:St._Gregory_of_Nyssa.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "saint-spyridon-trimythous": { image_url: i_saint_spyridon_trimythous.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Spyridon_Icon_from_Gorno_Statitsa_1720.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "nektarios-aegina": { image_url: i_nektarios_aegina.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Nektarios_of_Aegina_Icon.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "dionysios-of-zakynthos": { image_url: i_dionysios_of_zakynthos.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Dionysius_of_Zakynthos.jpg", image_license: "CC BY-SA 4.0", image_attribution: "Moralmonke", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "luke-of-crimea": { image_url: i_luke_of_crimea.url, image_source: "https://commons.wikimedia.org/wiki/File:Luke_of_Simferopol.jpg", image_license: "CC0", image_attribution: "Wikivorker", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "mark-of-ephesus": { image_url: i_mark_of_ephesus.url, image_source: "https://commons.wikimedia.org/wiki/File:Mark_of_Ephesus.jpg", image_license: "Public domain", image_attribution: "AnonymousUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "tarasios": { image_url: i_tarasios.url, image_source: "https://commons.wikimedia.org/wiki/File:Patriarch_Tarasios.jpg", image_license: "Public domain", image_attribution: "Johann Conrad Dorner (1809\u20131867)", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "saint-john-damascus": { image_url: i_saint_john_damascus.url, image_source: "https://commons.wikimedia.org/wiki/File:Icon_of_Saint_John_of_Damascus_-_Emmanouel_Tzanes.jpg", image_license: "Public domain", image_attribution: "Emmanouel Tzanes", focus_x: 50, focus_y: 10, zoom: 3 },
+  "severus-antioch": { image_url: i_severus_antioch.url, image_source: "https://commons.wikimedia.org/wiki/File:Severus_of_Antioch_(Coptic_icon).jpg", image_license: "Public domain", image_attribution: "AnonymousUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "leo-the-great": { image_url: i_leo_the_great.url, image_source: "https://commons.wikimedia.org/wiki/File:Greatleoone.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "paul-of-thebes": { image_url: i_paul_of_thebes.url, image_source: "https://commons.wikimedia.org/wiki/File:Paul_of_Thebes_icon_at_St_Nicholas_Anapausas_Monastery.jpg", image_license: "CC BY-SA 4.0", image_attribution: "Florificapis", focus_x: 50, focus_y: 15, zoom: 3.5 },
+  "euthymius-the-great": { image_url: i_euthymius_the_great.url, image_source: "https://commons.wikimedia.org/wiki/File:Euthymius_the_Great.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "procopius-of-ustyug": { image_url: i_procopius_of_ustyug.url, image_source: "https://commons.wikimedia.org/wiki/File:Procopius_of_Ustyug.jpg", image_license: "CC BY-SA 4.0", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "silouan-athonite": { image_url: i_silouan_athonite.url, image_source: "https://commons.wikimedia.org/wiki/File:Silouanicon.jpg", image_license: "Public domain", image_attribution: "Jack1956", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "joseph-the-hesychast": { image_url: i_joseph_the_hesychast.url, image_source: "https://commons.wikimedia.org/wiki/File:FullBodyIconOfElderJoseph.jpg", image_license: "CC BY-SA 4.0", image_attribution: "Moralmonke", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "seraphim-sarov": { image_url: i_seraphim_sarov.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Seraphim_of_Sarov.jpg", image_license: "CC BY-SA 4.0", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "ambrose-of-optina": { image_url: i_ambrose_of_optina.url, image_source: "https://commons.wikimedia.org/wiki/File:Ambrosius_of_Optina.jpg", image_license: "Public domain", image_attribution: "Original uploader was ru:\u0423\u0447\u0430\u0441\u0442\u043d\u0438\u043a:Lozman at ru.wikipedia", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "john-of-rila": { image_url: i_john_of_rila.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_John_of_Rila_Icon,_Odessa.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "catherine": { image_url: i_catherine.url, image_source: "https://commons.wikimedia.org/wiki/File:Catherine_of_Alexandria.jpg", image_license: "CC BY-SA 4.0", image_attribution: "St. Isaac of Syria Skete (Boscobel, Wisconsin)", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "anastasia-sirmium": { image_url: i_anastasia_sirmium.url, image_source: "https://commons.wikimedia.org/wiki/File:Anastasia_of_Sirmium.jpg", image_license: "Public domain", image_attribution: "AnonymousUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "hilarion-troitsky": { image_url: i_hilarion_troitsky.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Hilarion_(Troitsky),_archbishop_-_religious_icon_of_the_saint_new-martyr.jpg", image_license: "CC BY 4.0", image_attribution: "MKoala", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "tatiana-of-rome": { image_url: i_tatiana_of_rome.url, image_source: "https://commons.wikimedia.org/wiki/File:Tatiana_of_Rome.jpg", image_license: "Public domain", image_attribution: "AnonymousUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "agatha": { image_url: i_agatha.url, image_source: "https://commons.wikimedia.org/wiki/File:Agatha_orthodox_icon.jpg", image_license: "Public domain", image_attribution: "Original author unknown; originally uploaded by Geleyns at nl.wikipedia", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "shushanik": { image_url: i_shushanik.url, image_source: "https://commons.wikimedia.org/wiki/File:Shushanik.jpg", image_license: "Public domain", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "tsar-nicholas-ii": { image_url: i_tsar_nicholas_ii.url, image_source: "https://commons.wikimedia.org/wiki/File:St._Tsar_Nicholas_II_of_Russia.jpg", image_license: "CC BY-SA 4.0", image_attribution: "Unknown authorUnknown author", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "peter-the-aleut": { image_url: i_peter_the_aleut.url, image_source: "https://commons.wikimedia.org/wiki/File:Saint_Peter_the_Aleut.jpg", image_license: "CC BY 2.0", image_attribution: "Paul Drozdowski", focus_x: 50, focus_y: 20, zoom: 2.0 },
+  "tamar-of-georgia": { image_url: i_tamar_of_georgia.url, image_source: "https://commons.wikimedia.org/wiki/File:Tamar_icon_(56).jpg", image_license: "CC BY 2.0", image_attribution: "tomasz przechlewski from Sopot, Poland", focus_x: 30, focus_y: 20, zoom: 3 },
+  "nil-sorsky": { image_url: i_nil_sorsky.url, image_source: "https://commons.wikimedia.org/wiki/File:Nil_Sorsky_(20th_c.,_Atheism_museum).jpg", image_license: "Public domain", image_attribution: "Anonymous Russian icon painter (before 1917)Public domain image (according to PD-Russia-expired)", focus_x: 50, focus_y: 40, zoom: 3.5 },
+  "george": { image_url: i_george.url, image_source: "https://commons.wikimedia.org/wiki/File:Novgorod_George.jpg", image_license: "Public domain", image_attribution: "AnonymousUnknown author", focus_x: 50, focus_y: 15, zoom: 3 },
 };
