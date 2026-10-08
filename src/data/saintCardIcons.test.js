@@ -46,3 +46,18 @@ test("alternate roster spellings reuse the correct existing portraits and credit
     expect(saint.iconCredit).toEqual(original.iconCredit);
   }
 });
+
+test("newly sourced individual and collective saints have stored portraits", () => {
+  for (const id of [
+    "elizabeth", "silas", "aquila", "sarah-of-the-desert", "gorgonia",
+    "gregory-of-narek", "luke-the-stylite", "andrew-the-fool-for-christ",
+    "peter-of-alexandria", "clement-of-ancyra", "samuel-the-confessor",
+    "theophano", "peter-and-fevronia-of-murom", "armenian-genocide-martyrs",
+    "the-21-martyrs-of-libya", "barachiel", "jeremiel", "dominions",
+    "powers", "principalities", "four-living-creatures", "twenty-four-elders",
+  ]) {
+    const saint = saintPageRoster.find(entry => entry.id === id);
+    expect(saint?.iconUrl).toStartWith("/__l5e/assets-v1/");
+    expect(saint?.iconCredit?.source).toStartWith("https://");
+  }
+});
