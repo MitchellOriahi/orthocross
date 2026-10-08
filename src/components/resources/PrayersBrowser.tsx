@@ -6,12 +6,23 @@ import type { PrayerDetail } from "@/data/prayersContent";
 import type { PrayerTraditionFilter } from "@/data/prayerSearch";
 import { PRAYER_CATEGORIES, PRAYER_PLACEMENTS, type PrayerCategoryId } from "@/data/prayerCategories";
 import { getPrayerList, getPrayerSubgroups } from "@/data/prayerCatalog";
-import { SAINT_DISPLAY_ICONS } from "@/data/saintDisplayIcons";
+import peter from "@/assets/saints/display/peter-apostle.jpg.asset.json";
 import david from "@/assets/saints/card-icons/david-portrait.jpg.asset.json";
-import { SaintPortrait } from "./SaintPortrait";
+import elijah from "@/assets/prayers/categories/daily_prayers_elijah.jpg.asset.json";
+import christ from "@/assets/prayers/categories/christ_pantocrator_sinai.jpg.asset.json";
+import supper from "@/assets/prayers/categories/holy_communion_last_supper.jpg.asset.json";
+import healing from "@/assets/prayers/categories/needs_healing_eustratius.jpg.asset.json";
 import { PrayerListCard } from "./PrayerListCard";
 
-const THUMBNAILS: Record<PrayerCategoryId, string> = { foundational: "peter-apostle", daily: "saint-anthony-lrp", "christ-saints": "theotokos-seven-swords-lrp", psalms: "david", communion: "saint-nicholas-lrp", occasions: "archangel-michael" };
+// Prayer artwork is independent of the Saints category portrait registry.
+const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string; author: string }> = {
+  foundational: { url: peter.url, source: "St_Peter_Icon_Sinai_7th_century.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 7th century" },
+  daily: { url: elijah.url, source: "Elijah_Icon_Sinai_c1200.jpg", author: "Stephanos, Sinai, circa 1200" },
+  "christ-saints": { url: christ.url, source: "Spas_vsederzhitel_sinay.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 6th century" },
+  psalms: { url: david.url, source: "David-icon.jpg", author: "18th-century icon painter" },
+  communion: { url: supper.url, source: "Icon_last_supper.jpg", author: "Unknown Russian icon painter, 1497" },
+  occasions: { url: healing.url, source: "St_Eustratius_(cropped).jpg", author: "Unknown painter, Sinai, 12th century" },
+};
 
 export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange, pinnedIds, onPin }: { onSelect: (prayer: PrayerDetail) => void; onClose: () => void; tradition: PrayerTraditionFilter; onTraditionChange: (tradition: PrayerTraditionFilter) => void; pinnedIds: ReadonlySet<string>; onPin?: (id: string) => void }) {
   const [category, setCategory] = useState<PrayerCategoryId | null>(null);
@@ -61,13 +72,12 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
         </> : <>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {PRAYER_CATEGORIES.map(item => <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setCategoryQuery(""); setSubgroup(null); onTraditionChange("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
-              {item.id === "psalms" ? <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={david.url} alt="" decoding="async" className="h-full w-full object-cover object-[center_30%] saint-portrait-image" /></span> : <SaintPortrait saintId={THUMBNAILS[item.id]} className="w-full" />}
+              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className="h-full w-full object-cover object-[center_30%] saint-portrait-image" /></span>
               <span className="mt-2 min-h-10 w-full text-sm font-medium leading-5">{item.label}</span>
             </Button>)}
           </div>
           <details className="mt-4 text-xs text-muted-foreground"><summary className="cursor-pointer">Icon credits</summary><div className="mt-2 space-y-2 break-words">
-            {PRAYER_CATEGORIES.filter(item => item.id !== "psalms").map(item => { const icon = SAINT_DISPLAY_ICONS[THUMBNAILS[item.id]]; return icon ? <p key={item.id}><a href={icon.image_source} target="_blank" rel="noopener noreferrer" className="underline">{item.label}</a>{" · "}{icon.image_author}{" · "}{icon.image_license}</p> : null; })}
-            <p><a href="https://commons.wikimedia.org/wiki/File:David-icon.jpg" target="_blank" rel="noopener noreferrer" className="underline">Psalms and Canticles</a>{" · 18th-century icon painter · Public domain"}</p>
+            {PRAYER_CATEGORIES.map(item => { const artwork = THUMBNAILS[item.id]; return <p key={item.id}><a href={`https://commons.wikimedia.org/wiki/File:${encodeURIComponent(artwork.source)}`} target="_blank" rel="noopener noreferrer" className="underline">{item.label}</a>{" · "}{artwork.author}{" · Public domain"}</p>; })}
           </div></details>
         </>}
       </div>
