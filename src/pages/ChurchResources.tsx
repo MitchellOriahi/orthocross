@@ -462,7 +462,7 @@ const ChurchResources = () => {
                     <BookOpen className="w-5 h-5 text-primary" />
                     Prayers
                   </CardTitle>
-                  <div className="flex gap-2 mt-4">
+                  <div className="flex gap-2 mt-6">
                     <Button
                       variant={prayerFilter === "all" ? "default" : "outline"}
                       size="sm"
