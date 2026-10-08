@@ -58,7 +58,7 @@ export const GroupMemberBadge = ({
   const getAvatarStyles = () => {
     switch (rank) {
       case 1:
-        return { ring: "border-[1.5px] border-[hsl(var(--podium-gold))]", disc: "bg-[hsl(var(--podium-gold)/0.3)] text-foreground" };
+        return { ring: "border-[length:1.5px] border-[hsl(var(--podium-gold))]", disc: "bg-[hsl(var(--podium-gold)/0.3)] text-foreground" };
       case 2:
         return { ring: "border-[1.5px] border-[hsl(var(--podium-silver))]", disc: "bg-[hsl(var(--podium-silver)/0.35)] text-foreground" };
       case 3:
