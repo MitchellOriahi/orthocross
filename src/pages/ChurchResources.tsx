@@ -26,6 +26,7 @@ import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { SaintsBrowser } from "@/components/resources/SaintsBrowser";
 import { prayersContent, PrayerDetail } from "@/data/prayersContent";
+import { matchesPrayerQuery, matchesPrayerTradition } from "@/data/prayerSearch";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
 import { useMusic } from "@/contexts/MusicContext";
@@ -45,6 +46,7 @@ const ChurchResources = () => {
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
+  const [prayerQuery, setPrayerQuery] = useState("");
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [showAllSaintsAward, setShowAllSaintsAward] = useState(false);
   const [saintReturn, setSaintReturn] = useState<{ saintId: string; sequence: number } | null>(null);
@@ -115,11 +117,12 @@ const ChurchResources = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Always open the prayers section at the top of the page
+  // Always open the prayers section at the top of the page, with a fresh search
   useEffect(() => {
     if (selectedSection === "prayers" && !selectedPrayer) {
       window.scrollTo(0, 0);
     }
+    if (selectedSection !== "prayers") setPrayerQuery("");
   }, [selectedSection, selectedPrayer]);
 
 
@@ -486,20 +489,26 @@ const ChurchResources = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
+                  <div className="relative mb-4">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input
+                      type="search"
+                      placeholder="Search a prayer by name…"
+                      aria-label="Search prayers"
+                      value={prayerQuery}
+                      onChange={(event) => setPrayerQuery(event.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
                   <div className="space-y-2">
                     {/* Sort prayers: pinned first, then others, then filter */}
                     {(() => {
-                      // Filter prayers based on current filter
-                      const filteredPrayers = [...prayersContent].filter((prayer) => {
-                        if (prayerFilter === "all") return true;
-                        if (prayerFilter === "Eastern") {
-                          return prayer.tradition === "Eastern" || prayer.tradition === "Eastern/Oriental";
-                        }
-                        if (prayerFilter === "Oriental") {
-                          return prayer.tradition === "Oriental" || prayer.tradition === "Eastern/Oriental";
-                        }
-                        return false;
-                      });
+                      // Keep only the prayers matching the chosen tradition and the search text
+                      const filteredPrayers = [...prayersContent].filter(
+                        (prayer) =>
+                          matchesPrayerTradition(prayer, prayerFilter) &&
+                          matchesPrayerQuery(prayer, prayerQuery)
+                      );
 
                       // Separate pinned and unpinned prayers
                       const pinnedPrayers = filteredPrayers.filter(p => pinnedPrayerIds.has(p.id));
@@ -584,6 +593,16 @@ const ChurchResources = () => {
                           </div>
                         );
                       })}
+                    {prayerQuery.trim() &&
+                      !prayersContent.some(
+                        (prayer) =>
+                          matchesPrayerTradition(prayer, prayerFilter) &&
+                          matchesPrayerQuery(prayer, prayerQuery)
+                      ) && (
+                        <p className="py-6 text-center text-sm text-muted-foreground">
+                          No prayers found matching "{prayerQuery}"
+                        </p>
+                      )}
                   </div>
                 </CardContent>
               </Card>
