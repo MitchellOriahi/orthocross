@@ -33,16 +33,6 @@ export const PRAYER_CATEGORIES = [
     ]
   },
   {
-    "id": "psalms",
-    "label": "Psalms and Canticles",
-    "subgroups": [
-      "Psalter",
-      "Selected Psalms",
-      "Canticles",
-      "Beatitudes"
-    ]
-  },
-  {
     "id": "communion",
     "label": "Holy Communion and Liturgy",
     "subgroups": [
@@ -65,8 +55,18 @@ export const PRAYER_CATEGORIES = [
       "Blessings",
       "Feasts"
     ]
+  },
+  {
+    "id": "psalms",
+    "label": "Psalms and Canticles",
+    "subgroups": [
+      "Psalter",
+      "Selected Psalms",
+      "Canticles",
+      "Beatitudes"
+    ]
   }
-] as const;
+] as const;;
 
 export type PrayerCategoryId = typeof PRAYER_CATEGORIES[number]["id"];
 export interface PrayerPlacement { category: PrayerCategoryId; subgroup: string }
