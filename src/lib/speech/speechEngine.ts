@@ -33,16 +33,35 @@ export interface SpeechEngine {
 export const spokenForm = (word: string) =>
   word.replace(/\[[^\]]*\]/g, "").replace(/[*†‡¶§]/g, "").trim();
 
-interface Chunk {
+export interface Chunk {
   text: string;
   offsets: number[]; // char offset of each word in text
   wordIdx: number[]; // global word index of each word
 }
 
-const SENTENCE_END = /[.!?;:]["'”’)\]]*$/;
-const MAX_CHUNK_CHARS = 220;
+export interface ChunkSizing {
+  /** Break at a sentence end once the chunk is at least this long. */
+  target: number;
+  /** Break at a comma/clause end once the chunk is at least this long. */
+  soft: number;
+  /** Always break once the chunk reaches this length. */
+  max: number;
+}
 
-export function buildChunks(words: string[], from: number): Chunk[] {
+const SENTENCE_END = /[.!?;:]["'”’)\]]*$/;
+const CLAUSE_END = /[,—–]["'”’)\]]*$/;
+const DEFAULT_SIZING: ChunkSizing = { target: 41, soft: Infinity, max: 221 };
+
+/**
+ * Splits words into speakable chunks. `first` lets the opening chunk be
+ * shorter than the rest, so the voice can start sooner.
+ */
+export function buildChunks(
+  words: string[],
+  from: number,
+  sizing: ChunkSizing = DEFAULT_SIZING,
+  first: ChunkSizing = sizing,
+): Chunk[] {
   const chunks: Chunk[] = [];
   let cur: Chunk = { text: "", offsets: [], wordIdx: [] };
   for (let i = Math.max(0, from); i < words.length; i++) {
@@ -52,7 +71,13 @@ export function buildChunks(words: string[], from: number): Chunk[] {
     cur.offsets.push(cur.text.length);
     cur.wordIdx.push(i);
     cur.text += s;
-    if ((SENTENCE_END.test(s) && cur.text.length > 40) || cur.text.length > MAX_CHUNK_CHARS) {
+    const z = chunks.length === 0 ? first : sizing;
+    const len = cur.text.length;
+    if (
+      (SENTENCE_END.test(s) && len >= z.target) ||
+      (CLAUSE_END.test(s) && len >= z.soft) ||
+      len >= z.max
+    ) {
       chunks.push(cur);
       cur = { text: "", offsets: [], wordIdx: [] };
     }
