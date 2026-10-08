@@ -1,3 +1,17 @@
+import online_barachiel from "@/assets/saints/card-icons/barachiel-online.jpg.asset.json";
+import online_jeremiel from "@/assets/saints/card-icons/jeremiel-online.jpg.asset.json";
+import online_dominions from "@/assets/saints/card-icons/dominions-online.jpg.asset.json";
+import online_powers from "@/assets/saints/card-icons/powers-online.jpg.asset.json";
+import online_principalities from "@/assets/saints/card-icons/principalities-online.jpg.asset.json";
+import online_four_living_creatures from "@/assets/saints/card-icons/four-living-creatures-online.jpg.asset.json";
+import online_twenty_four_elders from "@/assets/saints/card-icons/twenty-four-elders-online.jpg.asset.json";
+import online_gregory_of_narek from "@/assets/saints/card-icons/gregory-of-narek-online.jpg.asset.json";
+import online_luke_the_stylite from "@/assets/saints/card-icons/luke-the-stylite-online.jpg.asset.json";
+import online_peter_of_alexandria from "@/assets/saints/card-icons/peter-of-alexandria-online.jpg.asset.json";
+import online_clement_of_ancyra from "@/assets/saints/card-icons/clement-of-ancyra-online.jpg.asset.json";
+import online_samuel_the_confessor from "@/assets/saints/card-icons/samuel-the-confessor-online.jpg.asset.json";
+import online_nicholas_of_pskov from "@/assets/saints/card-icons/nicholas-of-pskov-online.jpg.asset.json";
+import online_angel_of_the_lord from "@/assets/saints/card-icons/angel-of-the-lord-online.jpg.asset.json";
 import online_felicity from "@/assets/saints/card-icons/felicity-online.jpg.asset.json";
 import online_perpetua from "@/assets/saints/card-icons/perpetua-online.jpg.asset.json";
 import online_paisius_velichkovsky from "@/assets/saints/card-icons/paisius-velichkovsky-online.jpg.asset.json";
@@ -289,4 +303,19 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
 
   "felicity": { image_url: online_felicity.url, "image_source": "https://commons.wikimedia.org/wiki/File:Sanctae_Perpetua_Felicitas.jpg", "image_license": "Public domain", "image_attribution": "Sailko", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "perpetua": { image_url: online_perpetua.url, "image_source": "https://commons.wikimedia.org/wiki/File:Sanctae_Perpetua_Felicitas.jpg", "image_license": "Public domain", "image_attribution": "Sailko", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "barachiel": { image_url: online_barachiel.url, "image_source": "https://commons.wikimedia.org/wiki/File:El_Arc%C3%A1ngel_Baraquiel_esparciendo_flores,_de_Bartolom%C3%A9_Rom%C3%A1n_(Museo_del_Prado).jpg", "image_license": "Public domain", "image_attribution": "Bartolomé Román / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "jeremiel": { image_url: online_jeremiel.url, "image_source": "https://commons.wikimedia.org/wiki/File:Archangel_Jeremiel,_St_Michael_and_All_Angels,_Hughenden.jpg", "image_license": "CC BY-SA 2.0", "image_attribution": "John Salmon / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "dominions": { image_url: online_dominions.url, "image_source": "https://commons.wikimedia.org/wiki/File:Angelic_Hierarchy_in_Christianity,_St_Michael_and_All_Angels%27,_Somerton.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "Andrewrabbott / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "powers": { image_url: online_powers.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_potest%C3%A0.JPG", "image_license": "CC BY 3.0", "image_attribution": "\nSailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "principalities": { image_url: online_principalities.url, "image_source": "https://commons.wikimedia.org/wiki/File:Andrea_tafi_e_apollonio_(attr.),_gerarchie_angeliche_del_battistero_di_firenze,_dal_1225,_principati.JPG", "image_license": "CC BY 3.0", "image_attribution": "\nSailko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "four-living-creatures": { image_url: online_four_living_creatures.url, "image_source": "https://commons.wikimedia.org/wiki/File:Tetramorphe_Cherubim_aus_der_Vision_des_Ezechiel_(Cattedrale_di_Anagni)_%E2%80%94_13th_c..jpg", "image_license": "Public domain", "image_attribution": " / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "twenty-four-elders": { image_url: online_twenty_four_elders.url, "image_source": "https://commons.wikimedia.org/wiki/File:The_Vision_of_the_Throne_of_God_and_the_Twenty-Four_Elders_-_Google_Art_Project.jpg", "image_license": "Public domain", "image_attribution": "\nUnknown  – illuminator / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "gregory-of-narek": { image_url: online_gregory_of_narek.url, "image_source": "https://commons.wikimedia.org/wiki/File:Grigor_Narekatsi_1.jpg", "image_license": "Public domain", "image_attribution": "MarshallBagramyan / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "luke-the-stylite": { image_url: online_luke_the_stylite.url, "image_source": "https://commons.wikimedia.org/wiki/File:Luke_the_Stylites_(Menologion_of_Basil_II).jpg", "image_license": "Public domain", "image_attribution": "\n\n\n\nAuthors of Menologion of Basil II (circa 985 AC, Constantinople), Byzantine manuscript illuminators[1]:\nPantoleon with Georgios, Michael the Younger, Michael of Blachernae, Symeon, Symeon of Blachernae, Menas, and Nestor \n(Online on Vatican site)\n\n / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "peter-of-alexandria": { image_url: online_peter_of_alexandria.url, "image_source": "https://commons.wikimedia.org/wiki/File:Clemens_of_Rome,_Peter_of_Alex.,_Blaise_(16-17th_c.,_Rublev_museum)_by_shakko.jpg", "image_license": "CC BY-SA 4.0", "image_attribution": "shakko / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "clement-of-ancyra": { image_url: online_clement_of_ancyra.url, "image_source": "https://commons.wikimedia.org/wiki/File:Clement_of_Ohrid,_an_icon_from_the_second_half_of_the_14th_century_(2).jpg", "image_license": "Public domain", "image_attribution": " / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "samuel-the-confessor": { image_url: online_samuel_the_confessor.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D8%AF%D9%8A%D8%B1_%D8%A7%D9%84%D8%A3%D9%86%D8%A8%D8%A7_%D8%A5%D8%A8%D8%B1%D8%A7%D9%85_63.jpg", "image_license": "CC0", "image_attribution": "ديفيد عادل وهبة خليل 2 / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "nicholas-of-pskov": { image_url: online_nicholas_of_pskov.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%98%D0%BE%D0%B0%D0%BD%D0%BD_%D0%93%D1%80%D0%BE%D0%B7%D0%BD%D1%8B%D0%B9_%D1%81_%D0%BF%D1%80%D0%B8%D0%B1%D0%BB%D0%B8%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%BC%D0%B8.jpg", "image_license": "Public domain", "image_attribution": "Andrei Petrovich Ryabushkin / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "angel-of-the-lord": { image_url: online_angel_of_the_lord.url, "image_source": "https://commons.wikimedia.org/wiki/File:Pieter_Lastman_-_The_Angel_of_the_Lord_Preventing_Abraham_from_Sacrificing_his_Son_Isaac_-_WGA12483.jpg", "image_license": "Public domain", "image_attribution": "Pieter Lastman / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
