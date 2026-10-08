@@ -28,7 +28,7 @@ test("the award is earned on the final unique completion, not on rereading", () 
 });
 
 test("John of Damascus completion returns to his Theologians subcategory even from a general search", () => {
-  expect(getSaintStoryReturnMembership("saint-john-damascus", null, null)).toEqual({ category: "fathers", subgroup: "Theologians" });
+  expect(getSaintStoryReturnMembership("saint-john-damascus", null, null)).toEqual({ category: "fathers-hierarchs", subgroup: "Theologians" });
 });
 
 test("completion preserves a shared saint's selected subcategory", () => {
