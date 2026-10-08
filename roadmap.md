@@ -1,3 +1,8 @@
+# Prayers category browser
+- [ ] Import every supplied prayer with exact placements and placeholder-only text; preserve and deduplicate existing prayers.
+- [ ] Build Saints-inspired thumbnails, independent searches, tradition filters and ordered micro-category chips without changing other screens.
+- [ ] Test complete coverage, deduplication and filtering; verify category navigation, images and prayer details in the app.
+
 # Verse image sharing
 - [x] Rotate three designs and matching names daily; New Image adds up to three unique replacements per day's verse, preserved on reopening. Twelve licensed photos verified; eight tests and replacement/reload browser checks pass, with a clean build.
 
