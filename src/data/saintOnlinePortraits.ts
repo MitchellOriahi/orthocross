@@ -1,3 +1,5 @@
+import online_felicity from "@/assets/saints/card-icons/felicity-online.jpg.asset.json";
+import online_perpetua from "@/assets/saints/card-icons/perpetua-online.jpg.asset.json";
 import online_paisius_velichkovsky from "@/assets/saints/card-icons/paisius-velichkovsky-online.jpg.asset.json";
 import online_the_holy_innocents from "@/assets/saints/card-icons/the-holy-innocents-online.jpg.asset.json";
 import online_blandina_of_lyons from "@/assets/saints/card-icons/blandina-of-lyons-online.jpg.asset.json";
@@ -284,4 +286,7 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "emmelia": { image_url: online_emmelia.url, "image_source": "https://commons.wikimedia.org/wiki/File:St._Emmelia_Met_DP890979.jpg", "image_license": "CC0", "image_attribution": "Jacques Callot / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "juliana-of-lazarevo": { image_url: online_juliana_of_lazarevo.url, "image_source": "https://commons.wikimedia.org/wiki/File:Saint_Juliana_the_Merciful.jpg", "image_license": "CC BY-SA 2.0", "image_attribution": "Ted (Original) Wolfymoza (Commons upload) / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "theodora-of-arta": { image_url: online_theodora_of_arta.url, "image_source": "https://commons.wikimedia.org/wiki/File:Agia_Theodora_of_Arta_Fresco.jpg", "image_license": "Public domain", "image_attribution": "AnonymousUnknown author / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "felicity": { image_url: online_felicity.url, "image_source": "https://commons.wikimedia.org/wiki/File:Sanctae_Perpetua_Felicitas.jpg", "image_license": "Public domain", "image_attribution": "Sailko", "focus_x": 50, "focus_y": 50, "zoom": 1},
+  "perpetua": { image_url: online_perpetua.url, "image_source": "https://commons.wikimedia.org/wiki/File:Sanctae_Perpetua_Felicitas.jpg", "image_license": "Public domain", "image_attribution": "Sailko", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
