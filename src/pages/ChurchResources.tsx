@@ -207,7 +207,11 @@ const ChurchResources = () => {
             const { earnedAward } = await completion.mutateAsync(selectedSaint.id);
             playSound('saint');
             setShowAllSaintsAward(earnedAward);
-            setShowCongratulations(true);
+            if (earnedAward) {
+              setShowCongratulations(true);
+            } else {
+              closeSaintStory();
+            }
           } catch (error) {
             toast({ description: error instanceof Error ? error.message : "Your progress could not be saved. Please try again.", variant: "destructive" });
           }
