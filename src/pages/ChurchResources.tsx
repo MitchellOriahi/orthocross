@@ -311,37 +311,68 @@ const ChurchResources = () => {
                 </CardHeader>
                 <CardContent>
                   <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="before-entering">
-                      <AccordionTrigger>Before Entering</AccordionTrigger>
+                    <AccordionItem value="arriving">
+                      <AccordionTrigger>Arriving at Church</AccordionTrigger>
                       <AccordionContent>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Arrive early to prepare your heart for worship</li>
-                          <li>• Turn off or silence all electronic devices</li>
-                          <li>• Women traditionally cover their heads with a scarf</li>
-                          <li>• Men remove hats before entering</li>
+                          <li>• Arrive before the service begins to pray, light a candle, venerate icons, and settle in</li>
+                          <li>• Silence all electronic devices before entering</li>
+                          <li>• If you arrive late, enter quietly; if the priest stands before the Holy Doors, wait until he returns to the altar</li>
+                          <li>• Avoid leaving during the Gospel or the consecration; wait for the dismissal before departing</li>
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="upon-entering">
-                      <AccordionTrigger>Upon Entering</AccordionTrigger>
+                    <AccordionItem value="dress-code">
+                      <AccordionTrigger>What to Wear</AccordionTrigger>
                       <AccordionContent>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Make the sign of the cross and bow</li>
-                          <li>• Venerate icons by making the sign of the cross and kissing them</li>
-                          <li>• Light candles as an offering and prayer</li>
-                          <li>• Stand quietly or find your place</li>
+                          <li>• Dress modestly — the goal is to worship God, not to draw attention</li>
+                          <li>• Men: dress pants with a collared shirt or sweater; ties and coats encouraged but not required</li>
+                          <li>• Women: avoid tight, low-cut or sleeveless tops, open backs, and skirts above the knee; no denim, sweats, or shorts</li>
+                          <li>• Some women cover their heads in worship — usually optional, but a cherished expression of humility</li>
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="during-service">
+                    <AccordionItem value="sign-of-cross">
+                      <AccordionTrigger>The Sign of the Cross</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                          <li>• Join the thumb, index, and middle fingertips of your right hand; rest the other two fingers against your palm</li>
+                          <li>• Touch your forehead, then your abdomen, then your right shoulder, then your left</li>
+                          <li>• There are no strict rules about when to cross yourself — it is left to the individual</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="venerating-icons">
+                      <AccordionTrigger>Venerating Icons</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                          <li>• Cross yourself twice, kiss the icon (or bow toward it), then cross yourself a third time</li>
+                          <li>• Kiss the hands or feet of the saint pictured, not the face</li>
+                          <li>• You may also kiss the Gospel book, scroll, or cross held in the saint's hand</li>
+                          <li>• Do not venerate icons while wearing lipstick or lip balm — it damages them</li>
+                          <li>• Non-Orthodox visitors are never required to venerate; it is entirely voluntary</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="greeting-priest">
+                      <AccordionTrigger>Greeting the Priest</AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                          <li>• Traditionally, Orthodox faithful greet priests and bishops by kissing their right hand</li>
+                          <li>• Take the hand he extends as if to shake it, then kiss the back of it</li>
+                          <li>• This honors his holy office — don't just shake his hand; ask for his blessing</li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="seating-worship">
                       <AccordionTrigger>During the Service</AccordionTrigger>
                       <AccordionContent>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Stand for most of the service (sitting is allowed when appropriate)</li>
-                          <li>• Make the sign of the cross at designated times</li>
-                          <li>• Bow when the priest censes or blesses</li>
-                          <li>• Refrain from talking or unnecessary movement</li>
-                          <li>• Do not cross your legs when sitting</li>
+                          <li>• Stand for most of the service where standing is customary; sit or stand wherever you are comfortable</li>
+                          <li>• In churches without pews, taller worshippers may stand toward the back to avoid blocking others' view</li>
+                          <li>• Questions are welcome — whisper them, and wait until after Liturgy to socialize</li>
+                          <li>• You may notice bowing or prostrations; as a visitor you are not obligated to copy them</li>
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
@@ -349,33 +380,21 @@ const ChurchResources = () => {
                       <AccordionTrigger>Holy Communion</AccordionTrigger>
                       <AccordionContent>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Fast from midnight before receiving communion</li>
-                          <li>• Confess your sins beforehand</li>
-                          <li>• Approach with hands crossed over chest</li>
-                          <li>• Open your mouth wide to receive on a spoon</li>
-                          <li>• Consume antidoron (blessed bread) after</li>
+                          <li>• Only baptized and chrismated Orthodox Christians may receive Holy Communion</li>
+                          <li>• Fast from midnight and confess your sins beforehand</li>
+                          <li>• Approach with arms crossed over your chest and open your mouth to receive from the spoon</li>
+                          <li>• Guests may usually receive antidoron (blessed bread), offered by the priest after the dismissal</li>
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="dress-code">
-                      <AccordionTrigger>Dress Code</AccordionTrigger>
+                    <AccordionItem value="children">
+                      <AccordionTrigger>Bringing Children</AccordionTrigger>
                       <AccordionContent>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Dress modestly and respectfully</li>
-                          <li>• Women: Skirts/dresses below the knee, shoulders covered</li>
-                          <li>• Men: Long pants, collared shirts preferred</li>
-                          <li>• Avoid casual or revealing clothing</li>
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="general-conduct">
-                      <AccordionTrigger>General Conduct</AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 text-sm text-muted-foreground">
-                          <li>• Children should be taught to be reverent and quiet</li>
-                          <li>• Avoid leaving during the Gospel or consecration</li>
-                          <li>• Wait until dismissal before departing</li>
-                          <li>• Greet others quietly with "Christ is in our midst"</li>
+                          <li>• Children are always welcome, even on a first visit</li>
+                          <li>• If a child cries or grows noisy, step out until they calm down; many parishes have "cry rooms"</li>
+                          <li>• Avoid snacks for children older than 18 months, as all are preparing for Communion by fasting</li>
+                          <li>• If you bring toys, choose quiet ones</li>
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
