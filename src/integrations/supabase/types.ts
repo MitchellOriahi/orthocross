@@ -1310,6 +1310,30 @@ export type Database = {
         }
         Relationships: []
       }
+      streak_nudges: {
+        Row: {
+          created_at: string
+          id: string
+          nudge_date: string
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nudge_date?: string
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nudge_date?: string
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
       user_avatars: {
         Row: {
           beard_option: string
