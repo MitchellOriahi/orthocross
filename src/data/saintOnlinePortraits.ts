@@ -1,3 +1,4 @@
+import online_armenian_genocide_martyrs from "@/assets/saints/card-icons/armenian-genocide-martyrs-online.jpg.asset.json";
 import online_barachiel from "@/assets/saints/card-icons/barachiel-online.jpg.asset.json";
 import online_jeremiel from "@/assets/saints/card-icons/jeremiel-online.jpg.asset.json";
 import online_dominions from "@/assets/saints/card-icons/dominions-online.jpg.asset.json";
@@ -318,4 +319,6 @@ export const SAINT_ONLINE_PORTRAITS: Record<string, SaintCardIcon> = {
   "samuel-the-confessor": { image_url: online_samuel_the_confessor.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D8%AF%D9%8A%D8%B1_%D8%A7%D9%84%D8%A3%D9%86%D8%A8%D8%A7_%D8%A5%D8%A8%D8%B1%D8%A7%D9%85_63.jpg", "image_license": "CC0", "image_attribution": "ديفيد عادل وهبة خليل 2 / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "nicholas-of-pskov": { image_url: online_nicholas_of_pskov.url, "image_source": "https://commons.wikimedia.org/wiki/File:%D0%98%D0%BE%D0%B0%D0%BD%D0%BD_%D0%93%D1%80%D0%BE%D0%B7%D0%BD%D1%8B%D0%B9_%D1%81_%D0%BF%D1%80%D0%B8%D0%B1%D0%BB%D0%B8%D0%B6%D0%B5%D0%BD%D0%BD%D1%8B%D0%BC%D0%B8.jpg", "image_license": "Public domain", "image_attribution": "Andrei Petrovich Ryabushkin / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "angel-of-the-lord": { image_url: online_angel_of_the_lord.url, "image_source": "https://commons.wikimedia.org/wiki/File:Pieter_Lastman_-_The_Angel_of_the_Lord_Preventing_Abraham_from_Sacrificing_his_Son_Isaac_-_WGA12483.jpg", "image_license": "Public domain", "image_attribution": "Pieter Lastman / Wikimedia Commons", "focus_x": 50, "focus_y": 50, "zoom": 1},
+
+  "armenian-genocide-martyrs": { image_url: online_armenian_genocide_martyrs.url, "image_source": "https://commons.wikimedia.org/wiki/File:Stamp_of_Armenia_-_2017_-_Colnect_755422_-_Icon_of_the_Martyrs_of_the_Armenian_Genocide.jpeg", "image_license": "Public domain", "image_attribution": "Post of Armenia", "focus_x": 50, "focus_y": 50, "zoom": 1},
 };
