@@ -53,18 +53,19 @@ export const GroupMemberBadge = ({
     }
   };
 
-  // Each top-three place gets its own ring and disc shade, so the picture
+  // Each top-three place gets its own ring, glow and disc shade, so the picture
   // circle never blends into its tinted row (silver especially). The ring is a
   // 1.5px hairline drawn as a shadow ring: a real border gets rounded up to a
-  // whole pixel by the browser, and a full 2px reads as too heavy.
+  // whole pixel by the browser, and a full 2px reads as too heavy. The blurred
+  // shadows behind it add the place's own coloured glow.
   const getAvatarStyles = () => {
     switch (rank) {
       case 1:
-        return { ring: "0 0 0 1.5px hsl(var(--podium-gold))", disc: "bg-[hsl(var(--podium-gold)/0.3)] text-foreground" };
+        return { ring: "0 0 0 1.5px hsl(var(--podium-gold)), 0 0 8px 1px hsl(var(--podium-gold) / 0.55), 0 0 18px 5px hsl(var(--podium-gold) / 0.22)", disc: "bg-[hsl(var(--podium-gold)/0.3)] text-foreground" };
       case 2:
-        return { ring: "0 0 0 1.5px hsl(var(--podium-silver))", disc: "bg-[hsl(var(--podium-silver)/0.35)] text-foreground" };
+        return { ring: "0 0 0 1.5px hsl(var(--podium-silver)), 0 0 8px 1px hsl(var(--podium-silver) / 0.55), 0 0 18px 5px hsl(var(--podium-silver) / 0.22)", disc: "bg-[hsl(var(--podium-silver)/0.35)] text-foreground" };
       case 3:
-        return { ring: "0 0 0 1.5px hsl(var(--podium-bronze))", disc: "bg-[hsl(var(--podium-bronze)/0.3)] text-foreground" };
+        return { ring: "0 0 0 1.5px hsl(var(--podium-bronze)), 0 0 8px 1px hsl(var(--podium-bronze) / 0.55), 0 0 18px 5px hsl(var(--podium-bronze) / 0.22)", disc: "bg-[hsl(var(--podium-bronze)/0.3)] text-foreground" };
       default:
         return { ring: "", disc: "" };
     }
