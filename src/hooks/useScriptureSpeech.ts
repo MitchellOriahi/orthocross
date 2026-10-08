@@ -5,8 +5,14 @@ export type SpeechStatus = "idle" | "playing" | "paused" | "finished" | "fading"
 
 const VOICE_KEY = "ttsVoiceId";
 const RATE_KEY = "ttsRate";
+const AUTO_KEY = "ttsAutoContinue";
 
-export function useScriptureSpeech(words: string[], resetKey: string) {
+export function useScriptureSpeech(words: string[], resetKey: string, onChapterEnd?: () => void) {
+  const [autoContinue, setAutoContinueState] = useState(() => localStorage.getItem(AUTO_KEY) === "1");
+  const autoRef = useRef(autoContinue);
+  autoRef.current = autoContinue;
+  const onEndRef = useRef(onChapterEnd);
+  onEndRef.current = onChapterEnd;
   const [status, setStatus] = useState<SpeechStatus>("idle");
   const [current, setCurrent] = useState(-1);
   const [voices, setVoices] = useState<VoiceOption[]>([]);
@@ -67,6 +73,12 @@ export function useScriptureSpeech(words: string[], resetKey: string) {
         {
           onWord: (i) => setCurrent(i),
           onEnd: () => {
+            if (autoRef.current && onEndRef.current) {
+              setStatus("idle");
+              setCurrent(-1);
+              onEndRef.current();
+              return;
+            }
             setCurrent(wordsRef.current.length - 1);
             setStatus("finished");
             fadeTimers.current.push(
@@ -128,13 +140,15 @@ export function useScriptureSpeech(words: string[], resetKey: string) {
   // Backgrounding, locking, leaving: pause and keep position.
   useEffect(() => {
     const onHide = () => {
-      if (document.visibilityState === "hidden") pause();
+      // Continuous listening keeps playing with the screen off.
+      if (document.visibilityState === "hidden" && !autoRef.current) pause();
     };
     document.addEventListener("visibilitychange", onHide);
-    window.addEventListener("pagehide", pause);
+    const onPageHide = () => { if (!autoRef.current) pause(); };
+    window.addEventListener("pagehide", onPageHide);
     return () => {
       document.removeEventListener("visibilitychange", onHide);
-      window.removeEventListener("pagehide", pause);
+      window.removeEventListener("pagehide", onPageHide);
       speechEngine.stop();
       clearFades();
     };
@@ -152,7 +166,25 @@ export function useScriptureSpeech(words: string[], resetKey: string) {
     };
   }, [status]);
 
+  const setAutoContinue = (v: boolean) => {
+    setAutoContinueState(v);
+    localStorage.setItem(AUTO_KEY, v ? "1" : "0");
+  };
+
+  // Lock-screen controls so audio can keep going and be paused with the screen off.
+  useEffect(() => {
+    const ms = typeof navigator !== "undefined" ? navigator.mediaSession : undefined;
+    if (!ms) return;
+    try {
+      ms.playbackState = status === "playing" ? "playing" : status === "paused" ? "paused" : "none";
+      ms.setActionHandler("play", () => play());
+      ms.setActionHandler("pause", () => pause());
+      ms.setActionHandler("stop", () => stop());
+    } catch { /* unsupported */ }
+  }, [status, play, pause, stop]);
+
   return {
+    autoContinue, setAutoContinue,
     status, current, voices, voiceId, rate, error, autoScroll, supported, voicesLoaded,
     active: status !== "idle",
     play, pause, stop, seek, setRate, setVoiceId, clearError: () => setError(null),
