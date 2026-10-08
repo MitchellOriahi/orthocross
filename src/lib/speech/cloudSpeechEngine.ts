@@ -14,8 +14,8 @@ import {
 } from "./speechEngine";
 
 const VOICES: VoiceOption[] = [
-  { id: "female", name: "Mary — soft female", lang: "en" },
-  { id: "male", name: "Mark — warm male", lang: "en" },
+  { id: "female", name: "Sylvia — female voice", lang: "en" },
+  { id: "male", name: "Peter — male voice", lang: "en" },
 ];
 
 let generation = 0;
