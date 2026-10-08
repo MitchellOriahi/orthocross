@@ -1,8 +1,8 @@
 # Architecture Rules
 - Track lifetime saint-story completion by exact roster ID in the existing private reading records and shared query cache; derive the all-stories award from unique roster IDs so same-name saints and cross-category memberships cannot inflate completion.
 
-- Pause the Saints display through a dedicated visibility selector without modifying the catalog or its presentation, so restoring visibility preserves the exact saved collection.
-- Keep the refined Saints browser separate from the preserved catalog and resolve displayed portraits through audited replaceable online provenance registries, so new imagery preserves identities, original portraits and saved classifications.
+- Pause Saints via a visibility selector; keep the saved catalog and presentation intact.
+- Separate the Saints browser from the saved catalog; use audited replaceable portrait registries to preserve identities, icons and classifications.
 - Keep the supplied browser roster separate from preserved biographies, with category-qualified many-to-many memberships and shared identities, so cross-category saints are not duplicated or old classifications overwritten.
 - Apply Saints tradition filtering in the roster selector alongside category, subgroup and search; shared-tradition records belong to both filters so presentation never rewrites classifications.
 
@@ -25,3 +25,5 @@
 - Read scripture aloud through the cloudSpeechEngine (read-aloud edge function, Gemini TTS WAV per chunk) with word glow timed from each chunk's real audio duration; keep the device webSpeechEngine as a drop-in fallback behind the same SpeechEngine interface.
 - Plan cloud speech from canonical chapter chunks (short opener, longer rest) with edge-silence trimming, multi-chunk lookahead and two alternating audio elements, so playback starts fast, resumes from cache mid-chunk and has no gaps between chunks.
 - Continuous read-aloud chains chapters through the speech hook's chapter-end callback and skips the hidden-page pause only in that mode, so normal listening still pauses when backgrounded.
+
+- Merge prayer additions with preserved records in a shared catalog and use category-qualified placements plus a dedicated browser; shared prayers keep one ID, text, pins and highlights everywhere.

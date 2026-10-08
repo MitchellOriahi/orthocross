@@ -3,8 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Settings as SettingsIcon, Church, BookOpen, UserRound, Pin, ArrowLeft, MapPin, Loader2, Search } from "lucide-react";
+import { Settings as SettingsIcon, Church, BookOpen, UserRound, ArrowLeft, MapPin, Loader2 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,8 +24,8 @@ import { PrayerDetailView } from "@/components/resources/PrayerDetailView";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { saintsContent, SaintDetail } from "@/data/saintsContent";
 import { SaintsBrowser } from "@/components/resources/SaintsBrowser";
-import { prayersContent, PrayerDetail } from "@/data/prayersContent";
-import { matchesPrayerQuery, matchesPrayerTradition } from "@/data/prayerSearch";
+import type { PrayerDetail } from "@/data/prayersContent";
+import { PrayersBrowser } from "@/components/resources/PrayersBrowser";
 import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
 import { useMusic } from "@/contexts/MusicContext";
@@ -46,7 +45,6 @@ const ChurchResources = () => {
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
   const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
-  const [prayerQuery, setPrayerQuery] = useState("");
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [showAllSaintsAward, setShowAllSaintsAward] = useState(false);
   const [saintReturn, setSaintReturn] = useState<{ saintId: string; sequence: number } | null>(null);
@@ -122,7 +120,6 @@ const ChurchResources = () => {
     if (selectedSection === "prayers" && !selectedPrayer) {
       window.scrollTo(0, 0);
     }
-    if (selectedSection !== "prayers") setPrayerQuery("");
   }, [selectedSection, selectedPrayer]);
 
 
@@ -248,24 +245,6 @@ const ChurchResources = () => {
       <BottomNavigation />
     </div>
   );
-
-  if (selectedPrayer) {
-    return (
-      <div className="pb-nav">
-        <PrayerDetailView
-          name={selectedPrayer.name}
-          title={selectedPrayer.title}
-          content={selectedPrayer.content}
-          prayerId={selectedPrayer.id}
-          onClose={() => {
-            setSelectedPrayer(null);
-            setSelectedSection("prayers");
-          }}
-        />
-        <BottomNavigation />
-      </div>
-    );
-  }
 
   // Fullscreen expanded view for a selected section
   if (selectedSection) {
@@ -448,164 +427,16 @@ const ChurchResources = () => {
             )}
 
             {selectedSection === "prayers" && (
-              <Card className="shadow-elevated border-border/50">
-                <div className="flex items-center justify-between p-4 border-b border-border/50">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setSelectedSection(null)}
-                  >
-                    ← Back
-                  </Button>
-                </div>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-primary" />
-                    Prayers
-                  </CardTitle>
-                  <div className="flex gap-2 !mt-5">
-                    <Button
-                      variant={prayerFilter === "all" ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setPrayerFilter("all")}
-                    >
-                      All
-                    </Button>
-                    <Button
-                      variant={prayerFilter === "Eastern" ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setPrayerFilter("Eastern")}
-                      className={prayerFilter === "Eastern" ? "" : "text-blue-500 hover:text-blue-600 border-blue-500/50"}
-                    >
-                      Eastern
-                    </Button>
-                    <Button
-                      variant={prayerFilter === "Oriental" ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setPrayerFilter("Oriental")}
-                      className={prayerFilter === "Oriental" ? "" : "text-orange-500 hover:text-orange-600 border-orange-500/50"}
-                    >
-                      Oriental
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="relative -mt-2 mb-4">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                    <Input
-                      type="search"
-                      placeholder="Search a prayer by name…"
-                      aria-label="Search prayers"
-                      value={prayerQuery}
-                      onChange={(event) => setPrayerQuery(event.target.value)}
-                      className="pl-9"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    {/* Sort prayers: pinned first, then others, then filter */}
-                    {(() => {
-                      // Keep only the prayers matching the chosen tradition and the search text
-                      const filteredPrayers = [...prayersContent].filter(
-                        (prayer) =>
-                          matchesPrayerTradition(prayer, prayerFilter) &&
-                          matchesPrayerQuery(prayer, prayerQuery)
-                      );
-
-                      // Separate pinned and unpinned prayers
-                      const pinnedPrayers = filteredPrayers.filter(p => pinnedPrayerIds.has(p.id));
-                      const unpinnedPrayers = filteredPrayers.filter(p => !pinnedPrayerIds.has(p.id));
-
-                      // For "all" filter, interleave unpinned Eastern and Oriental
-                      let sortedUnpinned = unpinnedPrayers;
-                      if (prayerFilter === "all") {
-                        const easternOrthodox = unpinnedPrayers.filter(p => p.tradition === "Eastern/Oriental");
-                        const eastern = unpinnedPrayers.filter(p => p.tradition === "Eastern");
-                        const oriental = unpinnedPrayers.filter(p => p.tradition === "Oriental");
-                        
-                        // Start with Eastern/Oriental prayers
-                        sortedUnpinned = [...easternOrthodox];
-                        
-                        // Interleave Eastern and Oriental
-                        const maxLength = Math.max(eastern.length, oriental.length);
-                        for (let i = 0; i < maxLength; i++) {
-                          if (i < eastern.length) sortedUnpinned.push(eastern[i]);
-                          if (i < oriental.length) sortedUnpinned.push(oriental[i]);
-                        }
-                      }
-
-                      // Combine: all pinned prayers first, then unpinned
-                      return [...pinnedPrayers, ...sortedUnpinned];
-                    })()
-                      .map((prayer) => {
-                        const isPinned = pinnedPrayerIds.has(prayer.id);
-                        // Adjust tradition display based on active filter
-                        const displayTradition = prayerFilter === "all" 
-                          ? prayer.tradition 
-                          : prayer.tradition === "Eastern/Oriental" 
-                            ? prayerFilter 
-                            : prayer.tradition;
-                        return (
-                          <div key={prayer.id} className="relative group">
-                            <button
-                              onClick={() => setSelectedPrayer(prayer)}
-                              className={`w-full p-4 text-left rounded-lg border hover:border-primary hover:bg-accent transition-all relative ${
-                                isPinned ? 'border-primary bg-primary/5' : 'border-border'
-                              }`}
-                            >
-                              <div className="absolute top-2 right-2 flex items-center gap-2">
-                                <div className="text-xs px-2 py-1 rounded-md bg-primary/10 font-medium">
-                                  {displayTradition === "Oriental" && <span className="text-orange-500">Oriental</span>}
-                                  {displayTradition === "Eastern" && <span className="text-blue-500">Eastern</span>}
-                                  {displayTradition === "Eastern/Oriental" && (
-                                    <>
-                                      <span className="text-blue-500">Eastern</span>
-                                      <span className="text-primary">/</span>
-                                      <span className="text-orange-500">Oriental</span>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="font-semibold text-base pr-32">
-                                {isPinned && <Pin className="inline w-4 h-4 mr-2 text-primary fill-primary" />}
-                                {prayer.name === "Coptic 'Our Father'" ? (
-                                  <span className="inline-flex flex-col leading-tight">
-                                    <span>Coptic</span>
-                                    <span>"Our Father"</span>
-                                  </span>
-                                ) : (
-                                  prayer.name
-                                )}
-                              </div>
-                              <div className="text-sm text-muted-foreground mt-1">{prayer.title}</div>
-                            </button>
-                            {user && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute right-2 bottom-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handlePinPrayer(prayer.id);
-                                }}
-                              >
-                                <Pin className={`w-4 h-4 ${isPinned ? 'fill-primary text-primary' : ''}`} />
-                              </Button>
-                            )}
-                          </div>
-                        );
-                      })}
-                    {prayerQuery.trim() &&
-                      !prayersContent.some(
-                        (prayer) =>
-                          matchesPrayerTradition(prayer, prayerFilter) &&
-                          matchesPrayerQuery(prayer, prayerQuery)
-                      ) && (
-                        <p className="py-6 text-center text-sm text-muted-foreground">
-                          No prayers found matching "{prayerQuery}"
-                        </p>
-                      )}
-                  </div>
-                </CardContent>
-              </Card>
+              <div className={selectedPrayer ? "hidden" : undefined}>
+                <PrayersBrowser
+                  onSelect={setSelectedPrayer}
+                  onClose={() => setSelectedSection(null)}
+                  tradition={prayerFilter}
+                  onTraditionChange={setPrayerFilter}
+                  pinnedIds={pinnedPrayerIds}
+                  onPin={user ? handlePinPrayer : undefined}
+                />
+              </div>
             )}
 
             {selectedSection === "saints" && (
@@ -616,6 +447,14 @@ const ChurchResources = () => {
           </div>
         </main>
         {saintStoryOverlay}
+        {selectedPrayer && <PrayerDetailView
+          key={selectedPrayer.id}
+          name={selectedPrayer.name}
+          title={selectedPrayer.title}
+          content={selectedPrayer.content}
+          prayerId={selectedPrayer.id}
+          onClose={() => setSelectedPrayer(null)}
+        />}
         <BottomNavigation />
       </div>
     );

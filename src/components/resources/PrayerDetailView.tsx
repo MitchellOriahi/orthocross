@@ -76,7 +76,7 @@ export const PrayerDetailView = ({ name, title, content, onClose, prayerId }: Pr
         </Card>
 
         {/* Collapsible Explanation Section */}
-        <Collapsible open={isExplanationOpen} onOpenChange={setIsExplanationOpen}>
+        {explanationContent.length > 0 && <Collapsible open={isExplanationOpen} onOpenChange={setIsExplanationOpen}>
           <Card className="overflow-hidden">
             <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-accent transition-colors">
               <span className="text-lg font-semibold">Explanation</span>
@@ -117,7 +117,7 @@ export const PrayerDetailView = ({ name, title, content, onClose, prayerId }: Pr
               </div>
             </CollapsibleContent>
           </Card>
-        </Collapsible>
+        </Collapsible>}
       </main>
     </div>
   );
