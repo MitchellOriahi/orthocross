@@ -1,119 +1,87 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { DonationDialog } from "./DonationDialog";
+import { AppRatingDialog } from "./AppRatingDialog";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  applyDonorStatus, choosePrompt, loadState, markDismissed, markEvent, markShown,
+  saveState, sessionGuard, updateState, type DonorStatus, type PromptType,
+} from "@/lib/promptScheduler";
 
+/** Shared coordinator: shows at most one donation sticker OR rating prompt, only on the Board. */
 export const DonationPromptDialog = () => {
-  const [showPrompt, setShowPrompt] = useState(false);
+  const [active, setActive] = useState<PromptType | null>(null);
   const [showDonation, setShowDonation] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) return;
-
-    const checkShouldShowPrompt = async () => {
-      // Check if they're a monthly donor - never show prompt
-      const isMonthlyDonor = localStorage.getItem(`monthly_donor_${user.id}`);
-      if (isMonthlyDonor) {
-        // Verify with backend that they still have an active subscription
-        try {
-          const { data } = await supabase.functions.invoke("check-monthly-donation");
-          if (data?.hasActiveMonthlyDonation) {
-            return false;
-          } else {
-            // No longer a monthly donor, remove the flag
-            localStorage.removeItem(`monthly_donor_${user.id}`);
-          }
-        } catch (error) {
-          // If check fails, assume they're still a donor
-          return false;
+    if (!user || sessionGuard.used) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      let status: DonorStatus = "unknown";
+      try {
+        const { data, error } = await supabase.functions.invoke("check-monthly-donation");
+        if (!error && data && typeof data.hasActiveMonthlyDonation === "boolean") {
+          status = data.hasActiveMonthlyDonation ? "active" : "inactive";
         }
+      } catch { /* unknown -> no prompt */ }
+      if (cancelled || sessionGuard.used) return;
+      const now = Date.now();
+      let s = applyDonorStatus(loadState(user.id), status, now);
+      const legacy = localStorage.getItem(`last_one_time_donation_${user.id}`);
+      const legacyAt = legacy ? Date.parse(legacy) : NaN;
+      if (Number.isFinite(legacyAt) && (s.lastDonatedAt ?? 0) < legacyAt) s = { ...s, lastDonatedAt: legacyAt };
+      let choice = choosePrompt(s, now, status);
+      if (choice === "rating" && Capacitor.getPlatform() === "web") choice = null;
+      // Defer if another dialog is already open; never stack prompts.
+      if (choice && document.querySelector('[role="dialog"], [role="alertdialog"]')) choice = null;
+      if (choice) {
+        s = markEvent(s, `${choice}_eligible`, now);
+        s = markShown(s, choice, now);
+        sessionGuard.use();
+        setActive(choice);
       }
-
-      // Check if they made a one-time donation in the last month
-      const lastOneTimeDonation = localStorage.getItem(`last_one_time_donation_${user.id}`);
-      if (lastOneTimeDonation) {
-        const lastDonationDate = new Date(lastOneTimeDonation);
-        const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
-        if (lastDonationDate > oneMonthAgo) {
-          return false;
-        }
-      }
-
-      // Only show on Sundays
-      const today = new Date();
-      if (today.getDay() !== 0) {
-        return false;
-      }
-
-      // Only show once per Sunday
-      const todayKey = today.toISOString().slice(0, 10);
-      const lastPromptShown = localStorage.getItem(`donation_prompt_shown_${user.id}`);
-      if (lastPromptShown) {
-        const lastShownKey = new Date(lastPromptShown).toISOString().slice(0, 10);
-        if (lastShownKey === todayKey) {
-          return false;
-        }
-      }
-
-      return true;
-    };
-
-    const checkAndShow = async () => {
-      const shouldShow = await checkShouldShowPrompt();
-      if (shouldShow) {
-        // Mark that we're showing the prompt now
-        localStorage.setItem(`donation_prompt_shown_${user.id}`, new Date().toISOString());
-        // Small delay to ensure app is fully loaded
-        setTimeout(() => {
-          setShowPrompt(true);
-        }, 1500);
-      }
-    };
-
-    checkAndShow();
+      saveState(user.id, s);
+    }, 2500);
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [user]);
 
-  const handleDismiss = () => {
-    setShowPrompt(false);
+  const dismiss = (type: PromptType) => {
+    setActive(null);
+    if (user) updateState(user.id, s => markDismissed(s, type, Date.now()));
   };
 
   const handleDonate = () => {
-    setShowPrompt(false);
+    setActive(null);
+    if (user) updateState(user.id, s => markEvent(s, "donation_clicked", Date.now()));
     setShowDonation(true);
   };
 
   return (
     <>
-      <Dialog open={showPrompt} onOpenChange={(open) => !open && handleDismiss()}>
-        <DialogContent className="w-[92%] max-w-sm rounded-2xl sm:rounded-2xl p-6" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+      <Dialog open={active === "donation"} onOpenChange={(open) => !open && dismiss("donation")}>
+        <DialogContent className="w-[92%] max-w-sm rounded-2xl sm:rounded-2xl p-6">
           <DialogHeader className="text-center items-center space-y-4 pt-2">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-              <Heart className="w-8 h-8 text-primary" />
+            <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center">
+              <Heart className="w-7 h-7 text-primary" />
             </div>
-            <DialogTitle className="text-2xl">Support OrthoCross</DialogTitle>
-            <DialogDescription className="text-base flex flex-col items-center gap-1">
-              <span className="text-muted-foreground">— Acts 20:35 —</span>
-              <span>"It is more blessed to give than to receive."</span>
+            <DialogTitle className="text-2xl">Enjoying OrthoCross?</DialogTitle>
+            <DialogDescription className="text-base text-center">
+              If this app has helped you stay connected to Scripture and the Orthodox faith, consider supporting its continued growth.
             </DialogDescription>
           </DialogHeader>
-
-          <div className="flex gap-3 pt-4">
-            <Button variant="outline" onClick={handleDismiss} className="flex-1">
-              Maybe Later
-            </Button>
-            <Button variant="sacred" onClick={handleDonate} className="flex-1">
-              Donate
-            </Button>
+          <div className="flex flex-col gap-2 pt-4">
+            <Button variant="sacred" onClick={handleDonate} className="w-full">Support OrthoCross</Button>
+            <Button variant="ghost" onClick={() => dismiss("donation")} className="w-full text-muted-foreground">Maybe later</Button>
           </div>
         </DialogContent>
       </Dialog>
 
+      <AppRatingDialog open={active === "rating"} onClose={() => dismiss("rating")} />
       <DonationDialog open={showDonation} onOpenChange={setShowDonation} />
     </>
   );
