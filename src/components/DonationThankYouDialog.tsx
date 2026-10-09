@@ -26,9 +26,13 @@ export const DonationThankYouDialog = () => {
   const [status, setStatus] = useState<DonorStatus | null>(null);
   const [timedOut, setTimedOut] = useState(false);
 
-  const waitForConfirmation = useCallback(async (since: string) => {
+  const waitForConfirmation = useCallback(async (since: string, sessionId?: string | null) => {
     setOpen(true); setStatus(null); setTimedOut(false);
     for (let i = 0; i < 30; i++) {
+      // Confirm with Stripe directly: records the donation and sends the thank-you email right away
+      if (sessionId && i % 3 === 0) {
+        await supabase.functions.invoke("confirm-donation", { body: { sessionId } }).catch(() => null);
+      }
       const { data } = await supabase.functions.invoke("donor-status", { body: { since } });
       if (data?.latestDonation) { setStatus(data); window.dispatchEvent(new Event("orthocross:donors-changed")); return; }
       await new Promise((r) => setTimeout(r, 2000));
@@ -50,10 +54,11 @@ export const DonationThankYouDialog = () => {
     const since = new Date((started ? Date.parse(started) : Date.now() - 3_600_000) - 60_000).toISOString();
     localStorage.setItem(`donation_thank_you_${user.id}`, new Date().toISOString());
     if (result === "monthly_success") localStorage.setItem(`monthly_donor_${user.id}`, "true");
+    const sessionId = searchParams.get("session_id");
     searchParams.delete("donation");
     searchParams.delete("session_id");
     setSearchParams(searchParams, { replace: true });
-    waitForConfirmation(since);
+    waitForConfirmation(since, sessionId);
   }, [user, searchParams, setSearchParams, waitForConfirmation]);
 
   if (!open) return null;
