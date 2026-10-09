@@ -20,6 +20,8 @@ import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { DonationDialog } from "@/components/DonationDialog";
+import { loadState, updateState } from "@/lib/promptScheduler";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -31,6 +33,8 @@ const Settings = () => {
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDonationDialogOpen, setCancelDonationDialogOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
+  const [donationReminders, setDonationReminders] = useState(() => !loadState(user?.id).donationRemindersOff);
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
   const [activityVisible, setActivityVisible] = useState(true);
@@ -443,6 +447,31 @@ const Settings = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Support OrthoCross (permanent entry) */}
+          <Card className="shadow-elevated">
+            <CardHeader>
+              <CardTitle>Support OrthoCross</CardTitle>
+              <CardDescription>Give whenever you wish — it is always optional.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button variant="sacred" className="w-full" onClick={() => setSupportOpen(true)}>Support OrthoCross</Button>
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="font-medium">Occasional donation reminders</p>
+                  <p className="text-sm text-muted-foreground">A rare, gentle invitation after you've been reading for a while</p>
+                </div>
+                <Switch
+                  checked={donationReminders}
+                  onCheckedChange={(on) => {
+                    setDonationReminders(on);
+                    updateState(user?.id, s => ({ ...s, donationRemindersOff: !on }));
+                  }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+          <DonationDialog open={supportOpen} onOpenChange={setSupportOpen} />
 
           {/* Cancel Monthly Donation */}
           <Card className="shadow-elevated">
