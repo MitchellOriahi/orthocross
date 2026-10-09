@@ -1,4 +1,7 @@
 # Prayers category browser
+## Donator presentation
+- [ ] Show full names for non-anonymous donors, match the monthly top-three podium with muted remaining ranks, and open a complete lifetime-tier guide from donor tiers; verify privacy and interactions.
+
 - [x] Imported 124 new prayers; merged eight repeated entries, preserved all 12 originals and all supplied placements.
 - [x] Added Saints-inspired six-thumbnail browser, independent searches, tradition filters and all 31 ordered micro-category chips.
 - [x] 13 tests passed; verified six category pages, all 31 chips, six loaded thumbnails, search/Back/details and phone/computer layouts; compile clean.
