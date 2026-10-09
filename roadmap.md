@@ -1,4 +1,8 @@
 # Prayers category browser
+## Tier colors and friend donation alerts
+- [x] Match all donor portrait rings/glows and crowns to their tier tags; real donor and four sample tiers verified, including fourth place.
+- [x] Notify friends of confirmed non-anonymous donations using private in-app alerts and idempotent native push; payment handlers deployed.
+- [x] Four notification tests and ten existing donor tests passed; preview has no runtime errors and build passes. Actual payment-to-device delivery remains untested; no real payment or friend push was sent.
 ## Donation billing options
 - [x] Web donations now offer Monthly (selected by default) and Yearly; checkout deployed, 11 tests pass, selection and yearly request verified without submitting payment. Native subscriptions require configured app-store recurring products; existing native purchases unchanged.
 - [x] Move the Monthly/Yearly choice to the top of the donation window, where the Bible verse used to sit, with one toggle pair only; verified in preview with Monthly selected by default and Yearly switching correctly.

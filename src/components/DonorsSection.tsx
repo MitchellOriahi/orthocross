@@ -12,7 +12,7 @@ import { DonorRow, DonorTierButton } from "@/components/DonorPodium";
 import { DonorTierGuide } from "@/components/DonorTierGuide";
 
 const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: (key: string) => void }) => (
-  <div className={`donor-list-row donor-rank-${Math.min(donor.rank, 4)} flex items-center gap-2.5 px-1.5 py-2`}>
+  <div className={`donor-list-row donor-tier-${donor.tierKey ?? "none"} flex items-center gap-2.5 px-1.5 py-2`}>
     <span className="relative inline-block shrink-0">
       {donor.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
       <Avatar className="donor-avatar-ring h-8 w-8">
@@ -82,7 +82,7 @@ export const DonorsSection = () => {
             <>
               <div className="grid grid-cols-3 items-start">
                 {top3.map((d) => (
-                  <div key={d.key} className={`donor-rank-${Math.min(d.rank, 4)} flex min-w-0 flex-col items-center gap-1.5 rounded-lg p-1 text-center`}>
+                  <div key={d.key} className={`donor-tier-${d.tierKey ?? "none"} flex min-w-0 flex-col items-center gap-1.5 rounded-lg p-1 text-center`}>
                     <span className="relative inline-block shrink-0">
                       {d.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
                       <Avatar className="donor-avatar-ring donor-avatar-podium h-12 w-12">

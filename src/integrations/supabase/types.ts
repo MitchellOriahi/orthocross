@@ -229,6 +229,7 @@ export type Database = {
           currency: string
           donated_at: string
           donation_type: string
+          friend_notifications_processed_at: string | null
           id: string
           refunded_amount: number
           status: string
@@ -244,6 +245,7 @@ export type Database = {
           currency?: string
           donated_at?: string
           donation_type?: string
+          friend_notifications_processed_at?: string | null
           id?: string
           refunded_amount?: number
           status?: string
@@ -259,6 +261,7 @@ export type Database = {
           currency?: string
           donated_at?: string
           donation_type?: string
+          friend_notifications_processed_at?: string | null
           id?: string
           refunded_amount?: number
           status?: string
@@ -349,6 +352,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      friend_donation_notifications: {
+        Row: {
+          created_at: string
+          donation_id: string
+          donor_id: string
+          donor_name: string
+          id: string
+          push_sent_at: string | null
+          read_at: string | null
+          recipient_id: string
+        }
+        Insert: {
+          created_at?: string
+          donation_id: string
+          donor_id: string
+          donor_name: string
+          id?: string
+          push_sent_at?: string | null
+          read_at?: string | null
+          recipient_id: string
+        }
+        Update: {
+          created_at?: string
+          donation_id?: string
+          donor_id?: string
+          donor_name?: string
+          id?: string
+          push_sent_at?: string | null
+          read_at?: string | null
+          recipient_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friend_donation_notifications_donation_id_fkey"
+            columns: ["donation_id"]
+            isOneToOne: false
+            referencedRelation: "donations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       friend_request_notifications: {
         Row: {
@@ -1629,6 +1673,25 @@ export type Database = {
           guardian_angel_saves: number
           saved: boolean
         }[]
+      }
+      queue_friend_donation_notifications: {
+        Args: { p_donation_id: string }
+        Returns: {
+          created_at: string
+          donation_id: string
+          donor_id: string
+          donor_name: string
+          id: string
+          push_sent_at: string | null
+          read_at: string | null
+          recipient_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "friend_donation_notifications"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       record_daily_activity: {
         Args: never

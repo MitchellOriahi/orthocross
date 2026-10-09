@@ -4,6 +4,7 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { sendThankYouOnce } from "../_shared/donorStats.ts";
+import { notifyDonationFriends } from "../_shared/friendDonationNotifications.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 const json = (b: unknown, status = 200) =>
@@ -59,7 +60,12 @@ Deno.serve(async (req) => {
       if (error && error.code !== "23505") throw error;
       id = data?.id;
     }
-    if (id) await sendThankYouOnce(admin, id);
+    if (id) {
+      await sendThankYouOnce(admin, id);
+      await notifyDonationFriends(admin, id, {
+        appId: Deno.env.get("ONESIGNAL_APP_ID"), apiKey: Deno.env.get("ONESIGNAL_REST_API_KEY"),
+      });
+    }
     return json({ confirmed: true });
   } catch (e) {
     console.error("confirm-donation error", e);
