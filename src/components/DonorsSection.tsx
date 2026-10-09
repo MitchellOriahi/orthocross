@@ -11,15 +11,24 @@ import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorRow, DonorTierButton } from "@/components/DonorPodium";
 import { DonorTierGuide } from "@/components/DonorTierGuide";
 
+const DonorAvatarButton = ({ donor, size, onSelectTier }: { donor: DonorRow; size: string; onSelectTier: (key: string) => void }) => (
+  <button
+    type="button"
+    onClick={() => donor.tierKey && onSelectTier(donor.tierKey)}
+    className="relative inline-block shrink-0 rounded-full"
+    aria-label={`View ${donor.username}'s donor tier`}
+  >
+    {donor.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
+    <Avatar className={`donor-avatar-ring ${size}`}>
+      <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
+      <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+    </Avatar>
+  </button>
+);
+
 const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: (key: string) => void }) => (
   <div className={`donor-list-row donor-tier-${donor.tierKey ?? "none"} flex items-center gap-2.5 px-1.5 py-2`}>
-    <span className="relative inline-block shrink-0">
-      {donor.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
-      <Avatar className="donor-avatar-ring h-8 w-8">
-        <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
-        <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-      </Avatar>
-    </span>
+    <DonorAvatarButton donor={donor} size="h-8 w-8" onSelectTier={onSelectTier} />
     <span className="min-w-0 flex-1 truncate text-sm font-medium">{donor.username}</span>
     <DonorTierButton donor={donor} onSelect={onSelectTier} />
   </div>
@@ -34,6 +43,7 @@ export const DonorsSection = () => {
   const [donateOpen, setDonateOpen] = useState(false);
   const [donateAmount, setDonateAmount] = useState<number | undefined>(undefined);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const [pendingTier, setPendingTier] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const { data: res } = await supabase.functions.invoke("donor-leaderboard");
@@ -84,13 +94,7 @@ export const DonorsSection = () => {
               <div className="grid grid-cols-3 items-start">
                 {top3.map((d) => (
                   <div key={d.key} className={`donor-tier-${d.tierKey ?? "none"} flex min-w-0 flex-col items-center gap-1.5 rounded-lg p-1 text-center`}>
-                    <span className="relative inline-block shrink-0">
-                      {d.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
-                      <Avatar className="donor-avatar-ring donor-avatar-podium h-12 w-12">
-                        <AvatarImage src={d.profile_picture_url || undefined} alt={`${d.username}'s profile picture`} />
-                        <AvatarFallback>{d.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                    </span>
+                    <DonorAvatarButton donor={d} size="donor-avatar-podium h-12 w-12" onSelectTier={setSelectedTier} />
                     <span className="w-full truncate text-xs font-semibold leading-tight">{d.username}</span>
                     <DonorTierButton donor={d} onSelect={setSelectedTier} />
                   </div>
@@ -122,11 +126,22 @@ export const DonorsSection = () => {
           )}
         </CardContent>
       </Card>
-      <DonationDialog open={donateOpen} onOpenChange={setDonateOpen} initialAmount={donateAmount} />
+      <DonationDialog
+        open={donateOpen}
+        onOpenChange={setDonateOpen}
+        initialAmount={donateAmount}
+        onCancel={() => {
+          if (pendingTier) {
+            setSelectedTier(pendingTier);
+            setPendingTier(null);
+          }
+        }}
+      />
       <DonorTierGuide
         tierKey={selectedTier}
-        onClose={() => setSelectedTier(null)}
+        onClose={() => { setSelectedTier(null); setPendingTier(null); }}
         onDonateTier={(tier) => {
+          setPendingTier(tier.key);
           setSelectedTier(null);
           setDonateAmount(tier.minCents / 100);
           setDonateOpen(true);
