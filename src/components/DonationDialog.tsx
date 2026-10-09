@@ -249,7 +249,11 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             }`}
           >
             <span className="flex min-w-0 items-center gap-2.5">
-              <EyeOff className={`w-4 h-4 shrink-0 ${anonymous ? "text-primary" : "text-muted-foreground"}`} />
+              {anonymous ? (
+                <EyeOff className="h-4 w-4 shrink-0 text-primary" />
+              ) : (
+                <Eye className="h-4 w-4 shrink-0 text-muted-foreground" />
+              )}
               <span className="min-w-0">
                 <span className={`block text-sm leading-tight ${anonymous ? "font-medium text-foreground" : "text-foreground"}`}>
                   {DONOR_TEXT.donateAnonymously}
@@ -261,19 +265,25 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
                 </span>
               </span>
             </span>
-            <span
-              aria-hidden="true"
-              className={`flex h-6 w-11 shrink-0 items-center rounded-full border-2 border-transparent transition-colors ${
-                anonymous ? "bg-primary" : "bg-input"
-              }`}
-            >
+            <span className="flex shrink-0 flex-col items-end gap-1">
               <span
-                className={`block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${
-                  anonymous ? "translate-x-5" : "translate-x-0"
+                aria-hidden="true"
+                className={`flex h-6 w-11 items-center rounded-full p-0.5 transition-colors ${
+                  anonymous ? "bg-primary" : "bg-muted-foreground/40"
                 }`}
-              />
+              >
+                <span
+                  className={`block h-5 w-5 rounded-full bg-background shadow-md transition-transform ${
+                    anonymous ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </span>
+              <span className={`text-[10px] font-medium uppercase tracking-wide ${anonymous ? "text-primary" : "text-muted-foreground"}`}>
+                {anonymous ? "On" : "Off"}
+              </span>
             </span>
           </button>
+
 
 
           {/* Platform note */}
