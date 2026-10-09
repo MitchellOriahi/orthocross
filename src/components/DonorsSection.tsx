@@ -8,12 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { DonationDialog } from "@/components/DonationDialog";
 import { DONOR_TEXT } from "@/config/donorTiers";
-import { type DonorRow } from "@/components/DonorPodium";
+import { DonorRow, DonorTierButton } from "@/components/DonorPodium";
 import { DonorTierGuide } from "@/components/DonorTierGuide";
 
 const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: (key: string) => void }) => (
   <div className={`donor-list-row donor-rank-${Math.min(donor.rank, 4)} flex items-center gap-2 px-1 py-1.5`}>
-    <RankBadge rank={donor.rank} size="sm" />
+    <DonorTierButton donor={donor} onSelect={onSelectTier} />
     <span className="relative inline-block shrink-0">
       {donor.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
       <button
@@ -23,7 +23,7 @@ const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: 
         aria-label={donor.tierKey ? "View all donator tiers" : undefined}
         className={`rounded-full transition-transform ${donor.tierKey ? "cursor-pointer hover:scale-105" : "cursor-default"}`}
       >
-        <Avatar className={`h-7 w-7 ${donor.tierKey ? `donor-tier-avatar donor-tier-${donor.tierKey}` : ""}`}>
+        <Avatar className="h-7 w-7">
           <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
           <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
@@ -32,15 +32,6 @@ const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: 
     <span className="min-w-0 flex-1 break-words text-sm font-semibold">{donor.username}</span>
   </div>
 );
-
-const RankBadge = ({ rank, size = "md" }: { rank: number; size?: "sm" | "md" }) => {
-  const dim = size === "md" ? "h-9 w-9" : "h-7 w-7";
-  return (
-    <span className={`${dim} donor-list-rank donor-rank-${Math.min(rank, 4)} flex shrink-0 items-center justify-center rounded-full border text-xs font-bold`}>
-      {rank}
-    </span>
-  );
-};
 
 export const DonorsSection = () => {
   const { user } = useAuth();
@@ -109,14 +100,14 @@ export const DonorsSection = () => {
                         aria-label={d.tierKey ? "View all donator tiers" : undefined}
                         className={`rounded-full transition-transform ${d.tierKey ? "cursor-pointer hover:scale-105" : "cursor-default"}`}
                       >
-                        <Avatar className={`h-12 w-12 ${d.tierKey ? `donor-tier-avatar donor-tier-${d.tierKey}` : ""}`}>
+                        <Avatar className="h-12 w-12">
                           <AvatarImage src={d.profile_picture_url || undefined} alt={`${d.username}'s profile picture`} />
                           <AvatarFallback>{d.username.substring(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
                       </button>
                     </span>
                     <span className="w-full break-words text-xs font-semibold leading-tight">{d.username}</span>
-                    <span className="text-[11px] font-bold text-[hsl(var(--donor-rank-tone))]">{d.rank === 1 ? "1st" : d.rank === 2 ? "2nd" : "3rd"}</span>
+                    <DonorTierButton donor={d} onSelect={setSelectedTier} />
                   </div>
                 ))}
               </div>
