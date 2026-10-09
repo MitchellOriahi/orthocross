@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { DonationDialog } from "@/components/DonationDialog";
 import { DONOR_TEXT } from "@/config/donorTiers";
-import { DonorTierButton, type DonorRow } from "@/components/DonorPodium";
+import { type DonorRow } from "@/components/DonorPodium";
 import { DonorTierGuide } from "@/components/DonorTierGuide";
 
 const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: (key: string) => void }) => (
@@ -16,13 +16,20 @@ const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: 
     <RankBadge rank={donor.rank} size="sm" />
     <span className="relative inline-block shrink-0">
       {donor.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
-      <Avatar className="h-7 w-7">
-        <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
-        <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-      </Avatar>
+      <button
+        type="button"
+        onClick={() => donor.tierKey && onSelectTier(donor.tierKey)}
+        disabled={!donor.tierKey}
+        aria-label={donor.tierKey ? "View all donator tiers" : undefined}
+        className={`rounded-full transition-transform ${donor.tierKey ? "cursor-pointer hover:scale-105" : "cursor-default"}`}
+      >
+        <Avatar className={`h-7 w-7 ${donor.tierKey ? `donor-tier-avatar donor-tier-${donor.tierKey}` : ""}`}>
+          <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
+          <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+        </Avatar>
+      </button>
     </span>
     <span className="min-w-0 flex-1 break-words text-sm font-semibold">{donor.username}</span>
-    <div className="w-24 shrink-0 text-right"><DonorTierButton donor={donor} onSelect={onSelectTier} /></div>
   </div>
 );
 
