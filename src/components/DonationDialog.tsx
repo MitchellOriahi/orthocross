@@ -143,8 +143,7 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             <CalendarHeart className="w-5 h-5 text-primary" />
             Support OrthoCross
           </DialogTitle>
-          <DialogDescription>
-          </DialogDescription>
+          <DialogDescription className="sr-only">Support OrthoCross</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 pt-4">
