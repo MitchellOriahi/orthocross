@@ -143,10 +143,7 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             <CalendarHeart className="w-5 h-5 text-primary" />
             Support OrthoCross
           </DialogTitle>
-          <DialogDescription>
-            <span className="block text-muted-foreground">— Acts 20:35 —</span>
-            <span className="mt-1 block">"It is more blessed to give than to receive."</span>
-          </DialogDescription>
+          <DialogDescription className="sr-only">Support OrthoCross</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 pt-4">

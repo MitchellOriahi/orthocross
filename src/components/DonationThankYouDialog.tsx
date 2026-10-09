@@ -102,6 +102,10 @@ export const DonationThankYouDialog = () => {
             )}
           </>
         )}
+        <p className="text-muted-foreground">
+          <span className="block">— Acts 20:35 —</span>
+          <span className="mt-1 block">"It is more blessed to give than to receive."</span>
+        </p>
         <Button variant="sacred" className="w-full" onClick={() => setOpen(false)}>Close</Button>
       </div>
     </div>,
