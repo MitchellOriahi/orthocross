@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, Heart } from "lucide-react";
+import { ChevronDown, ChevronUp, Crown, Heart } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,8 +8,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { DonationDialog } from "@/components/DonationDialog";
 import { DONOR_TEXT } from "@/config/donorTiers";
-import { DonorPodium, DonorTierButton, type DonorRow } from "@/components/DonorPodium";
+import { DonorTierButton, type DonorRow } from "@/components/DonorPodium";
 import { DonorTierGuide } from "@/components/DonorTierGuide";
+
+const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: (key: string) => void }) => (
+  <div className={`donor-list-row donor-rank-${Math.min(donor.rank, 4)} flex items-center gap-2 px-1 py-1.5`}>
+    <RankBadge rank={donor.rank} size="sm" />
+    <span className="relative inline-block shrink-0">
+      {donor.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
+      <Avatar className="h-7 w-7">
+        <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
+        <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+      </Avatar>
+    </span>
+    <span className="min-w-0 flex-1 break-words text-sm font-semibold">{donor.username}</span>
+    <div className="w-24 shrink-0 text-right"><DonorTierButton donor={donor} onSelect={onSelectTier} /></div>
+  </div>
+);
 
 const RankBadge = ({ rank, size = "md" }: { rank: number; size?: "sm" | "md" }) => {
   const dim = size === "md" ? "h-9 w-9" : "h-7 w-7";
@@ -75,7 +90,9 @@ export const DonorsSection = () => {
             <div className="py-8 text-center text-muted-foreground">{DONOR_TEXT.empty}</div>
           ) : (
             <>
-              <DonorPodium entries={top3} onSelectTier={setSelectedTier} />
+              <div className="space-y-1">
+                {top3.map((d) => <DonorListRow key={d.key} donor={d} onSelectTier={setSelectedTier} />)}
+              </div>
 
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm" className="mt-3 w-full text-xs text-muted-foreground">
@@ -95,15 +112,7 @@ export const DonorsSection = () => {
                 {list.length === 0 ? (
                   <div className="py-6 text-center text-sm text-muted-foreground">{DONOR_TEXT.empty}</div>
                 ) : list.map((d) => (
-                  <div key={d.key} className={`donor-list-row donor-rank-${Math.min(d.rank, 4)} flex items-center gap-2 px-1 py-1.5`}>
-                    <RankBadge rank={d.rank} size="sm" />
-                    <Avatar className="h-7 w-7">
-                      <AvatarImage src={d.profile_picture_url || undefined} />
-                      <AvatarFallback>{d.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <span className="min-w-0 flex-1 break-words text-sm font-semibold">{d.username}</span>
-                    <div className="w-24 shrink-0 text-right"><DonorTierButton donor={d} onSelect={setSelectedTier} /></div>
-                  </div>
+                  <DonorListRow key={d.key} donor={d} onSelectTier={setSelectedTier} />
                 ))}
               </CollapsibleContent>
             </>

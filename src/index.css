@@ -522,6 +522,16 @@ All colors MUST be HSL.
 .donor-rank-4 { --donor-rank-tone: var(--muted-foreground); }
 .donor-list-rank { color: hsl(var(--donor-rank-tone)); border-color: hsl(var(--donor-rank-tone) / 0.6); background: hsl(var(--donor-rank-tone) / 0.08); }
 .donor-tier-button { color: hsl(var(--donor-rank-tone, var(--podium-tone))); }
+.donor-list-crown {
+  position: absolute;
+  bottom: calc(100% - 5px);
+  left: calc(50% - 9px);
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  color: hsl(var(--podium-gold));
+  fill: currentColor;
+}
 .donor-podium-name { width: 100%; min-height: 44px; margin-bottom: 8px; text-align: center; font-size: 13px; line-height: 18px; overflow-wrap: anywhere; }
 .donor-podium .podium-step { border-radius: 8px 8px 0 0; }
 .donor-guide-portrait { border: 1px solid hsl(var(--podium-gold)); box-shadow: 0 0 24px hsl(var(--podium-gold) / 0.3); }
