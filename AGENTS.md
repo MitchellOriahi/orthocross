@@ -8,7 +8,7 @@
 
 - Deduplicate React and React DOM in Vite resolution so the renderer and hook-based dependencies share one React instance and dispatcher.
 - Track Journal drafts separately with shared empty-note cleanup to preserve existing/edited notes. Expand in the same editor, hiding columns to retain list state.
-- Render the monthly leaderboard's top three through a dedicated presentation component using existing profile data, keeping ranking and data fetching unchanged.
+- Share monthly-podium styles with the donor podium; keep ranking unchanged and source the tier-guide dialog from shared tiers. Resolve donor names server-side to preserve anonymity.
 - Derive the next journey island from ordered islands and completion progress through a shared pure selector, so the highlight advances without hardcoded island IDs.
 - Render the Board daily verse through a dedicated card using the original deterministic local verse selector and existing share dialog, keeping notification delivery unchanged.
 - Preload licensed photos and compose locally; use date-keyed artwork selection, cached compositions and persistent extra-image choices so daily rotation and replacements never wait on AI or sign-in.

@@ -7,28 +7,18 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { DonationDialog } from "@/components/DonationDialog";
-import { DONOR_TEXT, DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
-
-interface DonorRow { rank: number; key: string; username: string; profile_picture_url: string | null; tierKey: string | null }
-
-const MEDALS = [
-  "from-[hsl(45_90%_62%)] to-[hsl(38_80%_42%)]",
-  "from-[hsl(210_15%_85%)] to-[hsl(210_10%_55%)]",
-  "from-[hsl(25_60%_68%)] to-[hsl(20_50%_42%)]",
-];
+import { DONOR_TEXT } from "@/config/donorTiers";
+import { DonorPodium, DonorTierButton, type DonorRow } from "@/components/DonorPodium";
+import { DonorTierGuide } from "@/components/DonorTierGuide";
 
 const RankBadge = ({ rank, size = "md" }: { rank: number; size?: "sm" | "md" }) => {
   const dim = size === "md" ? "h-9 w-9" : "h-7 w-7";
-  if (rank > 3) return <span className={`${dim} flex items-center justify-center text-sm text-muted-foreground`}>{rank}</span>;
   return (
-    <span className={`${dim} relative flex shrink-0 items-center justify-center`}>
-      <span className={`absolute inset-1 rotate-45 rounded-[4px] bg-gradient-to-br ${MEDALS[rank - 1]} shadow-sm`} />
-      <span className="relative text-xs font-bold text-background">{rank}</span>
+    <span className={`${dim} donor-list-rank donor-rank-${Math.min(rank, 4)} flex shrink-0 items-center justify-center rounded-full border text-xs font-bold`}>
+      {rank}
     </span>
   );
 };
-
-const tierName = (k: string | null) => DONOR_TIERS.find((t) => t.key === k)?.name ?? "";
 
 export const DonorsSection = () => {
   const { user } = useAuth();
@@ -37,6 +27,7 @@ export const DonorsSection = () => {
   const [expanded, setExpanded] = useState(false);
   const [hasDonated, setHasDonated] = useState(true);
   const [donateOpen, setDonateOpen] = useState(false);
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const { data: res } = await supabase.functions.invoke("donor-leaderboard");
@@ -84,22 +75,7 @@ export const DonorsSection = () => {
             <div className="py-8 text-center text-muted-foreground">{DONOR_TEXT.empty}</div>
           ) : (
             <>
-              <div className="grid grid-cols-3 gap-2">
-                {top3.map((d) => (
-                  <div key={d.key} className="flex min-w-0 items-center gap-1.5">
-                    <RankBadge rank={d.rank} />
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold">{d.username}</div>
-                      {d.tierKey && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <img src={TIER_ICONS[d.tierKey]} alt="" className="h-4 w-4 rounded-full object-cover" />
-                          <span className="truncate">{tierName(d.tierKey)}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <DonorPodium entries={top3} onSelectTier={setSelectedTier} />
 
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm" className="mt-3 w-full text-xs text-muted-foreground">
@@ -110,23 +86,23 @@ export const DonorsSection = () => {
               <CollapsibleContent className="mt-2 space-y-1">
                 <div className="mb-2 grid grid-cols-2 gap-1 rounded-lg bg-muted/40 p-1">
                   {(["month", "lifetime"] as const).map((p) => (
-                    <button key={p} onClick={() => setPeriod(p)}
+                    <Button variant="ghost" size="sm" key={p} onClick={() => setPeriod(p)} aria-pressed={period === p}
                       className={`rounded-md py-1.5 text-xs font-medium transition-colors ${period === p ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
                       {p === "month" ? DONOR_TEXT.thisMonth : DONOR_TEXT.allTime}
-                    </button>
+                    </Button>
                   ))}
                 </div>
                 {list.length === 0 ? (
                   <div className="py-6 text-center text-sm text-muted-foreground">{DONOR_TEXT.empty}</div>
                 ) : list.map((d) => (
-                  <div key={d.key} className="flex items-center gap-3 px-1 py-1.5">
+                  <div key={d.key} className={`donor-list-row donor-rank-${Math.min(d.rank, 4)} flex items-center gap-2 px-1 py-1.5`}>
                     <RankBadge rank={d.rank} size="sm" />
                     <Avatar className="h-7 w-7">
                       <AvatarImage src={d.profile_picture_url || undefined} />
                       <AvatarFallback>{d.username.substring(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
-                    <span className="min-w-0 flex-1 truncate text-sm font-semibold">{d.username}</span>
-                    <span className="shrink-0 text-xs text-primary">{tierName(d.tierKey)}</span>
+                    <span className="min-w-0 flex-1 break-words text-sm font-semibold">{d.username}</span>
+                    <div className="w-24 shrink-0 text-right"><DonorTierButton donor={d} onSelect={setSelectedTier} /></div>
                   </div>
                 ))}
               </CollapsibleContent>
@@ -135,6 +111,7 @@ export const DonorsSection = () => {
         </CardContent>
       </Card>
       <DonationDialog open={donateOpen} onOpenChange={setDonateOpen} />
+      <DonorTierGuide tierKey={selectedTier} onClose={() => setSelectedTier(null)} />
     </Collapsible>
   );
 };
