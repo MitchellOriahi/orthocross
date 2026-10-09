@@ -1126,5 +1126,136 @@ export const prayerAdditions: PrayerDetail[] = [
     "content": [
       "Blessed are the poor in spirit: for theirs is the kingdom of heaven. Blessed are they that mourn: for they shall be comforted. Blessed are the meek: for they shall inherit the earth. Blessed are they which do hunger and thirst after righteousness: for they shall be filled. Blessed are the merciful: for they shall obtain mercy. Blessed are the pure in heart: for they shall see God. Blessed are the peacemakers: for they shall be called the children of God. Blessed are they which are persecuted for righteousness sake: for theirs is the kingdom of heaven. Blessed are ye, when men shall revile you, and persecute you, and shall say all manner of evil against you falsely, for my sake. Rejoice, and be exceeding glad: for great is your reward in heaven: for so persecuted they the prophets which were before you."
     ]
+  },
+  {
+    "id": "agpeya-concluding-prayer",
+    "name": "Concluding Prayer of Every Hour",
+    "title": "The Agpeya · Coptic Orthodox Church (copticchurch.net)",
+    "tradition": "Oriental",
+    "content": [
+      "Have mercy on us, O God, and have mercy on us, who, at all times and at every hour, is worshipped and glorified in heaven and on earth. O Christ, our good Lord, who is longsuffering, abundant in mercy, and full of compassion. Who loves the righteous and shows mercy to all sinners, of whom I am chief. Who does not wish the death of the sinner but rather to repent and to live, who calls all men to salvation and to the promised forthcoming rewards.",
+      "O Lord, accept our prayers at this hour and at every hour. Facilitate our lives, and guide us to act according to Your commandments. Sanctify our souls, cleanse our bodies, set aright our thoughts, purify our intentions, heal our sickness, forgive our sins and deliver us from every evil grief and anguish of heart. Surround us by Your holy angels that we may be guided and guarded by them to attain the unity of faith and the knowledge of Your imperceptible and infinite glory, for You are blessed forever. Amen."
+    ]
+  },
+  {
+    "id": "nerses-prayer-1",
+    "name": "Prayer of the First Hour",
+    "title": "St. Nerses Shnorhali, “I Confess with Faith” · Armenian Church",
+    "tradition": "Oriental",
+    "content": [
+      "I confess with faith and worship you, Father, Son and Holy Spirit, uncreated and immortal Essence, creator of angels, humans and of all that exists. Have mercy upon your creatures, and on me, a manifold sinner."
+    ]
+  },
+  {
+    "id": "nerses-prayer-13",
+    "name": "Prayer of the Midday Hour",
+    "title": "St. Nerses Shnorhali, “I Confess with Faith” · Armenian Church",
+    "tradition": "Oriental",
+    "content": [
+      "Heavenly King, grant me your kingdom which was promised to your beloved, and strengthen my heart to hate sin, and to love only you, and to do your will. Have mercy upon your creatures, and on me, a manifold sinner."
+    ]
+  },
+  {
+    "id": "nerses-prayer-24",
+    "name": "Concluding Prayer of St. Nerses",
+    "title": "St. Nerses Shnorhali, “I Confess with Faith” · Armenian Church",
+    "tradition": "Oriental",
+    "content": [
+      "O glorious Lord, receive the prayers of your servant; and fulfill my requests that are deemed good. Through the intercession of the Holy Mother of God, and St. John the Baptist, and St. Stephen the first martyr, and St. Gregory our Illuminator, and the Holy Apostles, Prophets, Doctors of the Church, Martyrs, Patriarchs, Hermits, Virgins, and all your saints in heaven and on earth.",
+      "Unto you, O indivisible Holy Trinity, be glory and worship, forever and ever. Amen."
+    ]
+  },
+  {
+    "id": "malankara-trisagion",
+    "name": "The Qawmo (Trisagion)",
+    "title": "Opening of the daily offices · Malankara Archdiocese of the Syrian Orthodox Church",
+    "tradition": "Oriental",
+    "content": [
+      "Holy art Thou, O God. Holy art Thou, Almighty; Holy art Thou, Immortal; Crucified for us, have mercy on us. (Thrice)",
+      "Lord, have mercy upon us. Lord, be kind and have mercy; Lord, accept our prayers and worship and have mercy on us.",
+      "Glory be to Thee, O God; Glory be to Thee, O creator; Glory be to Thee, O Christ, the King who does pity sinners, Thy servants. Barekhmor."
+    ]
+  },
+  {
+    "id": "malankara-morning-enyono",
+    "name": "Morning Enyono",
+    "title": "Prayer of the Morning · Malankara Archdiocese of the Syrian Orthodox Church",
+    "tradition": "Oriental",
+    "content": [
+      "O heavenly King, in the morning I come in Your presence and bow before Your throne. Pardon all the sins that I committed against you.",
+      "Gracious and compassionate Lord, I plead and long for your mercy. Pardon all the sins that I committed against you.",
+      "The one who is light and lives in light, make me worthy of Your light that does not succumb to darkness. Barekhmor.",
+      "I praise the Lord whose name is being glorified in the heaven above by the heavenly beings and by the people on the earth. Amen."
+    ]
+  },
+  {
+    "id": "malankara-bootho-mor-yaqub",
+    "name": "Bo’ootho of Mor Ya’qub",
+    "title": "Prayer of the Morning · Malankara Archdiocese of the Syrian Orthodox Church",
+    "tradition": "Oriental",
+    "content": [
+      "O Lord, open Your great door full of mercy. Hear our petitions and show mercy to our souls.",
+      "O glorious light which enlightens all creation in the morning, enlighten our intellects so that we may praise Your mercy.",
+      "Lord, it is good to give thanks to You and to sing praise to Your exalted name, to proclaim Your goodness in the morning and Your faithfulness in the night. Lord, hear my voice in the morning. May I be seen ready before You in the morning.",
+      "Lord, have compassion on Your people. Lord, pardon and forgive all our sins. Holy One, let Your right hand overshadow us and Your name heal our weaknesses."
+    ]
+  },
+  {
+    "id": "malankara-evening-incense",
+    "name": "Offering of Incense (Qolo)",
+    "title": "Prayer of the Evening · Malankara Archdiocese of the Syrian Orthodox Church",
+    "tradition": "Oriental",
+    "content": [
+      "Lord, let our prayers be like a pleasing incense before you. Let it rise to the highest like an offering of fragrance. As you are pleased in the offer of incense, accept our worship, prayers, supplications and praises without counting our unworthiness, and grant our petitions. Barekhmor."
+    ]
+  },
+  {
+    "id": "malankara-intercession-theotokos",
+    "name": "Intercession of the Mother of God",
+    "title": "Prayer of the Evening · Malankara Archdiocese of the Syrian Orthodox Church",
+    "tradition": "Oriental",
+    "content": [
+      "O Virgin Mother! shield us from all menace that confront us and forbid from us the whirls and tides of this world. O Mother! since you have acceptance in the presence of God, pray that your intercession grant us forgiveness and mercy, heal the sick, bring relief to the afflicted and the return of those who are away to us peacefully."
+    ]
+  },
+  {
+    "id": "malankara-bedtime-supplication",
+    "name": "Bedtime Supplication",
+    "title": "Prayer of the Bedtime (Compline) · Malankara Archdiocese of the Syrian Orthodox Church",
+    "tradition": "Oriental",
+    "content": [
+      "O Lord, accept our worship and have mercy upon us. Grant us compassion, mercy and forgiveness from your holy treasury.",
+      "O Lord, our deeds make You angry; but you never desire to be angry. You are merciful and Your tranquillity is never disturbed.",
+      "Though our sins are abundant, they are like a drop of mud in Your ocean of mercy. A drop of mud cannot soil the ocean.",
+      "O God who listens to prayers and grants supplications, be pleased in our prayers and grant our petitions in Your mercy."
+    ]
+  },
+  {
+    "id": "ephrem-night-hymn",
+    "name": "Night Hymn of St. Ephrem the Syrian",
+    "title": "Prayer of the Bedtime (Compline) · Malankara Archdiocese of the Syrian Orthodox Church",
+    "tradition": "Oriental",
+    "content": [
+      "Lord have mercy upon us, kindly accept our prayers; grant us mercy, redemption, from Thy treasury above.",
+      "Let me, Lord, before Thee stand, wakeful my watch I’d keep; should I fall to slumber’s hand, guard me from my sinful sleep.",
+      "If I do wrong while awake, mercifully absolve me; if I err in my sleep, in mercy, grant redemption.",
+      "By Thy cross of submission grant me, Lord, a restful sleep; forbid vain and evil dreams, O my Lord, from Thy servant.",
+      "Through the night conduct me, Lord, peaceful sleep give Thou to me; wroth and foul thoughts, O Lord, may not govern me at all.",
+      "O Lord, Thy servant I am; guard my body while I sleep; keep Thy bright angel’s guard, O my Lord, by my side."
+    ]
+  },
+  {
+    "id": "wudase-maryam-monday",
+    "name": "Praise of Mary for Monday",
+    "title": "Wudase Maryam (Book of the Praises of Mary) · Ethiopian and Eritrean Orthodox Church, trans. E. A. Wallis Budge",
+    "tradition": "Oriental",
+    "content": [
+      "God wished to set free Adam, who was sad at heart and sorrowful, and in the greatness of His compassion and mercy to bring him back to the state wherein he was formerly. He rose up in flesh of the Virgin without the seed of man. He came, He saved us.",
+      "Jesus Christ, the Word Who became incarnate, and He dwelt with us, and we saw His glory like the glory of the Only-begotten of His Father; He hath been pleased to show compassion upon us. He hath appeared.",
+      "Rejoice and be glad, O race of the children of men, for God hath loved the world, and given His only Son that all who believe in Him may have everlasting life. The Most High hath sent unto us His arm. He hath appeared.",
+      "Rejoice, O Bethlehem, the town of the Prophets, for in thee was born Christ, the second Adam, so that He might bring the first Adam from the earth into the Garden, and destroy the doom of death. Where sin abounded there the grace of God abounded likewise. He hath appeared.",
+      "Let all souls of men rejoice and be glad with the angels, and let them praise Christ, the King, and cry out and say, “Glory to God in the heavens, and peace on the earth, and His good will to men.” He hath abolished the things of old, and overthrown the plot of the Enemy, and set them free — He Who was born for us in the city of David, our Redeemer, Jesus Christ hath done this. He hath appeared.",
+      "Thou Light, Who in truth illuminest all men who dwell in the world, because of Thy love for man Thou hast come into the world. All created things rejoiced at Thy coming, because Thou didst deliver Adam from his error, and didst set free Eve from the suffering of death, and hast given unto us the soul of prophecy. We bless Thee with Thine angels."
+    ]
   }
 ];
