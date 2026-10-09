@@ -571,7 +571,7 @@ All colors MUST be HSL.
 .donor-tier-dominion { --tier-color: 26 75% 55%; }
 .donor-tier-throne { --tier-color: 0 51% 51%; }
 .donor-tier-cherub { --tier-color: 46 75% 60%; }
-.donor-tier-seraph { --tier-color: 51 100% 50%; box-shadow: 0 0 8px hsl(51 100% 50% / 0.55); }
+.donor-tier-seraph { --tier-color: 51 100% 50%; }
 .donor-list-crown {
   position: absolute;
   bottom: calc(100% - 5px);

@@ -43,6 +43,13 @@
       "when": 1791532143618,
       "tag": "0005_private_friend_donation_alerts",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791532346893,
+      "tag": "0006_restrict_friend_donation_alert_writes",
+      "breakpoints": true
     }
   ]
 }
