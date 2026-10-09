@@ -530,7 +530,22 @@ All colors MUST be HSL.
   background: hsl(var(--donor-rank-tone, var(--podium-gold)) / 0.18);
   border-color: hsl(var(--donor-rank-tone, var(--podium-gold)) / 0.6);
 }
-.donor-avatar-ring { box-shadow: 0 0 0 2px hsl(var(--donor-rank-tone, var(--podium-gold)) / 0.4); }
+.donor-avatar-ring { box-shadow: 0 0 0 2px hsl(var(--donor-rank-tone, var(--podium-gold)) / 0.4), 0 0 12px 2px hsl(var(--donor-rank-tone, var(--podium-gold)) / 0.35); }
+.donor-tier-button.donor-tier-angel { --donor-tier-tone: 210 15% 55%; }
+.donor-tier-button.donor-tier-archangel { --donor-tier-tone: 199 80% 48%; }
+.donor-tier-button.donor-tier-principality { --donor-tier-tone: 168 65% 38%; }
+.donor-tier-button.donor-tier-power { --donor-tier-tone: 142 60% 40%; }
+.donor-tier-button.donor-tier-virtue { --donor-tier-tone: 225 75% 58%; }
+.donor-tier-button.donor-tier-dominion { --donor-tier-tone: 270 60% 60%; }
+.donor-tier-button.donor-tier-throne { --donor-tier-tone: 330 65% 52%; }
+.donor-tier-button.donor-tier-cherub { --donor-tier-tone: 8 75% 55%; }
+.donor-tier-button.donor-tier-seraph { --donor-tier-tone: 42 90% 50%; }
+.donor-tier-button[class*="donor-tier-"] {
+  color: hsl(var(--donor-tier-tone, var(--podium-gold)));
+  border-color: hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.45);
+  background: hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.12);
+}
+.donor-tier-button[class*="donor-tier-"]:hover { background: hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.22); }
 .donor-list-row { border-radius: 0.5rem; transition: background-color 150ms ease; }
 .donor-list-row:hover { background: hsl(var(--muted) / 0.35); }
 /* One distinct avatar border per donator tier, rising to glowing gold for Seraph. */
