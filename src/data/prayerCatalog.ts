@@ -3,8 +3,10 @@ import { prayerAdditions } from "./prayerAdditions";
 import { PRAYER_CATEGORIES, PRAYER_PLACEMENTS, type PrayerCategoryId } from "./prayerCategories";
 import { matchesPrayerQuery, matchesPrayerTradition, type PrayerTraditionFilter } from "./prayerSearch";
 
-// The original records are retained by reference, preserving IDs, pins and highlights.
-export const prayerCatalog = [...prayersContent, ...prayerAdditions];
+// Original records whose texts could not be verified against a published source are retired from the list.
+export const RETIRED_PRAYER_IDS = new Set(["armenian-prayer", "ethiopian-prayer", "syrian-prayer"]);
+// Kept originals are retained by reference, preserving IDs, pins and highlights.
+export const prayerCatalog = [...prayersContent.filter(prayer => !RETIRED_PRAYER_IDS.has(prayer.id)), ...prayerAdditions];
 
 export function getPrayerList(category: PrayerCategoryId | null = null, subgroup: string | null = null, query = "", tradition: PrayerTraditionFilter = "all", pinnedIds: ReadonlySet<string> = new Set()) {
   const filtered = prayerCatalog.filter(prayer =>

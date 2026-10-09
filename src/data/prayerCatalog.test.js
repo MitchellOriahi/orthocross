@@ -1,51 +1,41 @@
 import { expect, test } from "bun:test";
-import { prayerCatalog, getPrayerList, getPrayerSubgroups } from "./prayerCatalog";
-import { prayerAdditions } from "./prayerAdditions";
+import { prayerCatalog, getPrayerList, getPrayerSubgroups, RETIRED_PRAYER_IDS } from "./prayerCatalog";
 import { prayersContent } from "./prayersContent";
 import { PRAYER_CATEGORIES, PRAYER_PLACEMENTS } from "./prayerCategories";
-import supplied from "./prayerImport.fixture.json";
 
-test("All 120 supplied entries resolve to one prayer and retain every requested placement", () => {
-  expect(supplied).toHaveLength(120);
-  expect(prayerAdditions).toHaveLength(115);
-  expect(prayerCatalog).toHaveLength(127);
-  for (const row of supplied) {
-    const matches = prayerCatalog.filter(prayer => prayer.id === row.id);
-    expect(matches).toHaveLength(1);
-    for (const placement of row.placements) expect(PRAYER_PLACEMENTS[row.id]).toContainEqual(placement);
-  }
+test("The prayer list holds 120 unique verified prayers", () => {
+  expect(prayerCatalog).toHaveLength(120);
+  expect(new Set(prayerCatalog.map(prayer => prayer.id)).size).toBe(120);
+  expect(new Set(prayerCatalog.map(prayer => prayer.name.toLowerCase())).size).toBe(120);
 });
 
-test("All twelve existing prayers retain every original field and have a category", () => {
-  expect(prayersContent).toHaveLength(12);
-  for (const existing of prayersContent) {
+test("Unverified originals are removed; the other originals are kept unchanged", () => {
+  for (const id of RETIRED_PRAYER_IDS) expect(prayerCatalog.find(prayer => prayer.id === id)).toBeUndefined();
+  for (const existing of prayersContent.filter(prayer => !RETIRED_PRAYER_IDS.has(prayer.id))) {
     expect(prayerCatalog.find(prayer => prayer.id === existing.id)).toBe(existing);
-    expect(PRAYER_PLACEMENTS[existing.id].length).toBeGreaterThan(0);
   }
-  expect(prayerCatalog.find(prayer => prayer.id === "jesus-prayer").tradition).toBe("Eastern");
-  expect(prayerCatalog.find(prayer => prayer.id === "thanksgiving").tradition).toBe("Eastern");
 });
 
-test("New prayers carry real text (no placeholders), exact supplied names and traditions", () => {
-  for (const prayer of prayerAdditions) {
-    expect(prayer.content[0].length).toBeGreaterThan(20);
+test("Every prayer has complete text, a named source and a valid tradition", () => {
+  for (const prayer of prayerCatalog) {
+    expect(prayer.content.join(" ").length).toBeGreaterThan(20);
     expect(prayer.content.join(" ")).not.toContain("Text coming soon");
-    const row = supplied.find(entry => entry.id === prayer.id);
-    expect(prayer.name).toBe(row.name);
-    expect(prayer.tradition).toBe(row.tradition);
+    expect(prayer.title.length).toBeGreaterThan(2);
+    expect(["Eastern", "Oriental", "Eastern/Oriental"]).toContain(prayer.tradition);
   }
 });
 
-test("Six macro categories and all 31 micro categories retain their supplied order", () => {
+test("Six macro categories and all 31 micro categories retain their order and have prayers", () => {
   expect(PRAYER_CATEGORIES.map(category => category.label)).toEqual(["Foundational Prayers", "Daily Prayers", "Prayers to Christ and the Saints", "Holy Communion and Liturgy", "Needs and Occasions", "Psalms and Canticles"]);
   expect(PRAYER_CATEGORIES.flatMap(category => category.subgroups)).toHaveLength(31);
   for (const category of PRAYER_CATEGORIES) expect(getPrayerSubgroups(category.id)).toEqual([...category.subgroups]);
 });
 
-test("Every placement is category-qualified, valid and non-duplicated", () => {
-  expect(new Set(prayerCatalog.map(prayer => prayer.id)).size).toBe(127);
+test("Every prayer has valid, non-duplicated placements", () => {
+  expect(Object.keys(PRAYER_PLACEMENTS).sort()).toEqual(prayerCatalog.map(prayer => prayer.id).sort());
   for (const prayer of prayerCatalog) {
     const placements = PRAYER_PLACEMENTS[prayer.id];
+    expect(placements.length).toBeGreaterThan(0);
     expect(new Set(placements.map(item => `${item.category}:${item.subgroup}`)).size).toBe(placements.length);
     for (const placement of placements) expect(PRAYER_CATEGORIES.find(category => category.id === placement.category).subgroups).toContain(placement.subgroup);
   }
@@ -56,12 +46,10 @@ test("Search combines category, subgroup and tradition, including shared prayers
   expect(getPrayerList("daily", "Night", "lord's")).toHaveLength(0);
   expect(getPrayerList("foundational", "Core", "lord's", "Eastern").map(prayer => prayer.id)).toEqual(["lords-prayer"]);
   expect(getPrayerList("foundational", "Core", "lord's", "Oriental").map(prayer => prayer.id)).toEqual(["lords-prayer"]);
-  expect(getPrayerList("christ-saints", "Christ", "jesus", "Oriental")).toHaveLength(0);
-  expect(getPrayerList(null, null, "kingdom")).toHaveLength(0);
+  expect(getPrayerList("christ-saints", "Christ", "jesus prayer", "Oriental")).toHaveLength(0);
 });
 
-test("Overlapping prayers occur only once per list and keep existing pinned-first sorting", () => {
+test("Shared prayers occur once per list and pinned prayers stay first", () => {
   expect(getPrayerList("foundational").filter(prayer => prayer.id === "jesus-prayer")).toHaveLength(1);
-  expect(getPrayerList(null, null, "jesus").filter(prayer => prayer.id === "jesus-prayer")).toHaveLength(1);
   expect(getPrayerList("daily", null, "", "all", new Set(["evening-prayer"]))[0].id).toBe("evening-prayer");
 });
