@@ -543,17 +543,9 @@ export const PRAYER_PLACEMENTS: Record<string, PrayerPlacement[]> = {
     {
       "category": "daily",
       "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
     }
   ],
   "agpeya-third-hour-absolution": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
     {
       "category": "daily",
       "subgroup": "Hours"
@@ -563,17 +555,9 @@ export const PRAYER_PLACEMENTS: Record<string, PrayerPlacement[]> = {
     {
       "category": "daily",
       "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
     }
   ],
   "agpeya-sixth-hour-absolution": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
     {
       "category": "daily",
       "subgroup": "Hours"
@@ -583,17 +567,9 @@ export const PRAYER_PLACEMENTS: Record<string, PrayerPlacement[]> = {
     {
       "category": "daily",
       "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
     }
   ],
   "agpeya-ninth-hour-absolution": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
     {
       "category": "daily",
       "subgroup": "Hours"
