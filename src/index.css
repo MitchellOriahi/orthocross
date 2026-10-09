@@ -522,6 +522,17 @@ All colors MUST be HSL.
 .donor-rank-4 { --donor-rank-tone: var(--muted-foreground); }
 .donor-list-rank { color: hsl(var(--donor-rank-tone)); border-color: hsl(var(--donor-rank-tone) / 0.6); background: hsl(var(--donor-rank-tone) / 0.08); }
 .donor-tier-button { color: hsl(var(--donor-rank-tone, var(--podium-tone))); }
+/* One distinct avatar border per donator tier, rising to glowing gold for Seraph. */
+.donor-tier-avatar { border: 2px solid hsl(var(--tier-color)); }
+.donor-tier-angel { --tier-color: 210 8% 66%; }
+.donor-tier-archangel { --tier-color: 35 39% 52%; }
+.donor-tier-principality { --tier-color: 208 56% 59%; }
+.donor-tier-power { --tier-color: 152 39% 49%; }
+.donor-tier-virtue { --tier-color: 274 33% 56%; }
+.donor-tier-dominion { --tier-color: 26 75% 55%; }
+.donor-tier-throne { --tier-color: 0 51% 51%; }
+.donor-tier-cherub { --tier-color: 46 75% 60%; }
+.donor-tier-seraph { --tier-color: 51 100% 50%; box-shadow: 0 0 8px hsl(51 100% 50% / 0.55); }
 .donor-list-crown {
   position: absolute;
   bottom: calc(100% - 5px);
