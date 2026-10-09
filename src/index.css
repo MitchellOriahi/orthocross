@@ -300,13 +300,13 @@ All colors MUST be HSL.
   width: 64px;
   height: 64px;
   /* Solid, fully opaque ring: never washes out against a grey or busy photo.
-     Donators glow in their tier colour; monthly leaders keep the rank tone. */
-  border: 3px solid hsl(var(--donor-tier-tone, var(--podium-tone)));
+     Donators share the monthly-leaders' rank tone, so circle matches crown. */
+  border: 3px solid hsl(var(--podium-tone));
   /* Each place gets its own disc tint, so no two circles share a shade. */
-  background: hsl(var(--donor-tier-tone, var(--podium-tone)) / 0.18);
+  background: hsl(var(--podium-tone) / 0.18);
   box-shadow:
-    0 0 8px 2px hsl(var(--donor-tier-tone, var(--podium-tone)) / 0.5),
-    0 0 20px 6px hsl(var(--donor-tier-tone, var(--podium-tone)) / 0.3);
+    0 0 8px 2px hsl(var(--podium-tone) / 0.5),
+    0 0 20px 6px hsl(var(--podium-tone) / 0.3);
   font-size: 22px;
 }
 /* Dark hairline between the ring and the picture: keeps the circle's edge
@@ -547,6 +547,9 @@ All colors MUST be HSL.
   color: hsl(var(--donor-tier-tone, var(--podium-gold)));
   border-color: hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.45);
   background: hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.12);
+  box-shadow:
+    0 0 8px 1px hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.45),
+    0 0 16px 4px hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.25);
 }
 .donor-tier-button[class*="donor-tier-"]:hover { background: hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.22); }
 .donor-list-row { border-radius: 0.5rem; transition: background-color 150ms ease; }
