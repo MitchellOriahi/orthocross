@@ -26,4 +26,5 @@
 - Plan cloud speech from canonical chapter chunks (short opener, longer rest) with edge-silence trimming, multi-chunk lookahead and two alternating audio elements, so playback starts fast, resumes from cache mid-chunk and has no gaps between chunks.
 - Continuous read-aloud chains chapters through the speech hook's chapter-end callback and skips the hidden-page pause only in that mode, so normal listening still pauses when backgrounded.
 
-- Merge prayer additions with preserved records in a shared catalog and use category-qualified placements plus a dedicated browser; shared prayers keep one ID, text, pins and highlights everywhere.
+- Share prayers in one catalog with category-qualified placements; retain IDs, text, pins and highlights.
+- Share donation interval validation between dialog and checkout to keep billing consistent.
