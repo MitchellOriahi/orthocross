@@ -122,8 +122,16 @@ export const DonorsSection = () => {
           )}
         </CardContent>
       </Card>
-      <DonationDialog open={donateOpen} onOpenChange={setDonateOpen} />
-      <DonorTierGuide tierKey={selectedTier} onClose={() => setSelectedTier(null)} />
+      <DonationDialog open={donateOpen} onOpenChange={setDonateOpen} initialAmount={donateAmount} />
+      <DonorTierGuide
+        tierKey={selectedTier}
+        onClose={() => setSelectedTier(null)}
+        onDonateTier={(tier) => {
+          setSelectedTier(null);
+          setDonateAmount(tier.minCents / 100);
+          setDonateOpen(true);
+        }}
+      />
     </Collapsible>
   );
 };
