@@ -16,12 +16,13 @@ import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount }
 interface DonationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialAmount?: number;
 }
 
 const WEB_PRESETS = [1, 10, 25, 50, 100];
 const NATIVE_PRESETS = [5, 10, 25, 50];
 
-export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
+export const DonationDialog = ({ open, onOpenChange, initialAmount }: DonationDialogProps) => {
   const [selectedAmount, setSelectedAmount] = useState(10);
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
