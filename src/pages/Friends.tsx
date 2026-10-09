@@ -860,28 +860,7 @@ export default function Friends() {
         <TabsContent value="friends" className="mt-6 space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Add a Friend</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-2">
-                <Input
-                  type="text"
-                  placeholder="username/phone #"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleAddFriend()}
-                />
-                <Button onClick={handleAddFriend} disabled={isLoading}>
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  {isLoading ? "Adding..." : "Add"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
                 <div>
                   <CardTitle>Your Friends</CardTitle>
                 </div>
@@ -941,6 +920,22 @@ export default function Friends() {
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
+              <div className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  aria-label="Add a friend by username or phone number"
+                  placeholder="username/phone #"
+                  className="min-w-0 flex-1"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddFriend()}
+                />
+                <Button className="shrink-0" onClick={handleAddFriend} disabled={isLoading}>
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  {isLoading ? "Adding..." : "Add"}
+                </Button>
+              </div>
+
               {sentRequests.length > 0 && (
                 <div className="space-y-3">
                   <Button
