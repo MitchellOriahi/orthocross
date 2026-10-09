@@ -41,6 +41,14 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount }: DonationDi
       .then(({ data }) => { setAnonymous(!!data?.donor_anonymous); });
   }, [open, user]);
 
+  // Preselect the amount chosen from the tier guide (e.g. $1 for Angel)
+  useEffect(() => {
+    if (!open || initialAmount === undefined) return;
+    setSelectedAmount(initialAmount);
+    setUseCustom(false);
+    setCustomAmount("");
+  }, [open, initialAmount]);
+
   const updateAnonymous = async (value: boolean) => {
     setAnonymous(value);
     if (user) await supabase.from("profiles").update({ donor_anonymous: value }).eq("id", user.id);
