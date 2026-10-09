@@ -144,7 +144,14 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             Support OrthoCross
           </DialogTitle>
           <DialogDescription className="sr-only">Support OrthoCross</DialogDescription>
+          {!isNative && (
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              <Button size="sm" aria-pressed={interval === "month"} variant={interval === "month" ? "default" : "outline"} onClick={() => setInterval("month")}>Monthly</Button>
+              <Button size="sm" aria-pressed={interval === "year"} variant={interval === "year" ? "default" : "outline"} onClick={() => setInterval("year")}>Yearly</Button>
+            </div>
+          )}
         </DialogHeader>
+
 
         <div className="space-y-4 pt-4">
           {/* Preset amounts */}
@@ -182,13 +189,6 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
                   placeholder="0.00"
                 />
               </div>
-            </div>
-          )}
-
-          {!isNative && (
-            <div className="grid grid-cols-2 gap-2">
-              <Button size="sm" aria-pressed={interval === "month"} variant={interval === "month" ? "default" : "outline"} onClick={() => setInterval("month")}>Monthly</Button>
-              <Button size="sm" aria-pressed={interval === "year"} variant={interval === "year" ? "default" : "outline"} onClick={() => setInterval("year")}>Yearly</Button>
             </div>
           )}
 
