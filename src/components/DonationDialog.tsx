@@ -239,13 +239,42 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
 
           <button
             type="button"
-            aria-pressed={anonymous}
+            role="switch"
+            aria-checked={anonymous}
             onClick={() => updateAnonymous(!anonymous)}
-            className="mx-auto flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className={`mx-auto flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors ${
+              anonymous
+                ? "border-primary/60 bg-primary/10"
+                : "border-border bg-muted/40 hover:bg-muted"
+            }`}
           >
-            <EyeOff className={`w-3.5 h-3.5 ${anonymous ? "text-primary" : ""}`} />
-            <span className={anonymous ? "font-medium text-foreground" : ""}>{DONOR_TEXT.donateAnonymously}</span>
+            <span className="flex min-w-0 items-center gap-2.5">
+              <EyeOff className={`w-4 h-4 shrink-0 ${anonymous ? "text-primary" : "text-muted-foreground"}`} />
+              <span className="min-w-0">
+                <span className={`block text-sm leading-tight ${anonymous ? "font-medium text-foreground" : "text-foreground"}`}>
+                  {DONOR_TEXT.donateAnonymously}
+                </span>
+                <span className="block text-xs leading-tight text-muted-foreground">
+                  {anonymous
+                    ? "Your name and photo stay hidden in the Donators list."
+                    : "Your name and photo will appear in the Donators list."}
+                </span>
+              </span>
+            </span>
+            <span
+              aria-hidden="true"
+              className={`flex h-6 w-11 shrink-0 items-center rounded-full border-2 border-transparent transition-colors ${
+                anonymous ? "bg-primary" : "bg-input"
+              }`}
+            >
+              <span
+                className={`block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform ${
+                  anonymous ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </span>
           </button>
+
 
           {/* Platform note */}
           <p className="text-xs text-muted-foreground text-center">
