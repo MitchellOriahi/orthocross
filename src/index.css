@@ -299,11 +299,14 @@ All colors MUST be HSL.
 .podium-avatar {
   width: 64px;
   height: 64px;
-  /* Solid, fully opaque ring: never washes out against a grey or busy photo. */
-  border: 3px solid hsl(var(--podium-tone));
+  /* Solid, fully opaque ring: never washes out against a grey or busy photo.
+     Donators glow in their tier colour; monthly leaders keep the rank tone. */
+  border: 3px solid hsl(var(--donor-tier-tone, var(--podium-tone)));
   /* Each place gets its own disc tint, so no two circles share a shade. */
-  background: hsl(var(--podium-tone) / 0.18);
-  box-shadow: 0 0 10px 2px hsl(var(--podium-tone) / 0.28);
+  background: hsl(var(--donor-tier-tone, var(--podium-tone)) / 0.18);
+  box-shadow:
+    0 0 8px 2px hsl(var(--donor-tier-tone, var(--podium-tone)) / 0.5),
+    0 0 20px 6px hsl(var(--donor-tier-tone, var(--podium-tone)) / 0.3);
   font-size: 22px;
 }
 /* Dark hairline between the ring and the picture: keeps the circle's edge
