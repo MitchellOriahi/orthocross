@@ -5,10 +5,10 @@ import { prayersContent } from "./prayersContent";
 import { PRAYER_CATEGORIES, PRAYER_PLACEMENTS } from "./prayerCategories";
 import supplied from "./prayerImport.fixture.json";
 
-test("All 132 supplied entries resolve to one prayer and retain every requested placement", () => {
-  expect(supplied).toHaveLength(132);
-  expect(prayerAdditions).toHaveLength(124);
-  expect(prayerCatalog).toHaveLength(136);
+test("All 120 supplied entries resolve to one prayer and retain every requested placement", () => {
+  expect(supplied).toHaveLength(120);
+  expect(prayerAdditions).toHaveLength(115);
+  expect(prayerCatalog).toHaveLength(127);
   for (const row of supplied) {
     const matches = prayerCatalog.filter(prayer => prayer.id === row.id);
     expect(matches).toHaveLength(1);
@@ -26,9 +26,10 @@ test("All twelve existing prayers retain every original field and have a categor
   expect(prayerCatalog.find(prayer => prayer.id === "thanksgiving").tradition).toBe("Eastern");
 });
 
-test("New prayers use only the required placeholder, exact supplied names and traditions", () => {
+test("New prayers carry real text (no placeholders), exact supplied names and traditions", () => {
   for (const prayer of prayerAdditions) {
-    expect(prayer.content).toEqual(["Text coming soon."]);
+    expect(prayer.content[0].length).toBeGreaterThan(20);
+    expect(prayer.content.join(" ")).not.toContain("Text coming soon");
     const row = supplied.find(entry => entry.id === prayer.id);
     expect(prayer.name).toBe(row.name);
     expect(prayer.tradition).toBe(row.tradition);
@@ -42,7 +43,7 @@ test("Six macro categories and all 31 micro categories retain their supplied ord
 });
 
 test("Every placement is category-qualified, valid and non-duplicated", () => {
-  expect(new Set(prayerCatalog.map(prayer => prayer.id)).size).toBe(136);
+  expect(new Set(prayerCatalog.map(prayer => prayer.id)).size).toBe(127);
   for (const prayer of prayerCatalog) {
     const placements = PRAYER_PLACEMENTS[prayer.id];
     expect(new Set(placements.map(item => `${item.category}:${item.subgroup}`)).size).toBe(placements.length);
