@@ -28,3 +28,4 @@
 
 - Share prayers in one catalog with category-qualified placements; retain IDs, text, pins and highlights.
 - Share donation interval validation between dialog and checkout to keep billing consistent.
+- Schedule donation and rating prompts through one pure, tested coordinator (src/lib/promptScheduler) mounted only on the Board, so prompts never collide or interrupt reading.
