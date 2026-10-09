@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,13 +17,16 @@ interface DonationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   initialAmount?: number;
+  /** Called when the dialog is closed without starting a donation (e.g. the X). */
+  onCancel?: () => void;
 }
 
 const WEB_PRESETS = [1, 10, 25, 50, 100];
 const NATIVE_PRESETS = [5, 10, 25, 50];
 
-export const DonationDialog = ({ open, onOpenChange, initialAmount }: DonationDialogProps) => {
+export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: DonationDialogProps) => {
   const [selectedAmount, setSelectedAmount] = useState(10);
+  const submittedRef = useRef(false);
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -41,13 +44,19 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount }: DonationDi
       .then(({ data }) => { setAnonymous(!!data?.donor_anonymous); });
   }, [open, user]);
 
-  // Preselect the amount chosen from the tier guide (e.g. $1 for Angel)
+  // Preselect the amount chosen from the tier guide (e.g. $1 for Angel) in the custom field
   useEffect(() => {
+    if (open) submittedRef.current = false;
     if (!open || initialAmount === undefined) return;
     setSelectedAmount(initialAmount);
-    setUseCustom(false);
-    setCustomAmount("");
+    setUseCustom(true);
+    setCustomAmount(String(initialAmount));
   }, [open, initialAmount]);
+
+  const handleOpenChange = (next: boolean) => {
+    if (!next && !submittedRef.current) onCancel?.();
+    onOpenChange(next);
+  };
 
   const updateAnonymous = async (value: boolean) => {
     setAnonymous(value);
@@ -142,6 +151,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount }: DonationDi
   };
 
   const handleDonate = async () => {
+    submittedRef.current = true;
     if (isNative) {
       handleNativeDonate();
     } else {
@@ -152,7 +162,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount }: DonationDi
   const intervalLabel = interval === "month" ? "month" : "year";
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
