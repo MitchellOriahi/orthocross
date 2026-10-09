@@ -128,15 +128,6 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
   };
 
   const handleDonate = async () => {
-    if (user && !anonymous && fullName.trim()) {
-      setLoading(true);
-      const { error } = await supabase.from("profiles").update({ display_name: fullName.trim() }).eq("id", user.id);
-      setLoading(false);
-      if (error) {
-        toast({ title: "Couldn't save your name", description: "Please try again before donating.", variant: "destructive" });
-        return;
-      }
-    }
     if (isNative) {
       handleNativeDonate();
     } else {
@@ -213,12 +204,7 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
           >
             {DONOR_TEXT.donateAnonymously}
           </Button>
-          {!anonymous && (
-            <div className="space-y-2">
-              <Label htmlFor="donor-full-name">Full name (optional)</Label>
-              <Input id="donor-full-name" autoComplete="name" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Your full name" />
-            </div>
-          )}
+
 
           {/* Platform note */}
           <p className="text-xs text-muted-foreground text-center">
