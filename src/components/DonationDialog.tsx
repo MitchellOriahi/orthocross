@@ -192,13 +192,6 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             </div>
           )}
 
-          {!isNative && (
-            <div className="grid grid-cols-2 gap-2">
-              <Button size="sm" aria-pressed={interval === "month"} variant={interval === "month" ? "default" : "outline"} onClick={() => setInterval("month")}>Monthly</Button>
-              <Button size="sm" aria-pressed={interval === "year"} variant={interval === "year" ? "default" : "outline"} onClick={() => setInterval("year")}>Yearly</Button>
-            </div>
-          )}
-
           <Button
             size="sm"
             variant={anonymous ? "secondary" : "outline"}
