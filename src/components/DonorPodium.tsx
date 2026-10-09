@@ -1,6 +1,6 @@
 import { Crown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
+import { DONOR_TIERS } from "@/config/donorTiers";
 
 export interface DonorRow { rank: number; key: string; username: string; profile_picture_url: string | null; tierKey: string | null }
 export function DonorTierButton({ donor, onSelect }: { donor: DonorRow; onSelect: (key: string) => void }) {
