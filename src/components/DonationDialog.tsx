@@ -21,28 +21,22 @@ interface DonationDialogProps {
   onCancel?: () => void;
 }
 
-// Configurable starting suggestions; checkout accepts any amount ≥ $1 (validated server-side).
-const WEB_PRESETS: Record<DonationInterval, number[]> = { month: [3, 5, 10, 25], year: [30, 50, 100] };
-const DEFAULT_WEB_AMOUNT: Record<DonationInterval, number> = { month: 5, year: 30 };
+const WEB_PRESETS = [1, 10, 25, 50, 100];
 const NATIVE_PRESETS = [5, 10, 25, 50];
 
 export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: DonationDialogProps) => {
-  const [selectedAmount, setSelectedAmount] = useState(DEFAULT_WEB_AMOUNT.month);
+  const [selectedAmount, setSelectedAmount] = useState(10);
   const submittedRef = useRef(false);
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [interval, setIntervalState] = useState<DonationInterval>(DEFAULT_DONATION_INTERVAL);
+  const [interval, setInterval] = useState<DonationInterval>(DEFAULT_DONATION_INTERVAL);
   const [anonymous, setAnonymous] = useState(false);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const isNative = Capacitor.isNativePlatform();
-  const PRESET_AMOUNTS = isNative ? NATIVE_PRESETS : WEB_PRESETS[interval];
-  const setInterval = (next: DonationInterval) => {
-    setIntervalState(next);
-    if (!useCustom) setSelectedAmount(DEFAULT_WEB_AMOUNT[next]);
-  };
+  const PRESET_AMOUNTS = isNative ? NATIVE_PRESETS : WEB_PRESETS;
 
   useEffect(() => {
     if (!open || !user) return;
@@ -173,22 +167,13 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <CalendarHeart className="w-5 h-5 text-primary" />
-            Help keep OrthoCross growing
+            Support OrthoCross
           </DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground text-left">
-            OrthoCross helps you stay connected to Scripture, Orthodox history, and the lives of the saints. Your support helps us maintain and improve the app while keeping its core features accessible to everyone.
-          </DialogDescription>
-          <details className="group mt-1 rounded-lg border border-primary/30 bg-muted/30 px-3 py-2 text-left">
-            <summary className="cursor-pointer list-none text-sm font-medium text-primary">
-              Why support OrthoCross?
-            </summary>
-            <div className="mt-2 space-y-2 text-xs leading-relaxed text-muted-foreground">
-              <p className="font-medium text-foreground">Built with care, by one developer</p>
-              <p>OrthoCross is an independent project built and maintained by a single developer with a love for the Orthodox Christian faith and a desire to help others grow in it. Every improvement, new feature, and refinement is part of an ongoing effort to make OrthoCross a more helpful companion in your daily walk of faith.</p>
-              <p>Your support helps me continue developing the app, maintaining its services, and bringing new ideas to life. If OrthoCross has helped you build a Bible-reading habit, discover the lives of the saints, or deepen your understanding of Orthodox Christianity, I'd be grateful for your help in keeping this project growing.</p>
-              <p>There's no obligation to give. I'm glad you're here, and I hope OrthoCross continues to be a blessing in your daily life. Thank you for supporting this little corner of the Orthodox world.</p>
-            </div>
-          </details>
+          {!isNative && (
+            <DialogDescription className="text-sm text-muted-foreground text-left">
+              Your gift keeps OrthoCross free for everyone.
+            </DialogDescription>
+          )}
           {!isNative && (
             <div className="mt-2" role="radiogroup" aria-label="Donation frequency">
               <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
@@ -221,9 +206,14 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           {/* Preset amounts */}
           <div className="space-y-2">
             <Label>Choose an amount (USD)</Label>
-            <div className={`grid gap-2 ${PRESET_AMOUNTS.length === 3 ? "grid-cols-3" : "grid-cols-4"}`}>
+            <div className={`grid gap-2 pt-1.5 ${isNative ? "grid-cols-4" : "grid-cols-5"}`}>
               {PRESET_AMOUNTS.map((preset) => (
-                <div key={preset}>
+                <div key={preset} className="relative">
+                  {preset === 10 && (
+                    <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 z-10 whitespace-nowrap rounded-full bg-primary px-1.5 py-px text-[10px] font-medium leading-tight text-primary-foreground">
+                      Most popular
+                    </span>
+                  )}
                   <Button
                     variant={!useCustom && selectedAmount === preset ? "default" : "outline"}
                     size="sm"
@@ -303,7 +293,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <p className="text-xs text-muted-foreground text-center">
             {isNative
               ? "One-time donation processed securely through the app store."
-              : `A voluntary gift of $${effectiveAmount.toFixed(2)}, charged every ${intervalLabel} via Stripe until you cancel. It unlocks no paid features. You can cancel anytime from Settings → Manage Donation.`}
+              : `Recurring ${intervalLabel}ly donation processed securely via Stripe.`}
           </p>
 
           {/* Native warning if products not loaded yet */}
@@ -322,7 +312,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             {loading ? (
               <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</>
             ) : (
-              <><Heart className="w-4 h-4 mr-2 text-[hsl(var(--donor-heart))]" />Support OrthoCross — ${useCustom ? (parseFloat(customAmount) || 0).toFixed(2) : selectedAmount}{!isNative && (interval === "month" ? "/month" : "/year")}</>
+              <><Heart className="w-4 h-4 mr-2 text-[hsl(var(--donor-heart))]" />Donate ${useCustom ? (parseFloat(customAmount) || 0).toFixed(2) : selectedAmount}{!isNative && (interval === "month" ? " / month" : " / year")}</>
             )}
           </Button>
         </div>
