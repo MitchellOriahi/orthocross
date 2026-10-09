@@ -119,7 +119,7 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
 // Subcategory pills fill two rows to the available width before anything overflows;
 // once both rows are full, the remaining pills join a single shared carousel,
 // distributed so the two rows stay evenly filled while it slides.
-function SubcategoryPills({ items, active, onToggle }: { items: string[]; active: string | null; onToggle: (item: string) => void }) {
+export function SubcategoryPills({ items, active, onToggle }: { items: string[]; active: string | null; onToggle: (item: string) => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const [rows, setRows] = useState<string[][]>(() => {
