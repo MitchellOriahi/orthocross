@@ -254,10 +254,19 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
       
       {iconUrl && (
         <figure className="mb-6 mx-auto w-full max-w-sm sm:max-w-md">
-          {/* Whole artwork is always visible (no cropping of heads/faces on any screen); a blurred copy fills the frame. */}
+          {/* Cropped cover framing; face-focused islands anchor to the top so heads/halos are never cut off. */}
           <div className="relative h-56 sm:h-64 md:h-72 rounded-lg overflow-hidden bg-muted border border-border">
-            <img src={iconUrl} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-110 blur-xl opacity-60" />
-            <img src={iconUrl} alt={imageCredit?.title ?? "Historical artwork"} className="relative w-full h-full object-contain" loading="eager" decoding="sync" fetchPriority="high" />
+            <img
+              src={iconUrl}
+              alt={imageCredit?.title ?? "Historical artwork"}
+              className={cn(
+                "w-full h-full object-cover",
+                HISTORICAL_FACE_FOCUSED_ISLANDS.has(islandId) ? "object-[center_15%]" : "object-center"
+              )}
+              loading="eager"
+              decoding="sync"
+              fetchPriority="high"
+            />
           </div>
           {imageCredit && (
             <figcaption className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
