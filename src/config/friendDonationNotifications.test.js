@@ -3,16 +3,16 @@ import { notifyDonationFriends } from "../../supabase/functions/_shared/friendDo
 
 const donationId = "00000000-0000-4000-8000-000000000001";
 const notification = { id: "00000000-0000-4000-8000-000000000002", recipient_id: "friend-id", donor_name: "John Smith" };
-function adminFor(rows: unknown[]) {
-  const updates: string[] = [];
+function adminFor(rows) {
+  const updates = [];
   return {
     updates,
-    rpc: async (name: string, args: unknown) => {
+    rpc: async (name, args) => {
       expect(name).toBe("queue_friend_donation_notifications");
       expect(args).toEqual({ p_donation_id: donationId });
       return { data: rows, error: null };
     },
-    from: () => ({ update: () => ({ eq: async (_: string, id: string) => {
+    from: () => ({ update: () => ({ eq: async (_, id) => {
       updates.push(id); return { error: null };
     } }) }),
   };
@@ -20,14 +20,14 @@ function adminFor(rows: unknown[]) {
 test("anonymous donations with no queued recipients never send a friend push", async () => {
   let calls = 0;
   await notifyDonationFriends(adminFor([]), donationId, { appId: "app", apiKey: "test" },
-    (async () => { calls++; return new Response("{}"); }) as typeof fetch);
+    (async () => { calls++; return new Response("{}"); }));
   expect(calls).toBe(0);
 });
 test("a public donation alerts its queued friend without disclosing amounts", async () => {
-  let payload: any;
+  let payload;
   const admin = adminFor([notification]);
   await notifyDonationFriends(admin, donationId, { appId: "app", apiKey: "test" },
-    (async (_url, init) => { payload = JSON.parse(String(init?.body)); return new Response('{"id":"sent"}'); }) as typeof fetch);
+    (async (_url, init) => { payload = JSON.parse(String(init?.body)); return new Response('{"id":"sent"}'); }));
   expect(payload.include_external_user_ids).toEqual(["friend-id"]);
   expect(payload.contents.en).toContain("John Smith");
   expect(payload).not.toHaveProperty("amount");
@@ -35,11 +35,11 @@ test("a public donation alerts its queued friend without disclosing amounts", as
   expect(admin.updates).toEqual([notification.id]);
 });
 test("retries reuse the alert UUID so push delivery is idempotent", async () => {
-  const keys: string[] = [];
+  const keys = [];
   const send = (async (_url, init) => {
     keys.push(JSON.parse(String(init?.body)).idempotency_key);
     return new Response('{"id":"sent"}');
-  }) as typeof fetch;
+  });
   await notifyDonationFriends(adminFor([notification]), donationId, { appId: "app", apiKey: "test" }, send);
   await notifyDonationFriends(adminFor([notification]), donationId, { appId: "app", apiKey: "test" }, send);
   expect(keys).toEqual([notification.id, notification.id]);
@@ -47,6 +47,6 @@ test("retries reuse the alert UUID so push delivery is idempotent", async () => 
 test("failed push delivery remains unmarked and retryable", async () => {
   const admin = adminFor([notification]);
   await expect(notifyDonationFriends(admin, donationId, { appId: "app", apiKey: "test" },
-    (async () => new Response("provider unavailable", { status: 503 })) as typeof fetch)).rejects.toThrow("503");
+    (async () => new Response("provider unavailable", { status: 503 })))).rejects.toThrow("503");
   expect(admin.updates).toEqual([]);
 });
