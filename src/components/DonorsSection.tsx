@@ -90,8 +90,21 @@ export const DonorsSection = () => {
             <div className="py-8 text-center text-muted-foreground">{DONOR_TEXT.empty}</div>
           ) : (
             <>
-              <div className="space-y-1">
-                {top3.map((d) => <DonorListRow key={d.key} donor={d} onSelectTier={setSelectedTier} />)}
+              <div className="grid grid-cols-3 items-start">
+                {top3.map((d) => (
+                  <div key={d.key} className={`donor-rank-${Math.min(d.rank, 4)} flex min-w-0 flex-col items-center gap-0.5 rounded-lg p-1 text-center`}>
+                    <span className="relative inline-block shrink-0">
+                      {d.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={d.profile_picture_url || undefined} alt={`${d.username}'s profile picture`} />
+                        <AvatarFallback>{d.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                    </span>
+                    <span className="w-full break-words text-xs font-semibold leading-tight">{d.username}</span>
+                    <span className="text-[11px] font-bold text-[hsl(var(--donor-rank-tone))]">{d.rank === 1 ? "1st" : d.rank === 2 ? "2nd" : "3rd"}</span>
+                    <DonorTierButton donor={d} onSelect={setSelectedTier} />
+                  </div>
+                ))}
               </div>
 
               <CollapsibleTrigger asChild>
