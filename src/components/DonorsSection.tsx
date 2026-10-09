@@ -32,6 +32,7 @@ export const DonorsSection = () => {
   const [expanded, setExpanded] = useState(false);
   const [hasDonated, setHasDonated] = useState(true);
   const [donateOpen, setDonateOpen] = useState(false);
+  const [donateAmount, setDonateAmount] = useState<number | undefined>(undefined);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
 
   const load = useCallback(async () => {
