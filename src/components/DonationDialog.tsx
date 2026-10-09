@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
-import { CalendarHeart, EyeOff, Heart, Loader2 } from "lucide-react";
+import { CalendarHeart, Eye, EyeOff, Heart, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { getTier, TIER_ICONS } from "@/config/donorTiers";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
