@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
 import { CalendarHeart, Heart, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
+import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
 interface DonationDialogProps {
@@ -24,7 +25,7 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [monthly, setMonthly] = useState(false);
+  const [interval, setInterval] = useState<DonationInterval>(DEFAULT_DONATION_INTERVAL);
   const [anonymous, setAnonymous] = useState(false);
   const [fullName, setFullName] = useState("");
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
@@ -111,8 +112,8 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
     setLoading(true);
     try {
       localStorage.setItem("orthocross:donation-started", new Date().toISOString());
-      const { data, error } = await supabase.functions.invoke(monthly ? "create-monthly-donation" : "create-donation", {
-        body: { amount: Math.round(amount * 100) },
+      const { data, error } = await supabase.functions.invoke("create-monthly-donation", {
+        body: { amount: Math.round(amount * 100), interval },
       });
       if (error) throw error;
       if (data?.url) {
@@ -199,8 +200,8 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
 
           {!isNative && (
             <div className="grid grid-cols-2 gap-2">
-              <Button size="sm" variant={!monthly ? "default" : "outline"} onClick={() => setMonthly(false)}>One-time</Button>
-              <Button size="sm" variant={monthly ? "default" : "outline"} onClick={() => setMonthly(true)}>Monthly</Button>
+              <Button size="sm" aria-pressed={interval === "month"} variant={interval === "month" ? "default" : "outline"} onClick={() => setInterval("month")}>Monthly</Button>
+              <Button size="sm" aria-pressed={interval === "year"} variant={interval === "year" ? "default" : "outline"} onClick={() => setInterval("year")}>Yearly</Button>
             </div>
           )}
 
@@ -224,7 +225,7 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
           <p className="text-xs text-muted-foreground text-center">
             {isNative
               ? "One-time donation processed securely through the app store."
-              : monthly ? "Recurring monthly donation processed securely via Stripe." : "One-time donation processed securely via Stripe."}
+              : interval === "month" ? "Recurring monthly donation processed securely via Stripe." : "Recurring yearly donation processed securely via Stripe."}
           </p>
 
           {/* Native warning if products not loaded yet */}
@@ -243,7 +244,7 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             {loading ? (
               <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</>
             ) : (
-              <><Heart className="w-4 h-4 mr-2 text-[hsl(var(--donor-heart))]" />Donate ${useCustom ? (parseFloat(customAmount) || 0).toFixed(2) : selectedAmount}</>
+              <><Heart className="w-4 h-4 mr-2 text-[hsl(var(--donor-heart))]" />Donate ${useCustom ? (parseFloat(customAmount) || 0).toFixed(2) : selectedAmount}{!isNative && (interval === "month" ? " / month" : " / year")}</>
             )}
           </Button>
         </div>

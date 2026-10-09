@@ -2,6 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
+import { donationInterval } from "../_shared/donationBilling.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -32,10 +34,12 @@ serve(async (req) => {
       });
     }
 
-    const { amount } = await req.json();
+    const { amount, interval: requestedInterval } = await req.json();
+    const interval = donationInterval(requestedInterval);
+    const billingLabel = interval === "year" ? "Yearly" : "Monthly";
     
-    if (!amount || amount < 100) {
-      throw new Error("Minimum monthly donation amount is $1.00");
+    if (!Number.isSafeInteger(amount) || amount < 100) {
+      throw new Error("Minimum donation amount is $1.00");
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -59,25 +63,26 @@ serve(async (req) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: "Monthly Donation to OrthoCross",
-              description: "Monthly support for the OrthoCross app",
+              name: `${billingLabel} Donation to OrthoCross`,
+              description: `${billingLabel} support for the OrthoCross app`,
             },
             unit_amount: amount,
             recurring: {
-              interval: "month",
+              interval,
             },
           },
           quantity: 1,
         },
       ],
       mode: "subscription",
-      subscription_data: { metadata: { user_id: user.id } },
+      subscription_data: { metadata: { user_id: user.id, billing_interval: interval } },
       success_url: `${req.headers.get("origin")}/dashboard?donation=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/dashboard?donation=cancelled`,
       metadata: {
         user_id: user.id,
         donation_amount: amount.toString(),
         donation_type: "monthly",
+        billing_interval: interval,
       },
     });
 
