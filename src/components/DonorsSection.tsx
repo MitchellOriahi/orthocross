@@ -67,7 +67,6 @@ export const DonorsSection = () => {
             </div>
             <Button size="sm" variant="sacred" onClick={() => setDonateOpen(true)}
               className={`shrink-0 text-xs ${hasDonated ? "" : "donor-glow"}`}>
-              <Heart className="mr-1.5 h-3.5 w-3.5 text-[hsl(var(--donor-heart))]" />
               {DONOR_TEXT.becomeDonator}
             </Button>
           </div>
