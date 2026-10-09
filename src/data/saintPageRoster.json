@@ -3046,6 +3046,20 @@
     ]
   },
   {
+    "id": "gabriel-urgebadze",
+    "savedId": null,
+    "name": "Gabriel the Fool for Christ",
+    "prefix": "St.",
+    "tradition": "Eastern",
+    "subtitle": "Georgian confessor and holy fool who served at Samtavro.",
+    "memberships": [
+      {
+        "category": "monastics",
+        "subgroup": "Holy Fools"
+      }
+    ]
+  },
+  {
     "id": "symeon-of-emesa",
     "savedId": null,
     "name": "Symeon of Emesa",
