@@ -303,7 +303,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <p className="text-xs text-muted-foreground text-center">
             {isNative
               ? "One-time donation processed securely through the app store."
-              : `A voluntary gift of $${effectiveAmount.toFixed(2)}, charged every ${intervalLabel} via Stripe until you cancel. It unlocks no paid features. You can cancel anytime from Settings → Manage donation.`}
+              : `A voluntary gift of $${effectiveAmount.toFixed(2)}, charged every ${intervalLabel} via Stripe until you cancel. It unlocks no paid features. You can cancel anytime from Settings → Manage Donation.`}
           </p>
 
           {/* Native warning if products not loaded yet */}
