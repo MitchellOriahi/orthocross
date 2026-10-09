@@ -1,1790 +1,1658 @@
 [
-  {
-    "name": "The Lord's Prayer",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Core"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Rule of Prayer"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "lords-prayer"
-  },
-  {
-    "name": "Trisagion (\"Holy God, Holy Mighty, Holy Immortal\")",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Core"
-      }
-    ],
-    "id": "trisagion"
-  },
-  {
-    "name": "The Trisagion Prayers",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Core"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Rule of Prayer"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "the-trisagion-prayers"
-  },
-  {
-    "name": "O Heavenly King (Prayer to the Holy Spirit)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Core"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Rule of Prayer"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "o-heavenly-king-prayer-to-the-holy-spirit"
-  },
-  {
-    "name": "Come, True Light (St. Symeon the New Theologian)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Core"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "come-true-light-st-symeon-the-new-theologian"
-  },
-  {
-    "name": "Prayer of Thanksgiving (\"Let Us Give Thanks\")",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Core"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "thanksgiving"
-  },
-  {
-    "name": "Glory Be (Gloria Patri)",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Core"
-      },
-      {
-        "category": "foundational",
-        "subgroup": "Doxologies"
-      }
-    ],
-    "id": "glory-be-gloria-patri"
-  },
-  {
-    "name": "The Jesus Prayer",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Core"
-      },
-      {
-        "category": "foundational",
-        "subgroup": "Short Prayers"
-      },
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Rule of Prayer"
-      }
-    ],
-    "id": "jesus-prayer"
-  },
-  {
-    "name": "Nicene Creed",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Creeds"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "nicene-creed"
-  },
-  {
-    "name": "The Great Doxology (\"Glory to God in the Highest\")",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Doxologies"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "the-great-doxology-glory-to-god-in-the-highest"
-  },
-  {
-    "name": "Kyrie Eleison (\"Lord, Have Mercy\")",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Short Prayers"
-      }
-    ],
-    "id": "kyrie-eleison-lord-have-mercy"
-  },
-  {
-    "name": "Prayer of the Publican (\"God, Be Merciful to Me, a Sinner\")",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Short Prayers"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "prayer-of-the-publican-god-be-merciful-to-me-a-sinner"
-  },
-  {
-    "name": "Prayer of the Penitent Thief (\"Remember Me, O Lord\")",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "foundational",
-        "subgroup": "Short Prayers"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "prayer-of-the-penitent-thief-remember-me-o-lord"
-  },
-  {
-    "name": "Morning Prayers",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "morning-prayer"
-  },
-  {
-    "name": "Morning Prayer of the Optina Elders",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "morning-prayer-of-the-optina-elders"
-  },
-  {
-    "name": "Prayer of St. Philaret of Moscow",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "prayer-of-st-philaret-of-moscow"
-  },
-  {
-    "name": "Evening Prayers",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "evening-prayer"
-  },
-  {
-    "name": "Evening Prayer of St. Macarius the Great",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "evening-prayer-of-st-macarius-the-great"
-  },
-  {
-    "name": "Prayers Before Sleep",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Night"
-      }
-    ],
-    "id": "prayers-before-sleep"
-  },
-  {
-    "name": "Midnight Office",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Night"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "midnight-office"
-  },
-  {
-    "name": "Orthros (Matins)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "orthros-matins"
-  },
-  {
-    "name": "First Hour",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "first-hour"
-  },
-  {
-    "name": "Third Hour",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "third-hour"
-  },
-  {
-    "name": "Sixth Hour",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "sixth-hour"
-  },
-  {
-    "name": "Ninth Hour",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "ninth-hour"
-  },
-  {
-    "name": "Vespers (Eastern)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "vespers-eastern"
-  },
-  {
-    "name": "Small Compline",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Night"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "small-compline"
-  },
-  {
-    "name": "Great Compline",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Night"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "great-compline"
-  },
-  {
-    "name": "O Gladsome Light (Phos Hilaron)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      },
-      {
-        "category": "foundational",
-        "subgroup": "Doxologies"
-      }
-    ],
-    "id": "o-gladsome-light-phos-hilaron"
-  },
-  {
-    "name": "Agpeya: Prime",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "agpeya-prime"
-  },
-  {
-    "name": "Agpeya: Terce",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "agpeya-terce"
-  },
-  {
-    "name": "Agpeya: Sext",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "agpeya-sext"
-  },
-  {
-    "name": "Agpeya: None",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "agpeya-none"
-  },
-  {
-    "name": "Agpeya: Vespers",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "agpeya-vespers"
-  },
-  {
-    "name": "Agpeya: Compline",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Night"
-      }
-    ],
-    "id": "agpeya-compline"
-  },
-  {
-    "name": "Agpeya: Midnight",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Night"
-      }
-    ],
-    "id": "agpeya-midnight"
-  },
-  {
-    "name": "Agpeya: The Veil",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "agpeya-the-veil"
-  },
-  {
-    "name": "Shehimo: Ramsho (Evening)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "shehimo-ramsho-evening"
-  },
-  {
-    "name": "Shehimo: Sootoro (Compline)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Night"
-      }
-    ],
-    "id": "shehimo-sootoro-compline"
-  },
-  {
-    "name": "Shehimo: Lilyo (Night)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Night"
-      }
-    ],
-    "id": "shehimo-lilyo-night"
-  },
-  {
-    "name": "Shehimo: Safro (Morning)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "shehimo-safro-morning"
-  },
-  {
-    "name": "Shehimo: Third Hour",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "shehimo-third-hour"
-  },
-  {
-    "name": "Shehimo: Sixth Hour",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "shehimo-sixth-hour"
-  },
-  {
-    "name": "Shehimo: Ninth Hour",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "shehimo-ninth-hour"
-  },
-  {
-    "name": "Zhamagirk (Armenian Book of Hours)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "zhamagirk-armenian-book-of-hours"
-  },
-  {
-    "name": "Grace Before Meals (\"The Eyes of All Look to Thee\")",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Meals"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Blessings"
-      }
-    ],
-    "id": "grace-before-meals-the-eyes-of-all-look-to-thee"
-  },
-  {
-    "name": "Grace After Meals",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Meals"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Blessings"
-      }
-    ],
-    "id": "grace-after-meals"
-  },
-  {
-    "name": "Grace Before and After Meals (Coptic)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "daily",
-        "subgroup": "Meals"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Blessings"
-      }
-    ],
-    "id": "grace-before-and-after-meals-coptic"
-  },
-  {
-    "name": "The Jesus Prayer",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      }
-    ],
-    "id": "jesus-prayer"
-  },
-  {
-    "name": "Paschal Greeting (\"Christ Is Risen!\")",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Feasts"
-      }
-    ],
-    "id": "paschal-greeting-christ-is-risen"
-  },
-  {
-    "name": "Paschal Troparion",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Feasts"
-      }
-    ],
-    "id": "paschal-troparion"
-  },
-  {
-    "name": "Troparion of the Cross (\"O Lord, Save Thy People\")",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Feasts"
-      }
-    ],
-    "id": "troparion-of-the-cross-o-lord-save-thy-people"
-  },
-  {
-    "name": "Troparion of the Nativity",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Feasts"
-      }
-    ],
-    "id": "troparion-of-the-nativity"
-  },
-  {
-    "name": "Troparion of Theophany",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Feasts"
-      }
-    ],
-    "id": "troparion-of-theophany"
-  },
-  {
-    "name": "O Only-Begotten Son",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "communion",
-        "subgroup": "Hymns"
-      }
-    ],
-    "id": "o-only-begotten-son"
-  },
-  {
-    "name": "Paschal Homily of St. John Chrysostom",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Feasts"
-      }
-    ],
-    "id": "paschal-homily-of-st-john-chrysostom"
-  },
-  {
-    "name": "Akathist to Our Sweetest Lord Jesus",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      }
-    ],
-    "id": "akathist-to-our-sweetest-lord-jesus"
-  },
-  {
-    "name": "Canon of Repentance to Our Lord Jesus Christ",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "canon-of-repentance-to-our-lord-jesus-christ"
-  },
-  {
-    "name": "Paschal Canon",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Christ"
-      },
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Feasts"
-      }
-    ],
-    "id": "paschal-canon"
-  },
-  {
-    "name": "Rejoice, O Virgin Theotokos (Hail Mary)",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "rejoice-o-virgin-theotokos-hail-mary"
-  },
-  {
-    "name": "Beneath Thy Compassion (Sub Tuum Praesidium)",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      }
-    ],
-    "id": "beneath-thy-compassion-sub-tuum-praesidium"
-  },
-  {
-    "name": "Magnificat (Song of the Theotokos)",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      },
-      {
-        "category": "psalms",
-        "subgroup": "Canticles"
-      }
-    ],
-    "id": "magnificat-song-of-the-theotokos"
-  },
-  {
-    "name": "It Is Truly Meet (Axion Estin)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      },
-      {
-        "category": "communion",
-        "subgroup": "Hymns"
-      }
-    ],
-    "id": "it-is-truly-meet-axion-estin"
-  },
-  {
-    "name": "To Thee, the Champion Leader",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      }
-    ],
-    "id": "to-thee-the-champion-leader"
-  },
-  {
-    "name": "Paraklesis (Supplicatory Canon to the Theotokos)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      },
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Healing"
-      }
-    ],
-    "id": "paraklesis-supplicatory-canon-to-the-theotokos"
-  },
-  {
-    "name": "Akathist Hymn to the Theotokos",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      },
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      }
-    ],
-    "id": "akathist-hymn-to-the-theotokos"
-  },
-  {
-    "name": "Agni Parthene",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      }
-    ],
-    "id": "agni-parthene"
-  },
-  {
-    "name": "Weddase Maryam (Ethiopian Praise of Mary)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      }
-    ],
-    "id": "weddase-maryam-ethiopian-praise-of-mary"
-  },
-  {
-    "name": "Theotokia (Coptic Hymns to the Virgin)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Theotokos"
-      }
-    ],
-    "id": "theotokia-coptic-hymns-to-the-virgin"
-  },
-  {
-    "name": "Prayer to the Guardian Angel",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Angels"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "prayer-to-the-guardian-angel"
-  },
-  {
-    "name": "Prayer to the Archangel Michael",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Angels"
-      }
-    ],
-    "id": "prayer-to-the-archangel-michael"
-  },
-  {
-    "name": "Canon to the Guardian Angel",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Angels"
-      },
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      }
-    ],
-    "id": "canon-to-the-guardian-angel"
-  },
-  {
-    "name": "Akathist to the Guardian Angel",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Angels"
-      },
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      }
-    ],
-    "id": "akathist-to-the-guardian-angel"
-  },
-  {
-    "name": "Prayer to St. Nicholas",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Saints"
-      }
-    ],
-    "id": "prayer-to-st-nicholas"
-  },
-  {
-    "name": "Akathist to St. Nicholas",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Saints"
-      },
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      }
-    ],
-    "id": "akathist-to-st-nicholas"
-  },
-  {
-    "name": "Troparion of All Saints",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Saints"
-      }
-    ],
-    "id": "troparion-of-all-saints"
-  },
-  {
-    "name": "Akathist \"Glory to God for All Things\"",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      }
-    ],
-    "id": "akathist-glory-to-god-for-all-things"
-  },
-  {
-    "name": "Akathist for the Departed",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "The Departed"
-      }
-    ],
-    "id": "akathist-for-the-departed"
-  },
-  {
-    "name": "The Great Canon of St. Andrew of Crete",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "christ-saints",
-        "subgroup": "Akathists and Canons"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "the-great-canon-of-st-andrew-of-crete"
-  },
-  {
-    "name": "The Psalter",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Psalter"
-      }
-    ],
-    "id": "the-psalter"
-  },
-  {
-    "name": "Psalm 22 (23), \"The Lord Is My Shepherd\"",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Selected Psalms"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "The Departed"
-      }
-    ],
-    "id": "psalm-22-23-the-lord-is-my-shepherd"
-  },
-  {
-    "name": "Psalm 50 (51), \"Have Mercy on Me, O God\"",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Selected Psalms"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Hours"
-      }
-    ],
-    "id": "psalm-50-51-have-mercy-on-me-o-god"
-  },
-  {
-    "name": "Psalm 62 (63), \"O God, Thou Art My God\"",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Selected Psalms"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "psalm-62-63-o-god-thou-art-my-god"
-  },
-  {
-    "name": "Psalm 90 (91), \"He Who Dwells in the Help of the Most High\"",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Selected Psalms"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Night"
-      }
-    ],
-    "id": "psalm-90-91-he-who-dwells-in-the-help-of-the-most-high"
-  },
-  {
-    "name": "Psalm 102 (103), \"Bless the Lord, O My Soul\"",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Selected Psalms"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "psalm-102-103-bless-the-lord-o-my-soul"
-  },
-  {
-    "name": "Psalm 140 (141), \"Let My Prayer Arise\"",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Selected Psalms"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "psalm-140-141-let-my-prayer-arise"
-  },
-  {
-    "name": "The Beatitudes",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Beatitudes"
-      },
-      {
-        "category": "communion",
-        "subgroup": "Hymns"
-      }
-    ],
-    "id": "the-beatitudes"
-  },
-  {
-    "name": "Song of Simeon (Nunc Dimittis)",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Canticles"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "song-of-simeon-nunc-dimittis"
-  },
-  {
-    "name": "Song of Zacharias (Benedictus)",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Canticles"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "song-of-zacharias-benedictus"
-  },
-  {
-    "name": "Song of the Three Holy Youths",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Canticles"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Morning"
-      }
-    ],
-    "id": "song-of-the-three-holy-youths"
-  },
-  {
-    "name": "Song of Moses",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "psalms",
-        "subgroup": "Canticles"
-      }
-    ],
-    "id": "song-of-moses"
-  },
-  {
-    "name": "Prayers Before Holy Communion",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Before Communion"
-      },
-      {
-        "category": "daily",
-        "subgroup": "Evening"
-      }
-    ],
-    "id": "prayers-before-holy-communion"
-  },
-  {
-    "name": "Prayer of St. John Chrysostom Before Communion",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Before Communion"
-      }
-    ],
-    "id": "prayer-of-st-john-chrysostom-before-communion"
-  },
-  {
-    "name": "The Coptic Confession (\"Amen, I Believe\")",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Before Communion"
-      }
-    ],
-    "id": "the-coptic-confession-amen-i-believe"
-  },
-  {
-    "name": "Prayers of Thanksgiving After Communion",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "After Communion"
-      }
-    ],
-    "id": "prayers-of-thanksgiving-after-communion"
-  },
-  {
-    "name": "Let Our Mouths Be Filled",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "After Communion"
-      },
-      {
-        "category": "communion",
-        "subgroup": "Hymns"
-      }
-    ],
-    "id": "let-our-mouths-be-filled"
-  },
-  {
-    "name": "The Cherubic Hymn",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Hymns"
-      }
-    ],
-    "id": "the-cherubic-hymn"
-  },
-  {
-    "name": "We Have Seen the True Light",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Hymns"
-      },
-      {
-        "category": "communion",
-        "subgroup": "After Communion"
-      }
-    ],
-    "id": "we-have-seen-the-true-light"
-  },
-  {
-    "name": "Divine Liturgy of St. John Chrysostom",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Liturgies"
-      }
-    ],
-    "id": "divine-liturgy-of-st-john-chrysostom"
-  },
-  {
-    "name": "Divine Liturgy of St. Basil the Great",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Liturgies"
-      }
-    ],
-    "id": "divine-liturgy-of-st-basil-the-great"
-  },
-  {
-    "name": "Divine Liturgy of St. James",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Liturgies"
-      }
-    ],
-    "id": "divine-liturgy-of-st-james"
-  },
-  {
-    "name": "Liturgy of the Presanctified Gifts",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Liturgies"
-      }
-    ],
-    "id": "liturgy-of-the-presanctified-gifts"
-  },
-  {
-    "name": "Coptic Liturgy of St. Gregory the Theologian",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Liturgies"
-      }
-    ],
-    "id": "coptic-liturgy-of-st-gregory-the-theologian"
-  },
-  {
-    "name": "Coptic Liturgy of St. Cyril (St. Mark)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Liturgies"
-      }
-    ],
-    "id": "coptic-liturgy-of-st-cyril-st-mark"
-  },
-  {
-    "name": "Armenian Divine Liturgy (Badarak)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Liturgies"
-      }
-    ],
-    "id": "armenian-divine-liturgy-badarak"
-  },
-  {
-    "name": "Ethiopian Liturgy (Anaphora of the Apostles)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Liturgies"
-      }
-    ],
-    "id": "ethiopian-liturgy-anaphora-of-the-apostles"
-  },
-  {
-    "name": "Great Litany (Litany of Peace)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Litanies"
-      }
-    ],
-    "id": "great-litany-litany-of-peace"
-  },
-  {
-    "name": "Litany of the Oblations",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Litanies"
-      }
-    ],
-    "id": "litany-of-the-oblations"
-  },
-  {
-    "name": "Litany of the Sick",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Litanies"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Healing"
-      }
-    ],
-    "id": "litany-of-the-sick"
-  },
-  {
-    "name": "Litany of Travelers",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Litanies"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Travel"
-      }
-    ],
-    "id": "litany-of-travelers"
-  },
-  {
-    "name": "Litany of the Departed",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Litanies"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "The Departed"
-      }
-    ],
-    "id": "litany-of-the-departed"
-  },
-  {
-    "name": "Litany of Waters, Plants, and Fruits",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "communion",
-        "subgroup": "Litanies"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Blessings"
-      }
-    ],
-    "id": "litany-of-waters-plants-and-fruits"
-  },
-  {
-    "name": "Prayer of St. Isaac the Syrian",
-    "tradition": "Eastern/Oriental",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "prayer-of-st-isaac-the-syrian"
-  },
-  {
-    "name": "Prayer of St. Ephrem the Syrian",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "prayer-of-st-ephrem-the-syrian"
-  },
-  {
-    "name": "Prayer of Manasseh",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "prayer-of-manasseh"
-  },
-  {
-    "name": "Prayers Before Confession",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "prayers-before-confession"
-  },
-  {
-    "name": "Prayer of Absolution (Eastern)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "prayer-of-absolution-eastern"
-  },
-  {
-    "name": "Coptic Absolution to the Son",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "coptic-absolution-to-the-son"
-  },
-  {
-    "name": "I Confess with Faith (Havatov Khostovanim, St. Nerses Shnorhali)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      },
-      {
-        "category": "communion",
-        "subgroup": "Before Communion"
-      }
-    ],
-    "id": "i-confess-with-faith-havatov-khostovanim-st-nerses-shnorhali"
-  },
-  {
-    "name": "Book of Lamentations (Narek, St. Gregory of Narek)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Repentance"
-      }
-    ],
-    "id": "book-of-lamentations-narek-st-gregory-of-narek"
-  },
-  {
-    "name": "Prayers for the Sick (Holy Unction)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Healing"
-      }
-    ],
-    "id": "prayers-for-the-sick-holy-unction"
-  },
-  {
-    "name": "Prayer of the Sick (Coptic)",
-    "tradition": "Oriental",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Healing"
-      }
-    ],
-    "id": "prayer-of-the-sick-coptic"
-  },
-  {
-    "name": "Prayer for Travelers",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Travel"
-      }
-    ],
-    "id": "prayer-for-travelers"
-  },
-  {
-    "name": "Prayer for Family and Children",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Family"
-      }
-    ],
-    "id": "prayer-for-family-and-children"
-  },
-  {
-    "name": "Blessing of the Home",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Blessings"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Family"
-      }
-    ],
-    "id": "blessing-of-the-home"
-  },
-  {
-    "name": "Memorial Service (Panikhida)",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "The Departed"
-      }
-    ],
-    "id": "memorial-service-panikhida"
-  },
-  {
-    "name": "Trisagion for the Departed",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "The Departed"
-      }
-    ],
-    "id": "trisagion-for-the-departed"
-  },
-  {
-    "name": "Memory Eternal",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "The Departed"
-      }
-    ],
-    "id": "memory-eternal"
-  },
-  {
-    "name": "Great Blessing of Waters",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Blessings"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Feasts"
-      }
-    ],
-    "id": "great-blessing-of-waters"
-  },
-  {
-    "name": "Prayer Before Study",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Blessings"
-      }
-    ],
-    "id": "prayer-before-study"
-  },
-  {
-    "name": "Prayer at the Beginning of Any Good Work",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Blessings"
-      }
-    ],
-    "id": "prayer-at-the-beginning-of-any-good-work"
-  },
-  {
-    "name": "Prayer for the New Year",
-    "tradition": "Eastern",
-    "placements": [
-      {
-        "category": "occasions",
-        "subgroup": "Feasts"
-      },
-      {
-        "category": "occasions",
-        "subgroup": "Blessings"
-      }
-    ],
-    "id": "prayer-for-the-new-year"
-  }
+ {
+  "id": "lords-prayer",
+  "name": "The Lord's Prayer",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Core"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Meals"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Rule of Prayer"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Liturgies"
+   }
+  ]
+ },
+ {
+  "id": "trisagion",
+  "name": "The Trisagion",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Core"
+   },
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Rule of Prayer"
+   },
+   {
+    "category": "psalms",
+    "subgroup": "Selected Psalms"
+   }
+  ]
+ },
+ {
+  "id": "o-heavenly-king",
+  "name": "O Heavenly King",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Core"
+   },
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Rule of Prayer"
+   }
+  ]
+ },
+ {
+  "id": "jesus-prayer",
+  "name": "The Jesus Prayer",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Short Prayers"
+   },
+   {
+    "category": "christ-saints",
+    "subgroup": "Christ"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Rule of Prayer"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-the-publican",
+  "name": "Prayer of the Publican",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Short Prayers"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-the-thief",
+  "name": "Prayer of the Thief",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Short Prayers"
+   },
+   {
+    "category": "christ-saints",
+    "subgroup": "Christ"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Before Communion"
+   }
+  ]
+ },
+ {
+  "id": "glory-be-doxology",
+  "name": "Glory Be / Doxology",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   },
+   {
+    "category": "psalms",
+    "subgroup": "Canticles"
+   }
+  ]
+ },
+ {
+  "id": "the-apostles-creed",
+  "name": "The Apostles' Creed",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Creeds"
+   }
+  ]
+ },
+ {
+  "id": "nicene-creed",
+  "name": "The Nicene Creed",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Creeds"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Liturgies"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-st-ephrem-the-syrian",
+  "name": "Prayer of St Ephrem the Syrian",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Short Prayers"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Rule of Prayer"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "prayer-to-the-holy-trinity",
+  "name": "Prayer to the Holy Trinity",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Core"
+   },
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   }
+  ]
+ },
+ {
+  "id": "thanksgiving",
+  "name": "Prayer of Thanksgiving",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Meals"
+   },
+   {
+    "category": "communion",
+    "subgroup": "After Communion"
+   }
+  ]
+ },
+ {
+  "id": "kyrie-eleison",
+  "name": "Kyrie Eleison",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "foundational",
+    "subgroup": "Short Prayers"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Litanies"
+   }
+  ]
+ },
+ {
+  "id": "prayer-before-sleep",
+  "name": "Prayer Before Sleep",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Night"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Evening"
+   }
+  ]
+ },
+ {
+  "id": "prayer-upon-rising",
+  "name": "Prayer Upon Rising",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Morning"
+   }
+  ]
+ },
+ {
+  "id": "morning-prayer-to-the-father",
+  "name": "Morning Prayer to the Father",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Morning"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-the-new-day",
+  "name": "Prayer for the New Day",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Morning"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Blessings"
+   }
+  ]
+ },
+ {
+  "id": "prayer-before-work",
+  "name": "Prayer Before Work",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Morning"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Rule of Prayer"
+   }
+  ]
+ },
+ {
+  "id": "prayer-after-work",
+  "name": "Prayer After Work",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Evening"
+   }
+  ]
+ },
+ {
+  "id": "evening-prayer-of-thanksgiving",
+  "name": "Evening Prayer of Thanksgiving",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Evening"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-peaceful-sleep",
+  "name": "Prayer for Peaceful Sleep",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Night"
+   }
+  ]
+ },
+ {
+  "id": "night-prayer-of-repentance",
+  "name": "Night Prayer of Repentance",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Night"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "prayer-at-the-first-hour",
+  "name": "Prayer at the First Hour",
+  "tradition": "Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Hours"
+   },
+   {
+    "category": "christ-saints",
+    "subgroup": "Christ"
+   }
+  ]
+ },
+ {
+  "id": "prayer-at-the-third-hour",
+  "name": "Prayer at the Third Hour",
+  "tradition": "Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Hours"
+   }
+  ]
+ },
+ {
+  "id": "prayer-at-the-sixth-hour",
+  "name": "Prayer at the Sixth Hour",
+  "tradition": "Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Hours"
+   }
+  ]
+ },
+ {
+  "id": "prayer-at-the-ninth-hour",
+  "name": "Prayer at the Ninth Hour",
+  "tradition": "Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Hours"
+   }
+  ]
+ },
+ {
+  "id": "prayer-at-vespers",
+  "name": "Prayer at Vespers",
+  "tradition": "Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Hours"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Evening"
+   }
+  ]
+ },
+ {
+  "id": "prayer-at-compline",
+  "name": "Prayer at Compline",
+  "tradition": "Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Hours"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Night"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-steadfast-prayer",
+  "name": "Prayer for Steadfast Prayer",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Rule of Prayer"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-attention",
+  "name": "Prayer for Attention",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Rule of Prayer"
+   }
+  ]
+ },
+ {
+  "id": "prayer-before-eating",
+  "name": "Prayer Before Eating",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Meals"
+   }
+  ]
+ },
+ {
+  "id": "blessing-of-food",
+  "name": "Blessing of Food",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Meals"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Blessings"
+   }
+  ]
+ },
+ {
+  "id": "prayer-after-meals",
+  "name": "Prayer After Meals",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Meals"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-daily-bread",
+  "name": "Prayer for Daily Bread",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "daily",
+    "subgroup": "Meals"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Blessings"
+   }
+  ]
+ },
+ {
+  "id": "psalm-23",
+  "name": "Psalm 23",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Psalter"
+   },
+   {
+    "category": "psalms",
+    "subgroup": "Selected Psalms"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Healing"
+   }
+  ]
+ },
+ {
+  "id": "psalm-50",
+  "name": "Psalm 50",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Psalter"
+   },
+   {
+    "category": "psalms",
+    "subgroup": "Selected Psalms"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "psalm-90",
+  "name": "Psalm 90",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Psalter"
+   },
+   {
+    "category": "psalms",
+    "subgroup": "Selected Psalms"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Night"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "psalm-102",
+  "name": "Psalm 102",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Psalter"
+   },
+   {
+    "category": "psalms",
+    "subgroup": "Selected Psalms"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Healing"
+   }
+  ]
+ },
+ {
+  "id": "psalm-33",
+  "name": "Psalm 33",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Psalter"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "psalm-121",
+  "name": "Psalm 121",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Psalter"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "psalm-130",
+  "name": "Psalm 130",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Psalter"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "psalm-117",
+  "name": "Psalm 117",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Psalter"
+   },
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   }
+  ]
+ },
+ {
+  "id": "magnificat",
+  "name": "Magnificat",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Canticles"
+   },
+   {
+    "category": "christ-saints",
+    "subgroup": "Theotokos"
+   }
+  ]
+ },
+ {
+  "id": "benedictus",
+  "name": "Benedictus",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Canticles"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Morning"
+   }
+  ]
+ },
+ {
+  "id": "nunc-dimittis",
+  "name": "Nunc Dimittis",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Canticles"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Night"
+   }
+  ]
+ },
+ {
+  "id": "song-of-the-three-holy-children",
+  "name": "Song of the Three Holy Children",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Canticles"
+   },
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   }
+  ]
+ },
+ {
+  "id": "beatitude-poor-in-spirit",
+  "name": "Beatitude: Poor in Spirit",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Beatitudes"
+   }
+  ]
+ },
+ {
+  "id": "beatitude-they-that-mourn",
+  "name": "Beatitude: They That Mourn",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Beatitudes"
+   }
+  ]
+ },
+ {
+  "id": "beatitude-the-meek",
+  "name": "Beatitude: The Meek",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Beatitudes"
+   }
+  ]
+ },
+ {
+  "id": "beatitude-the-merciful",
+  "name": "Beatitude: The Merciful",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "psalms",
+    "subgroup": "Beatitudes"
+   }
+  ]
+ },
+ {
+  "id": "prayer-to-christ-for-mercy",
+  "name": "Prayer to Christ for Mercy",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Christ"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "prayer-to-christ-crucified",
+  "name": "Prayer to Christ Crucified",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Christ"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   }
+  ]
+ },
+ {
+  "id": "prayer-to-the-risen-christ",
+  "name": "Prayer to the Risen Christ",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Christ"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Blessings"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-the-good-shepherd",
+  "name": "Prayer of the Good Shepherd",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Christ"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Family"
+   }
+  ]
+ },
+ {
+  "id": "hail-mary-rejoicing-theotokos",
+  "name": "Hail, Mary / Rejoicing Theotokos",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Theotokos"
+   },
+   {
+    "category": "psalms",
+    "subgroup": "Canticles"
+   }
+  ]
+ },
+ {
+  "id": "prayer-to-the-theotokos-for-protection",
+  "name": "Prayer to the Theotokos for Protection",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Theotokos"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Family"
+   }
+  ]
+ },
+ {
+  "id": "it-is-truly-meet",
+  "name": "It Is Truly Meet",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Theotokos"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   }
+  ]
+ },
+ {
+  "id": "sub-tuum-praesidium",
+  "name": "Sub Tuum Praesidium",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Theotokos"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Family"
+   }
+  ]
+ },
+ {
+  "id": "prayer-to-the-guardian-angel",
+  "name": "Prayer to the Guardian Angel",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Angels"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "prayer-to-the-holy-angels",
+  "name": "Prayer to the Holy Angels",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Angels"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-protection",
+  "name": "Prayer of Protection",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Angels"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-the-angel-of-the-church",
+  "name": "Prayer for the Angel of the Church",
+  "tradition": "Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Angels"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Litanies"
+   }
+  ]
+ },
+ {
+  "id": "prayer-with-the-apostles",
+  "name": "Prayer with the Apostles",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Saints"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Litanies"
+   }
+  ]
+ },
+ {
+  "id": "prayer-with-the-martyrs",
+  "name": "Prayer with the Martyrs",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Saints"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Healing"
+   }
+  ]
+ },
+ {
+  "id": "prayer-with-the-fathers",
+  "name": "Prayer with the Fathers",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Saints"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Rule of Prayer"
+   }
+  ]
+ },
+ {
+  "id": "prayer-with-all-saints",
+  "name": "Prayer with All Saints",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Saints"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Litanies"
+   }
+  ]
+ },
+ {
+  "id": "akathist-style-prayer-of-praise",
+  "name": "Akathist-Style Prayer of Praise",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Akathists and Canons"
+   },
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   }
+  ]
+ },
+ {
+  "id": "akathist-style-prayer-of-supplication",
+  "name": "Akathist-Style Prayer of Supplication",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Akathists and Canons"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Healing"
+   }
+  ]
+ },
+ {
+  "id": "canon-style-prayer-of-repentance",
+  "name": "Canon-Style Prayer of Repentance",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Akathists and Canons"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "canon-style-prayer-of-thanksgiving",
+  "name": "Canon-Style Prayer of Thanksgiving",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "christ-saints",
+    "subgroup": "Akathists and Canons"
+   },
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   }
+  ]
+ },
+ {
+  "id": "i-believe-o-lord-and-i-confess",
+  "name": "I Believe, O Lord, and I Confess",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Before Communion"
+   }
+  ]
+ },
+ {
+  "id": "of-thy-mystical-supper",
+  "name": "Of Thy Mystical Supper",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Before Communion"
+   },
+   {
+    "category": "christ-saints",
+    "subgroup": "Christ"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-st-john-chrysostom-before-communion",
+  "name": "Prayer of St John Chrysostom Before Communion",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Before Communion"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-st-john-of-damascus-before-communion",
+  "name": "Prayer of St John of Damascus Before Communion",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Before Communion"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-thanksgiving-after-communion",
+  "name": "Prayer of Thanksgiving After Communion",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "After Communion"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-st-basil-after-communion",
+  "name": "Prayer of St Basil After Communion",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "After Communion"
+   }
+  ]
+ },
+ {
+  "id": "prayer-after-communion-for-transformation",
+  "name": "Prayer After Communion for Transformation",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "After Communion"
+   }
+  ]
+ },
+ {
+  "id": "prayer-after-communion-for-mission",
+  "name": "Prayer After Communion for Mission",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "After Communion"
+   }
+  ]
+ },
+ {
+  "id": "christ-is-risen",
+  "name": "Christ Is Risen",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   },
+   {
+    "category": "christ-saints",
+    "subgroup": "Christ"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Feasts"
+   }
+  ]
+ },
+ {
+  "id": "o-gladsome-light",
+  "name": "O Gladsome Light",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Evening"
+   }
+  ]
+ },
+ {
+  "id": "only-begotten-son",
+  "name": "Only-Begotten Son",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   }
+  ]
+ },
+ {
+  "id": "cherubic-hymn",
+  "name": "Cherubic Hymn",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Liturgies"
+   }
+  ]
+ },
+ {
+  "id": "receive-the-body-of-christ",
+  "name": "Receive the Body of Christ",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   },
+   {
+    "category": "communion",
+    "subgroup": "After Communion"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-oblation",
+  "name": "Prayer of Oblation",
+  "tradition": "Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Liturgies"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-unity-at-the-liturgy",
+  "name": "Prayer for Unity at the Liturgy",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Liturgies"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Litanies"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-thanksgiving-at-the-altar",
+  "name": "Prayer of Thanksgiving at the Altar",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Liturgies"
+   },
+   {
+    "category": "foundational",
+    "subgroup": "Doxologies"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-dismissal",
+  "name": "Prayer of Dismissal",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Liturgies"
+   }
+  ]
+ },
+ {
+  "id": "litany-for-peace",
+  "name": "Litany for Peace",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Litanies"
+   }
+  ]
+ },
+ {
+  "id": "litany-for-the-church",
+  "name": "Litany for the Church",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Litanies"
+   }
+  ]
+ },
+ {
+  "id": "litany-for-the-sick",
+  "name": "Litany for the Sick",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Litanies"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Healing"
+   }
+  ]
+ },
+ {
+  "id": "litany-for-the-departed",
+  "name": "Litany for the Departed",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "communion",
+    "subgroup": "Litanies"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "The Departed"
+   }
+  ]
+ },
+ {
+  "id": "prayer-of-contrition",
+  "name": "Prayer of Contrition",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "prayer-before-confession",
+  "name": "Prayer Before Confession",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-a-new-beginning",
+  "name": "Prayer for a New Beginning",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-freedom-from-sin",
+  "name": "Prayer for Freedom from Sin",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Repentance"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-the-sick",
+  "name": "Prayer for the Sick",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Healing"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-healing-of-mind-and-heart",
+  "name": "Prayer for Healing of Mind and Heart",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Healing"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-strength-in-sickness",
+  "name": "Prayer for Strength in Sickness",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Healing"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-caregivers",
+  "name": "Prayer for Caregivers",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Healing"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Family"
+   }
+  ]
+ },
+ {
+  "id": "prayer-before-a-journey",
+  "name": "Prayer Before a Journey",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-safe-travel",
+  "name": "Prayer for Safe Travel",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-a-pilgrimage",
+  "name": "Prayer for a Pilgrimage",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-safe-return",
+  "name": "Prayer for Safe Return",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Travel"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-husband-and-wife",
+  "name": "Prayer for Husband and Wife",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Family"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-children",
+  "name": "Prayer for Children",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Family"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-parents",
+  "name": "Prayer for Parents",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Family"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-peace-in-the-home",
+  "name": "Prayer for Peace in the Home",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Family"
+   },
+   {
+    "category": "occasions",
+    "subgroup": "Blessings"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-the-newly-departed",
+  "name": "Prayer for the Newly Departed",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "The Departed"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-remembered-loved-ones",
+  "name": "Prayer for Remembered Loved Ones",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "The Departed"
+   }
+  ]
+ },
+ {
+  "id": "prayer-for-the-departed-with-hope",
+  "name": "Prayer for the Departed with Hope",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "The Departed"
+   }
+  ]
+ },
+ {
+  "id": "prayer-at-the-grave",
+  "name": "Prayer at the Grave",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "The Departed"
+   }
+  ]
+ },
+ {
+  "id": "blessing-of-a-home",
+  "name": "Blessing of a Home",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Blessings"
+   }
+  ]
+ },
+ {
+  "id": "blessing-for-work",
+  "name": "Blessing for Work",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Blessings"
+   }
+  ]
+ },
+ {
+  "id": "blessing-for-food-and-water",
+  "name": "Blessing for Food and Water",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Blessings"
+   },
+   {
+    "category": "daily",
+    "subgroup": "Meals"
+   }
+  ]
+ },
+ {
+  "id": "blessing-for-a-new-undertaking",
+  "name": "Blessing for a New Undertaking",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Blessings"
+   }
+  ]
+ },
+ {
+  "id": "nativity-feast-prayer",
+  "name": "Nativity Feast Prayer",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Feasts"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   }
+  ]
+ },
+ {
+  "id": "theophany-feast-prayer",
+  "name": "Theophany Feast Prayer",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Feasts"
+   }
+  ]
+ },
+ {
+  "id": "pascha-feast-prayer",
+  "name": "Pascha Feast Prayer",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Feasts"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   }
+  ]
+ },
+ {
+  "id": "dormition-feast-prayer",
+  "name": "Dormition Feast Prayer",
+  "tradition": "Eastern",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Feasts"
+   },
+   {
+    "category": "christ-saints",
+    "subgroup": "Theotokos"
+   }
+  ]
+ },
+ {
+  "id": "feast-of-the-cross-prayer",
+  "name": "Feast of the Cross Prayer",
+  "tradition": "Eastern/Oriental",
+  "placements": [
+   {
+    "category": "occasions",
+    "subgroup": "Feasts"
+   },
+   {
+    "category": "communion",
+    "subgroup": "Hymns"
+   }
+  ]
+ }
 ]

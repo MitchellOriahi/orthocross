@@ -93,78 +93,14 @@ export const PRAYER_PLACEMENTS: Record<string, PrayerPlacement[]> = {
     {
       "category": "daily",
       "subgroup": "Hours"
-    }
-  ],
-  "trisagion": [
-    {
-      "category": "foundational",
-      "subgroup": "Core"
-    }
-  ],
-  "the-trisagion-prayers": [
-    {
-      "category": "foundational",
-      "subgroup": "Core"
     },
     {
       "category": "daily",
-      "subgroup": "Rule of Prayer"
+      "subgroup": "Meals"
     },
     {
-      "category": "daily",
-      "subgroup": "Morning"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "o-heavenly-king-prayer-to-the-holy-spirit": [
-    {
-      "category": "foundational",
-      "subgroup": "Core"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Rule of Prayer"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "come-true-light-st-symeon-the-new-theologian": [
-    {
-      "category": "foundational",
-      "subgroup": "Core"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "thanksgiving": [
-    {
-      "category": "foundational",
-      "subgroup": "Core"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "glory-be-gloria-patri": [
-    {
-      "category": "foundational",
-      "subgroup": "Core"
-    },
-    {
-      "category": "foundational",
-      "subgroup": "Doxologies"
+      "category": "communion",
+      "subgroup": "Liturgies"
     }
   ],
   "jesus-prayer": [
@@ -193,1006 +129,34 @@ export const PRAYER_PLACEMENTS: Record<string, PrayerPlacement[]> = {
     {
       "category": "daily",
       "subgroup": "Morning"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Liturgies"
     }
   ],
-  "the-great-doxology-glory-to-god-in-the-highest": [
+  "trisagion": [
+    {
+      "category": "foundational",
+      "subgroup": "Core"
+    },
     {
       "category": "foundational",
       "subgroup": "Doxologies"
     },
     {
       "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "kyrie-eleison-lord-have-mercy": [
-    {
-      "category": "foundational",
-      "subgroup": "Short Prayers"
-    }
-  ],
-  "prayer-of-the-publican-god-be-merciful-to-me-a-sinner": [
-    {
-      "category": "foundational",
-      "subgroup": "Short Prayers"
+      "subgroup": "Rule of Prayer"
     },
     {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "prayer-of-the-penitent-thief-remember-me-o-lord": [
-    {
-      "category": "foundational",
-      "subgroup": "Short Prayers"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
+      "category": "psalms",
+      "subgroup": "Selected Psalms"
     }
   ],
   "morning-prayer": [
     {
       "category": "daily",
       "subgroup": "Morning"
-    }
-  ],
-  "morning-prayer-of-the-optina-elders": [
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "prayer-of-st-philaret-of-moscow": [
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "evening-prayer": [
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "evening-prayer-of-st-macarius-the-great": [
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "prayers-before-sleep": [
-    {
-      "category": "daily",
-      "subgroup": "Night"
-    }
-  ],
-  "midnight-office": [
-    {
-      "category": "daily",
-      "subgroup": "Night"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "orthros-matins": [
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "first-hour": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "third-hour": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "sixth-hour": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "ninth-hour": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "vespers-eastern": [
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "small-compline": [
-    {
-      "category": "daily",
-      "subgroup": "Night"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "great-compline": [
-    {
-      "category": "daily",
-      "subgroup": "Night"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "o-gladsome-light-phos-hilaron": [
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    },
-    {
-      "category": "foundational",
-      "subgroup": "Doxologies"
-    }
-  ],
-  "agpeya-prime": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "agpeya-terce": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "agpeya-sext": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "agpeya-none": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "agpeya-vespers": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "agpeya-compline": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Night"
-    }
-  ],
-  "agpeya-midnight": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Night"
-    }
-  ],
-  "agpeya-the-veil": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "shehimo-ramsho-evening": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "shehimo-sootoro-compline": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Night"
-    }
-  ],
-  "shehimo-lilyo-night": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Night"
-    }
-  ],
-  "shehimo-safro-morning": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "shehimo-third-hour": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "shehimo-sixth-hour": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "shehimo-ninth-hour": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "zhamagirk-armenian-book-of-hours": [
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "grace-before-meals-the-eyes-of-all-look-to-thee": [
-    {
-      "category": "daily",
-      "subgroup": "Meals"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Blessings"
-    }
-  ],
-  "grace-after-meals": [
-    {
-      "category": "daily",
-      "subgroup": "Meals"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Blessings"
-    }
-  ],
-  "grace-before-and-after-meals-coptic": [
-    {
-      "category": "daily",
-      "subgroup": "Meals"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Blessings"
-    }
-  ],
-  "paschal-greeting-christ-is-risen": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Feasts"
-    }
-  ],
-  "paschal-troparion": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Feasts"
-    }
-  ],
-  "troparion-of-the-cross-o-lord-save-thy-people": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Feasts"
-    }
-  ],
-  "troparion-of-the-nativity": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Feasts"
-    }
-  ],
-  "troparion-of-theophany": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Feasts"
-    }
-  ],
-  "o-only-begotten-son": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "communion",
-      "subgroup": "Hymns"
-    }
-  ],
-  "paschal-homily-of-st-john-chrysostom": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Feasts"
-    }
-  ],
-  "akathist-to-our-sweetest-lord-jesus": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    }
-  ],
-  "canon-of-repentance-to-our-lord-jesus-christ": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "paschal-canon": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Christ"
-    },
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Feasts"
-    }
-  ],
-  "rejoice-o-virgin-theotokos-hail-mary": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "beneath-thy-compassion-sub-tuum-praesidium": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    }
-  ],
-  "magnificat-song-of-the-theotokos": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    },
-    {
-      "category": "psalms",
-      "subgroup": "Canticles"
-    }
-  ],
-  "it-is-truly-meet-axion-estin": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    },
-    {
-      "category": "communion",
-      "subgroup": "Hymns"
-    }
-  ],
-  "to-thee-the-champion-leader": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    }
-  ],
-  "paraklesis-supplicatory-canon-to-the-theotokos": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    },
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Healing"
-    }
-  ],
-  "akathist-hymn-to-the-theotokos": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    },
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    }
-  ],
-  "agni-parthene": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    }
-  ],
-  "weddase-maryam-ethiopian-praise-of-mary": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    }
-  ],
-  "theotokia-coptic-hymns-to-the-virgin": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Theotokos"
-    }
-  ],
-  "prayer-to-the-guardian-angel": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Angels"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "prayer-to-the-archangel-michael": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Angels"
-    }
-  ],
-  "canon-to-the-guardian-angel": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Angels"
-    },
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    }
-  ],
-  "akathist-to-the-guardian-angel": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Angels"
-    },
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    }
-  ],
-  "prayer-to-st-nicholas": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Saints"
-    }
-  ],
-  "akathist-to-st-nicholas": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Saints"
-    },
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    }
-  ],
-  "troparion-of-all-saints": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Saints"
-    }
-  ],
-  "akathist-glory-to-god-for-all-things": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    }
-  ],
-  "akathist-for-the-departed": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "The Departed"
-    }
-  ],
-  "the-great-canon-of-st-andrew-of-crete": [
-    {
-      "category": "christ-saints",
-      "subgroup": "Akathists and Canons"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "the-psalter": [
-    {
-      "category": "psalms",
-      "subgroup": "Psalter"
-    }
-  ],
-  "psalm-22-23-the-lord-is-my-shepherd": [
-    {
-      "category": "psalms",
-      "subgroup": "Selected Psalms"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "The Departed"
-    }
-  ],
-  "psalm-50-51-have-mercy-on-me-o-god": [
-    {
-      "category": "psalms",
-      "subgroup": "Selected Psalms"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Hours"
-    }
-  ],
-  "psalm-62-63-o-god-thou-art-my-god": [
-    {
-      "category": "psalms",
-      "subgroup": "Selected Psalms"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "psalm-90-91-he-who-dwells-in-the-help-of-the-most-high": [
-    {
-      "category": "psalms",
-      "subgroup": "Selected Psalms"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Night"
-    }
-  ],
-  "psalm-102-103-bless-the-lord-o-my-soul": [
-    {
-      "category": "psalms",
-      "subgroup": "Selected Psalms"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "psalm-140-141-let-my-prayer-arise": [
-    {
-      "category": "psalms",
-      "subgroup": "Selected Psalms"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "the-beatitudes": [
-    {
-      "category": "psalms",
-      "subgroup": "Beatitudes"
-    },
-    {
-      "category": "communion",
-      "subgroup": "Hymns"
-    }
-  ],
-  "song-of-simeon-nunc-dimittis": [
-    {
-      "category": "psalms",
-      "subgroup": "Canticles"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "song-of-zacharias-benedictus": [
-    {
-      "category": "psalms",
-      "subgroup": "Canticles"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "song-of-the-three-holy-youths": [
-    {
-      "category": "psalms",
-      "subgroup": "Canticles"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Morning"
-    }
-  ],
-  "song-of-moses": [
-    {
-      "category": "psalms",
-      "subgroup": "Canticles"
-    }
-  ],
-  "prayers-before-holy-communion": [
-    {
-      "category": "communion",
-      "subgroup": "Before Communion"
-    },
-    {
-      "category": "daily",
-      "subgroup": "Evening"
-    }
-  ],
-  "prayer-of-st-john-chrysostom-before-communion": [
-    {
-      "category": "communion",
-      "subgroup": "Before Communion"
-    }
-  ],
-  "the-coptic-confession-amen-i-believe": [
-    {
-      "category": "communion",
-      "subgroup": "Before Communion"
-    }
-  ],
-  "prayers-of-thanksgiving-after-communion": [
-    {
-      "category": "communion",
-      "subgroup": "After Communion"
-    }
-  ],
-  "let-our-mouths-be-filled": [
-    {
-      "category": "communion",
-      "subgroup": "After Communion"
-    },
-    {
-      "category": "communion",
-      "subgroup": "Hymns"
-    }
-  ],
-  "the-cherubic-hymn": [
-    {
-      "category": "communion",
-      "subgroup": "Hymns"
-    }
-  ],
-  "we-have-seen-the-true-light": [
-    {
-      "category": "communion",
-      "subgroup": "Hymns"
-    },
-    {
-      "category": "communion",
-      "subgroup": "After Communion"
-    }
-  ],
-  "divine-liturgy-of-st-john-chrysostom": [
-    {
-      "category": "communion",
-      "subgroup": "Liturgies"
-    }
-  ],
-  "divine-liturgy-of-st-basil-the-great": [
-    {
-      "category": "communion",
-      "subgroup": "Liturgies"
-    }
-  ],
-  "divine-liturgy-of-st-james": [
-    {
-      "category": "communion",
-      "subgroup": "Liturgies"
-    }
-  ],
-  "liturgy-of-the-presanctified-gifts": [
-    {
-      "category": "communion",
-      "subgroup": "Liturgies"
-    }
-  ],
-  "coptic-liturgy-of-st-gregory-the-theologian": [
-    {
-      "category": "communion",
-      "subgroup": "Liturgies"
-    }
-  ],
-  "coptic-liturgy-of-st-cyril-st-mark": [
-    {
-      "category": "communion",
-      "subgroup": "Liturgies"
-    }
-  ],
-  "armenian-divine-liturgy-badarak": [
-    {
-      "category": "communion",
-      "subgroup": "Liturgies"
-    }
-  ],
-  "ethiopian-liturgy-anaphora-of-the-apostles": [
-    {
-      "category": "communion",
-      "subgroup": "Liturgies"
-    }
-  ],
-  "great-litany-litany-of-peace": [
-    {
-      "category": "communion",
-      "subgroup": "Litanies"
-    }
-  ],
-  "litany-of-the-oblations": [
-    {
-      "category": "communion",
-      "subgroup": "Litanies"
-    }
-  ],
-  "litany-of-the-sick": [
-    {
-      "category": "communion",
-      "subgroup": "Litanies"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Healing"
-    }
-  ],
-  "litany-of-travelers": [
-    {
-      "category": "communion",
-      "subgroup": "Litanies"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Travel"
-    }
-  ],
-  "litany-of-the-departed": [
-    {
-      "category": "communion",
-      "subgroup": "Litanies"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "The Departed"
-    }
-  ],
-  "litany-of-waters-plants-and-fruits": [
-    {
-      "category": "communion",
-      "subgroup": "Litanies"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Blessings"
-    }
-  ],
-  "prayer-of-st-isaac-the-syrian": [
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "prayer-of-st-ephrem-the-syrian": [
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "prayer-of-manasseh": [
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "prayers-before-confession": [
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "prayer-of-absolution-eastern": [
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "coptic-absolution-to-the-son": [
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "i-confess-with-faith-havatov-khostovanim-st-nerses-shnorhali": [
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    },
-    {
-      "category": "communion",
-      "subgroup": "Before Communion"
-    }
-  ],
-  "book-of-lamentations-narek-st-gregory-of-narek": [
-    {
-      "category": "occasions",
-      "subgroup": "Repentance"
-    }
-  ],
-  "prayers-for-the-sick-holy-unction": [
-    {
-      "category": "occasions",
-      "subgroup": "Healing"
-    }
-  ],
-  "prayer-of-the-sick-coptic": [
-    {
-      "category": "occasions",
-      "subgroup": "Healing"
-    }
-  ],
-  "prayer-for-travelers": [
-    {
-      "category": "occasions",
-      "subgroup": "Travel"
-    }
-  ],
-  "prayer-for-family-and-children": [
-    {
-      "category": "occasions",
-      "subgroup": "Family"
-    }
-  ],
-  "blessing-of-the-home": [
-    {
-      "category": "occasions",
-      "subgroup": "Blessings"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Family"
-    }
-  ],
-  "memorial-service-panikhida": [
-    {
-      "category": "occasions",
-      "subgroup": "The Departed"
-    }
-  ],
-  "trisagion-for-the-departed": [
-    {
-      "category": "occasions",
-      "subgroup": "The Departed"
-    }
-  ],
-  "memory-eternal": [
-    {
-      "category": "occasions",
-      "subgroup": "The Departed"
-    }
-  ],
-  "great-blessing-of-waters": [
-    {
-      "category": "occasions",
-      "subgroup": "Blessings"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Feasts"
-    }
-  ],
-  "prayer-before-study": [
-    {
-      "category": "occasions",
-      "subgroup": "Blessings"
-    }
-  ],
-  "prayer-at-the-beginning-of-any-good-work": [
-    {
-      "category": "occasions",
-      "subgroup": "Blessings"
-    }
-  ],
-  "prayer-for-the-new-year": [
-    {
-      "category": "occasions",
-      "subgroup": "Feasts"
-    },
-    {
-      "category": "occasions",
-      "subgroup": "Blessings"
     }
   ],
   "coptic-our-father": [
@@ -1215,6 +179,34 @@ export const PRAYER_PLACEMENTS: Record<string, PrayerPlacement[]> = {
     {
       "category": "daily",
       "subgroup": "Hours"
+    }
+  ],
+  "evening-prayer": [
+    {
+      "category": "daily",
+      "subgroup": "Evening"
+    }
+  ],
+  "thanksgiving": [
+    {
+      "category": "foundational",
+      "subgroup": "Core"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    },
+    {
+      "category": "foundational",
+      "subgroup": "Doxologies"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Meals"
+    },
+    {
+      "category": "communion",
+      "subgroup": "After Communion"
     }
   ],
   "armenian-prayer": [
@@ -1243,6 +235,988 @@ export const PRAYER_PLACEMENTS: Record<string, PrayerPlacement[]> = {
     {
       "category": "occasions",
       "subgroup": "Feasts"
+    }
+  ],
+  "o-heavenly-king": [
+    {
+      "category": "foundational",
+      "subgroup": "Core"
+    },
+    {
+      "category": "foundational",
+      "subgroup": "Doxologies"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Rule of Prayer"
+    }
+  ],
+  "prayer-of-the-publican": [
+    {
+      "category": "foundational",
+      "subgroup": "Short Prayers"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "prayer-of-the-thief": [
+    {
+      "category": "foundational",
+      "subgroup": "Short Prayers"
+    },
+    {
+      "category": "christ-saints",
+      "subgroup": "Christ"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Before Communion"
+    }
+  ],
+  "glory-be-doxology": [
+    {
+      "category": "foundational",
+      "subgroup": "Doxologies"
+    },
+    {
+      "category": "psalms",
+      "subgroup": "Canticles"
+    }
+  ],
+  "the-apostles-creed": [
+    {
+      "category": "foundational",
+      "subgroup": "Creeds"
+    }
+  ],
+  "prayer-of-st-ephrem-the-syrian": [
+    {
+      "category": "foundational",
+      "subgroup": "Short Prayers"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Rule of Prayer"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "prayer-to-the-holy-trinity": [
+    {
+      "category": "foundational",
+      "subgroup": "Core"
+    },
+    {
+      "category": "foundational",
+      "subgroup": "Doxologies"
+    }
+  ],
+  "kyrie-eleison": [
+    {
+      "category": "foundational",
+      "subgroup": "Short Prayers"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Litanies"
+    }
+  ],
+  "prayer-before-sleep": [
+    {
+      "category": "daily",
+      "subgroup": "Night"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Evening"
+    }
+  ],
+  "prayer-upon-rising": [
+    {
+      "category": "daily",
+      "subgroup": "Morning"
+    }
+  ],
+  "morning-prayer-to-the-father": [
+    {
+      "category": "daily",
+      "subgroup": "Morning"
+    }
+  ],
+  "prayer-for-the-new-day": [
+    {
+      "category": "daily",
+      "subgroup": "Morning"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    }
+  ],
+  "prayer-before-work": [
+    {
+      "category": "daily",
+      "subgroup": "Morning"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Rule of Prayer"
+    }
+  ],
+  "prayer-after-work": [
+    {
+      "category": "daily",
+      "subgroup": "Evening"
+    }
+  ],
+  "evening-prayer-of-thanksgiving": [
+    {
+      "category": "daily",
+      "subgroup": "Evening"
+    }
+  ],
+  "prayer-for-peaceful-sleep": [
+    {
+      "category": "daily",
+      "subgroup": "Night"
+    }
+  ],
+  "night-prayer-of-repentance": [
+    {
+      "category": "daily",
+      "subgroup": "Night"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "prayer-at-the-first-hour": [
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    },
+    {
+      "category": "christ-saints",
+      "subgroup": "Christ"
+    }
+  ],
+  "prayer-at-the-third-hour": [
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    }
+  ],
+  "prayer-at-the-sixth-hour": [
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    }
+  ],
+  "prayer-at-the-ninth-hour": [
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    }
+  ],
+  "prayer-at-vespers": [
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Evening"
+    }
+  ],
+  "prayer-at-compline": [
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Night"
+    }
+  ],
+  "prayer-for-steadfast-prayer": [
+    {
+      "category": "daily",
+      "subgroup": "Rule of Prayer"
+    }
+  ],
+  "prayer-for-attention": [
+    {
+      "category": "daily",
+      "subgroup": "Rule of Prayer"
+    }
+  ],
+  "prayer-before-eating": [
+    {
+      "category": "daily",
+      "subgroup": "Meals"
+    }
+  ],
+  "blessing-of-food": [
+    {
+      "category": "daily",
+      "subgroup": "Meals"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    }
+  ],
+  "prayer-after-meals": [
+    {
+      "category": "daily",
+      "subgroup": "Meals"
+    }
+  ],
+  "prayer-for-daily-bread": [
+    {
+      "category": "daily",
+      "subgroup": "Meals"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    }
+  ],
+  "psalm-23": [
+    {
+      "category": "psalms",
+      "subgroup": "Psalter"
+    },
+    {
+      "category": "psalms",
+      "subgroup": "Selected Psalms"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Healing"
+    }
+  ],
+  "psalm-50": [
+    {
+      "category": "psalms",
+      "subgroup": "Psalter"
+    },
+    {
+      "category": "psalms",
+      "subgroup": "Selected Psalms"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "psalm-90": [
+    {
+      "category": "psalms",
+      "subgroup": "Psalter"
+    },
+    {
+      "category": "psalms",
+      "subgroup": "Selected Psalms"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Night"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "psalm-102": [
+    {
+      "category": "psalms",
+      "subgroup": "Psalter"
+    },
+    {
+      "category": "psalms",
+      "subgroup": "Selected Psalms"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Healing"
+    }
+  ],
+  "psalm-33": [
+    {
+      "category": "psalms",
+      "subgroup": "Psalter"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "psalm-121": [
+    {
+      "category": "psalms",
+      "subgroup": "Psalter"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "psalm-130": [
+    {
+      "category": "psalms",
+      "subgroup": "Psalter"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "psalm-117": [
+    {
+      "category": "psalms",
+      "subgroup": "Psalter"
+    },
+    {
+      "category": "foundational",
+      "subgroup": "Doxologies"
+    }
+  ],
+  "magnificat": [
+    {
+      "category": "psalms",
+      "subgroup": "Canticles"
+    },
+    {
+      "category": "christ-saints",
+      "subgroup": "Theotokos"
+    }
+  ],
+  "benedictus": [
+    {
+      "category": "psalms",
+      "subgroup": "Canticles"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Morning"
+    }
+  ],
+  "nunc-dimittis": [
+    {
+      "category": "psalms",
+      "subgroup": "Canticles"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Night"
+    }
+  ],
+  "song-of-the-three-holy-children": [
+    {
+      "category": "psalms",
+      "subgroup": "Canticles"
+    },
+    {
+      "category": "foundational",
+      "subgroup": "Doxologies"
+    }
+  ],
+  "beatitude-poor-in-spirit": [
+    {
+      "category": "psalms",
+      "subgroup": "Beatitudes"
+    }
+  ],
+  "beatitude-they-that-mourn": [
+    {
+      "category": "psalms",
+      "subgroup": "Beatitudes"
+    }
+  ],
+  "beatitude-the-meek": [
+    {
+      "category": "psalms",
+      "subgroup": "Beatitudes"
+    }
+  ],
+  "beatitude-the-merciful": [
+    {
+      "category": "psalms",
+      "subgroup": "Beatitudes"
+    }
+  ],
+  "prayer-to-christ-for-mercy": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Christ"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "prayer-to-christ-crucified": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Christ"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
+    }
+  ],
+  "prayer-to-the-risen-christ": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Christ"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    }
+  ],
+  "prayer-of-the-good-shepherd": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Christ"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Family"
+    }
+  ],
+  "hail-mary-rejoicing-theotokos": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Theotokos"
+    },
+    {
+      "category": "psalms",
+      "subgroup": "Canticles"
+    }
+  ],
+  "prayer-to-the-theotokos-for-protection": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Theotokos"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Family"
+    }
+  ],
+  "it-is-truly-meet": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Theotokos"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
+    }
+  ],
+  "sub-tuum-praesidium": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Theotokos"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Family"
+    }
+  ],
+  "prayer-to-the-guardian-angel": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Angels"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "prayer-to-the-holy-angels": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Angels"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "prayer-of-protection": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Angels"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "prayer-for-the-angel-of-the-church": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Angels"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Litanies"
+    }
+  ],
+  "prayer-with-the-apostles": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Saints"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Litanies"
+    }
+  ],
+  "prayer-with-the-martyrs": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Saints"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Healing"
+    }
+  ],
+  "prayer-with-the-fathers": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Saints"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Rule of Prayer"
+    }
+  ],
+  "prayer-with-all-saints": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Saints"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Litanies"
+    }
+  ],
+  "akathist-style-prayer-of-praise": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Akathists and Canons"
+    },
+    {
+      "category": "foundational",
+      "subgroup": "Doxologies"
+    }
+  ],
+  "akathist-style-prayer-of-supplication": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Akathists and Canons"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Healing"
+    }
+  ],
+  "canon-style-prayer-of-repentance": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Akathists and Canons"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "canon-style-prayer-of-thanksgiving": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Akathists and Canons"
+    },
+    {
+      "category": "foundational",
+      "subgroup": "Doxologies"
+    }
+  ],
+  "i-believe-o-lord-and-i-confess": [
+    {
+      "category": "communion",
+      "subgroup": "Before Communion"
+    }
+  ],
+  "of-thy-mystical-supper": [
+    {
+      "category": "communion",
+      "subgroup": "Before Communion"
+    },
+    {
+      "category": "christ-saints",
+      "subgroup": "Christ"
+    }
+  ],
+  "prayer-of-st-john-chrysostom-before-communion": [
+    {
+      "category": "communion",
+      "subgroup": "Before Communion"
+    }
+  ],
+  "prayer-of-st-john-of-damascus-before-communion": [
+    {
+      "category": "communion",
+      "subgroup": "Before Communion"
+    }
+  ],
+  "prayer-of-thanksgiving-after-communion": [
+    {
+      "category": "communion",
+      "subgroup": "After Communion"
+    }
+  ],
+  "prayer-of-st-basil-after-communion": [
+    {
+      "category": "communion",
+      "subgroup": "After Communion"
+    }
+  ],
+  "prayer-after-communion-for-transformation": [
+    {
+      "category": "communion",
+      "subgroup": "After Communion"
+    }
+  ],
+  "prayer-after-communion-for-mission": [
+    {
+      "category": "communion",
+      "subgroup": "After Communion"
+    }
+  ],
+  "christ-is-risen": [
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
+    },
+    {
+      "category": "christ-saints",
+      "subgroup": "Christ"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Feasts"
+    }
+  ],
+  "o-gladsome-light": [
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Evening"
+    }
+  ],
+  "only-begotten-son": [
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
+    }
+  ],
+  "cherubic-hymn": [
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Liturgies"
+    }
+  ],
+  "receive-the-body-of-christ": [
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
+    },
+    {
+      "category": "communion",
+      "subgroup": "After Communion"
+    }
+  ],
+  "prayer-of-oblation": [
+    {
+      "category": "communion",
+      "subgroup": "Liturgies"
+    }
+  ],
+  "prayer-for-unity-at-the-liturgy": [
+    {
+      "category": "communion",
+      "subgroup": "Liturgies"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Litanies"
+    }
+  ],
+  "prayer-of-thanksgiving-at-the-altar": [
+    {
+      "category": "communion",
+      "subgroup": "Liturgies"
+    },
+    {
+      "category": "foundational",
+      "subgroup": "Doxologies"
+    }
+  ],
+  "prayer-of-dismissal": [
+    {
+      "category": "communion",
+      "subgroup": "Liturgies"
+    }
+  ],
+  "litany-for-peace": [
+    {
+      "category": "communion",
+      "subgroup": "Litanies"
+    }
+  ],
+  "litany-for-the-church": [
+    {
+      "category": "communion",
+      "subgroup": "Litanies"
+    }
+  ],
+  "litany-for-the-sick": [
+    {
+      "category": "communion",
+      "subgroup": "Litanies"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Healing"
+    }
+  ],
+  "litany-for-the-departed": [
+    {
+      "category": "communion",
+      "subgroup": "Litanies"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "The Departed"
+    }
+  ],
+  "prayer-of-contrition": [
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "prayer-before-confession": [
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "prayer-for-a-new-beginning": [
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "prayer-for-freedom-from-sin": [
+    {
+      "category": "occasions",
+      "subgroup": "Repentance"
+    }
+  ],
+  "prayer-for-the-sick": [
+    {
+      "category": "occasions",
+      "subgroup": "Healing"
+    }
+  ],
+  "prayer-for-healing-of-mind-and-heart": [
+    {
+      "category": "occasions",
+      "subgroup": "Healing"
+    }
+  ],
+  "prayer-for-strength-in-sickness": [
+    {
+      "category": "occasions",
+      "subgroup": "Healing"
+    }
+  ],
+  "prayer-for-caregivers": [
+    {
+      "category": "occasions",
+      "subgroup": "Healing"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Family"
+    }
+  ],
+  "prayer-before-a-journey": [
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "prayer-for-safe-travel": [
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "prayer-for-a-pilgrimage": [
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "prayer-for-safe-return": [
+    {
+      "category": "occasions",
+      "subgroup": "Travel"
+    }
+  ],
+  "prayer-for-husband-and-wife": [
+    {
+      "category": "occasions",
+      "subgroup": "Family"
+    }
+  ],
+  "prayer-for-children": [
+    {
+      "category": "occasions",
+      "subgroup": "Family"
+    }
+  ],
+  "prayer-for-parents": [
+    {
+      "category": "occasions",
+      "subgroup": "Family"
+    }
+  ],
+  "prayer-for-peace-in-the-home": [
+    {
+      "category": "occasions",
+      "subgroup": "Family"
+    },
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    }
+  ],
+  "prayer-for-the-newly-departed": [
+    {
+      "category": "occasions",
+      "subgroup": "The Departed"
+    }
+  ],
+  "prayer-for-remembered-loved-ones": [
+    {
+      "category": "occasions",
+      "subgroup": "The Departed"
+    }
+  ],
+  "prayer-for-the-departed-with-hope": [
+    {
+      "category": "occasions",
+      "subgroup": "The Departed"
+    }
+  ],
+  "prayer-at-the-grave": [
+    {
+      "category": "occasions",
+      "subgroup": "The Departed"
+    }
+  ],
+  "blessing-of-a-home": [
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    }
+  ],
+  "blessing-for-work": [
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    }
+  ],
+  "blessing-for-food-and-water": [
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Meals"
+    }
+  ],
+  "blessing-for-a-new-undertaking": [
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    }
+  ],
+  "nativity-feast-prayer": [
+    {
+      "category": "occasions",
+      "subgroup": "Feasts"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
+    }
+  ],
+  "theophany-feast-prayer": [
+    {
+      "category": "occasions",
+      "subgroup": "Feasts"
+    }
+  ],
+  "pascha-feast-prayer": [
+    {
+      "category": "occasions",
+      "subgroup": "Feasts"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
+    }
+  ],
+  "dormition-feast-prayer": [
+    {
+      "category": "occasions",
+      "subgroup": "Feasts"
+    },
+    {
+      "category": "christ-saints",
+      "subgroup": "Theotokos"
+    }
+  ],
+  "feast-of-the-cross-prayer": [
+    {
+      "category": "occasions",
+      "subgroup": "Feasts"
+    },
+    {
+      "category": "communion",
+      "subgroup": "Hymns"
     }
   ]
 };
