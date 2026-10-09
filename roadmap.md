@@ -1,4 +1,6 @@
 # Prayers category browser
+## Donation billing options
+- [ ] Replace One-time with Yearly recurring billing, select Monthly by default, and verify both options.
 ## Donator presentation
 - [x] Show full names for non-anonymous donors (optional name in donation window), match the monthly top-three podium with muted remaining ranks, and open all nine lifetime tiers from donor tiers; 10 tests pass, interactions checked with sample donors, all nine hosted tier images verified. No payment submitted.
 
