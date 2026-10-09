@@ -578,7 +578,15 @@ All colors MUST be HSL.
 @layer base {
   :root, .dark {
     --donor-heart: 0 84% 60%;
+    --donor-anon: 217 91% 60%;
   }
+}
+
+/* Subtle "Donate anonymously" toggle: quiet until on, then blue */
+.donor-anon-active {
+  color: hsl(var(--donor-anon));
+  background: hsl(var(--donor-anon) / 0.1);
+  border-color: hsl(var(--donor-anon) / 0.5);
 }
 
 
