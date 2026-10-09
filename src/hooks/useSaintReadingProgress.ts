@@ -38,6 +38,7 @@ export function useSaintReadingProgress() {
         if (error) throw error;
         await supabase.rpc("award_leaderboard_point", { p_activity: "saint" });
       }
+      import("@/lib/promptScheduler").then(m => m.trackMeaningfulCompletion(user.id, `saint:${saintId}`));
       const after = new Set(current).add(saintId);
       client.setQueryData(queryKey, after);
       const { updateUserStreak } = await import("@/utils/streakManager");
