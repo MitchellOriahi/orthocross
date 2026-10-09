@@ -1,18 +1,14 @@
 import { describe, expect, test } from "bun:test";
-import { VERSE_IMAGE_STYLES } from "./verseImageStyles";
+import { dailyVerseArtwork } from "./verseImageStyles";
 import { imageSharePayload } from "./verseImageSharing";
-import { VERSE_PHOTO_BACKGROUNDS, loadVerseBackground } from "./versePhotoBackgrounds";
+import { loadVerseBackground } from "./versePhotoBackgrounds";
 
 describe("verse image choices", () => {
-  test("offers exactly three distinct image treatments for the same verse", () => {
-    expect(VERSE_IMAGE_STYLES).toHaveLength(3);
-    expect(new Set(VERSE_IMAGE_STYLES.map(style => style.id)).size).toBe(3);
-    expect(new Set(VERSE_IMAGE_STYLES.map(style => VERSE_PHOTO_BACKGROUNDS[style.id])).size).toBe(3);
-  });
-  test("each choice uses a stored photo rather than an AI request or external hotlink", () => {
-    for (const style of VERSE_IMAGE_STYLES) {
-      expect(VERSE_PHOTO_BACKGROUNDS[style.id]).toStartWith("/__l5e/assets-v1/");
-    }
+  test("offers exactly three distinct photos for the same verse", () => {
+    const styles = dailyVerseArtwork("2026-10-09");
+    expect(styles).toHaveLength(3);
+    expect(new Set(styles.map(s => s.url)).size).toBe(3);
+    for (const s of styles) expect(s.url).toStartWith("/__l5e/assets-v1/");
   });
   test("preloaded backgrounds are reused for immediate composition", async () => {
     const original = globalThis.Image;
@@ -21,8 +17,8 @@ describe("verse image choices", () => {
       set src(value) { loads++; queueMicrotask(() => this.onload?.()); }
     };
     try {
-      const first = loadVerseBackground("golden");
-      expect(loadVerseBackground("golden")).toBe(first);
+      const first = loadVerseBackground("/x.jpg");
+      expect(loadVerseBackground("/x.jpg")).toBe(first);
       await first;
       expect(loads).toBe(1);
     } finally { globalThis.Image = original; }

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Share2, Download, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { drawVerseTypography } from "@/components/verseImageTypography";
-import { VERSE_ARTWORK_POOL, EXTRA_IMAGE_LIMIT, verseArtworkDay, restoreVerseArtwork, replaceVerseArtwork, type VerseImageStyle } from "@/components/verseImageStyles";
+import { dailyVerseArtwork, verseArtworkDay, type VerseImageStyle } from "@/components/verseImageStyles";
 import { loadVerseBackground, preloadVerseBackgrounds } from "@/components/versePhotoBackgrounds";
 import { downloadVerseImage, shareVerseImage } from "@/components/verseImageSharing";
 
@@ -21,15 +21,9 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState(0);
   const [day, setDay] = useState(() => verseArtworkDay());
-  const storageKey = `orthocross-verse-art:${day}:${verseReference}|${verseText}`;
-  const restored = useMemo(() => {
-    try { return restoreVerseArtwork(day, localStorage.getItem(storageKey)); }
-    catch { return restoreVerseArtwork(day, null); }
-  }, [day, storageKey]);
-  const [saved, setSaved] = useState({ key: storageKey, session: restored });
-  const session = saved.key === storageKey ? saved.session : restored;
-  const styles = session.ids.map(id => VERSE_ARTWORK_POOL.find(style => style.id === id) ?? VERSE_ARTWORK_POOL[0]);
+  const styles = useMemo(() => dailyVerseArtwork(day), [day]);
   const selectedArtwork = styles[selectedStyle] ?? styles[0];
+  const storageKey = `${day}:${verseReference}|${verseText}`;
   const images = useRef<Record<string, string>>({});
   const generation = useRef(0);
 
@@ -38,7 +32,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
     return () => window.clearInterval(timer);
   }, []);
 
-  useEffect(() => { preloadVerseBackgrounds(); }, []);
+  useEffect(() => { preloadVerseBackgrounds(day); }, [day]);
 
   const generateImage = useCallback(async (style: VerseImageStyle, cacheKey: string) => {
     const requestId = ++generation.current;
@@ -52,7 +46,7 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("Canvas is unavailable");
 
-      const img = await loadVerseBackground(style.id);
+      const img = await loadVerseBackground(style.url);
       const cropSize = Math.min(img.naturalWidth, img.naturalHeight);
       ctx.drawImage(img, (img.naturalWidth - cropSize) / 2, (img.naturalHeight - cropSize) / 2, cropSize, cropSize, 0, 0, size, size);
       drawVerseTypography(ctx, size, style.treatment, verseText, verseReference);
@@ -86,14 +80,6 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
   const selectStyle = (index: number) => {
     if (isGenerating || index === selectedStyle) return;
     setSelectedStyle(index);
-  };
-
-  const newImage = () => {
-    if (isGenerating) return;
-    const next = replaceVerseArtwork(day, session, selectedStyle);
-    if (next === session) return;
-    setSaved({ key: storageKey, session: next });
-    try { localStorage.setItem(storageKey, JSON.stringify(next)); } catch { /* In-memory choices still work. */ }
   };
 
   const filename = `orthocross-verse-${verseReference.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.png`;
@@ -167,15 +153,12 @@ export const VerseShareDialog = ({ open, onOpenChange, verseText, verseReference
           </div>
 
           <div className="flex gap-2">
-            <Button
-              onClick={() => generationError ? void generateImage(selectedArtwork, `${storageKey}:${selectedArtwork.id}`) : newImage()}
-              disabled={isGenerating || (!generationError && session.replacements >= EXTRA_IMAGE_LIMIT)}
-              variant="secondary"
-              className="flex-1 gap-2"
-            >
-              <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
-              {generationError ? "Retry" : "New Image"}
-            </Button>
+            {generationError && (
+              <Button onClick={() => void generateImage(selectedArtwork, `${storageKey}:${selectedArtwork.id}`)} disabled={isGenerating} variant="secondary" className="flex-1 gap-2">
+                <RefreshCw className="w-4 h-4" />
+                Retry
+              </Button>
+            )}
             <Button onClick={() => onOpenChange(false)} variant="default" className="flex-1">
               Close
             </Button>
