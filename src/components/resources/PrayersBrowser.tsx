@@ -13,6 +13,7 @@ import christ from "@/assets/prayers/categories/christ_pantocrator_sinai.jpg.ass
 import supper from "@/assets/prayers/categories/holy_communion_last_supper.jpg.asset.json";
 import healing from "@/assets/prayers/categories/needs_healing_eustratius.jpg.asset.json";
 import { PrayerListCard } from "./PrayerListCard";
+import { SubcategoryPills } from "./SaintsBrowser";
 
 // Prayer artwork is independent of the Saints category portrait registry.
 const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string; author: string }> = {
@@ -62,10 +63,8 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
           </div>}
         </div>
         {selectedCategory ? <>
-          <div className="-mx-6 overflow-x-auto pb-4 mb-2" aria-label="Prayer micro categories" key={category}>
-            <div className="flex gap-2 w-max min-w-full px-6">
-              {["All", ...subgroups].map(item => <Button key={item} size="sm" variant={(item === "All" ? subgroup === null : subgroup === item) ? "secondary" : "ghost"} aria-pressed={item === "All" ? subgroup === null : subgroup === item} onClick={() => setSubgroup(item === "All" || subgroup === item ? null : item)} className="shrink-0 rounded-full border border-border">{item}</Button>)}
-            </div>
+          <div key={category} aria-label="Prayer micro categories">
+            <SubcategoryPills items={["All", ...subgroups]} active={subgroup} onToggle={item => setSubgroup(item === "All" || subgroup === item ? null : item)} />
           </div>
           <div className="space-y-2" aria-label="Prayer list">{prayers.map(prayer => <PrayerListCard key={prayer.id} prayer={prayer} isPinned={pinnedIds.has(prayer.id)} onSelect={selectPrayer} onPin={onPin} />)}</div>
           {!prayers.length && <p className="py-6 text-center text-sm text-muted-foreground">{query.trim() ? `No prayers found matching "${query}"` : "No prayers here yet."}</p>}
