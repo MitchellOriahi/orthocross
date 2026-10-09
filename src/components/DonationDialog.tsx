@@ -27,7 +27,6 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
   const [loading, setLoading] = useState(false);
   const [interval, setInterval] = useState<DonationInterval>(DEFAULT_DONATION_INTERVAL);
   const [anonymous, setAnonymous] = useState(false);
-  const [fullName, setFullName] = useState("");
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -36,8 +35,8 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
 
   useEffect(() => {
     if (!open || !user) return;
-    supabase.from("profiles").select("donor_anonymous, display_name").eq("id", user.id).maybeSingle()
-      .then(({ data }) => { setAnonymous(!!data?.donor_anonymous); setFullName(data?.display_name ?? ""); });
+    supabase.from("profiles").select("donor_anonymous").eq("id", user.id).maybeSingle()
+      .then(({ data }) => { setAnonymous(!!data?.donor_anonymous); });
   }, [open, user]);
 
   const updateAnonymous = async (value: boolean) => {
