@@ -1,4 +1,8 @@
 # Prayers category browser
+## Tier colors and friend donation alerts
+- [ ] Match all donor portrait rings/glows and crowns to their tier tags.
+- [ ] Notify friends of confirmed non-anonymous donations, without sharing amounts or duplicating alerts.
+- [ ] Verify tier colors, privacy rules, and notification delivery flow.
 ## Donation billing options
 - [x] Web donations now offer Monthly (selected by default) and Yearly; checkout deployed, 11 tests pass, selection and yearly request verified without submitting payment. Native subscriptions require configured app-store recurring products; existing native purchases unchanged.
 - [x] Move the Monthly/Yearly choice to the top of the donation window, where the Bible verse used to sit, with one toggle pair only; verified in preview with Monthly selected by default and Yearly switching correctly.
