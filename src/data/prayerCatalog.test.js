@@ -3,7 +3,7 @@ import { prayerCatalog, getPrayerList, getPrayerSubgroups, RETIRED_PRAYER_IDS } 
 import { prayersContent } from "./prayersContent";
 import { PRAYER_CATEGORIES, PRAYER_PLACEMENTS } from "./prayerCategories";
 
-test("The prayer list holds 132 unique verified prayers", () => {
+test("The prayer list holds 133 unique verified prayers", () => {
   expect(prayerCatalog).toHaveLength(133);
   expect(new Set(prayerCatalog.map(prayer => prayer.id)).size).toBe(132);
   expect(new Set(prayerCatalog.map(prayer => prayer.name.toLowerCase())).size).toBe(132);
