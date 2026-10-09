@@ -1,6 +1,7 @@
 # Prayers category browser
 ## Donation billing options
 - [x] Web donations now offer Monthly (selected by default) and Yearly; checkout deployed, 11 tests pass, selection and yearly request verified without submitting payment. Native subscriptions require configured app-store recurring products; existing native purchases unchanged.
+- [x] Move the Monthly/Yearly choice to the top of the donation window, where the Bible verse used to sit, with one toggle pair only; verified in preview with Monthly selected by default and Yearly switching correctly.
 ## Donator presentation
 - [x] Show full names for non-anonymous donors (optional name in donation window), match the monthly top-three podium with muted remaining ranks, and open all nine lifetime tiers from donor tiers; 10 tests pass, interactions checked with sample donors, all nine hosted tier images verified. No payment submitted.
 
