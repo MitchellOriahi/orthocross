@@ -128,7 +128,7 @@ export function ratingEligible(s: PromptState, now: number): boolean {
 export function choosePrompt(s: PromptState, now: number, status: DonorStatus): PromptType | null {
   const d = donationEligible(s, now, status);
   const r = ratingEligible(s, now);
-  if (d && r) return s.lastPromptType === "donation" ? "rating" : s.lastPromptType === "rating" ? "donation" : null;
+  if (d && r) return s.lastPromptType === "donation" ? "rating" : s.lastPromptType === "rating" ? "donation" : (s.sessionCount % 2 ? "donation" : "rating");
   return d ? "donation" : r ? "rating" : null;
 }
 

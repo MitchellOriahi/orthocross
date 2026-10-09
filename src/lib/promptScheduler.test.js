@@ -64,8 +64,11 @@ describe("prompt scheduler", () => {
     expect(ratingEligible(s, T0 + 43 * DAY)).toBe(false);
     expect(ratingEligible(s, T0 + 44 * DAY)).toBe(true);
   });
-  test("both eligible first time -> neither shown", () => {
-    expect(choosePrompt(withSessions(10), T0 + 14 * DAY, "inactive")).toBe(null);
+  test("both eligible -> only one prompt, alternating", () => {
+    const first = choosePrompt(withSessions(10), T0 + 14 * DAY, "inactive");
+    expect(["donation", "rating"]).toContain(first);
+    const after = markShown(withSessions(10), "donation", T0 + 14 * DAY);
+    expect(choosePrompt(after, T0 + 14 * DAY, "inactive")).toBe(null);
   });
   test("corrupted state is safe", () => {
     expect(sanitize("garbage").sessionCount).toBe(0);
