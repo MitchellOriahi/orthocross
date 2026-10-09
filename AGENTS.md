@@ -11,7 +11,7 @@
 - Use shared donor tiers and server-resolved names for anonymity; inherit portrait, crown and tag colors from one tier token, not rank.
 - Derive the next journey island from ordered islands and completion progress through a shared pure selector, so the highlight advances without hardcoded island IDs.
 - Render the Board daily verse through a dedicated card using the original deterministic local verse selector and existing share dialog, keeping notification delivery unchanged.
-- Preload licensed photos and compose locally; use date-keyed artwork selection, cached compositions and persistent extra-image choices so daily rotation and replacements never wait on AI or sign-in.
+- Preload licensed photos and compose locally; pick each day's three photos by date index from a bundled per-category library (no repeats within the cycle) and cache compositions, so daily rotation never waits on AI or sign-in.
 - Share composed verse images as file-only payloads through native attachment sharing or browser file sharing, downloading when unsupported; text-only email/SMS links cannot carry image attachments.
 - Validate the image function's bearer token explicitly with getUser(token) on a stateless auth client, because global request headers do not create an SDK session.
 - Keep the legacy server-side verse artwork function isolated from photo-based sharing, so the current dialog never invokes a billed image-generation request.
