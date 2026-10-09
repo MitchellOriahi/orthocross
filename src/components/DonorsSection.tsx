@@ -12,24 +12,16 @@ import { DonorRow, DonorTierButton } from "@/components/DonorPodium";
 import { DonorTierGuide } from "@/components/DonorTierGuide";
 
 const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: (key: string) => void }) => (
-  <div className={`donor-list-row donor-rank-${Math.min(donor.rank, 4)} flex items-center gap-2 px-1 py-1.5`}>
-    <DonorTierButton donor={donor} onSelect={onSelectTier} />
+  <div className={`donor-list-row donor-rank-${Math.min(donor.rank, 4)} flex items-center gap-2.5 px-1.5 py-2`}>
     <span className="relative inline-block shrink-0">
       {donor.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
-      <button
-        type="button"
-        onClick={() => donor.tierKey && onSelectTier(donor.tierKey)}
-        disabled={!donor.tierKey}
-        aria-label={donor.tierKey ? "View all donator tiers" : undefined}
-        className={`rounded-full transition-transform ${donor.tierKey ? "cursor-pointer hover:scale-105" : "cursor-default"}`}
-      >
-        <Avatar className="h-7 w-7">
-          <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
-          <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-        </Avatar>
-      </button>
+      <Avatar className="donor-avatar-ring h-8 w-8">
+        <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
+        <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+      </Avatar>
     </span>
-    <span className="min-w-0 flex-1 break-words text-sm font-semibold">{donor.username}</span>
+    <span className="min-w-0 flex-1 truncate text-sm font-medium">{donor.username}</span>
+    <DonorTierButton donor={donor} onSelect={onSelectTier} />
   </div>
 );
 
@@ -73,8 +65,9 @@ export const DonorsSection = () => {
               </CardTitle>
               <CardDescription>{DONOR_TEXT.sectionSubtitle}</CardDescription>
             </div>
-            <Button size="sm" variant="outline" onClick={() => setDonateOpen(true)}
-              className={`shrink-0 text-xs ${hasDonated ? "" : "donor-glow border-primary/60"}`}>
+            <Button size="sm" variant="sacred" onClick={() => setDonateOpen(true)}
+              className={`shrink-0 text-xs ${hasDonated ? "" : "donor-glow"}`}>
+              <Heart className="mr-1.5 h-3.5 w-3.5 text-[hsl(var(--donor-heart))]" />
               {DONOR_TEXT.becomeDonator}
             </Button>
           </div>
@@ -90,23 +83,15 @@ export const DonorsSection = () => {
             <>
               <div className="grid grid-cols-3 items-start">
                 {top3.map((d) => (
-                  <div key={d.key} className={`donor-rank-${Math.min(d.rank, 4)} flex min-w-0 flex-col items-center gap-0.5 rounded-lg p-1 text-center`}>
+                  <div key={d.key} className={`donor-rank-${Math.min(d.rank, 4)} flex min-w-0 flex-col items-center gap-1.5 rounded-lg p-1 text-center`}>
                     <span className="relative inline-block shrink-0">
                       {d.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
-                      <button
-                        type="button"
-                        onClick={() => d.tierKey && setSelectedTier(d.tierKey)}
-                        disabled={!d.tierKey}
-                        aria-label={d.tierKey ? "View all donator tiers" : undefined}
-                        className={`rounded-full transition-transform ${d.tierKey ? "cursor-pointer hover:scale-105" : "cursor-default"}`}
-                      >
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage src={d.profile_picture_url || undefined} alt={`${d.username}'s profile picture`} />
-                          <AvatarFallback>{d.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-                      </button>
+                      <Avatar className="donor-avatar-ring h-12 w-12">
+                        <AvatarImage src={d.profile_picture_url || undefined} alt={`${d.username}'s profile picture`} />
+                        <AvatarFallback>{d.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
                     </span>
-                    <span className="w-full break-words text-xs font-semibold leading-tight">{d.username}</span>
+                    <span className="w-full truncate text-xs font-semibold leading-tight">{d.username}</span>
                     <DonorTierButton donor={d} onSelect={setSelectedTier} />
                   </div>
                 ))}

@@ -1,6 +1,5 @@
 import { Crown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
 
 export interface DonorRow { rank: number; key: string; username: string; profile_picture_url: string | null; tierKey: string | null }
@@ -8,10 +7,15 @@ export function DonorTierButton({ donor, onSelect }: { donor: DonorRow; onSelect
   const tier = DONOR_TIERS.find((t) => t.key === donor.tierKey);
   if (!tier) return null;
   return (
-    <Button variant="ghost" size="sm" className="donor-tier-button h-auto min-h-8 max-w-full gap-1.5 px-1 py-1 text-xs" onClick={() => onSelect(tier.key)} aria-label={`View all donator tiers: ${tier.name}`}>
-      <img src={TIER_ICONS[tier.key]} alt="" className="h-5 w-5 shrink-0 rounded-full object-cover" />
-      <span className="break-words whitespace-normal">{tier.name}</span>
-    </Button>
+    <button
+      type="button"
+      onClick={() => onSelect(tier.key)}
+      aria-label={`View all donator tiers: ${tier.name}`}
+      className="donor-tier-button inline-flex max-w-full items-center gap-1.5 rounded-full border px-2 py-1 text-[11px] font-semibold leading-none transition-colors"
+    >
+      <img src={TIER_ICONS[tier.key]} alt="" className="h-4 w-4 shrink-0 rounded-full object-cover" />
+      <span className="truncate">{tier.name}</span>
+    </button>
   );
 }
 export function DonorPodium({ entries, onSelectTier }: { entries: DonorRow[]; onSelectTier: (key: string) => void }) {
