@@ -85,7 +85,7 @@ export const DonorsSection = () => {
                   <div key={d.key} className={`donor-rank-${Math.min(d.rank, 4)} flex min-w-0 flex-col items-center gap-1.5 rounded-lg p-1 text-center`}>
                     <span className="relative inline-block shrink-0">
                       {d.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
-                      <Avatar className="donor-avatar-ring h-12 w-12">
+                      <Avatar className="donor-avatar-ring donor-avatar-podium h-12 w-12">
                         <AvatarImage src={d.profile_picture_url || undefined} alt={`${d.username}'s profile picture`} />
                         <AvatarFallback>{d.username.substring(0, 2).toUpperCase()}</AvatarFallback>
                       </Avatar>
