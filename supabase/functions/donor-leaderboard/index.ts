@@ -1,6 +1,7 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { DONOR_TEXT, getTier } from "../_shared/donorTiers.ts";
+import { getTier } from "../_shared/donorTiers.ts";
+import { publicDonorIdentity } from "../_shared/donorIdentity.ts";
 
 // Public leaderboard: ranks and tiers only, never amounts.
 Deno.serve(async (req) => {
@@ -33,8 +34,7 @@ Deno.serve(async (req) => {
       return {
         rank: i + 1,
         key: anon ? `anon-${i}` : id,
-        username: anon ? DONOR_TEXT.anonymousName : (p.username || p.display_name || DONOR_TEXT.anonymousName),
-        profile_picture_url: anon ? null : p.profile_picture_url,
+        ...publicDonorIdentity(p),
         tierKey: getTier(life.get(id) ?? 0)?.key ?? null, // tier is always lifetime-based
       };
     });
