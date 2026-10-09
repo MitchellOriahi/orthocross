@@ -1,6 +1,7 @@
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { sendThankYouOnce } from "../_shared/donorStats.ts";
+import { notifyDonationFriends } from "../_shared/friendDonationNotifications.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { apiVersion: "2025-08-27.basil" });
 const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
@@ -26,6 +27,9 @@ async function recordDonation(p: {
     id = data.id;
   }
   await sendThankYouOnce(admin, id);
+  await notifyDonationFriends(admin, id, {
+    appId: Deno.env.get("ONESIGNAL_APP_ID"), apiKey: Deno.env.get("ONESIGNAL_REST_API_KEY"),
+  });
 }
 
 async function invoicePaymentIntent(invoiceId: string): Promise<string | null> {
