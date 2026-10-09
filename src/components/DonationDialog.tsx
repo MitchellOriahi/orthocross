@@ -16,12 +16,13 @@ import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount }
 interface DonationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialAmount?: number;
 }
 
 const WEB_PRESETS = [1, 10, 25, 50, 100];
 const NATIVE_PRESETS = [5, 10, 25, 50];
 
-export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
+export const DonationDialog = ({ open, onOpenChange, initialAmount }: DonationDialogProps) => {
   const [selectedAmount, setSelectedAmount] = useState(10);
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
@@ -39,6 +40,14 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
     supabase.from("profiles").select("donor_anonymous").eq("id", user.id).maybeSingle()
       .then(({ data }) => { setAnonymous(!!data?.donor_anonymous); });
   }, [open, user]);
+
+  // Preselect the amount chosen from the tier guide (e.g. $1 for Angel)
+  useEffect(() => {
+    if (!open || initialAmount === undefined) return;
+    setSelectedAmount(initialAmount);
+    setUseCustom(false);
+    setCustomAmount("");
+  }, [open, initialAmount]);
 
   const updateAnonymous = async (value: boolean) => {
     setAnonymous(value);
