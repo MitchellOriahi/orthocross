@@ -1108,5 +1108,97 @@ export const PRAYER_PLACEMENTS: Record<string, PrayerPlacement[]> = {
       "category": "communion",
       "subgroup": "Liturgies"
     }
+  ],
+  "agpeya-concluding-prayer": [
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Rule of Prayer"
+    }
+  ],
+  "nerses-prayer-1": [
+    {
+      "category": "daily",
+      "subgroup": "Morning"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    }
+  ],
+  "nerses-prayer-13": [
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    }
+  ],
+  "nerses-prayer-24": [
+    {
+      "category": "daily",
+      "subgroup": "Night"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Hours"
+    }
+  ],
+  "malankara-trisagion": [
+    {
+      "category": "foundational",
+      "subgroup": "Core"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Rule of Prayer"
+    }
+  ],
+  "malankara-morning-enyono": [
+    {
+      "category": "daily",
+      "subgroup": "Morning"
+    }
+  ],
+  "malankara-bootho-mor-yaqub": [
+    {
+      "category": "daily",
+      "subgroup": "Morning"
+    }
+  ],
+  "malankara-evening-incense": [
+    {
+      "category": "daily",
+      "subgroup": "Evening"
+    }
+  ],
+  "malankara-intercession-theotokos": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Theotokos"
+    },
+    {
+      "category": "daily",
+      "subgroup": "Evening"
+    }
+  ],
+  "malankara-bedtime-supplication": [
+    {
+      "category": "daily",
+      "subgroup": "Night"
+    }
+  ],
+  "ephrem-night-hymn": [
+    {
+      "category": "daily",
+      "subgroup": "Night"
+    }
+  ],
+  "wudase-maryam-monday": [
+    {
+      "category": "christ-saints",
+      "subgroup": "Theotokos"
+    }
   ]
 };
