@@ -8,8 +8,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { DonationDialog } from "@/components/DonationDialog";
 import { DONOR_TEXT } from "@/config/donorTiers";
-import { DonorPodium, DonorTierButton, type DonorRow } from "@/components/DonorPodium";
+import { DonorTierButton, type DonorRow } from "@/components/DonorPodium";
 import { DonorTierGuide } from "@/components/DonorTierGuide";
+import { Crown } from "lucide-react";
+
+const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: (key: string) => void }) => (
+  <div className={`donor-list-row donor-rank-${Math.min(donor.rank, 4)} flex items-center gap-2 px-1 py-1.5`}>
+    <RankBadge rank={donor.rank} size="sm" />
+    <span className="relative inline-block shrink-0">
+      {donor.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
+      <Avatar className="h-7 w-7">
+        <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
+        <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+      </Avatar>
+    </span>
+    <span className="min-w-0 flex-1 break-words text-sm font-semibold">{donor.username}</span>
+    <div className="w-24 shrink-0 text-right"><DonorTierButton donor={donor} onSelect={onSelectTier} /></div>
+  </div>
+);
 
 const RankBadge = ({ rank, size = "md" }: { rank: number; size?: "sm" | "md" }) => {
   const dim = size === "md" ? "h-9 w-9" : "h-7 w-7";
