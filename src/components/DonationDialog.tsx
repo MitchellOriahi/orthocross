@@ -7,8 +7,9 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
-import { CalendarHeart, Heart, Loader2 } from "lucide-react";
+import { CalendarHeart, EyeOff, Heart, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
+import { getTier, TIER_ICONS } from "@/config/donorTiers";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
@@ -56,6 +57,10 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
     if (useCustom) return parseFloat(customAmount) || 0;
     return selectedAmount;
   };
+
+  // Tier this gift alone would qualify for (lifetime total can only be higher).
+  const effectiveAmount = getEffectiveAmount();
+  const giftTier = effectiveAmount >= 1 ? getTier(Math.round(effectiveAmount * 100)) : null;
 
   // Native path: RevenueCat in-app purchase (required by App Store / Play Store)
   const handleNativeDonate = async () => {
@@ -135,6 +140,8 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
     }
   };
 
+  const intervalLabel = interval === "month" ? "month" : "year";
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -143,30 +150,60 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             <CalendarHeart className="w-5 h-5 text-primary" />
             Support OrthoCross
           </DialogTitle>
-          <DialogDescription className="sr-only">Support OrthoCross</DialogDescription>
           {!isNative && (
-            <div className="grid grid-cols-2 gap-2 mt-2">
-              <Button size="sm" aria-pressed={interval === "month"} variant={interval === "month" ? "default" : "outline"} onClick={() => setInterval("month")}>Monthly</Button>
-              <Button size="sm" aria-pressed={interval === "year"} variant={interval === "year" ? "default" : "outline"} onClick={() => setInterval("year")}>Yearly</Button>
+            <DialogDescription className="text-sm text-muted-foreground text-left">
+              Your gift keeps OrthoCross free for everyone.
+            </DialogDescription>
+          )}
+          {!isNative && (
+            <div className="mt-2" role="radiogroup" aria-label="Donation frequency">
+              <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={interval === "month"}
+                  onClick={() => setInterval("month")}
+                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${interval === "month" ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Monthly
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={interval === "year"}
+                  onClick={() => setInterval("year")}
+                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${interval === "year" ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Yearly
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground text-center mt-1.5">Recurring · cancel anytime</p>
             </div>
           )}
         </DialogHeader>
 
 
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4 pt-2">
           {/* Preset amounts */}
           <div className="space-y-2">
             <Label>Choose an amount (USD)</Label>
-            <div className={`grid gap-2 ${isNative ? "grid-cols-4" : "grid-cols-5"}`}>
+            <div className={`grid gap-2 pt-1.5 ${isNative ? "grid-cols-4" : "grid-cols-5"}`}>
               {PRESET_AMOUNTS.map((preset) => (
-                <Button
-                  key={preset}
-                  variant={!useCustom && selectedAmount === preset ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => { setSelectedAmount(preset); setUseCustom(false); }}
-                >
-                  ${preset}
-                </Button>
+                <div key={preset} className="relative">
+                  {preset === 10 && (
+                    <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 z-10 whitespace-nowrap rounded-full bg-primary px-1.5 py-px text-[10px] font-medium leading-tight text-primary-foreground">
+                      Most popular
+                    </span>
+                  )}
+                  <Button
+                    variant={!useCustom && selectedAmount === preset ? "default" : "outline"}
+                    size="sm"
+                    className="w-full"
+                    onClick={() => { setSelectedAmount(preset); setUseCustom(false); }}
+                  >
+                    ${preset}
+                  </Button>
+                </div>
               ))}
             </div>
           </div>
@@ -192,22 +229,29 @@ export const DonationDialog = ({ open, onOpenChange }: DonationDialogProps) => {
             </div>
           )}
 
-          <Button
-            size="sm"
-            variant={anonymous ? "secondary" : "outline"}
-            className="w-full justify-center"
+          {/* Tier incentive — the tier this gift alone qualifies for */}
+          {giftTier && (
+            <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <img src={TIER_ICONS[giftTier.key]} alt="" className="w-4 h-4 rounded-full object-cover" />
+              <span>This gift reaches the <span className="font-medium text-foreground">{giftTier.name}</span> tier</span>
+            </p>
+          )}
+
+          <button
+            type="button"
             aria-pressed={anonymous}
             onClick={() => updateAnonymous(!anonymous)}
+            className="mx-auto flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
-            {DONOR_TEXT.donateAnonymously}
-          </Button>
-
+            <EyeOff className={`w-3.5 h-3.5 ${anonymous ? "text-primary" : ""}`} />
+            <span className={anonymous ? "font-medium text-foreground" : ""}>{DONOR_TEXT.donateAnonymously}</span>
+          </button>
 
           {/* Platform note */}
           <p className="text-xs text-muted-foreground text-center">
             {isNative
               ? "One-time donation processed securely through the app store."
-              : interval === "month" ? "Recurring monthly donation processed securely via Stripe." : "Recurring yearly donation processed securely via Stripe."}
+              : `Recurring ${intervalLabel}ly donation processed securely via Stripe.`}
           </p>
 
           {/* Native warning if products not loaded yet */}
