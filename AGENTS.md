@@ -22,9 +22,6 @@
 - Resolve saint card icons through a bundled roster-keyed registry with focus/zoom crop values, overridden by admin-saved database rows from the hidden icon tuner; derive roster detail images and credits from the same registry so newly sourced portraits retain attribution without changing the saved catalog or card layout.
 - Fetch public permission-based Athonite catalogs through an authenticated, fixed-collection cloud function with storage caching and a persistent blocked-feed stop flag; this operation cannot approve portraits or alter saint records.
 - Verify Stripe payments and compute totals server-side; queue friend alerts via a service-only donation-keyed function enforcing anonymity, friendship, blocks and preferences, with push UUID idempotency to prevent duplicate alerts.
-- Read scripture aloud through the cloudSpeechEngine (read-aloud edge function, Gemini TTS WAV per chunk) with word glow timed from each chunk's real audio duration; keep the device webSpeechEngine as a drop-in fallback behind the same SpeechEngine interface.
-- Plan cloud speech from canonical chapter chunks (short opener, longer rest) with edge-silence trimming, multi-chunk lookahead and two alternating audio elements, so playback starts fast, resumes from cache mid-chunk and has no gaps between chunks.
-- Continuous read-aloud chains chapters through the speech hook's chapter-end callback and skips the hidden-page pause only in that mode, so normal listening still pauses when backgrounded.
 
 - Share prayers in one catalog with category-qualified placements; retain IDs, text, pins and highlights.
 - Share donation interval validation between dialog and checkout to keep billing consistent.
