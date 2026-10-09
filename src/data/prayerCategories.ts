@@ -1200,5 +1200,11 @@ export const PRAYER_PLACEMENTS: Record<string, PrayerPlacement[]> = {
       "category": "christ-saints",
       "subgroup": "Theotokos"
     }
+  ],
+  "god-grant-you-many-years": [
+    {
+      "category": "occasions",
+      "subgroup": "Blessings"
+    }
   ]
 };

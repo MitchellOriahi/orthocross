@@ -1257,5 +1257,16 @@ export const prayerAdditions: PrayerDetail[] = [
       "Let all souls of men rejoice and be glad with the angels, and let them praise Christ, the King, and cry out and say, “Glory to God in the heavens, and peace on the earth, and His good will to men.” He hath abolished the things of old, and overthrown the plot of the Enemy, and set them free — He Who was born for us in the city of David, our Redeemer, Jesus Christ hath done this. He hath appeared.",
       "Thou Light, Who in truth illuminest all men who dwell in the world, because of Thy love for man Thou hast come into the world. All created things rejoiced at Thy coming, because Thou didst deliver Adam from his error, and didst set free Eve from the suffering of death, and hast given unto us the soul of prophecy. We bless Thee with Thine angels."
     ]
+  },
+  {
+    "id": "god-grant-you-many-years",
+    "name": "God Grant You Many Years",
+    "title": "Polychronion for Birthdays and Name Days · Slavonic tradition",
+    "tradition": "Eastern",
+    "content": [
+      "A prosperous and peaceful life, health, salvation, and all that is good, O Lord, grant to Your servant who is now celebrating a birthday (name), and preserve them for many blessed years.",
+      "God grant you many years, God grant you many years, may you live and thrive in health and prosperity — God grant you many years!",
+      "Many, many years!"
+    ]
   }
 ];
