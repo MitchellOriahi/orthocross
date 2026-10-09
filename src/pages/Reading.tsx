@@ -487,6 +487,7 @@ const Reading = () => {
       // Update streak immediately after completing activity
       const { updateUserStreak } = await import('@/utils/streakManager');
       await updateUserStreak(user.id);
+      import('@/lib/promptScheduler').then(m => m.trackMeaningfulCompletion(user.id, `bible:${book}:${chapter}`));
 
       // Create friend activity for chapter completion (only if not already created today)
       const today = new Date().toISOString().slice(0, 10);

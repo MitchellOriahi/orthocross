@@ -105,6 +105,8 @@ const OrthodoxHistory = () => {
       completed_at: new Date().toISOString()
     });
 
+    import('@/lib/promptScheduler').then(m => m.trackMeaningfulCompletion(user.id, `history:${campaignId}:${islandId}`));
+
     // Add point to leaderboard only if first time this month
     if (isFirstTimeThisMonth) {
       await supabase.rpc('award_leaderboard_point', { p_activity: 'history_island' });
