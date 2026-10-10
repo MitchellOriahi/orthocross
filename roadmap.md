@@ -1,4 +1,6 @@
 # Prayers category browser
+## Profile portraits
+- [ ] Keep successful profile portraits available through temporary image-request failures and navigation; verify saved-image recovery and monthly leaderboard edge-to-edge framing.
 ## Tier colors and friend donation alerts
 - [x] Match all donor portrait rings/glows and crowns to their tier tags; real donor and four sample tiers verified, including fourth place.
 - [x] Notify friends of confirmed non-anonymous donations using private in-app alerts and idempotent native push; payment handlers deployed.
