@@ -1,4 +1,6 @@
 # Prayers category browser
+## Donation gift screen
+- [ ] Update Acts quote and mission wording; add three gift slider amounts with increasing Angel glow and clickable custom-tier previews; verify interactions.
 ## Profile portraits
 - [ ] Keep successful profile portraits available through temporary image-request failures and navigation; verify saved-image recovery and monthly leaderboard edge-to-edge framing.
 ## Tier colors and friend donation alerts
