@@ -252,10 +252,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               />
               <div className="relative h-5 text-xs font-medium text-muted-foreground">
                 <span className="absolute" style={{ left: 0 }}>$1</span>
-                <span className="absolute" style={{ left: "0.1%" }}>$2</span>
-                <span className="absolute" style={{ left: "0.5%" }}>$5</span>
-                <span className="absolute" style={{ left: "1%" }}>$10</span>
-                <span className="absolute" style={{ left: "5%" }}>$50</span>
+                <span className="absolute" style={{ left: "2%" }}>$2</span>
+                <span className="absolute" style={{ left: "4%" }}>$5</span>
                 <span className="absolute" style={{ left: "10%" }}>$100</span>
                 <span className="absolute" style={{ left: "25%" }}>$250</span>
                 <span className="absolute" style={{ left: "50%" }}>$500</span>
