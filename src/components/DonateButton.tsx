@@ -12,7 +12,7 @@ export const DonateButton = () => {
         variant="ghost"
         size="icon"
         onClick={() => setIsOpen(true)}
-        title="Support OrthoCross"
+        title="Become a donator"
       >
         <Inbox className="h-5 w-5" />
       </Button>

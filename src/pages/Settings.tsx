@@ -451,11 +451,11 @@ const Settings = () => {
           {/* Support OrthoCross (permanent entry) */}
           <Card className="shadow-elevated">
             <CardHeader>
-              <CardTitle>Support OrthoCross</CardTitle>
+              <CardTitle>Become a donator</CardTitle>
               <CardDescription>Give whenever you wish — it is always optional.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button variant="sacred" className="w-full" onClick={() => setSupportOpen(true)}>Support OrthoCross</Button>
+              <Button variant="sacred" className="w-full" onClick={() => setSupportOpen(true)}>Become a donator</Button>
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="font-medium">Occasional donation reminders</p>
