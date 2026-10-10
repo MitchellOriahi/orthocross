@@ -216,19 +216,54 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             <p className="text-sm text-muted-foreground text-center">Your gift keeps OrthoCross free for everyone.</p>
           </div>
 
-          <input
-            type="range"
-            aria-label="Donation amount"
-            min={0}
-            max={SLIDER_STEPS.length - 1}
-            step={1}
-            value={stepIndex}
-            onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); }}
-            className="w-full accent-[hsl(var(--primary))]"
-          />
-          <div className="flex justify-between text-sm font-medium text-muted-foreground">
-            {SLIDER_STEPS.map(amount => <span key={amount}>${amount}</span>)}
-          </div>
+          {isNative ? (
+            <>
+              <input
+                type="range"
+                aria-label="Donation amount"
+                min={0}
+                max={SLIDER_STEPS.length - 1}
+                step={1}
+                value={stepIndex}
+                onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); }}
+                className="w-full accent-[hsl(var(--primary))]"
+              />
+              <div className="flex justify-between text-sm font-medium text-muted-foreground">
+                {SLIDER_STEPS.map(amount => <span key={amount}>${amount}</span>)}
+              </div>
+            </>
+          ) : (
+            <>
+              <input
+                type="range"
+                aria-label="Donation amount"
+                min={1}
+                max={1000}
+                step={1}
+                value={Math.min(1000, Math.max(1, Math.round(effectiveAmount) || 1))}
+                onChange={(e) => {
+                  let v = Number(e.target.value);
+                  if (v < 10) v = GIFT_SLIDER_AMOUNTS.reduce((a, b) => Math.abs(b - v) < Math.abs(a - v) ? b : a);
+                  setSelectedAmount(v);
+                  setUseCustom(false);
+                  setCustomAmount("");
+                }}
+                className="donor-tier-slider w-full"
+              />
+              <div className="relative h-5 text-xs font-medium text-muted-foreground">
+                <span className="absolute" style={{ left: 0 }}>$1</span>
+                <span className="absolute" style={{ left: "0.1%" }}>$2</span>
+                <span className="absolute" style={{ left: "0.5%" }}>$5</span>
+                <span className="absolute" style={{ left: "1%" }}>$10</span>
+                <span className="absolute" style={{ left: "5%" }}>$50</span>
+                <span className="absolute" style={{ left: "10%" }}>$100</span>
+                <span className="absolute" style={{ left: "25%" }}>$250</span>
+                <span className="absolute" style={{ left: "50%" }}>$500</span>
+                <span className="absolute" style={{ left: "75%" }}>$750</span>
+                <span className="absolute" style={{ right: 0 }}>$1000</span>
+              </div>
+            </>
+          )}
 
           {!isNative && (
             <div className="relative">
