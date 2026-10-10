@@ -7,7 +7,7 @@ export function SaintListCard({ saint, onSelect }: { saint: SaintDetail; onSelec
     <Button variant="ghost" onClick={() => onSelect(saint)} className={`relative h-auto w-full items-start justify-start gap-4 whitespace-normal rounded-lg border border-border p-4 text-left hover:border-primary hover:bg-accent${saint.id === "theotokos" ? " theotokos-sticker" : ""}`}>
       <SaintCardIcon saintId={saint.id} fallbackUrl={saint.iconUrl} />
       <span className="min-w-0 flex-1">
-        <span className="block pr-16 text-base font-semibold leading-5 break-words">
+        <span className="block pr-20 text-base font-semibold leading-5 break-words">
           {saint.prefix && <span className="block">{saint.prefix}</span>}
           {[saint.name, saint.epithet].filter(Boolean).join(" ")}
         </span>
