@@ -316,7 +316,7 @@ All colors MUST be HSL.
   inset: 0;
   z-index: 2;
   border-radius: 9999px;
-  box-shadow: inset 0 0 0 3px hsl(var(--background));
+  box-shadow: inset 0 0 0 1px hsl(var(--background));
   pointer-events: none;
 }
 .podium-avatar-fallback {
