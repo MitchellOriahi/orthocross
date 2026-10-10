@@ -31,7 +31,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const [loading, setLoading] = useState(false);
   const interval: DonationInterval = DEFAULT_DONATION_INTERVAL;
   const [openReason, setOpenReason] = useState<number | null>(null);
-  const [tiersOpen, setTiersOpen] = useState(false);
   const [anonymous, setAnonymous] = useState(false);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
@@ -207,6 +206,12 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-28 w-28 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               {giftTier && <img src={TIER_ICONS[giftTier.key]} alt={giftTier.name} className="h-full w-full object-cover" />}
             </div>
+            {giftTier && (
+              <span className={`donor-tier-${giftTier.key} rounded-full border px-3 py-1 text-xs font-semibold`}
+                style={{ color: "hsl(var(--donor-tier-tone))", borderColor: "hsl(var(--donor-tier-tone) / 0.4)", background: "hsl(var(--donor-tier-tone) / 0.12)", boxShadow: "0 0 8px hsl(var(--donor-tier-tone) / 0.15)" }}>
+                {giftTier.name}
+              </span>
+            )}
             <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && "/month"}</p>
             <p className="text-sm text-muted-foreground text-center">Your gift keeps OrthoCross free for everyone.</p>
           </div>
