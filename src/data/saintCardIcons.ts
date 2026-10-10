@@ -34,7 +34,7 @@ import portrait_elijah from "@/assets/saints/card-icons/elijah-portrait.jpg.asse
 import portrait_moses from "@/assets/saints/card-icons/moses-portrait.jpg.asset.json";
 import i_michael from "@/assets/saints/card-icons/michael-byzantine.jpg.asset.json";
 import i_gabriel from "@/assets/saints/card-icons/gabriel.jpg.asset.json";
-import i_gabriel_urgebadze from "@/assets/saints/card-icons/gabriel-urgebadze.jpg.asset.json";
+import i_gabriel_urgebadze from "@/assets/saints/card-icons/gabriel-urgebadze-icon.jpg.asset.json";
 import i_raphael from "@/assets/saints/card-icons/raphael.jpg.asset.json";
 import i_uriel from "@/assets/saints/card-icons/uriel.jpg.asset.json";
 import i_selaphiel from "@/assets/saints/card-icons/selaphiel.jpg.asset.json";
@@ -110,7 +110,7 @@ export const SAINT_CARD_ICONS: Record<string, SaintCardIcon> = {
   ...SAINT_ONLINE_PORTRAITS,
   "michael": { image_url: i_michael.url, image_source: "https://commons.wikimedia.org/wiki/File:Icon_with_the_Archangel_Michael_(14th_cent.)_at_the_Byzantine_and_Christian_Museum_on_12_April_2019.jpg", image_license: "CC BY-SA 4.0", image_attribution: "George E. Koronaios (photo); 14th-century Byzantine icon", focus_x: 52, focus_y: 24, zoom: 2.2 },
   "gabriel": { image_url: i_gabriel.url, image_source: "https://commons.wikimedia.org/wiki/File:Archangel_Gabriel_-_Orthodox_Icon.jpg", image_license: "CC BY-SA 4.0", image_attribution: "33milos33", focus_x: 55, focus_y: 28, zoom: 1.8 },
-  "gabriel-urgebadze": { image_url: i_gabriel_urgebadze.url, image_source: "https://commons.wikimedia.org/wiki/File:Santo_Gabrieli.jpg", image_license: "CC BY-SA 4.0", image_attribution: "Solnechnisvet11", focus_x: 54, focus_y: 27, zoom: 1.6 },
+  "gabriel-urgebadze": { image_url: i_gabriel_urgebadze.url, image_source: "https://commons.wikimedia.org/wiki/File:Ikono_de_Sankta_Gabrielo_(Urgebadze)_en_la_%C4%88ielira-Georga_pre%C4%9Dejo_(Tjumeno)_01.jpg", image_license: "CC BY-SA 4.0", image_attribution: "RG72", focus_x: 31, focus_y: 38, zoom: 1.35 },
   "raphael": { image_url: i_raphael.url, image_source: "https://commons.wikimedia.org/wiki/File:%22St.Archangel_Raphael%22,egg_tempera,_goldleaf_on_wood,_sm_32x24.jpeg", image_license: "CC BY-SA 3.0", image_attribution: "Tjaarke Maas", focus_x: 45, focus_y: 28, zoom: 1.4 },
   "uriel": { image_url: i_uriel.url, image_source: "https://commons.wikimedia.org/wiki/File:Icon_of_the_Archangel_Uriel_01.jpg", image_license: "CC BY-SA 4.0", image_attribution: "Mark Czekanski (Marek Czeka\u0144ski)", focus_x: 50, focus_y: 28, zoom: 2.6 },
   "selaphiel": { image_url: i_selaphiel.url, image_source: "https://commons.wikimedia.org/wiki/File:Icon_of_Archangel_Selaphiel.jpg", image_license: "Public domain", image_attribution: "Unknown iconographer", focus_x: 50, focus_y: 3, zoom: 2.2 },
