@@ -32,6 +32,8 @@ export const DonationPromptDialog = () => {
       if (cancelled || sessionGuard.used) return;
       const now = Date.now();
       let s = applyDonorStatus(loadState(user.id), status, now);
+      // Never ask an active recurring donor; unknown status also blocks (see donationEligible).
+      if (status === "active") { saveState(user.id, s); return; }
       const legacy = localStorage.getItem(`last_one_time_donation_${user.id}`);
       const legacyAt = legacy ? Date.parse(legacy) : NaN;
       if (Number.isFinite(legacyAt) && (s.lastDonatedAt ?? 0) < legacyAt) s = { ...s, lastDonatedAt: legacyAt };

@@ -32,25 +32,25 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Check if customer exists
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    
-    if (customers.data.length === 0) {
-      return new Response(JSON.stringify({ hasActiveMonthlyDonation: false }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+    // A recurring gift counts while it is active, trialing or retrying a payment.
+    const LIVE = new Set(["active", "trialing", "past_due"]);
+    const subs: Stripe.Subscription[] = [];
+
+    // 1) Subscriptions tagged with this user's ID (covers any checkout email).
+    try {
+      const tagged = await stripe.subscriptions.search({ query: `metadata['user_id']:'${user.id}'`, limit: 20 });
+      subs.push(...tagged.data);
+    } catch (e) { console.error("subscription search failed", e); }
+
+    // 2) Every Stripe customer sharing the account email.
+    const customers = await stripe.customers.list({ email: user.email, limit: 10 });
+    for (const c of customers.data) {
+      const list = await stripe.subscriptions.list({ customer: c.id, status: "all", limit: 20 });
+      subs.push(...list.data);
     }
 
-    const customerId = customers.data[0].id;
-
-    // Check for active subscriptions (monthly donations)
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: "active",
-      limit: 10,
-    });
-
+    const live = new Map(subs.filter((s) => LIVE.has(s.status)).map((s) => [s.id, s]));
+    const subscriptions = { data: [...live.values()] };
     const hasActiveMonthlyDonation = subscriptions.data.length > 0;
 
     return new Response(JSON.stringify({ 
