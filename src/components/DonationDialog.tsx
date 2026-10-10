@@ -9,7 +9,7 @@ import { Capacitor } from "@capacitor/core";
 import { Eye, EyeOff, Gift, Loader2, Sprout, User } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { TIER_ICONS } from "@/config/donorTiers";
-import { GIFT_SLIDER_AMOUNTS, getGiftPreview } from "@/config/donationGift";
+import { GIFT_SLIDER_AMOUNTS, TIER_SLIDER_STEPS, nearestTierStepIndex, getGiftPreview } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
@@ -237,13 +237,12 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               <input
                 type="range"
                 aria-label="Donation amount"
-                min={1}
-                max={1000}
+                min={0}
+                max={TIER_SLIDER_STEPS.length - 1}
                 step={1}
-                value={Math.min(1000, Math.max(1, Math.round(effectiveAmount) || 1))}
+                value={nearestTierStepIndex(effectiveAmount || 1)}
                 onChange={(e) => {
-                  let v = Number(e.target.value);
-                  if (v < 10) v = GIFT_SLIDER_AMOUNTS.reduce((a, b) => Math.abs(b - v) < Math.abs(a - v) ? b : a);
+                  const v = TIER_SLIDER_STEPS[Number(e.target.value)];
                   setSelectedAmount(v);
                   setUseCustom(false);
                   setCustomAmount("");
@@ -252,12 +251,14 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               />
               <div className="relative h-5 text-xs font-medium text-muted-foreground">
                 <span className="absolute" style={{ left: 0 }}>$1</span>
-                <span className="absolute" style={{ left: "4%" }}>$2</span>
-                <span className="absolute" style={{ left: "7%" }}>$5</span>
-                <span className="absolute" style={{ left: "13%" }}>$100</span>
-                <span className="absolute" style={{ left: "25%" }}>$250</span>
-                <span className="absolute" style={{ left: "50%" }}>$500</span>
-                <span className="absolute" style={{ left: "75%" }}>$750</span>
+                <span className="absolute" style={{ left: "10%" }}>$2</span>
+                <span className="absolute" style={{ left: "20%" }}>$5</span>
+                <span className="absolute" style={{ left: "30%" }}>$10</span>
+                <span className="absolute" style={{ left: "40%" }}>$25</span>
+                <span className="absolute" style={{ left: "50%" }}>$50</span>
+                <span className="absolute" style={{ left: "60%" }}>$100</span>
+                <span className="absolute" style={{ left: "70%" }}>$250</span>
+                <span className="absolute" style={{ left: "80%" }}>$500</span>
                 <span className="absolute" style={{ right: 0 }}>$1000</span>
               </div>
             </>
