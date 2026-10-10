@@ -279,33 +279,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             </div>
           )}
 
-          <div className="rounded-xl border">
-            <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => setTiersOpen(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
-              <span>Donator tiers{giftTier && <> · <span className={`donor-tier-${giftTier.key} text-[hsl(var(--donor-tier-tone))]`}>{giftTier.name}</span></>}</span>
-              <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
-            </Button>
-            {tiersOpen && (
-              <ul className="space-y-1 px-3 pb-3">
-                {[...DONOR_TIERS].reverse().map((t) => {
-                  const current = giftTier?.key === t.key;
-                  return (
-                    <li key={t.key}>
-                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
-                        setCustomAmount(String(t.minCents / 100));
-                        setSelectedAmount(t.minCents / 100);
-                        setUseCustom(true);
-                      }}>
-                        <span>{t.name}{current && " · this gift"}</span>
-                        <span>${(t.minCents / 100).toLocaleString()}+</span>
-                      </Button>
-                    </li>
-                  );
-                })}
-                <li className="px-3 pt-1 text-xs text-muted-foreground">Tiers reflect your lifetime donations.</li>
-              </ul>
-            )}
-          </div>
-
           <Button variant="ghost"
             type="button" role="switch" aria-checked={anonymous}
             onClick={() => updateAnonymous(!anonymous)}
