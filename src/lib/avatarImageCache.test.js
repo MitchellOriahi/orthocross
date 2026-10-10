@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getCachedPortrait, portraitRetrySource } from "./avatarImageCache";
+import { getCachedPortrait, portraitRetrySource } from "./avatarImageCache.ts";
 
 describe("portrait recovery", () => {
   test("retry uses a fresh request while keeping the original source intact", () => {
