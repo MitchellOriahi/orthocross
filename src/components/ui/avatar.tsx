@@ -21,20 +21,46 @@ Avatar.displayName = AvatarPrimitive.Root.displayName;
 // img paints immediately from cache; the fallback (rendered underneath)
 // shows through only while loading or on error.
 const AvatarImage = React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<HTMLImageElement>>(
-  ({ className, src, alt = "", ...props }, ref) => {
-    const [errored, setErrored] = React.useState(false);
+  ({ className, src, alt = "", onError, onLoad, ...props }, ref) => {
+    const [failedSource, setFailedSource] = React.useState<string>();
+    const [attempt, setAttempt] = React.useState(0);
     React.useEffect(() => {
-      setErrored(false);
+      setFailedSource(undefined);
+      setAttempt(0);
     }, [src]);
-    if (!src || errored) return null;
+    React.useEffect(() => {
+      if (!src || failedSource !== src || attempt >= 3) return;
+      const timer = window.setTimeout(() => {
+        setFailedSource(undefined);
+        setAttempt(value => value + 1);
+      }, 500 * 2 ** attempt);
+      return () => window.clearTimeout(timer);
+    }, [src, failedSource, attempt]);
+    React.useEffect(() => {
+      const retry = () => {
+        setFailedSource(undefined);
+        setAttempt(0);
+      };
+      window.addEventListener("online", retry);
+      return () => window.removeEventListener("online", retry);
+    }, []);
+    if (!src || failedSource === src) return null;
     return (
       <img
+        key={`${src}:${attempt}`}
         ref={ref}
         src={src}
         alt={alt}
         loading="eager"
         decoding="async"
-        onError={() => setErrored(true)}
+        onError={(event) => {
+          setFailedSource(src);
+          onError?.(event);
+        }}
+        onLoad={(event) => {
+          setFailedSource(undefined);
+          onLoad?.(event);
+        }}
         className={cn("absolute inset-0 z-[1] aspect-square h-full w-full object-cover", className)}
         {...props}
       />
