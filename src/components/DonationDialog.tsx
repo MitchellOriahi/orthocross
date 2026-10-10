@@ -6,10 +6,10 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
-import { Eye, EyeOff, Gift, Loader2, Sprout, User } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, Gift, Loader2, Sprout, User } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
-import { TIER_ICONS } from "@/config/donorTiers";
-import { GIFT_SLIDER_AMOUNTS, TIER_SLIDER_STEPS, nearestTierStepIndex, getGiftPreview } from "@/config/donationGift";
+import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
+import { GIFT_SLIDER_AMOUNTS, getGiftPreview } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
@@ -31,6 +31,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const [loading, setLoading] = useState(false);
   const interval: DonationInterval = DEFAULT_DONATION_INTERVAL;
   const [openReason, setOpenReason] = useState<number | null>(null);
+  const [tiersOpen, setTiersOpen] = useState(false);
   const [anonymous, setAnonymous] = useState(false);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
@@ -206,63 +207,23 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-28 w-28 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               {giftTier && <img src={TIER_ICONS[giftTier.key]} alt={giftTier.name} className="h-full w-full object-cover" />}
             </div>
-            {giftTier && (
-              <span className={`donor-tier-${giftTier.key} rounded-full border px-3 py-1 text-xs font-semibold`}
-                style={{ color: "hsl(var(--donor-tier-tone))", borderColor: "hsl(var(--donor-tier-tone) / 0.4)", background: "hsl(var(--donor-tier-tone) / 0.12)", boxShadow: "0 0 8px hsl(var(--donor-tier-tone) / 0.15)" }}>
-                {giftTier.name}
-              </span>
-            )}
             <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && "/month"}</p>
             <p className="text-sm text-muted-foreground text-center">Your gift keeps OrthoCross free for everyone.</p>
           </div>
 
-          {isNative ? (
-            <>
-              <input
-                type="range"
-                aria-label="Donation amount"
-                min={0}
-                max={SLIDER_STEPS.length - 1}
-                step={1}
-                value={stepIndex}
-                onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); }}
-                className="w-full accent-[hsl(var(--primary))]"
-              />
-              <div className="flex justify-between text-sm font-medium text-muted-foreground">
-                {SLIDER_STEPS.map(amount => <span key={amount}>${amount}</span>)}
-              </div>
-            </>
-          ) : (
-            <>
-              <input
-                type="range"
-                aria-label="Donation amount"
-                min={0}
-                max={TIER_SLIDER_STEPS.length - 1}
-                step={1}
-                value={nearestTierStepIndex(effectiveAmount || 1)}
-                onChange={(e) => {
-                  const v = TIER_SLIDER_STEPS[Number(e.target.value)];
-                  setSelectedAmount(v);
-                  setUseCustom(false);
-                  setCustomAmount("");
-                }}
-                className="donor-tier-slider w-full"
-              />
-              <div className="relative h-5 text-xs font-medium text-muted-foreground">
-                <span className="absolute" style={{ left: 0 }}>$1</span>
-                <span className="absolute" style={{ left: "10%" }}>$2</span>
-                <span className="absolute" style={{ left: "20%" }}>$5</span>
-                <span className="absolute" style={{ left: "30%" }}>$10</span>
-                <span className="absolute" style={{ left: "40%" }}>$25</span>
-                <span className="absolute" style={{ left: "50%" }}>$50</span>
-                <span className="absolute" style={{ left: "60%" }}>$100</span>
-                <span className="absolute" style={{ left: "70%" }}>$250</span>
-                <span className="absolute" style={{ left: "80%" }}>$500</span>
-                <span className="absolute" style={{ right: 0 }}>$1000</span>
-              </div>
-            </>
-          )}
+          <input
+            type="range"
+            aria-label="Donation amount"
+            min={0}
+            max={SLIDER_STEPS.length - 1}
+            step={1}
+            value={stepIndex}
+            onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); }}
+            className="w-full accent-[hsl(var(--primary))]"
+          />
+          <div className="flex justify-between text-sm font-medium text-muted-foreground">
+            {SLIDER_STEPS.map(amount => <span key={amount}>${amount}</span>)}
+          </div>
 
           {!isNative && (
             <div className="relative">
@@ -279,6 +240,33 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               />
             </div>
           )}
+
+          <div className="rounded-xl border">
+            <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => setTiersOpen(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
+              <span>Donator tiers{giftTier && <> · <span className={`donor-tier-${giftTier.key} text-[hsl(var(--donor-tier-tone))]`}>{giftTier.name}</span></>}</span>
+              <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
+            </Button>
+            {tiersOpen && (
+              <ul className="space-y-1 px-3 pb-3">
+                {[...DONOR_TIERS].reverse().map((t) => {
+                  const current = giftTier?.key === t.key;
+                  return (
+                    <li key={t.key}>
+                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
+                        setCustomAmount(String(t.minCents / 100));
+                        setSelectedAmount(t.minCents / 100);
+                        setUseCustom(true);
+                      }}>
+                        <span>{t.name}{current && " · this gift"}</span>
+                        <span>${(t.minCents / 100).toLocaleString()}+</span>
+                      </Button>
+                    </li>
+                  );
+                })}
+                <li className="px-3 pt-1 text-xs text-muted-foreground">Tiers reflect your lifetime donations.</li>
+              </ul>
+            )}
+          </div>
 
           <Button variant="ghost"
             type="button" role="switch" aria-checked={anonymous}
