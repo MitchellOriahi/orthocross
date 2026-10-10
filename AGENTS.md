@@ -1,5 +1,5 @@
 # Architecture Rules
-- Recover transient avatar image failures in the shared AvatarImage with bounded retries and an online-event reset, so every profile portrait can recover without remounting its page.
+- Cache successful avatar images on-device by source in a bounded CacheStorage library; shared AvatarImage uses local blobs with cache-busting bounded retries and an online-event reset so portraits survive navigation and transient network failures.
 - Embed optimized Church Guide cross variants as data URLs in the page bundle so rendering does not wait for separate image requests.
 - Track lifetime saint-story completion by exact roster ID in the existing private reading records and shared query cache; derive the all-stories award from unique roster IDs so same-name saints and cross-category memberships cannot inflate completion.
 

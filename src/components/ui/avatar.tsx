@@ -2,6 +2,7 @@ import * as React from "react";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 
 import { cn } from "@/lib/utils";
+import { getCachedPortrait, portraitRetrySource } from "@/lib/avatarImageCache";
 
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,
@@ -24,6 +25,22 @@ const AvatarImage = React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<H
   ({ className, src, alt = "", onError, onLoad, ...props }, ref) => {
     const [failedSource, setFailedSource] = React.useState<string>();
     const [attempt, setAttempt] = React.useState(0);
+    const [cachedPortrait, setCachedPortrait] = React.useState<{ source: string; url: string }>();
+    React.useEffect(() => {
+      if (!src) return;
+      let active = true;
+      let localUrl: string | undefined;
+      void getCachedPortrait(src).then(blob => {
+        if (!active || !blob) return;
+        localUrl = URL.createObjectURL(blob);
+        setCachedPortrait({ source: src, url: localUrl });
+        setFailedSource(undefined);
+      });
+      return () => {
+        active = false;
+        if (localUrl) URL.revokeObjectURL(localUrl);
+      };
+    }, [src]);
     React.useEffect(() => {
       setFailedSource(undefined);
       setAttempt(0);
@@ -49,7 +66,7 @@ const AvatarImage = React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<H
       <img
         key={`${src}:${attempt}`}
         ref={ref}
-        src={src}
+        src={cachedPortrait?.source === src ? cachedPortrait.url : portraitRetrySource(src, attempt)}
         alt={alt}
         loading="eager"
         decoding="async"
