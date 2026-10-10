@@ -1,4 +1,6 @@
 # Prayers category browser
+## Donation gift screen
+- [x] Updated Acts quote and mission wording; added $1/$2/$5 with increasing Angel glow and clickable custom-tier previews. Fourteen tests and live amount/slider/portrait-selection checks pass; build clean. Hosted tier image delivery could not be verified in the local browser (asset URL did not load).
 ## Profile portraits
 - [ ] Keep successful profile portraits available through temporary image-request failures and navigation; verify saved-image recovery and monthly leaderboard edge-to-edge framing.
 ## Tier colors and friend donation alerts

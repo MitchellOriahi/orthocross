@@ -534,6 +534,22 @@ All colors MUST be HSL.
   border-color: hsl(var(--donor-rank-tone, var(--podium-gold)) / 0.6);
 }
 .donor-avatar-ring { box-shadow: 0 0 0 2px hsl(var(--donor-tier-tone, var(--muted-foreground)) / 0.8), 0 0 8px 2px hsl(var(--donor-tier-tone, var(--muted-foreground)) / 0.5), 0 0 20px 6px hsl(var(--donor-tier-tone, var(--muted-foreground)) / 0.3); }
+.donor-gift-glow-0 { --gift-glow-near: 0.25; --gift-glow-far: 0.12; --gift-glow-radius: 12px; }
+.donor-gift-glow-1 { --gift-glow-near: 0.5; --gift-glow-far: 0.25; --gift-glow-radius: 22px; }
+.donor-gift-glow-2 { --gift-glow-near: 0.8; --gift-glow-far: 0.45; --gift-glow-radius: 34px; }
+.donor-gift-glow {
+  box-shadow: 0 0 0 2px hsl(var(--donor-tier-tone)),
+    0 0 10px 3px hsl(var(--donor-tier-tone) / var(--gift-glow-near)),
+    0 0 var(--gift-glow-radius) 8px hsl(var(--donor-tier-tone) / var(--gift-glow-far));
+}
+.donor-gift-tier-option {
+  color: hsl(var(--donor-tier-tone));
+  background: hsl(var(--donor-tier-tone) / 0.08);
+}
+.donor-gift-tier-option:hover, .donor-gift-tier-option:focus-visible {
+  color: hsl(var(--donor-tier-tone));
+  background: hsl(var(--donor-tier-tone) / 0.18);
+}
 /* Tier tokens are inherited by the portrait, crown and tier tag together. */
 .donor-avatar-podium {
   border: 3px solid hsl(var(--donor-tier-tone, var(--muted-foreground)));
