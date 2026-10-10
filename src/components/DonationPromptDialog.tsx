@@ -77,7 +77,7 @@ export const DonationPromptDialog = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2 pt-4">
-            <Button variant="sacred" onClick={handleDonate} className="w-full">Support OrthoCross</Button>
+            <Button variant="sacred" onClick={handleDonate} className="w-full">Become a donator</Button>
             <Button variant="ghost" onClick={() => dismiss("donation")} className="w-full text-muted-foreground">Maybe later</Button>
           </div>
         </DialogContent>
