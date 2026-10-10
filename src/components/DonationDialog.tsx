@@ -2,14 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
 import { ChevronDown, Eye, EyeOff, Gift, Loader2, Sprout, User } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
-import { DONOR_TIERS, getTier, TIER_ICONS } from "@/config/donorTiers";
+import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
+import { GIFT_SLIDER_AMOUNTS, getGiftPreview } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
@@ -21,11 +21,10 @@ interface DonationDialogProps {
   onCancel?: () => void;
 }
 
-const WEB_PRESETS = [1, 10, 25, 50, 100];
 const NATIVE_PRESETS = [5, 10, 25, 50];
 
 export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: DonationDialogProps) => {
-  const [selectedAmount, setSelectedAmount] = useState(10);
+  const [selectedAmount, setSelectedAmount] = useState(Capacitor.isNativePlatform() ? 5 : 1);
   const submittedRef = useRef(false);
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
@@ -38,7 +37,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const { toast } = useToast();
   const { user } = useAuth();
   const isNative = Capacitor.isNativePlatform();
-  const PRESET_AMOUNTS = isNative ? NATIVE_PRESETS : WEB_PRESETS;
 
   useEffect(() => {
     if (!open || !user) return;
@@ -80,7 +78,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
   // Tier this gift alone would qualify for (lifetime total can only be higher).
   const effectiveAmount = getEffectiveAmount();
-  const giftTier = effectiveAmount >= 1 ? getTier(Math.round(effectiveAmount * 100)) : null;
+  const giftPreview = getGiftPreview(effectiveAmount, useCustom);
+  const giftTier = giftPreview.tier;
 
   // Native path: RevenueCat in-app purchase (required by App Store / Play Store)
   const handleNativeDonate = async () => {
@@ -161,20 +160,23 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     }
   };
 
-  const SLIDER_STEPS = isNative ? NATIVE_PRESETS : [1, 5, 10, 15, 20, 25, 50, 100];
-  const stepIndex = Math.max(0, SLIDER_STEPS.findIndex((v) => v >= effectiveAmount));
+  const SLIDER_STEPS = isNative ? NATIVE_PRESETS : GIFT_SLIDER_AMOUNTS;
+  const stepIndex = isNative ? Math.max(0, NATIVE_PRESETS.findIndex(v => v >= effectiveAmount)) : giftPreview.sliderIndex;
   const shownAmount = effectiveAmount >= 1 ? (Number.isInteger(effectiveAmount) ? effectiveAmount : effectiveAmount.toFixed(2)) : 0;
   const reasons = [
-    { icon: Gift, title: "Free for everyone, forever", body: "Scripture, saints, prayers, read-aloud and the History islands stay free — no paywalls, no ads.", more: "Every feature in OrthoCross is open to every believer. Donations cover servers, cloud voices and storage so nobody is ever asked to pay to pray or read." },
-    { icon: User, title: "Support one developer", body: "OrthoCross is built by one Orthodox Christian, not a big corporation.", more: "There are no investors or sponsors. Your gift goes straight to the person writing, fixing and improving the app in their own time." },
-    { icon: Sprout, title: "Help it keep growing", body: "Gifts fund new saints, prayers, voices and features.", more: "Each month of support makes room for more stories, more verified prayers and better tools for the whole community." },
+    { icon: Gift, title: "Free for everyone", body: "Scripture, saints, prayers, read-aloud and the History islands stay free, no paywalls, no ads!", more: "Every feature in OrthoCross is open to every believer. Donations cover servers, cloud voices and storage so nobody is ever asked to pay to pray or read." },
+    { icon: User, title: "Support one developer", body: "OrthoCross is built by one Orthodox Christian with a small team, not a big corporation.", more: "Your gift supports the people writing, fixing and improving the app with care for our community." },
+    { icon: Sprout, title: "Help us keep growing", body: "Gifts fund new saints, prayers, voices and features.", more: "Each month of support makes room for more stories, more verified prayers and better tools for the whole community." },
   ];
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[92vh] overflow-y-auto p-6">
         <DialogHeader className="text-left space-y-3 pt-4">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Become a donator</p>
+          <div className="space-y-1 text-muted-foreground">
+            <p className="text-sm leading-relaxed">“It is more blessed to give than to receive.”</p>
+            <p className="text-xs">Acts 20:35</p>
+          </div>
           <DialogTitle className="text-3xl font-bold leading-tight">Become a donator,<br />support OrthoCross</DialogTitle>
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
@@ -187,9 +189,9 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 <p className="text-lg font-medium">{r.title}</p>
                 <p className="text-sm text-muted-foreground">{r.body}</p>
                 {openReason === i && <p className="text-sm text-muted-foreground">{r.more}</p>}
-                <button type="button" onClick={() => setOpenReason(openReason === i ? null : i)} className="text-sm font-semibold text-primary">
+                <Button type="button" variant="link" onClick={() => setOpenReason(openReason === i ? null : i)} className="h-auto p-0 text-sm font-semibold">
                   {openReason === i ? "Show less" : "Learn more"}
-                </button>
+                </Button>
               </div>
             </div>
           ))}
@@ -197,12 +199,12 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
         <div className="pt-8 space-y-5">
           <div>
-            <h3 className="text-3xl font-bold">Pay what you want</h3>
+            <h3 className="text-3xl font-bold">Gift what you want</h3>
             <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>
           </div>
 
           <div className="flex flex-col items-center gap-3">
-            <div className={`donor-tier-${giftTier?.key ?? "none"} donor-avatar-ring h-28 w-28 overflow-hidden rounded-full bg-muted transition-all`}>
+            <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-28 w-28 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               {giftTier && <img src={TIER_ICONS[giftTier.key]} alt={giftTier.name} className="h-full w-full object-cover" />}
             </div>
             <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && "/month"}</p>
@@ -219,6 +221,9 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); }}
             className="w-full accent-[hsl(var(--primary))]"
           />
+          <div className="flex justify-between text-sm font-medium text-muted-foreground">
+            {SLIDER_STEPS.map(amount => <span key={amount}>${amount}</span>)}
+          </div>
 
           {!isNative && (
             <div className="relative">
@@ -237,18 +242,24 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           )}
 
           <div className="rounded-xl border">
-            <button type="button" onClick={() => setTiersOpen(!tiersOpen)} className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium">
+            <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => setTiersOpen(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
               <span>Donator tiers{giftTier && <> · <span className={`donor-tier-${giftTier.key} text-[hsl(var(--donor-tier-tone))]`}>{giftTier.name}</span></>}</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
-            </button>
+            </Button>
             {tiersOpen && (
               <ul className="space-y-1 px-3 pb-3">
                 {[...DONOR_TIERS].reverse().map((t) => {
                   const current = giftTier?.key === t.key;
                   return (
-                    <li key={t.key} className={`donor-tier-${t.key} flex items-center justify-between rounded-lg px-3 py-1.5 text-sm ${current ? "bg-[hsl(var(--donor-tier-tone)/0.15)] font-semibold" : ""}`}>
-                      <span className="text-[hsl(var(--donor-tier-tone))]">{t.name}{current && " · this gift"}</span>
-                      <span className="text-muted-foreground">${(t.minCents / 100).toLocaleString()}+</span>
+                    <li key={t.key}>
+                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
+                        setCustomAmount(String(t.minCents / 100));
+                        setSelectedAmount(t.minCents / 100);
+                        setUseCustom(true);
+                      }}>
+                        <span>{t.name}{current && " · this gift"}</span>
+                        <span>${(t.minCents / 100).toLocaleString()}+</span>
+                      </Button>
                     </li>
                   );
                 })}
@@ -257,7 +268,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             )}
           </div>
 
-          <button
+          <Button variant="ghost"
             type="button" role="switch" aria-checked={anonymous}
             onClick={() => updateAnonymous(!anonymous)}
             className={`mx-auto flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${anonymous ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
@@ -267,7 +278,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${anonymous ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
               <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${anonymous ? "translate-x-3" : "translate-x-0"}`} />
             </span>
-          </button>
+          </Button>
 
           {isNative && productsAvailable === false && (
             <p className="text-xs text-destructive text-center">In-app purchases are not available right now. Please try again later.</p>
