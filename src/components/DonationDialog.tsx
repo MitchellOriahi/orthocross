@@ -165,7 +165,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const shownAmount = effectiveAmount >= 1 ? (Number.isInteger(effectiveAmount) ? effectiveAmount : effectiveAmount.toFixed(2)) : 0;
   const reasons = [
     { icon: Gift, title: "Free for everyone", body: "Your gift keeps this app and all of its features free for everyone. No paywalls, no ads.", more: "Every feature in OrthoCross is open to every believer. Donations cover servers, cloud voices and storage so nobody is ever asked to pay to pray or read." },
-    { icon: User, title: "Support an independent developer", body: "OrthoCross is built by an Orthodox Christian with a small team, not a big corporation.", more: "Your gift supports the people writing, fixing and improving the app with care for our community." },
+    { icon: User, title: "Support one developer", body: "OrthoCross is built by an Orthodox Christian with a small team, not a big corporation.", more: "Your gift supports the people writing, fixing and improving the app with care for our community." },
     { icon: Sprout, title: "Help us keep growing", body: "Gifts fund new saints, prayers, voices and features.", more: "Each month of support makes room for more stories, more verified prayers and better tools for the whole community." },
   ];
 
