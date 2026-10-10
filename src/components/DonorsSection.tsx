@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, Crown, Heart } from "lucide-react";
+import { ChevronDown, ChevronUp, Heart } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,14 +11,13 @@ import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorRow, DonorTierButton } from "@/components/DonorPodium";
 import { DonorTierGuide } from "@/components/DonorTierGuide";
 
-const DonorAvatarButton = ({ donor, size, onSelectTier, showCrown = true }: { donor: DonorRow; size: string; onSelectTier: (key: string) => void; showCrown?: boolean }) => (
+const DonorAvatarButton = ({ donor, size, onSelectTier }: { donor: DonorRow; size: string; onSelectTier: (key: string) => void }) => (
   <button
     type="button"
     onClick={() => donor.tierKey && onSelectTier(donor.tierKey)}
     className="relative inline-block shrink-0 rounded-full"
     aria-label={`View ${donor.username}'s donor tier`}
   >
-    {showCrown && donor.rank === 1 && <Crown className="donor-list-crown" aria-label="First place" />}
     <Avatar className={`donor-avatar-ring ${size}`}>
       <AvatarImage src={donor.profile_picture_url || undefined} alt={`${donor.username}'s profile picture`} />
       <AvatarFallback>{donor.username.substring(0, 2).toUpperCase()}</AvatarFallback>
@@ -26,9 +25,9 @@ const DonorAvatarButton = ({ donor, size, onSelectTier, showCrown = true }: { do
   </button>
 );
 
-const DonorListRow = ({ donor, onSelectTier, showCrown }: { donor: DonorRow; onSelectTier: (key: string) => void; showCrown: boolean }) => (
+const DonorListRow = ({ donor, onSelectTier }: { donor: DonorRow; onSelectTier: (key: string) => void }) => (
   <div className={`donor-list-row donor-tier-${donor.tierKey ?? "none"} flex items-center gap-2.5 px-1.5 py-2`}>
-    <DonorAvatarButton donor={donor} size="h-8 w-8" onSelectTier={onSelectTier} showCrown={showCrown} />
+    <DonorAvatarButton donor={donor} size="h-8 w-8" onSelectTier={onSelectTier} />
     <span className="min-w-0 flex-1 truncate text-sm font-medium">{donor.username}</span>
     <DonorTierButton donor={donor} onSelect={onSelectTier} />
   </div>
@@ -119,7 +118,7 @@ export const DonorsSection = () => {
                 {list.length === 0 ? (
                   <div className="py-6 text-center text-sm text-muted-foreground">{DONOR_TEXT.empty}</div>
                 ) : list.map((d) => (
-                  <DonorListRow key={d.key} donor={d} onSelectTier={setSelectedTier} showCrown={period === "lifetime"} />
+                  <DonorListRow key={d.key} donor={d} onSelectTier={setSelectedTier} />
                 ))}
               </CollapsibleContent>
             </>
