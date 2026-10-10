@@ -11,8 +11,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { useTheme } from "next-themes";
-import orthodoxCrossBlack from "@/assets/orthodox-cross-black-new.png";
-import orthodoxCrossWhite from "@/assets/orthodox-cross-white-new.png";
+import orthodoxCrossBlack from "@/assets/church-cross-black-inline.json";
+import orthodoxCrossWhite from "@/assets/church-cross-white-inline.json";
 import {
   Accordion,
   AccordionContent,
@@ -490,13 +490,13 @@ const ChurchResources = () => {
           <div className="text-center space-y-0 mb-4">
             <div className="w-36 h-36 mx-auto relative -mb-1">
               <img loading="eager" decoding="sync" 
-                src={orthodoxCrossBlack} 
+                src={orthodoxCrossBlack.url} 
                 alt="Orthodox Cross" 
                 className="w-full h-full object-contain dark:hidden"
                 style={{ filter: 'drop-shadow(0 0 16px rgba(139, 92, 246, 0.4))' }}
               />
               <img loading="eager" decoding="sync" 
-                src={orthodoxCrossWhite} 
+                src={orthodoxCrossWhite.url} 
                 alt="Orthodox Cross" 
                 className="w-full h-full object-contain hidden dark:block"
                 style={{ filter: 'drop-shadow(0 0 16px rgba(255, 255, 255, 0.5))' }}

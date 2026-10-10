@@ -1,4 +1,5 @@
 # Architecture Rules
+- Embed optimized Church Guide cross variants as data URLs in the page bundle so rendering does not wait for separate image requests.
 - Track lifetime saint-story completion by exact roster ID in the existing private reading records and shared query cache; derive the all-stories award from unique roster IDs so same-name saints and cross-category memberships cannot inflate completion.
 
 - Pause Saints via a visibility selector; keep the saved catalog and presentation intact.
