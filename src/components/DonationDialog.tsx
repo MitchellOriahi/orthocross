@@ -172,12 +172,12 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[92vh] overflow-y-auto p-6">
-        <DialogHeader className="text-left space-y-3 pt-4">
+        <DialogHeader className="text-left space-y-2">
           <DialogTitle className="text-3xl font-bold leading-tight">Become a donator,<br />support OrthoCross</DialogTitle>
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 pt-4">
+        <div className="space-y-4 pt-2">
           {reasons.map((r, i) => (
             <div key={r.title} className="flex gap-4">
               <r.icon className="h-8 w-8 shrink-0 text-foreground" strokeWidth={1.5} />
@@ -193,14 +193,14 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           ))}
         </div>
 
-        <div className="pt-8 space-y-5">
+        <div className="pt-6 space-y-4">
           <div>
             <h3 className="text-3xl font-bold">Gift what you want</h3>
             <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>
           </div>
 
           <div className="flex flex-col items-center gap-3">
-            <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-28 w-28 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
+            <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-24 w-24 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               {giftTier && <img src={TIER_ICONS[giftTier.key]} alt={giftTier.name} className="h-full w-full object-cover" />}
             </div>
             <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && "/month"}</p>
