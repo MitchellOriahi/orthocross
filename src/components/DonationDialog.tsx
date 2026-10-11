@@ -173,10 +173,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[92vh] overflow-y-auto p-6">
         <DialogHeader className="text-left space-y-3 pt-4">
-          <div className="space-y-1 text-muted-foreground">
-            <p className="text-sm leading-relaxed">“It is more blessed to give than to receive.”</p>
-            <p className="text-xs">Acts 20:35</p>
-          </div>
           <DialogTitle className="text-3xl font-bold leading-tight">Become a donator,<br />support OrthoCross</DialogTitle>
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
