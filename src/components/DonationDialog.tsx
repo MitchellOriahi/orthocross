@@ -24,7 +24,7 @@ interface DonationDialogProps {
 const NATIVE_PRESETS = [5, 10, 25, 50];
 
 export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: DonationDialogProps) => {
-  const [selectedAmount, setSelectedAmount] = useState(Capacitor.isNativePlatform() ? 5 : 1);
+  const [selectedAmount, setSelectedAmount] = useState(Capacitor.isNativePlatform() ? 5 : DEFAULT_GIFT_AMOUNT);
   const submittedRef = useRef(false);
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
