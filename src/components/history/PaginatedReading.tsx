@@ -263,6 +263,7 @@ export const PaginatedReading = ({ content, onComplete, iconUrl, campaignId, isl
                 "w-full h-full object-cover",
                 HISTORICAL_FACE_FOCUSED_ISLANDS.has(islandId) ? "object-[center_15%]" : "object-center"
               )}
+              style={HISTORICAL_ISLAND_FOCUS_OVERRIDES[islandId] ? { objectPosition: HISTORICAL_ISLAND_FOCUS_OVERRIDES[islandId] } : undefined}
               loading="eager"
               decoding="sync"
               fetchPriority="high"
