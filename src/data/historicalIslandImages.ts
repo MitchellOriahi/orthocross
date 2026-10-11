@@ -23,6 +23,11 @@ export const HISTORICAL_FACE_FOCUSED_ISLANDS = new Set([
   "eo_1", "eo_2", "eo_3", "eo_6", "eo_7", "eo_8", "eo_9", "oo_1", "oo_8",
 ]);
 
+// Per-island vertical framing overrides (object-position values).
+export const HISTORICAL_ISLAND_FOCUS_OVERRIDES: Record<string, string> = {
+  eo_1: "center 30%",
+};
+
 export const HISTORICAL_ISLAND_IMAGES: Record<string, { url: string; title: string; source: string; author: string; license: string; licenseUrl: string }> = {
   eo_1: { url: eo_1.url, ...{"source": "https://commons.wikimedia.org/wiki/File:Andrej_Rubl%C3%ABv_001.jpg", "author": "Andrei Rublev", "license": "Public domain", "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Copyright_rules_by_subject_matter#2D_art_(paintings,_etc.)", "title": "The Trinity — Andrei Rublev, 15th century"} },
   eo_2: { url: eo_2.url, ...{"source": "https://commons.wikimedia.org/wiki/File:First_Council_of_Nicaea_Michael_Damaskinos.png", "author": "Michael Damaskinos", "license": "Public domain", "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Copyright_rules_by_subject_matter#2D_art_(paintings,_etc.)", "title": "First Council of Nicaea — Michael Damaskinos, 1591"} },
