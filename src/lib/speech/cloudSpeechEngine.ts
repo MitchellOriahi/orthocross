@@ -12,6 +12,7 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 import { buildWordTimeline, wordAtTime, type AudioWindow } from "./wordTiming";
+import { pauseSpeechService, speechServiceError } from "./speechServiceState";
 import {
   buildChunks,
   spokenForm,
@@ -173,6 +174,8 @@ function diskPut(text: string, voiceId: string, buf: ArrayBuffer) {
 async function fetchChunkAudio(text: string, voiceId: string, signal: AbortSignal): Promise<Prepared> {
   const saved = await diskGet(text, voiceId);
   if (saved) return trimWav(saved);
+  const blocked = speechServiceError();
+  if (blocked) throw new Error(blocked);
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.access_token) throw new Error("Please sign in to use read aloud.");
   const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/read-aloud`;
@@ -183,6 +186,9 @@ async function fetchChunkAudio(text: string, voiceId: string, signal: AbortSigna
     signal,
   });
   if (!res.ok) {
+    const body: unknown = await res.json().catch(() => null);
+    const blockedMessage = pauseSpeechService(res.status, body);
+    if (blockedMessage) throw new Error(blockedMessage);
     if (res.status === 401) throw new Error("Please sign in to use read aloud.");
     throw new Error("The voice couldn't be prepared. Tap play to try again.");
   }
@@ -216,7 +222,15 @@ const chapterChunks = (words: string[]) => buildChunks(words, 0, REST_SIZING, FI
 
 /** Prepares the chapter's first audio chunks in the background, before Play. */
 export function prefetchSpeech(words: string[], voiceId: string) {
-  for (const c of chapterChunks(words).slice(0, 4)) void cachedAudio(c.text, voiceId).catch(() => {});
+  if (speechServiceError()) return;
+  // Sequential warmup stops on the first failure rather than issuing a burst
+  // of billed requests when credits/access are unavailable.
+  void (async () => {
+    for (const c of chapterChunks(words).slice(0, 4)) {
+      if (speechServiceError()) return;
+      await cachedAudio(c.text, voiceId);
+    }
+  })().catch(() => {});
 }
 
 /**
@@ -309,7 +323,12 @@ export const cloudSpeechEngine: SpeechEngine = {
         return;
       }
       if (gen !== generation) return;
-      for (let n = 1; n <= LOOKAHEAD; n++) if (k + n < chunks.length) void get(k + n);
+      void (async () => {
+        for (let n = 1; n <= LOOKAHEAD; n++) {
+          if (gen !== generation || speechServiceError()) return;
+          if (k + n < chunks.length) await get(k + n);
+        }
+      })().catch(() => {});
 
       const el = elFor(k);
       const url = urlFor(k, prepared);
