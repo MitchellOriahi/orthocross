@@ -48,6 +48,13 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   useEffect(() => {
     if (open) submittedRef.current = false;
     if (!open || initialAmount === undefined) return;
+    if (Capacitor.isNativePlatform()) {
+      // App stores only sell fixed presets: snap to the closest available one
+      const snapped = NATIVE_PRESETS.find(v => v >= initialAmount) ?? NATIVE_PRESETS[NATIVE_PRESETS.length - 1];
+      setSelectedAmount(snapped);
+      setUseCustom(false);
+      return;
+    }
     setSelectedAmount(initialAmount);
     setUseCustom(true);
     setCustomAmount(String(initialAmount));

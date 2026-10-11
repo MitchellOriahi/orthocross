@@ -127,7 +127,7 @@ export const DonorsSection = () => {
       </Card>
       <DonationDialog
         open={donateOpen}
-        onOpenChange={setDonateOpen}
+        onOpenChange={(next) => { setDonateOpen(next); if (!next) setDonateAmount(undefined); }}
         initialAmount={donateAmount}
         onCancel={() => {
           if (pendingTier) {
