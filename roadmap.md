@@ -64,6 +64,7 @@
 
 
 ## Read aloud
+- [ ] Improve word-highlight timing against audible speech and verify playback, pauses, seeking and speed changes.
 - [x] Continuous listening option: mark finished chapter complete, auto-play next chapter, keep playing with screen off.
 
 ## Saint profile pictures
