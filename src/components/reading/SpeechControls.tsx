@@ -79,6 +79,7 @@ export const SpeechControls = ({ speech, disabled }: { speech: Speech; disabled?
           )}
         </PopoverContent>
       </Popover>
+      {speech.error && <p role="status" className="max-w-xs text-xs text-muted-foreground">{speech.error}</p>}
     </div>
   );
 };
