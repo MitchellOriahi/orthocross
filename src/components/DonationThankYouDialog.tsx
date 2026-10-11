@@ -61,6 +61,13 @@ export const DonationThankYouDialog = () => {
     waitForConfirmation(since, sessionId);
   }, [user, searchParams, setSearchParams, waitForConfirmation]);
 
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previous; };
+  }, [open]);
+
   if (!open) return null;
 
   const tier = tierByKey(status?.tierKey ?? null);
@@ -69,13 +76,13 @@ export const DonationThankYouDialog = () => {
   const rose = !!tier && tier.key !== prev?.key;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-sm p-6 animate-fade-in" role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto overscroll-contain bg-background p-6 animate-fade-in" role="dialog" aria-modal="true">
       <div className="donor-rays pointer-events-none absolute inset-0 overflow-hidden" aria-hidden />
       <button onClick={() => setOpen(false)} className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top))] rounded-full p-2 text-muted-foreground hover:text-foreground" aria-label="Close">
         <X className="h-6 w-6" />
       </button>
 
-      <div className="relative w-full max-w-sm text-center space-y-5">
+      <div className="relative my-auto w-full max-w-sm text-center space-y-5">
         {!status ? (
           <div className="space-y-4 text-muted-foreground">
             {timedOut ? (
