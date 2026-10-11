@@ -52,13 +52,28 @@ export const VerseOfTheDayCard = () => {
 
   return (
     <>
-      <Card>
+      <Card
+        role="button"
+        tabIndex={0}
+        aria-label="Share verse of the day"
+        onClick={() => setShareOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setShareOpen(true);
+          }
+        }}
+        className="cursor-pointer select-none transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
         <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0">
           <CardTitle>Verse of the Day</CardTitle>
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setShareOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShareOpen(true);
+            }}
             aria-label="Share verse of the day"
           >
             <Share2 className="w-4 h-4" />
