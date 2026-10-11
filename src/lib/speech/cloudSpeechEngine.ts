@@ -12,7 +12,7 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 import { buildWordTimeline, wordAtTime, type AudioWindow } from "./wordTiming";
-import { pauseSpeechService, speechServiceError } from "./speechServiceState";
+import { clearSpeechServicePause, pauseSpeechService, speechServiceError } from "./speechServiceState";
 import {
   buildChunks,
   spokenForm,
@@ -193,6 +193,7 @@ async function fetchChunkAudio(text: string, voiceId: string, signal: AbortSigna
     throw new Error("The voice couldn't be prepared. Tap play to try again.");
   }
   const buf = await res.arrayBuffer();
+  clearSpeechServicePause();
   diskPut(text, voiceId, buf.slice(0));
   return trimWav(buf);
 }
