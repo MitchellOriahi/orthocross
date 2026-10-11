@@ -95,7 +95,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
             </Button>)}
           </div>
           <details className="mt-4 text-xs text-muted-foreground"><summary className="cursor-pointer">Icon credits</summary><div className="mt-2 space-y-2 break-words">
-            {PRAYER_CATEGORIES.map(item => { const artwork = THUMBNAILS[item.id]; return <p key={item.id}><a href={`https://commons.wikimedia.org/wiki/File:${encodeURIComponent(artwork.source)}`} target="_blank" rel="noopener noreferrer" className="underline">{item.label}</a>{" · "}{artwork.author}{" · Public domain"}</p>; })}
+            {PRAYER_CATEGORIES.map(item => { const artwork = THUMBNAILS[item.id]; return <p key={item.id}><a href={`https://commons.wikimedia.org/wiki/File:${encodeURIComponent(artwork.source)}`} target="_blank" rel="noopener noreferrer" className="underline">{item.label}</a>{" · "}{artwork.author}{" · "}{artwork.license ?? "Public domain"}</p>; })}
           </div></details>
         </>}
       </div>
