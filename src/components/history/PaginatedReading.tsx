@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, Highlighter, BookOpen, Scroll } from "lucide
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
-import { HISTORICAL_ISLAND_IMAGES, HISTORICAL_FACE_FOCUSED_ISLANDS } from "@/data/historicalIslandImages";
+import { HISTORICAL_ISLAND_IMAGES, HISTORICAL_FACE_FOCUSED_ISLANDS, HISTORICAL_ISLAND_FOCUS_OVERRIDES } from "@/data/historicalIslandImages";
 
 interface PaginatedReadingProps {
   content: string;
