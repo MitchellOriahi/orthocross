@@ -248,7 +248,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             </Button>
             {tiersOpen && (
               <ul className="space-y-1 px-3 pb-3">
-                {[...DONOR_TIERS].reverse().map((t) => {
+                {DONOR_TIERS.map((t) => {
                   const current = giftTier?.key === t.key;
                   return (
                     <li key={t.key}>
