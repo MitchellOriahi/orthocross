@@ -90,7 +90,7 @@ export const AvatarCustomizer = ({ onClose, equippedArmor }: AvatarCustomizerPro
   };
 
   return (
-    <div className="fixed inset-0 bg-background z-50 overflow-auto">
+    <div className="fixed inset-0 bg-background z-50 overflow-auto overscroll-contain">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-top">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
