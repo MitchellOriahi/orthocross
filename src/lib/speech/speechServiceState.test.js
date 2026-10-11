@@ -25,6 +25,7 @@ test("the pause expires after the cooldown so the service is retried", () => {
   withStorage((storage) => {
     pauseSpeechService(402, {});
     const stored = JSON.parse(storage.get("readAloudServicePaused"));
+    clearSpeechServicePause(); // simulate a later app session: only storage survives
     storage.set("readAloudServicePaused", JSON.stringify({ ...stored, at: Date.now() - 31 * 60 * 1000 }));
     expect(speechServiceError()).toBeNull();
     expect(storage.get("readAloudServicePaused")).toBeUndefined();
