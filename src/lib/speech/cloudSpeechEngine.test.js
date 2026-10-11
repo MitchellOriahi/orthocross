@@ -1,6 +1,6 @@
 import { test, expect, mock } from "bun:test";
-mock.module("@/integrations/supabase/client", () => ({ supabase: {} }));
-const { trimWav, cloudSpeechEngine } = await import("./cloudSpeechEngine");
+mock.module("@/integrations/supabase/client", () => ({ supabase: { auth: { getSession: async () => ({ data: { session: { access_token: "test-only" } } }) } } }));
+const { trimWav, cloudSpeechEngine, prefetchSpeech } = await import("./cloudSpeechEngine");
 
 const wav = (samples, rate = 1000) => {
   const buf = new ArrayBuffer(44 + samples.length * 2);
@@ -20,6 +20,25 @@ test("silence around each chunk is trimmed so verses flow without a pause", () =
   const { duration } = trimWav(wav(samples));
   // keeps 0.02s before and 0.07s after the voice
   expect(duration).toBeCloseTo(0.29, 2);
+});
+
+test("a credit failure stops prefetch and repeated requests without an unhandled rejection", async () => {
+  const oldFetch = globalThis.fetch;
+  const oldCaches = globalThis.caches;
+  let requests = 0;
+  globalThis.caches = { open: async () => ({ match: async () => undefined }) };
+  globalThis.fetch = async () => {
+    requests++;
+    return new Response(JSON.stringify({ details: JSON.stringify({ message: "Not enough credits" }) }), { status: 402 });
+  };
+  try {
+    prefetchSpeech(Array(150).fill("scripture"), "male");
+    await new Promise((r) => setTimeout(r, 30));
+    expect(requests).toBe(1);
+    prefetchSpeech(Array(150).fill("another"), "male");
+    await new Promise((r) => setTimeout(r, 30));
+    expect(requests).toBe(1);
+  } finally { globalThis.fetch = oldFetch; globalThis.caches = oldCaches; }
 });
 
 test("non-WAV audio is passed through untouched", () => {

@@ -1,5 +1,6 @@
 # Architecture Rules
 <!-- LOVABLE:BEGIN -->
+- Persist terminal read-aloud service failures across reloads and stop prefetch/lookahead on failure; this prevents credit/access failures from producing repeated requests or unhandled rejections.
 - Estimate read-aloud word starts from WAV speech regions and follow the playing media clock; Gemini supplies no exact timestamps.
 <!-- LOVABLE:END -->
 - Cache successful avatar images on-device by source in a bounded CacheStorage library; shared AvatarImage uses local blobs with cache-busting bounded retries and an online-event reset so portraits survive navigation and transient network failures.

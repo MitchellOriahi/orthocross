@@ -64,6 +64,7 @@
 
 
 ## Read aloud
+- [ ] Contain insufficient-credit failures, stop repeated speech requests and verify the reading page remains usable. Voice generation itself requires the owner to top up AI credits.
 - [x] Improve word-highlight timing using measured speech regions and the playing audio clock; nine tests pass for onset, silence, pauses, seeking and speed. Exact word alignment remains unavailable from the current voice service.
 - [x] Continuous listening option: mark finished chapter complete, auto-play next chapter, keep playing with screen off.
 
