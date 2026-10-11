@@ -1,0 +1,2 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS fasting_reminder_days integer[] DEFAULT ARRAY[3];
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS wednesday_notifications_enabled boolean DEFAULT false;
