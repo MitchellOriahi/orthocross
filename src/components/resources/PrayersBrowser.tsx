@@ -12,11 +12,17 @@ import orans from "@/assets/prayers/categories/daily-prayers-orans.jpg.asset.jso
 import christ from "@/assets/prayers/categories/christ_pantocrator_sinai.jpg.asset.json";
 import supper from "@/assets/prayers/categories/holy_communion_last_supper.jpg.asset.json";
 import healing from "@/assets/prayers/categories/needs_healing_eustratius.jpg.asset.json";
+import orientalFoundational from "@/assets/prayers/categories/oriental/foundational_coptic_christ_menas.jpg.asset.json";
+import orientalDaily from "@/assets/prayers/categories/oriental/daily_ethiopian_mary_center.jpg.asset.json";
+import orientalChristSaints from "@/assets/prayers/categories/oriental/christ_saints_coptic_michael.jpg.asset.json";
+import orientalCommunion from "@/assets/prayers/categories/oriental/communion_coptic_baptism.jpg.asset.json";
+import orientalOccasions from "@/assets/prayers/categories/oriental/occasions_coptic_john_dwarf.jpg.asset.json";
+import orientalPsalms from "@/assets/prayers/categories/oriental/psalms_ethiopian_mary_center.jpg.asset.json";
 import { PrayerListCard } from "./PrayerListCard";
 import { SubcategoryPills } from "./SaintsBrowser";
 
 // Prayer artwork is independent of the Saints category portrait registry.
-const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string; author: string }> = {
+const BYZANTINE_THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string; author: string; license?: string }> = {
   foundational: { url: peter.url, source: "St_Peter_Icon_Sinai_7th_century.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 7th century" },
   daily: { url: orans.url, source: "Oranta-Kyiv.jpg", author: "Unknown mosaicist, Saint Sophia Cathedral, Kyiv, 11th century" },
   "christ-saints": { url: christ.url, source: "Spas_vsederzhitel_sinay.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 6th century" },
@@ -24,6 +30,19 @@ const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string; author
   communion: { url: supper.url, source: "Icon_last_supper.jpg", author: "Unknown Russian icon painter, 1497" },
   occasions: { url: healing.url, source: "St_Eustratius_(cropped).jpg", author: "Unknown painter, Sinai, 12th century" },
 };
+
+// Test set: Coptic and Ethiopian (Tewahedo) icons in place of the Byzantine set.
+const ORIENTAL_THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string; author: string; license?: string }> = {
+  foundational: { url: orientalFoundational.url, source: "L'abbé_Ména_et_le_Christ_01.JPG", author: "Unknown Coptic painter, Christ and Abbot Menas, Louvre, 6th–8th century", license: "CC BY-SA 3.0" },
+  daily: { url: orientalDaily.url, source: "Ethiopian_-_Triptych,_Icon_of_the_Virgin_Mary_-_2002.3_-_Detroit_Institute_of_Arts.jpg", author: "Unknown Ethiopian painter, Triptych of the Virgin Mary (center panel), Detroit Institute of Arts" },
+  "christ-saints": { url: orientalChristSaints.url, source: "Archangel_Michael_(Coptic_icon,_Byzantine_and_Christian_Museum).jpg", author: "Unknown Coptic painter, Archangel Michael, Byzantine and Christian Museum, Athens" },
+  psalms: { url: orientalPsalms.url, source: "Virgin_Mary_nursing_the_infant_Christ.jpg", author: "Unknown Ethiopian painter, Virgin Mary nursing the infant Christ (center panel)" },
+  communion: { url: orientalCommunion.url, source: "Baptism_(coptic_icon).jpg", author: "Unknown Coptic painter, The Baptism of Christ" },
+  occasions: { url: orientalOccasions.url, source: "Saint_John_the_Dwarf._Coptic_icon.jpg", author: "Unknown Coptic painter, Saint John the Dwarf" },
+};
+
+const THUMBNAILS = ORIENTAL_THUMBNAILS;
+void BYZANTINE_THUMBNAILS;
 
 export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange, pinnedIds, onPin }: { onSelect: (prayer: PrayerDetail) => void; onClose: () => void; tradition: PrayerTraditionFilter; onTraditionChange: (tradition: PrayerTraditionFilter) => void; pinnedIds: ReadonlySet<string>; onPin?: (id: string) => void }) {
   const [category, setCategory] = useState<PrayerCategoryId | null>(null);
