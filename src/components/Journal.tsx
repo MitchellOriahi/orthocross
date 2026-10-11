@@ -611,15 +611,24 @@ export const Journal = () => {
               {(!isMobile || showSidebar) && (
                 <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background' : 'w-48 shrink-0 min-w-0'} ${!isMobile && isNoteExpanded ? 'hidden' : ''}`}>
                   {isMobile && (
-                    <div className="p-2 border-b border-border flex items-center safe-top">
+                    <div className="px-2 pb-2 pt-[calc(env(safe-area-inset-top)+1.5rem)] border-b border-border flex items-center">
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => setShowSidebar(false)}
+                        aria-label="Back to notes"
                       >
                         <ChevronLeft className="h-5 w-5" />
                       </Button>
-                      <h3 className="text-lg font-semibold ml-2">Folders</h3>
+                      <h3 className="text-lg font-semibold ml-2 flex-1">Folders</h3>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowSidebar(false)}
+                        aria-label="Close folders"
+                      >
+                        <X className="h-5 w-5" />
+                      </Button>
                     </div>
                   )}
                   <JournalSidebar
