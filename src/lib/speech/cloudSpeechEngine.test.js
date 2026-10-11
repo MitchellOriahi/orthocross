@@ -1,6 +1,6 @@
 import { test, expect, mock } from "bun:test";
 mock.module("@/integrations/supabase/client", () => ({ supabase: {} }));
-const { trimWav } = await import("./cloudSpeechEngine");
+const { trimWav, cloudSpeechEngine } = await import("./cloudSpeechEngine");
 
 const wav = (samples, rate = 1000) => {
   const buf = new ArrayBuffer(44 + samples.length * 2);
@@ -26,4 +26,51 @@ test("non-WAV audio is passed through untouched", () => {
   const { duration, blob } = trimWav(new ArrayBuffer(10));
   expect(duration).toBeNull();
   expect(blob.size).toBe(10);
+});
+
+test("cloud glow waits for playback, freezes while paused and follows media seeks at faster speeds", async () => {
+  const oldAudio = globalThis.Audio;
+  const oldCaches = globalThis.caches;
+  const instances = [];
+  class FakeAudio {
+    paused = true;
+    seeking = false;
+    readyState = 4;
+    currentTime = 0;
+    duration = 2;
+    src = "";
+    setAttribute() {}
+    load() {}
+    play() { this.paused = false; return Promise.resolve(); }
+    pause() { this.paused = true; }
+    constructor() { instances.push(this); }
+  }
+  globalThis.Audio = FakeAudio;
+  globalThis.caches = { open: async () => ({ match: async () => new Response(wav(Array(2000).fill(8000))) }) };
+  const seen = [];
+  try {
+    cloudSpeechEngine.speak(["one", "two", "six", "ten"], 0, { voiceId: "female", rate: 1.75 }, {
+      onWord: (i) => seen.push(i), onEnd: () => {}, onError: (e) => { throw new Error(e); },
+    });
+    expect(seen).toEqual([]);
+    await new Promise((r) => setTimeout(r, 50));
+    const audio = instances[0];
+    expect(audio.playbackRate).toBe(1.75);
+    expect(seen).toEqual([0]);
+    audio.currentTime = 1.1;
+    audio.ontimeupdate();
+    expect(seen.at(-1)).toBe(2);
+    audio.paused = true;
+    audio.currentTime = 1.6;
+    audio.ontimeupdate();
+    expect(seen.at(-1)).toBe(2);
+    audio.paused = false;
+    audio.currentTime = 0.6;
+    audio.onseeked();
+    expect(seen.at(-1)).toBe(1);
+  } finally {
+    cloudSpeechEngine.stop();
+    globalThis.Audio = oldAudio;
+    globalThis.caches = oldCaches;
+  }
 });

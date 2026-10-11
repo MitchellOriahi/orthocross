@@ -7,7 +7,7 @@ test("highlight waits for speech onset and follows actual pauses rather than tot
     { start: 1.02, end: 1.72, active: false },
     { start: 1.72, end: 2.72, active: true },
   ]);
-  expect(starts).toEqual([0.02, 0.52, 1.72, 2.22]);
+  [0.02, 0.52, 1.72, 2.22].forEach((time, i) => expect(starts[i]).toBeCloseTo(time, 6));
   expect(wordAtTime(starts, 0)).toBe(-1);
   expect(wordAtTime(starts, 1.5)).toBe(1);
   expect(wordAtTime(starts, 1.72)).toBe(2);
