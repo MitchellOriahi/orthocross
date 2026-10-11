@@ -177,7 +177,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-3 pt-1">
+        <div className="space-y-2 pt-1">
           {reasons.map((r, i) => (
             <div key={r.title} className="flex gap-4">
               <r.icon className="h-8 w-8 shrink-0 text-foreground" strokeWidth={1.5} />
@@ -193,7 +193,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           ))}
         </div>
 
-        <div className="pt-4 space-y-3">
+        <div className="pt-2 space-y-2">
           <div>
             <h3 className="text-3xl font-bold">Gift what you want</h3>
             <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>
