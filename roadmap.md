@@ -64,7 +64,7 @@
 
 
 ## Read aloud
-- [ ] Improve word-highlight timing against audible speech and verify playback, pauses, seeking and speed changes.
+- [x] Improve word-highlight timing using measured speech regions and the playing audio clock; nine tests pass for onset, silence, pauses, seeking and speed. Exact word alignment remains unavailable from the current voice service.
 - [x] Continuous listening option: mark finished chapter complete, auto-play next chapter, keep playing with screen off.
 
 ## Saint profile pictures
