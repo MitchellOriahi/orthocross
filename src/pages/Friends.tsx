@@ -1274,7 +1274,7 @@ export default function Friends() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setFriendToRemove(null)}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRemoveFriend} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction onClick={handleRemoveFriend} destructive>
               Remove
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -1296,7 +1296,7 @@ export default function Friends() {
             }}>
               No, Keep It
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleCancelRequest} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction onClick={handleCancelRequest} destructive>
               Yes, Cancel Request
             </AlertDialogAction>
           </AlertDialogFooter>

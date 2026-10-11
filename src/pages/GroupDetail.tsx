@@ -554,7 +554,7 @@ export default function GroupDetail() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleLeaveGroup} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction onClick={handleLeaveGroup} destructive>
               Leave Group
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -571,7 +571,7 @@ export default function GroupDetail() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteGroup} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction onClick={handleDeleteGroup} destructive>
               Delete Group
             </AlertDialogAction>
           </AlertDialogFooter>

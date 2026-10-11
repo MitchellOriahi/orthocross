@@ -173,7 +173,7 @@ const DataSafety = () => {
             <AlertDialogAction
               onClick={handleDeleteAccount}
               disabled={isDeleting}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              destructive
             >
               {isDeleting ? "Deleting..." : "Yes, Delete My Account"}
             </AlertDialogAction>
