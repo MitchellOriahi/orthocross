@@ -1169,6 +1169,7 @@ export type Database = {
           display_name: string | null
           donor_anonymous: boolean
           fasting_notifications_enabled: boolean | null
+          fasting_reminder_days: number[] | null
           friends_notifications_enabled: boolean | null
           id: string
           journal_view_mode: string | null
@@ -1181,6 +1182,7 @@ export type Database = {
           updated_at: string
           username: string | null
           voice_recording_enabled: boolean | null
+          wednesday_notifications_enabled: boolean | null
         }
         Insert: {
           activity_visible?: boolean | null
@@ -1188,6 +1190,7 @@ export type Database = {
           display_name?: string | null
           donor_anonymous?: boolean
           fasting_notifications_enabled?: boolean | null
+          fasting_reminder_days?: number[] | null
           friends_notifications_enabled?: boolean | null
           id: string
           journal_view_mode?: string | null
@@ -1200,6 +1203,7 @@ export type Database = {
           updated_at?: string
           username?: string | null
           voice_recording_enabled?: boolean | null
+          wednesday_notifications_enabled?: boolean | null
         }
         Update: {
           activity_visible?: boolean | null
@@ -1207,6 +1211,7 @@ export type Database = {
           display_name?: string | null
           donor_anonymous?: boolean
           fasting_notifications_enabled?: boolean | null
+          fasting_reminder_days?: number[] | null
           friends_notifications_enabled?: boolean | null
           id?: string
           journal_view_mode?: string | null
@@ -1219,6 +1224,7 @@ export type Database = {
           updated_at?: string
           username?: string | null
           voice_recording_enabled?: boolean | null
+          wednesday_notifications_enabled?: boolean | null
         }
         Relationships: []
       }
