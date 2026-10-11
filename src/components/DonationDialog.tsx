@@ -222,7 +222,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             className="w-full accent-[hsl(var(--primary))]"
           />
           <div className="flex justify-between text-sm font-medium text-muted-foreground">
-            {SLIDER_STEPS.map(amount => <span key={amount}>${amount}</span>)}
+            {SLIDER_STEPS.map((amount, i) => <span key={amount}>${amount}{!isNative && i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
           </div>
 
           {!isNative && (
