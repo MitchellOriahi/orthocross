@@ -46,11 +46,11 @@ const AvatarImage = React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<H
       setAttempt(0);
     }, [src]);
     React.useEffect(() => {
-      if (!src || failedSource !== src || attempt >= 3) return;
+      if (!src || failedSource !== src) return;
       const timer = window.setTimeout(() => {
         setFailedSource(undefined);
         setAttempt(value => value + 1);
-      }, 500 * 2 ** attempt);
+      }, attempt >= 3 ? 8000 : 500 * 2 ** attempt);
       return () => window.clearTimeout(timer);
     }, [src, failedSource, attempt]);
     React.useEffect(() => {
@@ -61,7 +61,10 @@ const AvatarImage = React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<H
       window.addEventListener("online", retry);
       return () => window.removeEventListener("online", retry);
     }, []);
-    if (!src || failedSource === src) return null;
+    // Never drop a portrait we already have on-device: if the live URL fails
+    // but a cached copy exists, keep showing the cached copy instead of the
+    // initials fallback.
+    if (!src || (failedSource === src && cachedPortrait?.source !== src)) return null;
     return (
       <img
         key={`${src}:${attempt}`}
