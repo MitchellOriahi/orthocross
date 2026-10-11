@@ -26,6 +26,7 @@ export function useScriptureSpeech(words: string[], resetKey: string, onChapterE
   statusRef.current = status;
   const currentRef = useRef(current);
   currentRef.current = current;
+  const resumeWordRef = useRef(0);
   const wordsRef = useRef(words);
   wordsRef.current = words;
   const fadeTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -65,13 +66,14 @@ export function useScriptureSpeech(words: string[], resetKey: string, onChapterE
       setError(null);
       setAutoScroll(true);
       setStatus("playing");
-      setCurrent(from);
+      resumeWordRef.current = from;
+      setCurrent(-1);
       speechEngine.speak(
         wordsRef.current,
         from,
         { rate: opts?.rate ?? rate, voiceId: opts?.voiceId !== undefined ? opts.voiceId : voiceId },
         {
-          onWord: (i) => setCurrent(i),
+          onWord: (i) => { resumeWordRef.current = i; setCurrent(i); },
           onEnd: () => {
             if (autoRef.current && onEndRef.current) {
               setStatus("idle");
@@ -101,7 +103,7 @@ export function useScriptureSpeech(words: string[], resetKey: string, onChapterE
 
   const play = useCallback(() => {
     const s = statusRef.current;
-    const from = s === "paused" && currentRef.current >= 0 ? currentRef.current : 0;
+    const from = s === "paused" ? resumeWordRef.current : 0;
     start(from);
   }, [start]);
 
@@ -124,12 +126,12 @@ export function useScriptureSpeech(words: string[], resetKey: string, onChapterE
   const setRate = (r: number) => {
     setRateState(r);
     localStorage.setItem(RATE_KEY, String(r));
-    if (statusRef.current === "playing") start(Math.max(0, currentRef.current), { rate: r });
+    if (statusRef.current === "playing") start(resumeWordRef.current, { rate: r });
   };
   const setVoiceId = (id: string) => {
     setVoiceIdState(id);
     localStorage.setItem(VOICE_KEY, id);
-    if (statusRef.current === "playing") start(Math.max(0, currentRef.current), { voiceId: id });
+    if (statusRef.current === "playing") start(resumeWordRef.current, { voiceId: id });
   };
 
   // Chapter / translation change clears everything.

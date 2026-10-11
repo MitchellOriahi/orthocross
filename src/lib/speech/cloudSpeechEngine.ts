@@ -2,8 +2,8 @@
  * Cloud speech engine: soothing male/female voices rendered server-side.
  * Implements the same SpeechEngine interface as the device engine, so the
  * word-by-word glow, tap-to-seek, pause and speed controls all keep working.
- * Word timing is estimated from each chunk's real audio duration, so the
- * glow tracks the voice far more closely than a fixed per-word guess.
+ * Word timing is estimated from each chunk's audible regions and media clock;
+ * Gemini WAV does not provide exact per-word alignment timestamps.
  *
  * Speed: the first chunk is short so the voice starts quickly, later chunks
  * are prepared several steps ahead on a second, preloaded audio element, and
@@ -11,6 +11,7 @@
  * verses flow into each other without a pause, even at faster speeds.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { buildWordTimeline, wordAtTime, type AudioWindow } from "./wordTiming";
 import {
   buildChunks,
   spokenForm,
@@ -60,6 +61,7 @@ const clearGlowTimer = () => {
 interface Prepared {
   blob: Blob;
   duration: number | null;
+  windows?: AudioWindow[];
 }
 
 // ---------- WAV silence trimming ----------
@@ -99,8 +101,9 @@ export function trimWav(buf: ArrayBuffer): Prepared {
     const frameBytes = 2 * fmt.channels;
     const frames = Math.floor(dataLen / frameBytes);
     if (!frames) return fallback;
+    const channels = fmt.channels;
     const loud = (f: number) => {
-      for (let c = 0; c < fmt!.channels; c++) {
+      for (let c = 0; c < channels; c++) {
         if (Math.abs(v.getInt16(dataStart + f * frameBytes + c * 2, true)) > SILENCE) return true;
       }
       return false;
@@ -112,6 +115,22 @@ export function trimWav(buf: ArrayBuffer): Prepared {
     while (last > first && !loud(last)) last--;
     const start = Math.max(0, first - Math.round(KEEP_LEAD * fmt.rate));
     const end = Math.min(frames, last + 1 + Math.round(KEEP_TAIL * fmt.rate));
+    // Measure 10ms frames, keeping brief consonant gaps inside speech. Only
+    // sustained silence (>=100ms) is excluded from the word-time budget.
+    const hop = Math.max(1, Math.round(fmt.rate * 0.01));
+    const windows: AudioWindow[] = [];
+    for (let f = start; f < end; f += hop) {
+      const limit = Math.min(end, f + hop);
+      let active = false;
+      for (let n = f; n < limit; n++) if (loud(n)) { active = true; break; }
+      const previous = windows[windows.length - 1];
+      if (previous?.active === active) previous.end = (limit - start) / fmt.rate;
+      else windows.push({ start: (f - start) / fmt.rate, end: (limit - start) / fmt.rate, active });
+    }
+    for (let i = 1; i < windows.length - 1; i++) {
+      const w = windows[i];
+      if (!w.active && w.end - w.start < 0.1) w.active = true;
+    }
     const pcmLen = (end - start) * frameBytes;
     const out = new ArrayBuffer(44 + pcmLen);
     const w = new DataView(out);
@@ -122,7 +141,7 @@ export function trimWav(buf: ArrayBuffer): Prepared {
     w.setUint32(28, fmt.rate * frameBytes, true); w.setUint16(32, frameBytes, true); w.setUint16(34, 16, true);
     put(36, "data"); w.setUint32(40, pcmLen, true);
     new Uint8Array(out, 44).set(new Uint8Array(buf, dataStart + start * frameBytes, pcmLen));
-    return { blob: new Blob([out], { type: "audio/wav" }), duration: (end - start) / fmt.rate };
+    return { blob: new Blob([out], { type: "audio/wav" }), duration: (end - start) / fmt.rate, windows };
   } catch {
     return fallback;
   }
@@ -246,18 +265,20 @@ export const cloudSpeechEngine: SpeechEngine = {
     const ready: (Promise<Prepared> | null)[] = new Array(chunks.length).fill(null);
     const urls: (string | null)[] = new Array(chunks.length).fill(null);
     const get = (k: number) => {
-      if (!ready[k]) {
-        ready[k] = cachedAudio(chunks[k].text, voiceId, k === 0 ? abort.signal : undefined);
-        ready[k]!.catch(() => {});
-      }
-      return ready[k]!;
+      const existing = ready[k];
+      if (existing) return existing;
+      const pending = cachedAudio(chunks[k].text, voiceId, k === 0 ? abort.signal : undefined);
+      ready[k] = pending;
+      pending.catch(() => {});
+      return pending;
     };
     const urlFor = (k: number, p: Prepared) => {
-      if (!urls[k]) {
-        urls[k] = URL.createObjectURL(p.blob);
-        liveUrls.push(urls[k]!);
-      }
-      return urls[k]!;
+      const existing = urls[k];
+      if (existing) return existing;
+      const url = URL.createObjectURL(p.blob);
+      urls[k] = url;
+      liveUrls.push(url);
+      return url;
     };
     const elFor = (k: number) => player(k % 2);
 
@@ -297,39 +318,33 @@ export const cloudSpeechEngine: SpeechEngine = {
       el.defaultPlaybackRate = rate;
       el.playbackRate = rate;
 
-      const weights = chunk.wordIdx.map((wi) => spokenForm(words[wi]).length + 1);
-      const totalWeight = weights.reduce((x, y) => x + y, 0);
       const duration = () => prepared.duration ?? (isFinite(el.duration) ? el.duration : 0);
+      let starts = buildWordTimeline(chunk.wordIdx.map((wi) => spokenForm(words[wi])), duration(), prepared.windows);
       const timeOfWord = (j: number) => {
-        let acc = 0;
-        for (let i = 0; i < j; i++) acc += weights[i];
-        return (acc / totalWeight) * duration();
+        if (!starts.length) starts = buildWordTimeline(chunk.wordIdx.map((wi) => spokenForm(words[wi])), duration(), prepared.windows);
+        return starts[j] ?? 0;
       };
 
       if (startAt > 0) {
         const seekTo = () => { try { el.currentTime = timeOfWord(startAt); } catch { /* ignore */ } };
         if (el.readyState >= 1 && duration()) seekTo();
-        else el.addEventListener("loadedmetadata", seekTo, { once: true });
+        else el.onloadedmetadata = () => { if (gen === generation) seekTo(); };
       } else if (el.currentTime) {
         try { el.currentTime = 0; } catch { /* ignore */ }
       }
 
-      cb.onWord(chunk.wordIdx[startAt]);
-      let last = startAt;
+      let last = -1;
       clearGlowTimer();
-      glowTimer = setInterval(() => {
-        if (gen !== generation) return;
-        const dur = duration();
-        if (!dur) return;
-        const t = el.currentTime;
-        let acc = 0;
-        let j = weights.length - 1;
-        for (let i = 0; i < weights.length; i++) {
-          acc += (weights[i] / totalWeight) * dur;
-          if (t < acc) { j = i; break; }
-        }
-        if (j > last) { last = j; cb.onWord(chunk.wordIdx[j]); }
-      }, 40);
+      const syncGlow = () => {
+        if (gen !== generation || el.paused || el.seeking || el.readyState < 2) return;
+        timeOfWord(0);
+        const j = wordAtTime(starts, el.currentTime);
+        if (j !== last && j >= 0) { last = j; cb.onWord(chunk.wordIdx[j]); }
+      };
+      el.onplaying = syncGlow;
+      el.ontimeupdate = syncGlow;
+      el.onseeked = syncGlow;
+      glowTimer = setInterval(syncGlow, 20);
       el.onended = () => {
         if (gen !== generation) return;
         clearGlowTimer();
@@ -357,6 +372,10 @@ export const cloudSpeechEngine: SpeechEngine = {
     for (const el of players) {
       if (!el) continue;
       el.onended = null;
+      el.onloadedmetadata = null;
+      el.onplaying = null;
+      el.ontimeupdate = null;
+      el.onseeked = null;
       el.pause();
     }
     for (const u of liveUrls) URL.revokeObjectURL(u);
