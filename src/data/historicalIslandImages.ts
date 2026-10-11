@@ -25,7 +25,7 @@ export const HISTORICAL_FACE_FOCUSED_ISLANDS = new Set([
 
 // Per-island vertical framing overrides (object-position values).
 export const HISTORICAL_ISLAND_FOCUS_OVERRIDES: Record<string, string> = {
-  eo_1: "center 12%",
+  eo_1: "center 40%",
 };
 
 export const HISTORICAL_ISLAND_IMAGES: Record<string, { url: string; title: string; source: string; author: string; license: string; licenseUrl: string }> = {
