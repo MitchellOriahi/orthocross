@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 type Section = { title: string; items: string[] };
@@ -69,14 +67,14 @@ const List = ({ sections, prefix }: { sections: Section[]; prefix: string }) => 
   </Accordion>
 );
 
-export const OrientalEtiquette = () => {
-  const [selected, setSelected] = useState<string | null>(null);
+type Props = { selected: string | null; onSelect: (id: string | null) => void };
+
+export const OrientalEtiquette = ({ selected, onSelect }: Props) => {
   const church = CHURCHES.find((c) => c.id === selected);
 
   if (church) {
     return (
       <div className="space-y-3">
-        <Button variant="ghost" size="sm" onClick={() => setSelected(null)}>← All churches</Button>
         <div className="text-center">
           <div className="text-xl font-semibold text-foreground">{church.name} Orthodox</div>
           <div className="text-xs text-muted-foreground">{church.language}</div>
@@ -94,7 +92,7 @@ export const OrientalEtiquette = () => {
         {CHURCHES.map((c) => (
           <button
             key={c.id}
-            onClick={() => setSelected(c.id)}
+            onClick={() => onSelect(c.id)}
             className="aspect-square rounded-xl border border-border/60 bg-card hover:border-primary transition-colors flex flex-col items-center justify-center gap-1 p-3"
           >
             <span className="text-3xl text-primary leading-none">☩</span>

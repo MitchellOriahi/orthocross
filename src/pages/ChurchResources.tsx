@@ -41,6 +41,7 @@ const ChurchResources = () => {
   const { theme } = useTheme();
   const { playSound } = useMusic();
   const [selectedSection, setSelectedSection] = useState<SectionType>(null);
+  const [selectedOrientalChurch, setSelectedOrientalChurch] = useState<string | null>(null);
   const [selectedSaint, setSelectedSaint] = useState<SaintDetail | null>(null);
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
@@ -119,6 +120,10 @@ const ChurchResources = () => {
   useEffect(() => {
     if (selectedSection === "prayers" && !selectedPrayer) {
       window.scrollTo(0, 0);
+    }
+    // Leaving the Oriental section always returns to the church list next time
+    if (selectedSection !== "oriental") {
+      setSelectedOrientalChurch(null);
     }
   }, [selectedSection, selectedPrayer]);
 
@@ -406,7 +411,10 @@ const ChurchResources = () => {
                 <div className="flex items-center justify-between p-4 border-b border-border/50">
                   <Button
                     variant="ghost"
-                    onClick={() => setSelectedSection(null)}
+                    onClick={() => {
+                      if (selectedOrientalChurch) setSelectedOrientalChurch(null);
+                      else setSelectedSection(null);
+                    }}
                   >
                     ← Back
                   </Button>
@@ -421,7 +429,7 @@ const ChurchResources = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <OrientalEtiquette />
+                  <OrientalEtiquette selected={selectedOrientalChurch} onSelect={setSelectedOrientalChurch} />
                 </CardContent>
               </Card>
             )}
