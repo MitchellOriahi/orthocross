@@ -12,6 +12,11 @@ import { PROFILE_COUNTRIES } from "@/data/profileCountries";
 import { cn } from "@/lib/utils";
 
 type Field = "branch" | "patron_saint_id" | "country_code";
+const branchClasses = {
+  eastern: "profile-branch-eastern",
+  oriental: "profile-branch-oriental",
+  unaffiliated: "profile-branch-unaffiliated",
+};
 function IdentityPicker({ label, value, options, icon: Icon, className, disabled, onSelect }: {
   label: string; value: string | null; options: IdentityOption[]; icon: typeof Cross;
   className?: string; disabled: boolean; onSelect: (value: string | null) => Promise<boolean>;
@@ -89,7 +94,7 @@ export default function ProfileIdentityTags() {
   return (
     <div className="flex flex-wrap items-start gap-2 pt-3" aria-label="Profile tags" aria-busy={saving}>
       <IdentityPicker label="Orthodox branch" value={data?.branch ?? null} options={ORTHODOX_BRANCHES} icon={Cross}
-        className={data?.branch ? `profile-branch-${getBranchTradition(data.branch)}` : undefined}
+        className={data?.branch ? branchClasses[getBranchTradition(data.branch)] : undefined}
         disabled={saving || isPending} onSelect={value => save("branch", value)} />
       <IdentityPicker label="Patron saint" value={data?.patron_saint_id ?? null} options={PATRON_SAINT_OPTIONS} icon={UserRound}
         disabled={saving || isPending} onSelect={value => save("patron_saint_id", value)} />
