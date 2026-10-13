@@ -3,8 +3,8 @@ import { SAINT_CATEGORIES } from "./saintCategories";
 import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
-// Photographs the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings"];
+// Photographs and icons the app owner supplied; they carry no online source or licence link.
+const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -78,6 +78,27 @@ test("the laypeople tile shows the supplied cherubim-grid photograph, square-cro
   expect(art.image_source).toBe("");
   expect(art.image_license_url).toBe("");
   expect(art.image_modification).toContain("Square-cropped");
+});
+
+test("Coptic Saints top row shows the two supplied Coptic icons", () => {
+  const angels = categoryArtwork("saints", "coptic", "angels");
+  const biblical = categoryArtwork("saints", "coptic", "biblical");
+  expect(angels.image_url).toContain("coptic-trinity");
+  expect(biblical.image_url).toContain("coptic-fathers");
+  for (const art of [angels, biblical]) {
+    expect(art.image_license).toBe("Supplied by the app owner");
+    expect(art.image_source).toBe("");
+    expect(art.image_license_url).toBe("");
+    expect(art.image_modification).toContain("Square-cropped");
+  }
+});
+
+test("the supplied Coptic icons stay out of the remaining Coptic saint tiles", () => {
+  for (const category of ["monastics", "fathers-hierarchs", "martyrs", "apostles-missionaries", "laypeople"]) {
+    const art = categoryArtwork("saints", "coptic", category);
+    expect(art.image_url.includes("coptic-trinity")).toBe(false);
+    expect(art.image_url.includes("coptic-fathers")).toBe(false);
+  }
 });
 
 test("supplied photographs stay out of the remaining Tewahedo category and every prayer tile", () => {
