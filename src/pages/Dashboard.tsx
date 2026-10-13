@@ -7,7 +7,6 @@ import { FastingCalendarView } from "@/components/FastingCalendarView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { DonationPromptDialog } from "@/components/DonationPromptDialog";
-import { DonationThankYouDialog } from "@/components/DonationThankYouDialog";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDayCard } from "@/components/VerseOfTheDayCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
@@ -536,8 +535,6 @@ const Dashboard = () => {
 
       {/* Donation Prompt Dialog - shows every 7 days */}
       <DonationPromptDialog />
-      {/* Thank you dialog - shown after returning from Stripe */}
-      <DonationThankYouDialog />
     </div>
   );
 };
