@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useSearchParams } from "react-router-dom";
 import { Loader2, X } from "lucide-react";
@@ -8,6 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { DONOR_TEXT, DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
 
 export const DONATION_COMPLETED_EVENT = "orthocross:donation-completed";
+const STARTED_KEY = "orthocross:donation-started";
+const CELEBRATED_KEY = "orthocross:donation-celebrated";
+const PENDING_WINDOW_MS = 2 * 60 * 60 * 1000;
 
 interface DonorStatus {
   tierKey: string | null;
@@ -26,6 +29,14 @@ export const DonationThankYouDialog = () => {
   const [status, setStatus] = useState<DonorStatus | null>(null);
   const [timedOut, setTimedOut] = useState(false);
 
+  const celebrate = useCallback((data: DonorStatus) => {
+    const id = data.latestDonation?.id;
+    if (id) localStorage.setItem(CELEBRATED_KEY, id);
+    localStorage.removeItem(STARTED_KEY);
+    setStatus(data); setOpen(true);
+    window.dispatchEvent(new Event("orthocross:donors-changed"));
+  }, []);
+
   const waitForConfirmation = useCallback(async (since: string, sessionId?: string | null) => {
     setOpen(true); setStatus(null); setTimedOut(false);
     for (let i = 0; i < 30; i++) {
@@ -34,11 +45,11 @@ export const DonationThankYouDialog = () => {
         await supabase.functions.invoke("confirm-donation", { body: { sessionId } }).catch(() => null);
       }
       const { data } = await supabase.functions.invoke("donor-status", { body: { since } });
-      if (data?.latestDonation) { setStatus(data); window.dispatchEvent(new Event("orthocross:donors-changed")); return; }
+      if (data?.latestDonation) { celebrate(data); return; }
       await new Promise((r) => setTimeout(r, 2000));
     }
     setTimedOut(true);
-  }, []);
+  }, [celebrate]);
 
   useEffect(() => {
     const onDone = () => waitForConfirmation(new Date(Date.now() - 60_000).toISOString());
@@ -46,11 +57,54 @@ export const DonationThankYouDialog = () => {
     return () => window.removeEventListener(DONATION_COMPLETED_EVENT, onDone);
   }, [waitForConfirmation]);
 
+  // Checkout opens in another tab, which may never return here (or may not be signed in).
+  // When the user comes back to this tab, quietly look for the new gift and celebrate it.
+  const checking = useRef(false);
+  const checkPending = useCallback(async () => {
+    if (!user || checking.current || open) return;
+    const started = localStorage.getItem(STARTED_KEY);
+    const startedAt = started ? Date.parse(started) : NaN;
+    if (isNaN(startedAt)) return;
+    if (Date.now() - startedAt > PENDING_WINDOW_MS) { localStorage.removeItem(STARTED_KEY); return; }
+    checking.current = true;
+    try {
+      const since = new Date(startedAt - 60_000).toISOString();
+      for (let i = 0; i < 8; i++) {
+        const { data } = await supabase.functions.invoke("donor-status", { body: { since } });
+        const id = data?.latestDonation?.id;
+        if (id) {
+          if (localStorage.getItem(CELEBRATED_KEY) === id) localStorage.removeItem(STARTED_KEY);
+          else celebrate(data);
+          return;
+        }
+        if (document.visibilityState !== "visible") return;
+        await new Promise((r) => setTimeout(r, 3000));
+      }
+    } finally {
+      checking.current = false;
+    }
+  }, [user, open, celebrate]);
+
+  useEffect(() => {
+    if (!user) return;
+    const onVisible = () => { if (document.visibilityState === "visible") checkPending(); };
+    const onStorage = (e: StorageEvent) => { if (e.key === CELEBRATED_KEY) localStorage.removeItem(STARTED_KEY); };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", checkPending);
+    window.addEventListener("storage", onStorage);
+    checkPending();
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", checkPending);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [user, checkPending]);
+
   useEffect(() => {
     if (!user) return;
     const result = searchParams.get("donation");
     if (result !== "success" && result !== "monthly_success") return;
-    const started = localStorage.getItem("orthocross:donation-started");
+    const started = localStorage.getItem(STARTED_KEY);
     const since = new Date((started ? Date.parse(started) : Date.now() - 3_600_000) - 60_000).toISOString();
     localStorage.setItem(`donation_thank_you_${user.id}`, new Date().toISOString());
     if (result === "monthly_success") localStorage.setItem(`monthly_donor_${user.id}`, "true");

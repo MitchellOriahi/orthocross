@@ -536,8 +536,6 @@ const Dashboard = () => {
 
       {/* Donation Prompt Dialog - shows every 7 days */}
       <DonationPromptDialog />
-      {/* Thank you dialog - shown after returning from Stripe */}
-      <DonationThankYouDialog />
     </div>
   );
 };

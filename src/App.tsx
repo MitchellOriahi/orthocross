@@ -16,6 +16,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { TutorialIntro } from "@/components/TutorialIntro";
 import { NotificationManager } from "@/components/NotificationManager";
+import { DonationThankYouDialog } from "@/components/DonationThankYouDialog";
 import Auth from "./pages/Auth";
 import IconTuner from "./pages/IconTuner";
 import Index from "./pages/Index";
@@ -78,6 +79,8 @@ const AppContent = () => {
       <AuthProvider>
         <NotificationManager />
         <TutorialIntro />
+        {/* Thank-you sticker after a donation, on whichever page the donor returns to */}
+        <DonationThankYouDialog />
         <PageTransition>
         <Routes>
           {/* Root route - redirect based on auth state */}
