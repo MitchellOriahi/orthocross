@@ -12,7 +12,7 @@ import { PROFILE_COUNTRIES } from "@/data/profileCountries";
 import { cn } from "@/lib/utils";
 
 type Field = "branch" | "patron_saint_id" | "country_code" | "age";
-const AGE_OPTIONS: IdentityOption[] = Array.from({ length: 108 }, (_, i) => ({ value: String(i + 13), label: `${i + 13} years old` }));
+const AGE_OPTIONS: IdentityOption[] = Array.from({ length: 108 }, (_, i) => ({ value: String(i + 13), label: String(i + 13) }));
 const branchClasses = {
   eastern: "profile-branch-eastern",
   oriental: "profile-branch-oriental",
