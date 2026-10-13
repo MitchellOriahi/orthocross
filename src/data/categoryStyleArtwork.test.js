@@ -4,7 +4,7 @@ import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
 // Photographs and icons the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini"];
+const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-mark-evangelist", "coptic-elijah"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -117,6 +117,25 @@ test("Coptic Saints middle row shows the two supplied Coptic icons, square-cropp
     const art = categoryArtwork("prayers", "coptic", category.id);
     expect(art.image_url.includes("coptic-john-olympia")).toBe(false);
     expect(art.image_url.includes("coptic-photini")).toBe(false);
+  }
+});
+
+test("Coptic Saints row under the middle shows the supplied Saint Mark and Prophet Elijah icons, square-cropped", () => {
+  const martyrs = categoryArtwork("saints", "coptic", "martyrs");
+  const missionaries = categoryArtwork("saints", "coptic", "apostles-missionaries");
+  expect(martyrs.image_url).toContain("coptic-mark-evangelist");
+  expect(missionaries.image_url).toContain("coptic-elijah");
+  for (const art of [martyrs, missionaries]) {
+    expect(art.image_license).toBe("Supplied by the app owner");
+    expect(art.image_source).toBe("");
+    expect(art.image_license_url).toBe("");
+    expect(art.image_author).toContain("supplied by the app owner");
+    expect(art.image_modification).toContain("Square-cropped");
+  }
+  for (const category of PRAYER_CATEGORIES) {
+    const art = categoryArtwork("prayers", "coptic", category.id);
+    expect(art.image_url.includes("coptic-mark-evangelist")).toBe(false);
+    expect(art.image_url.includes("coptic-elijah")).toBe(false);
   }
 });
 
