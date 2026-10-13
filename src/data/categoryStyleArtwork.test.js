@@ -4,7 +4,7 @@ import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
 // Photographs and icons the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-mark-evangelist", "coptic-elijah"];
+const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -105,7 +105,7 @@ test("Coptic Saints middle row shows the two supplied Coptic icons, square-cropp
   const monastics = categoryArtwork("saints", "coptic", "monastics");
   const fathers = categoryArtwork("saints", "coptic", "fathers-hierarchs");
   expect(monastics.image_url).toContain("coptic-john-olympia");
-  expect(fathers.image_url).toContain("coptic-photini");
+  expect(fathers.image_url).toContain("coptic-christ-photini");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -116,15 +116,16 @@ test("Coptic Saints middle row shows the two supplied Coptic icons, square-cropp
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "coptic", category.id);
     expect(art.image_url.includes("coptic-john-olympia")).toBe(false);
+    expect(art.image_url.includes("coptic-christ-photini")).toBe(false);
     expect(art.image_url.includes("coptic-photini")).toBe(false);
   }
 });
 
-test("Coptic Saints row under the middle shows the supplied Saint Mark and Prophet Elijah icons, square-cropped", () => {
+test("Coptic Saints row under the middle shows the supplied Saint Photini and Saint Catherine icons, square-cropped", () => {
   const martyrs = categoryArtwork("saints", "coptic", "martyrs");
   const missionaries = categoryArtwork("saints", "coptic", "apostles-missionaries");
-  expect(martyrs.image_url).toContain("coptic-mark-evangelist");
-  expect(missionaries.image_url).toContain("coptic-elijah");
+  expect(martyrs.image_url).toContain("coptic-photini");
+  expect(missionaries.image_url).toContain("coptic-katherine");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -134,8 +135,8 @@ test("Coptic Saints row under the middle shows the supplied Saint Mark and Proph
   }
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "coptic", category.id);
-    expect(art.image_url.includes("coptic-mark-evangelist")).toBe(false);
-    expect(art.image_url.includes("coptic-elijah")).toBe(false);
+    expect(art.image_url.includes("coptic-photini")).toBe(false);
+    expect(art.image_url.includes("coptic-katherine")).toBe(false);
   }
 });
 
