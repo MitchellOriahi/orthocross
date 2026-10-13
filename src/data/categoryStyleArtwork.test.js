@@ -4,8 +4,8 @@ import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
 // Photographs the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel.jpg", "tewahedo-selassie-manuscript.jpg"];
-const STORED_ONLY = ["tewahedo-angels-michael.jpg", "tewahedo-theotokos.jpg"];
+const SUPPLIED = ["tewahedo-selassie-panel.jpg", "tewahedo-selassie-manuscript.jpg", "tewahedo-theotokos.jpg", "tewahedo-george.jpg"];
+const STORED_ONLY = ["tewahedo-angels-michael.jpg"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -46,8 +46,21 @@ test("Tewahedo Saints top row shows the two supplied Trinity photographs", () =>
   }
 });
 
+test("Tewahedo Saints middle row shows the supplied Theotokos and Saint George photographs", () => {
+  const monastics = categoryArtwork("saints", "tewahedo", "monastics");
+  const fathers = categoryArtwork("saints", "tewahedo", "fathers-hierarchs");
+  expect(monastics.image_url).toContain("tewahedo-theotokos.jpg");
+  expect(fathers.image_url).toContain("tewahedo-george.jpg");
+  for (const art of [monastics, fathers]) {
+    expect(art.image_license).toBe("Supplied by the app owner");
+    expect(art.image_source).toBe("");
+    expect(art.image_license_url).toBe("");
+    expect(art.image_author).toContain("supplied by the app owner");
+  }
+});
+
 test("supplied photographs stay out of the other Tewahedo categories and every prayer tile", () => {
-  for (const category of ["monastics", "fathers-hierarchs", "martyrs", "apostles-missionaries", "laypeople"]) {
+  for (const category of ["martyrs", "apostles-missionaries", "laypeople"]) {
     const art = categoryArtwork("saints", "tewahedo", category);
     for (const name of [...SUPPLIED, ...STORED_ONLY]) expect(art.image_url.includes(name)).toBe(false);
   }
