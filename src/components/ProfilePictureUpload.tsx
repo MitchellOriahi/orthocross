@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProfileData } from "@/hooks/useProfileData";
 import { ImageCropper } from "./ImageCropper";
 import { useQueryClient } from "@tanstack/react-query";
+import ProfileIdentityTags from "./ProfileIdentityTags";
 
 export default function ProfilePictureUpload() {
   const { user } = useAuth();
@@ -206,6 +207,7 @@ export default function ProfilePictureUpload() {
           <p className="text-sm text-muted-foreground">
             Username: <span className="font-medium text-foreground">@{profile.username}</span>
           </p>
+          <ProfileIdentityTags />
         </div>
       )}
     </div>
