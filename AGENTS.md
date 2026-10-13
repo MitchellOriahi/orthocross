@@ -8,8 +8,8 @@
 - Track lifetime saint-story completion by exact roster ID in the existing private reading records and shared query cache; derive the all-stories award from unique roster IDs so same-name saints and cross-category memberships cannot inflate completion.
 
 - Pause Saints via a visibility selector; keep the saved catalog and presentation intact.
-- Separate the Saints browser from the saved catalog; use audited replaceable portrait registries to preserve identities, icons and classifications.
-- Keep the supplied browser roster separate from preserved biographies, with category-qualified many-to-many memberships and shared identities, so cross-category saints are not duplicated or old classifications overwritten.
+- Keep the Saints browser separate from saved biographies; audited portrait registries preserve identities and classifications.
+- Use category-qualified memberships and shared roster identities to prevent duplicated saints and overwritten classifications.
 - Apply Saints tradition filtering in the roster selector alongside category, subgroup and search; shared-tradition records belong to both filters so presentation never rewrites classifications.
 
 - Deduplicate React and React DOM in Vite resolution so the renderer and hook-based dependencies share one React instance and dispatcher.
@@ -34,3 +34,5 @@
 - Use a tested gift-preview selector for slider position, portrait tier and glow; shared thresholds align custom gifts.
 - Schedule donation and rating prompts through one pure, tested coordinator (src/lib/promptScheduler) mounted only on the Board, so prompts never collide or interrupt reading.
 - Red confirm buttons use the alert dialog's `destructive` prop, not a `bg-destructive` override.
+
+- Resolve category artwork through a shared tradition-keyed provenance registry and device-persisted selection; preserve original artwork and individual saint identities so style changes never rewrite content.
