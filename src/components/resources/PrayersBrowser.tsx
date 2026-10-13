@@ -9,20 +9,20 @@ import { getPrayerList, getPrayerSubgroups } from "@/data/prayerCatalog";
 import peter from "@/assets/saints/display/peter-apostle.jpg.asset.json";
 import david from "@/assets/saints/card-icons/david-portrait.jpg.asset.json";
 import orans from "@/assets/prayers/categories/daily-prayers-orans.jpg.asset.json";
-import christ from "@/assets/prayers/categories/christ_pantocrator_sinai.jpg.asset.json";
+import crucifix from "@/assets/prayers/categories/christ_and_saints_crucifix.jpg.asset.json";
 import supper from "@/assets/prayers/categories/holy_communion_last_supper.jpg.asset.json";
 import healing from "@/assets/prayers/categories/needs_healing_eustratius.jpg.asset.json";
 import { PrayerListCard } from "./PrayerListCard";
 import { SubcategoryPills } from "./SaintsBrowser";
 
 // Prayer artwork is independent of the Saints category portrait registry.
-const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string; author: string }> = {
-  foundational: { url: peter.url, source: "St_Peter_Icon_Sinai_7th_century.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 7th century" },
-  daily: { url: orans.url, source: "Oranta-Kyiv.jpg", author: "Unknown mosaicist, Saint Sophia Cathedral, Kyiv, 11th century" },
-  "christ-saints": { url: christ.url, source: "Spas_vsederzhitel_sinay.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 6th century" },
-  psalms: { url: david.url, source: "David-icon.jpg", author: "18th-century icon painter" },
-  communion: { url: supper.url, source: "Icon_last_supper.jpg", author: "Unknown Russian icon painter, 1497" },
-  occasions: { url: healing.url, source: "St_Eustratius_(cropped).jpg", author: "Unknown painter, Sinai, 12th century" },
+const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string | null; author: string; license: string }> = {
+  foundational: { url: peter.url, source: "St_Peter_Icon_Sinai_7th_century.jpg", author: "Unknown painter, Saint Catherine’s Monastery, Sinai, 7th century", license: "Public domain" },
+  daily: { url: orans.url, source: "Oranta-Kyiv.jpg", author: "Unknown mosaicist, Saint Sophia Cathedral, Kyiv, 11th century", license: "Public domain" },
+  "christ-saints": { url: crucifix.url, source: null, author: "Contemporary icon detail: a monastic’s hands hold a wooden crucifix and a prayer rope", license: "Photograph supplied by the app owner" },
+  psalms: { url: david.url, source: "David-icon.jpg", author: "18th-century icon painter", license: "Public domain" },
+  communion: { url: supper.url, source: "Icon_last_supper.jpg", author: "Unknown Russian icon painter, 1497", license: "Public domain" },
+  occasions: { url: healing.url, source: "St_Eustratius_(cropped).jpg", author: "Unknown painter, Sinai, 12th century", license: "Public domain" },
 };
 
 export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange, pinnedIds, onPin }: { onSelect: (prayer: PrayerDetail) => void; onClose: () => void; tradition: PrayerTraditionFilter; onTraditionChange: (tradition: PrayerTraditionFilter) => void; pinnedIds: ReadonlySet<string>; onPin?: (id: string) => void }) {
