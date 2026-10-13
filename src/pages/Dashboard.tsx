@@ -7,7 +7,6 @@ import { FastingCalendarView } from "@/components/FastingCalendarView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { DonationPromptDialog } from "@/components/DonationPromptDialog";
-import { DonationThankYouDialog } from "@/components/DonationThankYouDialog";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDayCard } from "@/components/VerseOfTheDayCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
