@@ -62,9 +62,14 @@ Deno.serve(async (req) => {
     }
     if (id) {
       await sendThankYouOnce(admin, id);
-      await notifyDonationFriends(admin, id, {
-        appId: Deno.env.get("ONESIGNAL_APP_ID"), apiKey: Deno.env.get("ONESIGNAL_REST_API_KEY"),
-      });
+      // A failed friend push must never fail the donation confirmation
+      try {
+        await notifyDonationFriends(admin, id, {
+          appId: Deno.env.get("ONESIGNAL_APP_ID"), apiKey: Deno.env.get("ONESIGNAL_REST_API_KEY"),
+        });
+      } catch (e) {
+        console.error("friend donation notification failed", e);
+      }
     }
     return json({ confirmed: true });
   } catch (e) {
