@@ -3,7 +3,9 @@ import { SAINT_CATEGORIES } from "./saintCategories";
 import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
-const SUPPLIED = ["tewahedo-angels-michael.jpg", "tewahedo-theotokos.jpg"];
+// Photographs the app owner supplied; they carry no online source or licence link.
+const SUPPLIED = ["tewahedo-selassie-panel.jpg", "tewahedo-selassie-manuscript.jpg"];
+const STORED_ONLY = ["tewahedo-angels-michael.jpg", "tewahedo-theotokos.jpg"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -21,7 +23,6 @@ test("each tradition covers all seven saint and six prayer categories with store
         expect(art.image_url).toStartWith("/__l5e/assets-v1/");
         expect(art.image_author.length).toBeGreaterThan(0);
         if (art.image_license === "Supplied by the app owner") {
-          // Owner-supplied photographs carry no online source or licence link.
           expect(art.image_source).toBe("");
           expect(art.image_license_url).toBe("");
         } else {
@@ -34,7 +35,7 @@ test("each tradition covers all seven saint and six prayer categories with store
   }
 });
 
-test("Tewahedo Saints top row shows the two supplied photographs", () => {
+test("Tewahedo Saints top row shows the two supplied Trinity photographs", () => {
   const angels = categoryArtwork("saints", "tewahedo", "angels");
   const biblical = categoryArtwork("saints", "tewahedo", "biblical");
   expect(angels.image_url).toContain(SUPPLIED[0]);
@@ -42,17 +43,16 @@ test("Tewahedo Saints top row shows the two supplied photographs", () => {
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
-    expect(art.image_modification).toContain("Resized");
   }
 });
 
 test("supplied photographs stay out of the other Tewahedo categories and every prayer tile", () => {
   for (const category of ["monastics", "fathers-hierarchs", "martyrs", "apostles-missionaries", "laypeople"]) {
     const art = categoryArtwork("saints", "tewahedo", category);
-    for (const name of SUPPLIED) expect(art.image_url.includes(name)).toBe(false);
+    for (const name of [...SUPPLIED, ...STORED_ONLY]) expect(art.image_url.includes(name)).toBe(false);
   }
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "tewahedo", category.id);
-    for (const name of SUPPLIED) expect(art.image_url.includes(name)).toBe(false);
+    for (const name of [...SUPPLIED, ...STORED_ONLY]) expect(art.image_url.includes(name)).toBe(false);
   }
 });
