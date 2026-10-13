@@ -4,7 +4,7 @@ import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
 // Photographs and icons the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers"];
+const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -98,6 +98,25 @@ test("the supplied Coptic icons stay out of the remaining Coptic saint tiles", (
     const art = categoryArtwork("saints", "coptic", category);
     expect(art.image_url.includes("coptic-trinity")).toBe(false);
     expect(art.image_url.includes("coptic-fathers")).toBe(false);
+  }
+});
+
+test("Coptic Saints middle row shows the two supplied Coptic icons, square-cropped", () => {
+  const monastics = categoryArtwork("saints", "coptic", "monastics");
+  const fathers = categoryArtwork("saints", "coptic", "fathers-hierarchs");
+  expect(monastics.image_url).toContain("coptic-john-olympia");
+  expect(fathers.image_url).toContain("coptic-photini");
+  for (const art of [monastics, fathers]) {
+    expect(art.image_license).toBe("Supplied by the app owner");
+    expect(art.image_source).toBe("");
+    expect(art.image_license_url).toBe("");
+    expect(art.image_author).toContain("supplied by the app owner");
+    expect(art.image_modification).toContain("Square-cropped");
+  }
+  for (const category of PRAYER_CATEGORIES) {
+    const art = categoryArtwork("prayers", "coptic", category.id);
+    expect(art.image_url.includes("coptic-john-olympia")).toBe(false);
+    expect(art.image_url.includes("coptic-photini")).toBe(false);
   }
 });
 
