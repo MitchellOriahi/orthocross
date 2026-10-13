@@ -22,6 +22,7 @@ import tewahedo_theotokos from "@/assets/category-styles/tewahedo-theotokos.jpg.
 import tewahedo_selassie_panel from "@/assets/category-styles/tewahedo-selassie-panel.jpg.asset.json";
 import tewahedo_selassie_manuscript from "@/assets/category-styles/tewahedo-selassie-manuscript.jpg.asset.json";
 import tewahedo_george from "@/assets/category-styles/tewahedo-george.jpg.asset.json";
+import tewahedo_archangel_wings from "@/assets/category-styles/tewahedo-archangel-wings.jpg.asset.json";
 
 const art: Record<string, SaintDisplayIcon> = {
   "coptic-michael": { image_url: coptic_michael.url, "image_source": "https://commons.wikimedia.org/wiki/File:Coptic_Icon_of_the_Archangel_Michael.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Unknown author Unknown author", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
@@ -44,6 +45,7 @@ const art: Record<string, SaintDisplayIcon> = {
   "tewahedo-selassie-panel": { image_url: tewahedo_selassie_panel.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox icon of the Holy Trinity (Selassie) with the four living creatures; photograph supplied by the app owner", "image_modification": "Resized from the supplied photograph; original colors retained." },
   "tewahedo-selassie-manuscript": { image_url: tewahedo_selassie_manuscript.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox manuscript miniature of the Holy Trinity (Selassie) with the four living creatures; photograph supplied by the app owner", "image_modification": "Used as supplied; original colors retained." },
   "tewahedo-george": { image_url: tewahedo_george.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox icon of Saint George on horseback slaying the dragon, with the rescued maiden in the tree; photograph supplied by the app owner", "image_modification": "Resized from the supplied photograph; original colors retained." },
+  "tewahedo-archangel-wings": { image_url: tewahedo_archangel_wings.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox icon of an archangel with rainbow-coloured wings above the fiery pit, flanked by two angels; photograph supplied by the app owner", "image_modification": "Resized from the supplied photograph; original colors retained." },
 };
 
 function saved(id: string): SaintDisplayIcon {
@@ -61,7 +63,7 @@ const byzantineAnna = saved("anna");
 type AlternateStyle = Exclude<CategoryIconStyle, "original">;
 
 export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<SaintCategoryId, "rulers">, SaintDisplayIcon>> = {
-  tewahedo: { angels: art["tewahedo-selassie-panel"], biblical: art["tewahedo-selassie-manuscript"], monastics: art["tewahedo-theotokos"], "fathers-hierarchs": art["tewahedo-george"], martyrs: art["tewahedo-mary-george"], "apostles-missionaries": art["tewahedo-angels"], laypeople: tewahedoLayperson },
+  tewahedo: { angels: art["tewahedo-selassie-panel"], biblical: art["tewahedo-selassie-manuscript"], monastics: art["tewahedo-theotokos"], "fathers-hierarchs": art["tewahedo-george"], martyrs: art["tewahedo-angels-michael"], "apostles-missionaries": art["tewahedo-archangel-wings"], laypeople: tewahedoLayperson },
   coptic: { angels: art["coptic-michael"], biblical: art["coptic-holy-family"], monastics: art["coptic-desert-fathers"], "fathers-hierarchs": copticFather, martyrs: art["coptic-mercurios"], "apostles-missionaries": art["coptic-mark"], laypeople: art["coptic-simon"] },
   byzantine: { angels: byzantineAngel, biblical: SAINT_DISPLAY_ICONS["mary-magdalene"], monastics: SAINT_DISPLAY_ICONS.anthony, "fathers-hierarchs": SAINT_DISPLAY_ICONS.athanasius, martyrs: SAINT_DISPLAY_ICONS.george, "apostles-missionaries": SAINT_DISPLAY_ICONS["peter-apostle"], laypeople: byzantineAnna },
 };
