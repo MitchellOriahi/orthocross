@@ -149,18 +149,19 @@ export const DonationThankYouDialog = () => {
           <>
             {tier && (
               <img src={TIER_ICONS[tier.key]} alt={tier.name} width={160} height={160}
-                className={`donor-sticker mx-auto h-40 w-40 rounded-full object-cover ring-1 ring-primary/60 ${rose ? "donor-sticker-rise" : ""}`} />
+                className={`donor-sticker donor-sticker-rim mx-auto h-40 w-40 rounded-full object-cover ${rose ? "donor-sticker-rise" : ""}`} />
             )}
             <h2 className="text-3xl font-serif text-primary">{DONOR_TEXT.thankYouTitle(status.name)}</h2>
-            <p className="text-foreground/90 leading-relaxed">{DONOR_TEXT.thankYouBody}</p>
+            <p className="text-foreground/90 leading-relaxed">
+              <span className="block">{DONOR_TEXT.thankYouBody}</span>
+              <span className="mt-1 block">{DONOR_TEXT.thankYouBlessing}</span>
+            </p>
             {tier && <p className="text-lg font-semibold text-foreground">{DONOR_TEXT.youAreNow(tier)}</p>}
             {rose && tier ? (
               <p className="text-xl font-semibold text-primary">{DONOR_TEXT.risen(prev, tier)}</p>
-            ) : next ? (
-              <p className="text-sm text-muted-foreground">{DONOR_TEXT.toNext(status.remainingCents, next)}</p>
-            ) : (
+            ) : !next ? (
               <p className="text-sm text-muted-foreground">{DONOR_TEXT.topTier}</p>
-            )}
+            ) : null}
           </>
         )}
         <p className="text-muted-foreground">

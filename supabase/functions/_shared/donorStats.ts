@@ -46,8 +46,8 @@ export async function sendThankYouOnce(admin: Admin, donationId: string) {
   <h1 style="color:#c9a24a;font-weight:normal">${esc(DONOR_TEXT.thankYouTitle(name))}</h1>
   <p style="font-size:16px;line-height:1.6">Thank you for your gift of <b>$${(claimed.amount / 100).toFixed(2)}</b>.</p>
   <p style="font-size:16px;line-height:1.6">${DONOR_TEXT.thankYouBody}</p>
+  <p style="font-size:16px;line-height:1.6">${DONOR_TEXT.thankYouBlessing}</p>
   ${tier ? `<p style="color:#c9a24a;font-size:18px">${DONOR_TEXT.youAreNow(tier)}</p>` : ""}
-  ${next ? `<p style="color:#aaa">${DONOR_TEXT.toNext(next.remainingCents, next.tier)}</p>` : ""}
   <p style="margin-top:28px"><a href="${APP_URL}" style="background:#c9a24a;color:#111;padding:12px 24px;border-radius:8px;text-decoration:none">Return to OrthoCross</a></p>
   <p style="color:#777;font-size:12px;margin-top:24px">"It is more blessed to give than to receive." — Acts 20:35</p>
   </div></div>`;

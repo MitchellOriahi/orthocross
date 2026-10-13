@@ -20,6 +20,10 @@ export const DONOR_TIERS: DonorTier[] = [
   { key: "seraph", name: "Seraph", article: "a", minCents: 100000 },
 ];
 
+// Show a donor's name with a capital first letter, leaving the rest exactly as they typed it.
+export const capitalizeName = (name: string) =>
+  name ? name.charAt(0).toUpperCase() + name.slice(1) : name;
+
 export const DONOR_TEXT = {
   sectionTitle: "Donators",
   sectionSubtitle: "Generous supporters of the community",
@@ -32,9 +36,10 @@ export const DONOR_TEXT = {
   anonymousName: "Anonymous Donor",
   showMyName: "Show my name",
   donateAnonymously: "Donate anonymously",
-  thankYouTitle: (name: string) => `Thank you, ${name}.`,
+  thankYouTitle: (name: string) => `Thank you, ${capitalizeName(name)}.`,
   thankYouBody:
-    "Your gift helps keep this app free and growing, and we are grateful for you. May God continue to bless you.",
+    "Your gift helps keep this app free and growing, and we are grateful for you.",
+  thankYouBlessing: "May God continue to bless you.",
   youAreNow: (t: DonorTier) => `You are now ${t.article} ${t.name}.`,
   risen: (from: DonorTier | null, to: DonorTier) =>
     from ? `You've risen from ${from.name} to ${to.name}!` : `You've joined the ranks as ${to.article} ${to.name}!`,
