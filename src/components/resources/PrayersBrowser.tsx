@@ -8,7 +8,7 @@ import { PRAYER_CATEGORIES, PRAYER_PLACEMENTS, type PrayerCategoryId } from "@/d
 import { getPrayerList, getPrayerSubgroups } from "@/data/prayerCatalog";
 import foundationalBook from "@/assets/prayers/categories/foundational_prayers_christ.jpg.asset.json";
 import david from "@/assets/saints/card-icons/david-portrait.jpg.asset.json";
-import orans from "@/assets/prayers/categories/daily-prayers-orans.jpg.asset.json";
+import blessingHand from "@/assets/prayers/categories/daily_prayers_blessing_hand.jpg.asset.json";
 import crucifix from "@/assets/prayers/categories/christ_and_saints_crucifix.jpg.asset.json";
 import supper from "@/assets/prayers/categories/holy_communion_last_supper.jpg.asset.json";
 import healing from "@/assets/prayers/categories/needs_healing_eustratius.jpg.asset.json";
@@ -18,7 +18,7 @@ import { SubcategoryPills } from "./SaintsBrowser";
 // Prayer artwork is independent of the Saints category portrait registry.
 const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string | null; author: string; license: string }> = {
   foundational: { url: foundationalBook.url, source: null, author: "Byzantine icon detail: a hand holds a Gospel book whose cover bears the Crucifixion", license: "Photograph supplied by the app owner" },
-  daily: { url: orans.url, source: "Oranta-Kyiv.jpg", author: "Unknown mosaicist, Saint Sophia Cathedral, Kyiv, 11th century", license: "Public domain" },
+  daily: { url: blessingHand.url, source: null, author: "Byzantine icon detail: the right hand raised in the blessing gesture of Christ", license: "Photograph supplied by the app owner" },
   "christ-saints": { url: crucifix.url, source: null, author: "Contemporary icon detail: a monastic’s hands hold a wooden crucifix and a prayer rope", license: "Photograph supplied by the app owner" },
   psalms: { url: david.url, source: "David-icon.jpg", author: "18th-century icon painter", license: "Public domain" },
   communion: { url: supper.url, source: "Icon_last_supper.jpg", author: "Unknown Russian icon painter, 1497", license: "Public domain" },
