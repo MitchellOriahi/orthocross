@@ -642,11 +642,14 @@ All colors MUST be HSL.
 }
 .donor-sticker { animation: donor-float 4s ease-in-out infinite; box-shadow: 0 0 40px hsl(var(--primary) / 0.35); }
 .donor-sticker-rise { box-shadow: 0 0 70px hsl(var(--primary) / 0.6); }
-/* Glowing rim on the thank-you portrait: a ring of light that breathes around the edge */
-.donor-sticker-rim { animation: donor-float 4s ease-in-out infinite, donor-rim-glow 2.8s ease-in-out infinite; }
+/* Glowing rim on the thank-you portrait: a ring of light in the donator's tier colour */
+.donor-sticker-rim {
+  --donor-sticker-tone: var(--donor-tier-tone, var(--saint-completion-gold));
+  animation: donor-float 4s ease-in-out infinite, donor-rim-glow 2.8s ease-in-out infinite;
+}
 @keyframes donor-rim-glow {
-  0%, 100% { box-shadow: 0 0 0 2px hsl(var(--primary) / 0.55), 0 0 22px 4px hsl(var(--primary) / 0.35); }
-  50% { box-shadow: 0 0 0 5px hsl(var(--primary) / 0.9), 0 0 46px 14px hsl(var(--primary) / 0.6); }
+  0%, 100% { box-shadow: 0 0 0 2px hsl(var(--donor-sticker-tone) / 0.6), 0 0 22px 4px hsl(var(--donor-sticker-tone) / 0.35); }
+  50% { box-shadow: 0 0 0 5px hsl(var(--donor-sticker-tone) / 0.95), 0 0 46px 14px hsl(var(--donor-sticker-tone) / 0.6); }
 }
 .donor-glow { box-shadow: 0 0 10px hsl(var(--primary) / 0.35); }
 @keyframes donor-rays-spin { to { transform: rotate(360deg); } }

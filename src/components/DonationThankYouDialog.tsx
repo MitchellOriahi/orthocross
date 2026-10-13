@@ -149,7 +149,7 @@ export const DonationThankYouDialog = () => {
           <>
             {tier && (
               <img src={TIER_ICONS[tier.key]} alt={tier.name} width={160} height={160}
-                className={`donor-sticker donor-sticker-rim mx-auto h-40 w-40 rounded-full object-cover ${rose ? "donor-sticker-rise" : ""}`} />
+                className={`donor-tier-${tier.key} donor-sticker donor-sticker-rim mx-auto h-40 w-40 rounded-full object-cover ${rose ? "donor-sticker-rise" : ""}`} />
             )}
             <h2 className="text-3xl font-serif text-primary">{DONOR_TEXT.thankYouTitle(status.name)}</h2>
             <p className="text-foreground/90 leading-relaxed">
