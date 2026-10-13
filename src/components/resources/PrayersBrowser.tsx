@@ -11,7 +11,7 @@ import psalmsLamb from "@/assets/prayers/categories/psalms_david_lyre.jpg.asset.
 import dailyBread from "@/assets/prayers/categories/daily_prayers_prosphora.jpg.asset.json";
 import crucifix from "@/assets/prayers/categories/christ_and_saints_crucifix.jpg.asset.json";
 import melismos from "@/assets/prayers/categories/holy_communion_melismos.jpg.asset.json";
-import healing from "@/assets/prayers/categories/needs_healing_eustratius.jpg.asset.json";
+import occasionsRaised from "@/assets/prayers/categories/occasions_good_shepherd.jpg.asset.json";
 import { PrayerListCard } from "./PrayerListCard";
 import { SubcategoryPills } from "./SaintsBrowser";
 
@@ -22,7 +22,7 @@ const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string | null;
   "christ-saints": { url: crucifix.url, source: null, author: "Contemporary icon detail: a monastic’s hands hold a wooden crucifix and a prayer rope", license: "Photograph supplied by the app owner" },
   psalms: { url: psalmsLamb.url, source: null, author: "Byzantine icon detail: a lamb held in an outstretched hand", license: "Photograph supplied by the app owner" },
   communion: { url: melismos.url, source: null, author: "Byzantine icon: the Melismos — the Christ Child upon the golden paten behind the altar", license: "Photograph supplied by the app owner" },
-  occasions: { url: healing.url, source: "St_Eustratius_(cropped).jpg", author: "Unknown painter, Sinai, 12th century", license: "Public domain" },
+  occasions: { url: occasionsRaised.url, source: null, author: "Byzantine icon detail: the Anastasis — a hand clasping the hand of the one being raised", license: "Photograph supplied by the app owner" },
 };
 
 export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange, pinnedIds, onPin }: { onSelect: (prayer: PrayerDetail) => void; onClose: () => void; tradition: PrayerTraditionFilter; onTraditionChange: (tradition: PrayerTraditionFilter) => void; pinnedIds: ReadonlySet<string>; onPin?: (id: string) => void }) {
@@ -71,7 +71,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
         </> : <>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {PRAYER_CATEGORIES.map(item => <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setCategoryQuery(""); setSubgroup(null); onTraditionChange("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
-              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-[center_34%]" : item.id === "foundational" ? "object-[center_35%]" : item.id === "communion" ? "object-[center_45%]" : item.id === "daily" ? "object-[38%_center]" : item.id === "psalms" ? "object-[center_50%]" : "object-[center_30%]"}`} /></span>
+              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-[center_34%]" : item.id === "foundational" ? "object-[center_35%]" : item.id === "communion" ? "object-[center_45%]" : item.id === "daily" ? "object-[38%_center]" : item.id === "psalms" ? "object-[center_50%]" : item.id === "occasions" ? "object-[center_50%]" : "object-[center_30%]"}`} /></span>
               <span className="mt-2 min-h-10 w-full text-sm font-medium leading-5">{item.label}</span>
             </Button>)}
           </div>
