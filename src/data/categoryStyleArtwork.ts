@@ -17,6 +17,8 @@ import coptic_mark from "@/assets/category-styles/coptic-mark.jpg.asset.json";
 import coptic_simon from "@/assets/category-styles/coptic-simon.jpg.asset.json";
 import coptic_christ from "@/assets/category-styles/coptic-christ.jpg.asset.json";
 import tewahedo_angels from "@/assets/category-styles/tewahedo-angels.jpg.asset.json";
+import tewahedo_angels_michael from "@/assets/category-styles/tewahedo-angels-michael.jpg.asset.json";
+import tewahedo_theotokos from "@/assets/category-styles/tewahedo-theotokos.jpg.asset.json";
 
 const art: Record<string, SaintDisplayIcon> = {
   "coptic-michael": { image_url: coptic_michael.url, "image_source": "https://commons.wikimedia.org/wiki/File:Coptic_Icon_of_the_Archangel_Michael.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Unknown author Unknown author", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
@@ -32,6 +34,10 @@ const art: Record<string, SaintDisplayIcon> = {
   "coptic-simon": { image_url: coptic_simon.url, "image_source": "https://commons.wikimedia.org/wiki/File:Abraham_of_Alexandria_with_Simon_the_Tanner.jpg", "image_license": "CC BY-SA 4.0", "image_license_url": "https://creativecommons.org/licenses/by-sa/4.0", "image_author": "松照庵", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
   "coptic-christ": { image_url: coptic_christ.url, "image_source": "https://commons.wikimedia.org/wiki/File:ChristCopticArt.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Afanous  at  English Wikipedia", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
   "tewahedo-angels": { image_url: tewahedo_angels.url, "image_source": "https://commons.wikimedia.org/wiki/File:Ethiopian_-_Folding_Processional_Icon_in_the_Shape_of_a_Fan_-_Walters_369_-_Open.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Anonymous  (  Ethiopia  ) Unknown author", "image_modification": "Cropped central register including museum-identified Michael, Mary and Raphael from the Ethiopian processional icon; resized." },
+  // Owner-supplied photographs of Tewahedo artwork: no online source or licence
+  // link exists, so both stay empty and the credit line renders as plain text.
+  "tewahedo-angels-michael": { image_url: tewahedo_angels_michael.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox illumination of the Archangel Michael with sword above the angel hosts; photograph supplied by the app owner", "image_modification": "Resized from the supplied photograph; original colors retained." },
+  "tewahedo-theotokos": { image_url: tewahedo_theotokos.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox icon of the Theotokos holding the Christ Child, flanked by two angels; photograph supplied by the app owner", "image_modification": "Resized from the supplied photograph; original colors retained." },
 };
 
 function saved(id: string): SaintDisplayIcon {
@@ -49,7 +55,7 @@ const byzantineAnna = saved("anna");
 type AlternateStyle = Exclude<CategoryIconStyle, "original">;
 
 export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<SaintCategoryId, "rulers">, SaintDisplayIcon>> = {
-  tewahedo: { angels: art["tewahedo-angels"], biblical: art["tewahedo-mary-george"], monastics: tewahedoMonastic, "fathers-hierarchs": art["tewahedo-hierarchs"], martyrs: art["tewahedo-mary-george"], "apostles-missionaries": art["tewahedo-angels"], laypeople: tewahedoLayperson },
+  tewahedo: { angels: art["tewahedo-angels-michael"], biblical: art["tewahedo-theotokos"], monastics: tewahedoMonastic, "fathers-hierarchs": art["tewahedo-hierarchs"], martyrs: art["tewahedo-mary-george"], "apostles-missionaries": art["tewahedo-angels"], laypeople: tewahedoLayperson },
   coptic: { angels: art["coptic-michael"], biblical: art["coptic-holy-family"], monastics: art["coptic-desert-fathers"], "fathers-hierarchs": copticFather, martyrs: art["coptic-mercurios"], "apostles-missionaries": art["coptic-mark"], laypeople: art["coptic-simon"] },
   byzantine: { angels: byzantineAngel, biblical: SAINT_DISPLAY_ICONS["mary-magdalene"], monastics: SAINT_DISPLAY_ICONS.anthony, "fathers-hierarchs": SAINT_DISPLAY_ICONS.athanasius, martyrs: SAINT_DISPLAY_ICONS.george, "apostles-missionaries": SAINT_DISPLAY_ICONS["peter-apostle"], laypeople: byzantineAnna },
 };
