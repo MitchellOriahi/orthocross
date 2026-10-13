@@ -1,6 +1,6 @@
 # Prayers category browser
 ## Profile identity tags
-- [ ] Add and persist branch, patron saint and country selectors beneath the profile sticker username; verify saved selections and branch colors.
+- [x] Added searchable branch, patron saint and country pills beneath the profile sticker username; signed-in save/reload/clear flow verified, orange/blue/grey colors checked, five tests passed and build clean.
 ## Donation gift screen
 - [x] Updated Acts quote and mission wording; added $1/$2/$5 with increasing Angel glow and clickable custom-tier previews. Fourteen tests and live amount/slider/portrait-selection checks pass; build clean. Hosted tier image delivery could not be verified in the local browser (asset URL did not load).
 ## Profile portraits
