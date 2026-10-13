@@ -288,7 +288,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           )}
 
           <Button onClick={handleDonate} disabled={loading || (isNative && productsAvailable === false)} className="h-14 w-full rounded-full text-lg" variant="sacred">
-            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</> : "Become a donator"}
+            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</> : "Donate"}
           </Button>
 
           <p className="text-xs text-muted-foreground">
