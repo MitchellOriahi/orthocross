@@ -19,6 +19,7 @@
 - [x] Added Saints-inspired six-thumbnail browser, independent searches, tradition filters and all 31 ordered micro-category chips.
 - [x] 13 tests passed; verified six category pages, all 31 chips, six loaded thumbnails, search/Back/details and phone/computer layouts; compile clean.
 - [x] Set the "Prayers to Christ and the Saints", "Foundational Prayers", "Daily Prayers" and "Holy Communion and Liturgy" thumbnails from photographs the owner supplied, credited as owner photographs without archive links; each framing compared against alternate square crops and the delivered picture checked.
+- [x] "Daily Prayers" thumbnail replaced with the owner's photograph of a still-life painting (three prosphora loaves marked with crosses on a pedestaled dish beside a lit candle and sheaves of wheat); horizontal framing 38% chosen after comparing three square crops, keeping the flame and dish fully inside.
 
 # Verse image sharing
 - [x] Rotate three designs and matching names daily; New Image adds up to three unique replacements per day's verse, preserved on reopening. Twelve licensed photos verified; eight tests and replacement/reload browser checks pass, with a clean build.
