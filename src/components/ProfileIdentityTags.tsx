@@ -12,7 +12,7 @@ import { PROFILE_COUNTRIES } from "@/data/profileCountries";
 import { cn } from "@/lib/utils";
 
 type Field = "branch" | "patron_saint_id" | "country_code" | "age";
-const AGE_OPTIONS: IdentityOption[] = Array.from({ length: 108 }, (_, i) => ({ value: String(i + 13), label: `${i + 13} years old` }));
+const AGE_OPTIONS: IdentityOption[] = Array.from({ length: 108 }, (_, i) => ({ value: String(i + 13), label: String(i + 13) }));
 const branchClasses = {
   eastern: "profile-branch-eastern",
   oriental: "profile-branch-oriental",
@@ -98,14 +98,14 @@ export default function ProfileIdentityTags() {
         <IdentityPicker label="Orthodox branch" value={data?.branch ?? null} options={ORTHODOX_BRANCHES} icon={Cross}
           className={data?.branch ? branchClasses[getBranchTradition(data.branch)] : undefined}
           disabled={saving || isPending} onSelect={value => save("branch", value)} />
-        <IdentityPicker label="Patron saint" value={data?.patron_saint_id ?? null} options={PATRON_SAINT_OPTIONS} icon={UserRound}
-          disabled={saving || isPending} onSelect={value => save("patron_saint_id", value)} />
-      </div>
-      <div className="flex flex-wrap items-start gap-2">
-        <IdentityPicker label="Country" value={data?.country_code ?? null} options={PROFILE_COUNTRIES} icon={Globe}
-          disabled={saving || isPending} onSelect={value => save("country_code", value)} />
         <IdentityPicker label="Age" value={data?.age != null ? String(data.age) : null} options={AGE_OPTIONS} icon={Cake}
           disabled={saving || isPending} onSelect={value => save("age", value === null ? null : Number(value))} />
+      </div>
+      <div className="flex flex-wrap items-start gap-2">
+        <IdentityPicker label="Patron saint" value={data?.patron_saint_id ?? null} options={PATRON_SAINT_OPTIONS} icon={UserRound}
+          disabled={saving || isPending} onSelect={value => save("patron_saint_id", value)} />
+        <IdentityPicker label="Country" value={data?.country_code ?? null} options={PROFILE_COUNTRIES} icon={Globe}
+          disabled={saving || isPending} onSelect={value => save("country_code", value)} />
       </div>
     </div>
   );
