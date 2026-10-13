@@ -1,4 +1,7 @@
 # Prayers category browser
+## Category icon styles
+- [ ] Add a far-right Icons dropdown to Saints and Prayers with shared persistent Original, Tewahedo, Coptic and Byzantine choices.
+- [ ] Source authentic licensed artwork for every category, preserve original images and layout, and verify switching/reloading in the signed-in app.
 ## Profile identity tags
 - [x] Added searchable branch, patron saint and country pills beneath the profile sticker username; signed-in save/reload/clear flow verified, orange/blue/grey colors checked, five tests passed and build clean.
 ## Donation gift screen
