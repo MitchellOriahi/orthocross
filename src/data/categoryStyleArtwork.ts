@@ -4,19 +4,19 @@ import { SAINT_CARD_ICONS } from "./saintCardIcons";
 import type { SaintCategoryId } from "./saintCategories";
 import type { PrayerCategoryId } from "./prayerCategories";
 import type { CategoryIconStyle } from "@/hooks/useCategoryIconStyle";
-import coptic_michael from "@/src/assets/category-styles/coptic-michael.jpg.asset.json";
-import coptic_desert_fathers from "@/src/assets/category-styles/coptic-desert-fathers.jpg.asset.json";
-import coptic_mercurios from "@/src/assets/category-styles/coptic-mercurios.jpg.asset.json";
-import coptic_holy_family from "@/src/assets/category-styles/coptic-holy-family.jpg.asset.json";
-import coptic_communion from "@/src/assets/category-styles/coptic-communion.jpg.asset.json";
-import tewahedo_mary_george from "@/src/assets/category-styles/tewahedo-mary-george.jpg.asset.json";
-import tewahedo_hierarchs from "@/src/assets/category-styles/tewahedo-hierarchs.jpg.asset.json";
-import tewahedo_communion from "@/src/assets/category-styles/tewahedo-communion.jpg.asset.json";
-import byzantine_communion from "@/src/assets/category-styles/byzantine-communion.jpg.asset.json";
-import coptic_mark from "@/src/assets/category-styles/coptic-mark.jpg.asset.json";
-import coptic_simon from "@/src/assets/category-styles/coptic-simon.jpg.asset.json";
-import coptic_christ from "@/src/assets/category-styles/coptic-christ.jpg.asset.json";
-import tewahedo_angels from "@/src/assets/category-styles/tewahedo-angels.jpg.asset.json";
+import coptic_michael from "@/assets/category-styles/coptic-michael.jpg.asset.json";
+import coptic_desert_fathers from "@/assets/category-styles/coptic-desert-fathers.jpg.asset.json";
+import coptic_mercurios from "@/assets/category-styles/coptic-mercurios.jpg.asset.json";
+import coptic_holy_family from "@/assets/category-styles/coptic-holy-family.jpg.asset.json";
+import coptic_communion from "@/assets/category-styles/coptic-communion.jpg.asset.json";
+import tewahedo_mary_george from "@/assets/category-styles/tewahedo-mary-george.jpg.asset.json";
+import tewahedo_hierarchs from "@/assets/category-styles/tewahedo-hierarchs.jpg.asset.json";
+import tewahedo_communion from "@/assets/category-styles/tewahedo-communion.jpg.asset.json";
+import byzantine_communion from "@/assets/category-styles/byzantine-communion.jpg.asset.json";
+import coptic_mark from "@/assets/category-styles/coptic-mark.jpg.asset.json";
+import coptic_simon from "@/assets/category-styles/coptic-simon.jpg.asset.json";
+import coptic_christ from "@/assets/category-styles/coptic-christ.jpg.asset.json";
+import tewahedo_angels from "@/assets/category-styles/tewahedo-angels.jpg.asset.json";
 
 const art: Record<string, SaintDisplayIcon> = {
   "coptic-michael": { image_url: coptic_michael.url, "image_source": "https://commons.wikimedia.org/wiki/File:Coptic_Icon_of_the_Archangel_Michael.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Unknown author Unknown author", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
@@ -48,7 +48,7 @@ const byzantineDavid = saved("david");
 const byzantineAnna = saved("anna");
 type AlternateStyle = Exclude<CategoryIconStyle, "original">;
 
-export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<SaintCategoryId, SaintDisplayIcon>> = {
+export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<SaintCategoryId, "rulers">, SaintDisplayIcon>> = {
   tewahedo: { angels: art["tewahedo-angels"], biblical: art["tewahedo-mary-george"], monastics: tewahedoMonastic, "fathers-hierarchs": art["tewahedo-hierarchs"], martyrs: art["tewahedo-mary-george"], "apostles-missionaries": art["tewahedo-angels"], laypeople: tewahedoLayperson },
   coptic: { angels: art["coptic-michael"], biblical: art["coptic-holy-family"], monastics: art["coptic-desert-fathers"], "fathers-hierarchs": copticFather, martyrs: art["coptic-mercurios"], "apostles-missionaries": art["coptic-mark"], laypeople: art["coptic-simon"] },
   byzantine: { angels: byzantineAngel, biblical: SAINT_DISPLAY_ICONS["mary-magdalene"], monastics: SAINT_DISPLAY_ICONS.anthony, "fathers-hierarchs": SAINT_DISPLAY_ICONS.athanasius, martyrs: SAINT_DISPLAY_ICONS.george, "apostles-missionaries": SAINT_DISPLAY_ICONS["peter-apostle"], laypeople: byzantineAnna },
