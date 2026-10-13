@@ -12,7 +12,7 @@ export function CategoryArtwork({ artwork, label }: { artwork: SaintDisplayIcon;
 
 export function CategoryArtworkCredit({ artwork, label }: { artwork: SaintDisplayIcon; label: string }) {
   return <p>
-    <a href={artwork.image_source} target="_blank" rel="noopener noreferrer" className="underline">{label}</a>{" · "}
+    {artwork.image_source.startsWith("http") ? <a href={artwork.image_source} target="_blank" rel="noopener noreferrer" className="underline">{label}</a> : label}{" · "}
     {artwork.image_license_url ? <a href={artwork.image_license_url} target="_blank" rel="noopener noreferrer" className="underline">{artwork.image_license}</a> : artwork.image_license}
     <span className="block">{artwork.image_author}</span>
     <span className="block">{artwork.image_modification}</span>
