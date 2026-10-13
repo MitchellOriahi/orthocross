@@ -60,6 +60,9 @@ All colors MUST be HSL.
     --radius: 0.75rem;
     --tradition-eastern: 217 91% 60%;
     --tradition-oriental: 25 95% 53%;
+    --profile-branch-eastern: 217 85% 42%;
+    --profile-branch-oriental: 25 90% 38%;
+    --profile-branch-unaffiliated: 0 0% 40%;
     /* Light mode: deep enough to read against a white page. */
     --podium-gold: 40 85% 42%;
     --podium-silver: 220 10% 42%;
@@ -90,6 +93,9 @@ All colors MUST be HSL.
   }
 
   .dark {
+    --profile-branch-eastern: var(--tradition-eastern);
+    --profile-branch-oriental: var(--tradition-oriental);
+    --profile-branch-unaffiliated: 0 0% 70%;
     --journey-glow: 0 0% 100%;
     /* Dark mode: bright enough to read against black. */
     --podium-gold: 43 88% 55%;
@@ -166,6 +172,18 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  .profile-branch-eastern { --profile-branch-color: var(--profile-branch-eastern); }
+  .profile-branch-oriental { --profile-branch-color: var(--profile-branch-oriental); }
+  .profile-branch-unaffiliated { --profile-branch-color: var(--profile-branch-unaffiliated); }
+  .profile-branch-eastern, .profile-branch-oriental, .profile-branch-unaffiliated {
+    color: hsl(var(--profile-branch-color));
+    border-color: hsl(var(--profile-branch-color) / 0.5);
+    background-color: hsl(var(--profile-branch-color) / 0.12);
+  }
+  .profile-branch-eastern:hover, .profile-branch-oriental:hover, .profile-branch-unaffiliated:hover {
+    color: hsl(var(--profile-branch-color));
+    background-color: hsl(var(--profile-branch-color) / 0.2);
+  }
   .gradient-sacred {
     background: var(--gradient-sacred);
   }

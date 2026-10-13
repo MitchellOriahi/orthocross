@@ -1162,6 +1162,35 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_identity_tags: {
+        Row: {
+          branch: string | null
+          country_code: string | null
+          patron_saint_id: string | null
+          user_id: string
+        }
+        Insert: {
+          branch?: string | null
+          country_code?: string | null
+          patron_saint_id?: string | null
+          user_id: string
+        }
+        Update: {
+          branch?: string | null
+          country_code?: string | null
+          patron_saint_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_identity_tags_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           activity_visible: boolean | null

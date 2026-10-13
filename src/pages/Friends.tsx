@@ -818,7 +818,7 @@ export default function Friends() {
               </Button>
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-12 w-12">
+                  <Button variant="ghost" size="icon" aria-label="Edit profile" className="rounded-full p-0 h-12 w-12">
                     <Avatar className="h-12 w-12 cursor-pointer">
                       <AvatarImage src={profile?.profile_picture_url || undefined} />
                       <AvatarFallback>{getUserInitials()}</AvatarFallback>
