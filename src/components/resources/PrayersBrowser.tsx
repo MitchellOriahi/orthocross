@@ -10,7 +10,7 @@ import foundationalBook from "@/assets/prayers/categories/foundational_prayers_c
 import david from "@/assets/saints/card-icons/david-portrait.jpg.asset.json";
 import blessingHand from "@/assets/prayers/categories/daily_prayers_blessing_hand.jpg.asset.json";
 import crucifix from "@/assets/prayers/categories/christ_and_saints_crucifix.jpg.asset.json";
-import supper from "@/assets/prayers/categories/holy_communion_last_supper.jpg.asset.json";
+import melismos from "@/assets/prayers/categories/holy_communion_melismos.jpg.asset.json";
 import healing from "@/assets/prayers/categories/needs_healing_eustratius.jpg.asset.json";
 import { PrayerListCard } from "./PrayerListCard";
 import { SubcategoryPills } from "./SaintsBrowser";
@@ -21,7 +21,7 @@ const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string | null;
   daily: { url: blessingHand.url, source: null, author: "Byzantine icon detail: the right hand raised in the blessing gesture of Christ", license: "Photograph supplied by the app owner" },
   "christ-saints": { url: crucifix.url, source: null, author: "Contemporary icon detail: a monastic’s hands hold a wooden crucifix and a prayer rope", license: "Photograph supplied by the app owner" },
   psalms: { url: david.url, source: "David-icon.jpg", author: "18th-century icon painter", license: "Public domain" },
-  communion: { url: supper.url, source: "Icon_last_supper.jpg", author: "Unknown Russian icon painter, 1497", license: "Public domain" },
+  communion: { url: melismos.url, source: null, author: "Byzantine icon: the Melismos — the Christ Child upon the golden paten behind the altar", license: "Photograph supplied by the app owner" },
   occasions: { url: healing.url, source: "St_Eustratius_(cropped).jpg", author: "Unknown painter, Sinai, 12th century", license: "Public domain" },
 };
 
@@ -71,7 +71,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
         </> : <>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {PRAYER_CATEGORIES.map(item => <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setCategoryQuery(""); setSubgroup(null); onTraditionChange("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
-              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-[center_34%]" : item.id === "foundational" ? "object-[center_35%]" : "object-[center_30%]"}`} /></span>
+              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-[center_34%]" : item.id === "foundational" ? "object-[center_35%]" : item.id === "communion" ? "object-[center_45%]" : "object-[center_30%]"}`} /></span>
               <span className="mt-2 min-h-10 w-full text-sm font-medium leading-5">{item.label}</span>
             </Button>)}
           </div>
