@@ -1,4 +1,4 @@
-import { DONOR_TEXT, getNextTier, getTier } from "./donorTiers.ts";
+import { DONOR_TEXT, getTier } from "./donorTiers.ts";
 
 export const APP_URL = "https://orthocross.lovable.app";
 
@@ -36,7 +36,6 @@ export async function sendThankYouOnce(admin: Admin, donationId: string) {
   const name = p?.display_name || p?.username || "friend";
   const total = await lifetimeTotal(admin, claimed.user_id);
   const tier = getTier(total);
-  const next = getNextTier(total);
   const iconUrl = tier ? `${APP_URL}/__l5e/assets-v1/${TIER_ICON_IDS[tier.key]}/tier-${tier.key}.jpg` : "";
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
 
