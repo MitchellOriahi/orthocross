@@ -14,6 +14,10 @@ import melismos from "@/assets/prayers/categories/holy_communion_melismos.jpg.as
 import occasionsRaised from "@/assets/prayers/categories/occasions_good_shepherd.jpg.asset.json";
 import { PrayerListCard } from "./PrayerListCard";
 import { SubcategoryPills } from "./SaintsBrowser";
+import { CategoryIconStyleMenu } from "./CategoryIconStyleMenu";
+import { CategoryArtwork, CategoryArtworkCredit } from "./CategoryArtwork";
+import { categoryArtwork } from "@/data/categoryStyleArtwork";
+import { useCategoryIconStyle } from "@/hooks/useCategoryIconStyle";
 
 // Prayer artwork is independent of the Saints category portrait registry.
 const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string | null; author: string; license: string }> = {
@@ -26,6 +30,7 @@ const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string | null;
 };
 
 export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange, pinnedIds, onPin }: { onSelect: (prayer: PrayerDetail) => void; onClose: () => void; tradition: PrayerTraditionFilter; onTraditionChange: (tradition: PrayerTraditionFilter) => void; pinnedIds: ReadonlySet<string>; onPin?: (id: string) => void }) {
+  const { style } = useCategoryIconStyle();
   const [category, setCategory] = useState<PrayerCategoryId | null>(null);
   const [landingQuery, setLandingQuery] = useState("");
   const [categoryQuery, setCategoryQuery] = useState("");
@@ -51,6 +56,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
       <div className="p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <h2 className="text-2xl font-semibold min-w-0 break-words">{selectedCategory?.label ?? "Prayers"}</h2>
+          {!selectedCategory && <CategoryIconStyleMenu />}
           {selectedCategory && <div className="flex gap-2" role="group" aria-label="Prayer tradition">
             {(["all", "Eastern", "Oriental"] as const).map(filter => <Button key={filter} size="sm" variant={tradition === filter ? "default" : "outline"} aria-pressed={tradition === filter} onClick={() => onTraditionChange(filter)} className={tradition === filter || filter === "all" ? "" : filter === "Eastern" ? "text-tradition-eastern hover:text-tradition-eastern border-tradition-eastern/50" : "text-tradition-oriental hover:text-tradition-oriental border-tradition-oriental/50"}>{filter === "all" ? "All" : filter}</Button>)}
           </div>}
@@ -70,13 +76,13 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
           {!prayers.length && <p className="py-6 text-center text-sm text-muted-foreground">{query.trim() ? `No prayers found matching "${query}"` : "No prayers here yet."}</p>}
         </> : <>
           <div className="grid grid-cols-2 gap-3 mb-4">
-            {PRAYER_CATEGORIES.map(item => <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setCategoryQuery(""); setSubgroup(null); onTraditionChange("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
-              <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-[center_34%]" : item.id === "foundational" ? "object-[center_35%]" : item.id === "communion" ? "object-[center_45%]" : item.id === "daily" ? "object-[38%_center]" : item.id === "psalms" ? "object-[center_50%]" : item.id === "occasions" ? "object-[center_50%]" : "object-[center_30%]"}`} /></span>
+            {PRAYER_CATEGORIES.map(item => { const artwork = categoryArtwork("prayers", style, item.id); return <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setCategoryQuery(""); setSubgroup(null); onTraditionChange("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
+              {artwork ? <CategoryArtwork key={artwork.image_url} artwork={artwork} label={item.label} /> : <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-[center_34%]" : item.id === "foundational" ? "object-[center_35%]" : item.id === "communion" ? "object-[center_45%]" : item.id === "daily" ? "object-[38%_center]" : item.id === "psalms" ? "object-[center_50%]" : item.id === "occasions" ? "object-[center_50%]" : "object-[center_30%]"}`} /></span>}
               <span className="mt-2 min-h-10 w-full text-sm font-medium leading-5">{item.label}</span>
-            </Button>)}
+            </Button>; })}
           </div>
           <details className="mt-4 text-xs text-muted-foreground"><summary className="cursor-pointer">Icon credits</summary><div className="mt-2 space-y-2 break-words">
-            {PRAYER_CATEGORIES.map(item => { const artwork = THUMBNAILS[item.id]; return <p key={item.id}>{artwork.source ? <a href={`https://commons.wikimedia.org/wiki/File:${encodeURIComponent(artwork.source)}`} target="_blank" rel="noopener noreferrer" className="underline">{item.label}</a> : <span>{item.label}</span>}{" · "}{artwork.author}{" · "}{artwork.license}</p>; })}
+            {PRAYER_CATEGORIES.map(item => { const alternate = categoryArtwork("prayers", style, item.id); if (alternate) return <CategoryArtworkCredit key={item.id} artwork={alternate} label={item.label} />; const artwork = THUMBNAILS[item.id]; return <p key={item.id}>{artwork.source ? <a href={`https://commons.wikimedia.org/wiki/File:${encodeURIComponent(artwork.source)}`} target="_blank" rel="noopener noreferrer" className="underline">{item.label}</a> : <span>{item.label}</span>}{" · "}{artwork.author}{" · "}{artwork.license}</p>; })}
           </div></details>
         </>}
       </div>

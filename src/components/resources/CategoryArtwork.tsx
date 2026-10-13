@@ -6,7 +6,7 @@ export function CategoryArtwork({ artwork, label }: { artwork: SaintDisplayIcon;
   const [failed, setFailed] = useState(false);
   return <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
     {failed ? <span className="flex h-full items-center justify-center text-muted-foreground"><Cross className="h-7 w-7" aria-hidden="true" /></span>
-      : <img src={artwork.image_url} alt={label} decoding="async" onError={() => setFailed(true)} className="h-full w-full object-cover object-center saint-portrait-image" />}
+      : <img src={artwork.image_url} alt={label} decoding="async" onError={() => setFailed(true)} className="h-full w-full object-cover object-center" />}
   </span>;
 }
 

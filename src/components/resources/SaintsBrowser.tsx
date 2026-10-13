@@ -9,8 +9,13 @@ import { SAINT_CATEGORY_DISPLAY_ICON, SAINT_DISPLAY_ICONS } from "@/data/saintDi
 import { SaintPortrait } from "./SaintPortrait";
 import { SaintCardIcon } from "./SaintCardIcon";
 import { SaintListCard } from "./SaintListCard";
+import { CategoryIconStyleMenu } from "./CategoryIconStyleMenu";
+import { CategoryArtwork, CategoryArtworkCredit } from "./CategoryArtwork";
+import { categoryArtwork } from "@/data/categoryStyleArtwork";
+import { useCategoryIconStyle } from "@/hooks/useCategoryIconStyle";
 
 export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: (saint: SaintDetail) => void; onClose: () => void; returnToSaint?: { saintId: string; sequence: number } | null }) {
+  const { style } = useCategoryIconStyle();
   const [category, setCategory] = useState<SaintCategoryId | null>(null);
   // Landing and category searches are independent: backing out of a category
   // must not carry its text into the general Saints search, and vice versa.
@@ -59,6 +64,7 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
       <div className="p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <h2 className="text-2xl font-semibold">{selectedCategory?.label ?? "Saints"}</h2>
+          {!selectedCategory && <CategoryIconStyleMenu />}
           {selectedCategory && (
             <div className="flex gap-2" role="group" aria-label="Saint tradition">
               <Button size="sm" variant={tradition === "all" ? "default" : "outline"} aria-pressed={tradition === "all"} onClick={() => setTradition("all")}>All</Button>
@@ -91,8 +97,9 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
               {SAINT_CATEGORIES.map((item, index) => {
                 // An odd tile count centers the final box under both columns.
                 const centered = index === SAINT_CATEGORIES.length - 1 && SAINT_CATEGORIES.length % 2 === 1;
-                const tile = <Button variant="ghost" onClick={() => { setCategory(item.id); setTag(null); setSubcategory(null); setTradition("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
-                  <SaintPortrait saintId={SAINT_CATEGORY_DISPLAY_ICON[item.id]} className="w-full" />
+                const artwork = categoryArtwork("saints", style, item.id);
+                const tile = <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setTag(null); setSubcategory(null); setTradition("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
+                  {artwork ? <CategoryArtwork key={artwork.image_url} artwork={artwork} label={item.label} /> : <SaintPortrait saintId={SAINT_CATEGORY_DISPLAY_ICON[item.id]} className="w-full" />}
                   <span className="mt-2 h-10 w-full text-sm font-medium leading-5 line-clamp-2">{item.label}</span>
                 </Button>;
                 return centered
@@ -103,7 +110,10 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
             <details className="mt-4 text-xs text-muted-foreground">
               <summary className="cursor-pointer">Icon credits</summary>
               <div className="mt-2 space-y-2 break-words">
-                {[...new Set(Object.values(SAINT_CATEGORY_DISPLAY_ICON))].map(id => {
+                {style !== "original" ? SAINT_CATEGORIES.map(item => {
+                  const artwork = categoryArtwork("saints", style, item.id);
+                  return artwork ? <CategoryArtworkCredit key={item.id} artwork={artwork} label={item.label} /> : null;
+                }) : [...new Set(Object.values(SAINT_CATEGORY_DISPLAY_ICON))].map(id => {
                   const icon = SAINT_DISPLAY_ICONS[id];
                   return icon ? <p key={id}><a href={icon.image_source} target="_blank" rel="noopener noreferrer" className="underline">{id.replace(/-/g, " ")}</a>{" · "}<a href={icon.image_license_url} target="_blank" rel="noopener noreferrer" className="underline">{icon.image_license}</a><span className="block">{icon.image_author}</span><span className="block">{icon.image_modification}</span></p> : null;
                 })}
