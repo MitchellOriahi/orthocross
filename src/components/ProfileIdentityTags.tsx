@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, ChevronDown, Cross, Globe, UserRound } from "lucide-react";
+import { Check, ChevronDown, Cake, Cross, Globe, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,8 @@ import { getBranchTradition, ORTHODOX_BRANCHES, PATRON_SAINT_OPTIONS, type Ident
 import { PROFILE_COUNTRIES } from "@/data/profileCountries";
 import { cn } from "@/lib/utils";
 
-type Field = "branch" | "patron_saint_id" | "country_code";
+type Field = "branch" | "patron_saint_id" | "country_code" | "age";
+const AGE_OPTIONS: IdentityOption[] = Array.from({ length: 108 }, (_, i) => ({ value: String(i + 13), label: `${i + 13} years old` }));
 const branchClasses = {
   eastern: "profile-branch-eastern",
   oriental: "profile-branch-oriental",
@@ -68,19 +69,19 @@ export default function ProfileIdentityTags() {
     queryFn: async () => {
       if (!user) return null;
       const { data, error } = await supabase.from("profile_identity_tags")
-        .select("branch, patron_saint_id, country_code").eq("user_id", user.id).maybeSingle();
+        .select("branch, patron_saint_id, country_code, age").eq("user_id", user.id).maybeSingle();
       if (error) throw error;
       return data;
     },
     enabled: !!user, staleTime: 30000,
   });
-  const save = async (field: Field, value: string | null) => {
+  const save = async (field: Field, value: string | number | null) => {
     if (!user || saving) return false;
     setSaving(true);
     try {
       const { data: updated, error } = await supabase.from("profile_identity_tags")
         .upsert({ user_id: user.id, [field]: value }, { onConflict: "user_id" })
-        .select("branch, patron_saint_id, country_code").single();
+        .select("branch, patron_saint_id, country_code, age").single();
       if (error) throw error;
       queryClient.setQueryData(queryKey, updated);
       return true;
@@ -100,6 +101,8 @@ export default function ProfileIdentityTags() {
         disabled={saving || isPending} onSelect={value => save("patron_saint_id", value)} />
       <IdentityPicker label="Country" value={data?.country_code ?? null} options={PROFILE_COUNTRIES} icon={Globe}
         disabled={saving || isPending} onSelect={value => save("country_code", value)} />
+      <IdentityPicker label="Age" value={data?.age != null ? String(data.age) : null} options={AGE_OPTIONS} icon={Cake}
+        disabled={saving || isPending} onSelect={value => save("age", value === null ? null : Number(value))} />
     </div>
   );
 }

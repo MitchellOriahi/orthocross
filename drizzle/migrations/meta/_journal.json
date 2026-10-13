@@ -64,6 +64,13 @@
       "when": 1791851877237,
       "tag": "0008_add_profile_identity_tags",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791852826416,
+      "tag": "0009_add_profile_age_tag",
+      "breakpoints": true
     }
   ]
 }

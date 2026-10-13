@@ -1164,18 +1164,21 @@ export type Database = {
       }
       profile_identity_tags: {
         Row: {
+          age: number | null
           branch: string | null
           country_code: string | null
           patron_saint_id: string | null
           user_id: string
         }
         Insert: {
+          age?: number | null
           branch?: string | null
           country_code?: string | null
           patron_saint_id?: string | null
           user_id: string
         }
         Update: {
+          age?: number | null
           branch?: string | null
           country_code?: string | null
           patron_saint_id?: string | null

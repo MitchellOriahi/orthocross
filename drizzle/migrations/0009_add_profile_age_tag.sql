@@ -1,0 +1,1 @@
+ALTER TABLE public.profile_identity_tags ADD COLUMN IF NOT EXISTS age smallint CHECK (age IS NULL OR (age BETWEEN 13 AND 120));
