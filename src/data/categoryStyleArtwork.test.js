@@ -4,8 +4,7 @@ import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
 // Photographs the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel.jpg", "tewahedo-selassie-manuscript.jpg", "tewahedo-theotokos.jpg", "tewahedo-george.jpg"];
-const STORED_ONLY = ["tewahedo-angels-michael.jpg"];
+const SUPPLIED = ["tewahedo-selassie-panel.jpg", "tewahedo-selassie-manuscript.jpg", "tewahedo-theotokos.jpg", "tewahedo-george.jpg", "tewahedo-angels-michael.jpg", "tewahedo-archangel-wings.jpg"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -59,13 +58,26 @@ test("Tewahedo Saints middle row shows the supplied Theotokos and Saint George p
   }
 });
 
-test("supplied photographs stay out of the other Tewahedo categories and every prayer tile", () => {
-  for (const category of ["martyrs", "apostles-missionaries", "laypeople"]) {
+test("Tewahedo Saints row below the middle shows the two supplied archangel photographs", () => {
+  const martyrs = categoryArtwork("saints", "tewahedo", "martyrs");
+  const missionaries = categoryArtwork("saints", "tewahedo", "apostles-missionaries");
+  expect(martyrs.image_url).toContain("tewahedo-angels-michael.jpg");
+  expect(missionaries.image_url).toContain("tewahedo-archangel-wings.jpg");
+  for (const art of [martyrs, missionaries]) {
+    expect(art.image_license).toBe("Supplied by the app owner");
+    expect(art.image_source).toBe("");
+    expect(art.image_license_url).toBe("");
+    expect(art.image_author).toContain("supplied by the app owner");
+  }
+});
+
+test("supplied photographs stay out of the remaining Tewahedo category and every prayer tile", () => {
+  for (const category of ["laypeople"]) {
     const art = categoryArtwork("saints", "tewahedo", category);
-    for (const name of [...SUPPLIED, ...STORED_ONLY]) expect(art.image_url.includes(name)).toBe(false);
+    for (const name of SUPPLIED) expect(art.image_url.includes(name)).toBe(false);
   }
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "tewahedo", category.id);
-    for (const name of [...SUPPLIED, ...STORED_ONLY]) expect(art.image_url.includes(name)).toBe(false);
+    for (const name of SUPPLIED) expect(art.image_url.includes(name)).toBe(false);
   }
 });
