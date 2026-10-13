@@ -18,6 +18,7 @@
 - [x] Imported 124 new prayers; merged eight repeated entries, preserved all 12 originals and all supplied placements.
 - [x] Added Saints-inspired six-thumbnail browser, independent searches, tradition filters and all 31 ordered micro-category chips.
 - [x] 13 tests passed; verified six category pages, all 31 chips, six loaded thumbnails, search/Back/details and phone/computer layouts; compile clean.
+- [x] Set the "Prayers to Christ and the Saints" and "Foundational Prayers" thumbnails from photographs the owner supplied, credited as owner photographs without archive links; framing compared against alternate square crops and the delivered picture checked.
 
 # Verse image sharing
 - [x] Rotate three designs and matching names daily; New Image adds up to three unique replacements per day's verse, preserved on reopening. Twelve licensed photos verified; eight tests and replacement/reload browser checks pass, with a clean build.
