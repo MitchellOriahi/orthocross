@@ -24,6 +24,8 @@ import tewahedo_george_sq from "@/assets/category-styles/tewahedo-george-sq.jpg.
 import tewahedo_angels_michael_sq from "@/assets/category-styles/tewahedo-angels-michael-sq.jpg.asset.json";
 import tewahedo_archangel_wings_sq from "@/assets/category-styles/tewahedo-archangel-wings-sq.jpg.asset.json";
 import tewahedo_laypeople from "@/assets/category-styles/tewahedo-laypeople.jpg.asset.json";
+import coptic_trinity_sq from "@/assets/category-styles/coptic-trinity-sq.jpg.asset.json";
+import coptic_fathers_sq from "@/assets/category-styles/coptic-fathers-sq.jpg.asset.json";
 
 const art: Record<string, SaintDisplayIcon> = {
   "coptic-michael": { image_url: coptic_michael.url, "image_source": "https://commons.wikimedia.org/wiki/File:Coptic_Icon_of_the_Archangel_Michael.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Unknown author Unknown author", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
@@ -38,6 +40,10 @@ const art: Record<string, SaintDisplayIcon> = {
   "coptic-mark": { image_url: coptic_mark.url, "image_source": "https://commons.wikimedia.org/wiki/File:StMarkcoptic.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Ldingley  at  English Wikipedia  and/or  Lanternix", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
   "coptic-simon": { image_url: coptic_simon.url, "image_source": "https://commons.wikimedia.org/wiki/File:Abraham_of_Alexandria_with_Simon_the_Tanner.jpg", "image_license": "CC BY-SA 4.0", "image_license_url": "https://creativecommons.org/licenses/by-sa/4.0", "image_author": "松照庵", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
   "coptic-christ": { image_url: coptic_christ.url, "image_source": "https://commons.wikimedia.org/wiki/File:ChristCopticArt.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Afanous  at  English Wikipedia", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
+  // Owner-supplied Coptic-style icons: no online source or licence link
+  // exists, so both stay empty and the credit line renders as plain text.
+  "coptic-trinity-sq": { image_url: coptic_trinity_sq.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Coptic icon of the three angels who visited Abraham at the oak of Mamre, with Abraham and Sarah offering hospitality; image supplied by the app owner", "image_modification": "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
+  "coptic-fathers-sq": { image_url: coptic_fathers_sq.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Coptic icon of an elderly desert father teaching the faith, surrounded by four haloed saints with Coptic inscriptions; image supplied by the app owner", "image_modification": "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
   "tewahedo-angels": { image_url: tewahedo_angels.url, "image_source": "https://commons.wikimedia.org/wiki/File:Ethiopian_-_Folding_Processional_Icon_in_the_Shape_of_a_Fan_-_Walters_369_-_Open.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Anonymous  (  Ethiopia  ) Unknown author", "image_modification": "Cropped central register including museum-identified Michael, Mary and Raphael from the Ethiopian processional icon; resized." },
   // Owner-supplied photographs of Tewahedo artwork: no online source or licence
   // link exists, so both stay empty and the credit line renders as plain text.
@@ -65,7 +71,7 @@ type AlternateStyle = Exclude<CategoryIconStyle, "original">;
 
 export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<SaintCategoryId, "rulers">, SaintDisplayIcon>> = {
   tewahedo: { angels: art["tewahedo-selassie-panel"], biblical: art["tewahedo-selassie-manuscript"], monastics: art["tewahedo-theotokos"], "fathers-hierarchs": art["tewahedo-george"], martyrs: art["tewahedo-angels-michael"], "apostles-missionaries": art["tewahedo-archangel-wings"], laypeople: art["tewahedo-laypeople"] },
-  coptic: { angels: art["coptic-michael"], biblical: art["coptic-holy-family"], monastics: art["coptic-desert-fathers"], "fathers-hierarchs": copticFather, martyrs: art["coptic-mercurios"], "apostles-missionaries": art["coptic-mark"], laypeople: art["coptic-simon"] },
+  coptic: { angels: art["coptic-trinity-sq"], biblical: art["coptic-fathers-sq"], monastics: art["coptic-desert-fathers"], "fathers-hierarchs": copticFather, martyrs: art["coptic-mercurios"], "apostles-missionaries": art["coptic-mark"], laypeople: art["coptic-simon"] },
   byzantine: { angels: byzantineAngel, biblical: SAINT_DISPLAY_ICONS["mary-magdalene"], monastics: SAINT_DISPLAY_ICONS.anthony, "fathers-hierarchs": SAINT_DISPLAY_ICONS.athanasius, martyrs: SAINT_DISPLAY_ICONS.george, "apostles-missionaries": SAINT_DISPLAY_ICONS["peter-apostle"], laypeople: byzantineAnna },
 };
 
