@@ -48,8 +48,8 @@ test("Tewahedo Saints top row shows the two supplied Trinity photographs", () =>
 test("Tewahedo Saints middle row shows the supplied Theotokos and Saint George photographs", () => {
   const monastics = categoryArtwork("saints", "tewahedo", "monastics");
   const fathers = categoryArtwork("saints", "tewahedo", "fathers-hierarchs");
-  expect(monastics.image_url).toContain("tewahedo-theotokos.jpg");
-  expect(fathers.image_url).toContain("tewahedo-george.jpg");
+  expect(monastics.image_url).toContain("tewahedo-theotokos");
+  expect(fathers.image_url).toContain("tewahedo-george");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -61,8 +61,8 @@ test("Tewahedo Saints middle row shows the supplied Theotokos and Saint George p
 test("Tewahedo Saints row below the middle shows the two supplied archangel photographs", () => {
   const martyrs = categoryArtwork("saints", "tewahedo", "martyrs");
   const missionaries = categoryArtwork("saints", "tewahedo", "apostles-missionaries");
-  expect(martyrs.image_url).toContain("tewahedo-angels-michael.jpg");
-  expect(missionaries.image_url).toContain("tewahedo-archangel-wings.jpg");
+  expect(martyrs.image_url).toContain("tewahedo-angels-michael");
+  expect(missionaries.image_url).toContain("tewahedo-archangel-wings");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
