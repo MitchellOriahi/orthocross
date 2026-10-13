@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getTier, getNextTier } from "../../supabase/functions/_shared/donorTiers.ts";
+import { getTier, getNextTier, capitalizeName } from "../../supabase/functions/_shared/donorTiers.ts";
 
 describe("donor tiers", () => {
   test("$1 is Angel", () => expect(getTier(100)?.name).toBe("Angel"));
@@ -13,4 +13,11 @@ describe("donor tiers", () => {
     expect(n?.remainingCents).toBe(900);
   });
   test("Seraph has no next tier", () => expect(getNextTier(100000)).toBeNull());
+});
+
+describe("donor name", () => {
+  test("lowercase name gets a capital first letter", () => expect(capitalizeName("john")).toBe("John"));
+  test("the rest of the name is left exactly as typed", () => expect(capitalizeName("mary Jane")).toBe("Mary Jane"));
+  test("an already capital name is unchanged", () => expect(capitalizeName("Anonymous Donor")).toBe("Anonymous Donor"));
+  test("a missing name stays empty", () => expect(capitalizeName("")).toBe(""));
 });
