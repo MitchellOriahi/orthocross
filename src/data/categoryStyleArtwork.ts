@@ -64,7 +64,7 @@ const byzantineAnna = saved("anna");
 type AlternateStyle = Exclude<CategoryIconStyle, "original">;
 
 export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<SaintCategoryId, "rulers">, SaintDisplayIcon>> = {
-  tewahedo: { angels: art["tewahedo-selassie-panel"], biblical: art["tewahedo-selassie-manuscript"], monastics: art["tewahedo-theotokos"], "fathers-hierarchs": art["tewahedo-george"], martyrs: art["tewahedo-angels-michael"], "apostles-missionaries": art["tewahedo-archangel-wings"], laypeople: tewahedoLayperson },
+  tewahedo: { angels: art["tewahedo-selassie-panel"], biblical: art["tewahedo-selassie-manuscript"], monastics: art["tewahedo-theotokos"], "fathers-hierarchs": art["tewahedo-george"], martyrs: art["tewahedo-angels-michael"], "apostles-missionaries": art["tewahedo-archangel-wings"], laypeople: art["tewahedo-laypeople"] },
   coptic: { angels: art["coptic-michael"], biblical: art["coptic-holy-family"], monastics: art["coptic-desert-fathers"], "fathers-hierarchs": copticFather, martyrs: art["coptic-mercurios"], "apostles-missionaries": art["coptic-mark"], laypeople: art["coptic-simon"] },
   byzantine: { angels: byzantineAngel, biblical: SAINT_DISPLAY_ICONS["mary-magdalene"], monastics: SAINT_DISPLAY_ICONS.anthony, "fathers-hierarchs": SAINT_DISPLAY_ICONS.athanasius, martyrs: SAINT_DISPLAY_ICONS.george, "apostles-missionaries": SAINT_DISPLAY_ICONS["peter-apostle"], laypeople: byzantineAnna },
 };
