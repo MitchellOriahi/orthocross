@@ -3,9 +3,9 @@
 - Persist terminal read-aloud service failures across reloads and stop prefetch/lookahead on failure; this prevents credit/access failures from producing repeated requests or unhandled rejections.
 - Estimate read-aloud word starts from WAV speech regions and follow the playing media clock; Gemini supplies no exact timestamps.
 <!-- LOVABLE:END -->
-- Cache successful avatar images on-device by source in a bounded CacheStorage library; shared AvatarImage uses local blobs with cache-busting bounded retries and an online-event reset so portraits survive navigation and transient network failures.
+- Cache avatars by source in bounded CacheStorage; shared AvatarImage uses local blobs, bounded cache-busting retries and online-event resets to survive navigation and transient failures.
 - Embed optimized Church Guide cross variants as data URLs in the page bundle so rendering does not wait for separate image requests.
-- Track lifetime saint-story completion by exact roster ID in the existing private reading records and shared query cache; derive the all-stories award from unique roster IDs so same-name saints and cross-category memberships cannot inflate completion.
+- Track lifetime saint-story completion by exact roster ID in private reading records and shared query cache; award all-stories completion by unique IDs to avoid namesake and membership inflation.
 
 - Pause Saints via a visibility selector; keep the saved catalog and presentation intact.
 - Keep the Saints browser separate from saved biographies; audited portrait registries preserve identities and classifications.
@@ -24,7 +24,8 @@
 - Keep style-specific verse typography in a dedicated canvas renderer with measured text fitting and global artwork palette tokens, so all styles preserve the complete verse without clipping.
 - Resolve every island lesson image through a provenance registry of stored assets, retain source/license credits, and use cover framing with upper alignment for face-focused artwork so frames stay filled without cropping out faces.
 - Reset island detail scroll before paint on each island selection, because same-page selection does not trigger route scroll restoration.
-- Keep additional saint lives in a typed catalog with stored icon pointers and per-icon provenance, merging alphabetically with the original saints so additions preserve existing identities and presentation.- Show Synaxaria-researched roster stories from a separate id-keyed stories file ahead of preserved biographies, so expanded lives never overwrite the saved catalog.
+- Merge additional typed saint lives alphabetically with originals, keeping icon pointers and provenance to preserve identities and presentation.
+- Prefer separate ID-keyed Synaxaria roster stories over preserved biographies, so expanded lives never overwrite the saved catalog.
 - Resolve saint card icons through a bundled roster-keyed registry with focus/zoom crop values, overridden by admin-saved rows from the hidden icon tuner; derive detail images and credits from the same registry so new portraits keep attribution without touching the saved catalog or card layout.
 - Fetch public permission-based Athonite catalogs through an authenticated, fixed-collection cloud function with storage caching and a persistent blocked-feed stop flag; this operation cannot approve portraits or alter saint records.
 - Verify Stripe payments and compute totals server-side; queue friend alerts via a service-only donation-keyed function enforcing anonymity, friendship, blocks and preferences, with push UUID idempotency to prevent duplicate alerts.
