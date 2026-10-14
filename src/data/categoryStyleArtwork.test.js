@@ -35,7 +35,7 @@ test("Tewahedo prayers show all six supplied panels in the arranged order withou
     const artwork = categoryArtwork("prayers", "tewahedo", category);
     expect(artwork.image_url).toContain(`tewahedo-prayer-${placed[category]}-sq.jpg`);
     expect(artwork.image_license).toBe("Supplied by the app owner");
-    expect(artwork.image_source).toBe("");
+    expect(artwork.image_source).toBe("https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cmthYmV0Zjcw");
     expect(artwork.image_license_url).toBe("");
     return artwork.image_url;
   });
@@ -56,7 +56,7 @@ test("each tradition covers all seven saint and six prayer categories with store
         expect(art.image_url).toStartWith("/__l5e/assets-v1/");
         expect(art.image_author.length).toBeGreaterThan(0);
         if (art.image_license === "Supplied by the app owner") {
-          expect(art.image_source).toBe("");
+          expect(art.image_source === "" || ["www.copticicon.com", "www.instagram.com"].includes(new URL(art.image_source).hostname)).toBe(true);
           expect(art.image_license_url).toBe("");
         } else {
           expect(new URL(art.image_source).hostname).toBe("commons.wikimedia.org");
@@ -261,9 +261,9 @@ test("Coptic prayers top row shows the supplied Gospel book and scroll panels, s
   expect(daily.image_url).toContain("coptic-prayer-daily-sq.jpg");
   for (const art of [foundational, daily]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe("https://www.copticicon.com/");
     expect(art.image_license_url).toBe("");
-    expect(art.image_author).toContain("supplied by the app owner");
+    expect(art.image_author).toContain("George Makary");
     expect(art.image_modification).toContain("Square-cropped");
   }
   // The tiles below the top row carry their own panels, including the supplied left-column pair.
@@ -286,9 +286,9 @@ test("Coptic prayers right column shows the supplied Eucharist and Lamb panels, 
   expect(categoryArtwork("prayers", "coptic", "daily").image_url).toContain("coptic-prayer-daily-sq.jpg");
   for (const panel of [communion, psalms]) {
     expect(panel.image_license).toBe("Supplied by the app owner");
-    expect(panel.image_source).toBe("");
+    expect(panel.image_source).toBe("https://www.copticicon.com/");
     expect(panel.image_license_url).toBe("");
-    expect(panel.image_author).toContain("supplied by the app owner");
+    expect(panel.image_author).toContain("George Makary");
     expect(panel.image_modification).toContain("Square-cropped");
   }
   // The whole left column is supplied artwork now.
@@ -310,9 +310,9 @@ test("Coptic prayers left column shows the supplied blessing-hands and jar panel
   expect(occasions.image_url).toContain("coptic-prayer-occasions-sq.jpg");
   for (const panel of [christSaints, occasions]) {
     expect(panel.image_license).toBe("Supplied by the app owner");
-    expect(panel.image_source).toBe("");
+    expect(panel.image_source).toBe("https://www.copticicon.com/");
     expect(panel.image_license_url).toBe("");
-    expect(panel.image_author).toContain("supplied by the app owner");
+    expect(panel.image_author).toContain("George Makary");
     expect(panel.image_modification).toContain("Square-cropped");
   }
   // The top-left tile keeps the Gospel book, so the whole left column is supplied artwork.
@@ -322,5 +322,32 @@ test("Coptic prayers left column shows the supplied blessing-hands and jar panel
     const url = categoryArtwork("saints", "coptic", category.id).image_url;
     expect(url.includes("coptic-prayer-christ-saints")).toBe(false);
     expect(url.includes("coptic-prayer-occasions")).toBe(false);
+  }
+});
+
+test("prayer tiles credit the artists of the supplied artwork", () => {
+  const RUBLEV = "Andrei Rublev, Holy Gates";
+  const MAKARY = "George Makary";
+  const YAHUDAH = "Abba Yahudah's PROTECTION, Oil on Canvas";
+  const MAKARY_PAGE = "https://www.copticicon.com/";
+  const YAHUDAH_POST = "https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cmthYmV0Zjcw";
+  for (const category of PRAYER_CATEGORIES) {
+    // The Russian panels are Rublev's Holy Gates; no online page was supplied for them.
+    const russian = categoryArtwork("prayers", "byzantine", category.id);
+    expect(russian.image_author).toContain(RUBLEV);
+    expect(russian.image_source).toBe("");
+    // The Coptic panels are George Makary's, linked to his icon studio page.
+    const coptic = categoryArtwork("prayers", "coptic", category.id);
+    expect(coptic.image_author).toContain(MAKARY);
+    expect(coptic.image_source).toBe(MAKARY_PAGE);
+    // The Tewahedo panels are Abba Yahudah's PROTECTION, oil on canvas, linked to its post.
+    const tewahedo = categoryArtwork("prayers", "tewahedo", category.id);
+    expect(tewahedo.image_author).toContain(YAHUDAH);
+    expect(tewahedo.image_source).toBe(YAHUDAH_POST);
+  }
+  // Saints tiles keep their own credits: the prayer artists' links stay out of them.
+  for (const category of SAINT_CATEGORIES) {
+    expect(categoryArtwork("saints", "coptic", category.id).image_source).toBe("");
+    expect(categoryArtwork("saints", "tewahedo", category.id).image_source).toBe("");
   }
 });
