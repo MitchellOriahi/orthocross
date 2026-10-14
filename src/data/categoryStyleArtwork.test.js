@@ -4,7 +4,7 @@ import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
 // Photographs and icons the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david"];
+const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -104,8 +104,9 @@ test("the supplied Coptic icons stay out of the remaining Coptic saint tiles", (
 test("Coptic Saints middle row shows the two supplied Coptic icons, square-cropped", () => {
   const monastics = categoryArtwork("saints", "coptic", "monastics");
   const fathers = categoryArtwork("saints", "coptic", "fathers-hierarchs");
-  expect(monastics.image_url).toContain("coptic-moses-strong");
+  expect(monastics.image_url).toContain("coptic-church-bridegroom");
   expect(fathers.image_url).toContain("coptic-john-olympia");
+  expect(monastics.image_modification).toContain("both halos kept whole");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
