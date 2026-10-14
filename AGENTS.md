@@ -36,4 +36,4 @@
 - Schedule donation and rating prompts through one pure, tested coordinator (src/lib/promptScheduler) mounted only on the Board, so prompts never collide or interrupt reading.
 - Red confirm buttons use the alert dialog's `destructive` prop, not a `bg-destructive` override.
 
-- Resolve category artwork through a shared tradition-keyed provenance registry and device-persisted selection; preserve original artwork and individual saint identities so style changes never rewrite content.
+- Resolve category artwork and silhouette framing through the shared provenance registry; preserve originals and identities. Transparent panels render without borders or backgrounds at stable dimensions.
