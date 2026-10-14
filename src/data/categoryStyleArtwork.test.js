@@ -4,7 +4,7 @@ import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
 // Photographs and icons the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom"];
+const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -150,6 +150,25 @@ test("the Coptic laypeople tile shows the third supplied image of a martyr benea
   expect(art.image_author).toContain("supplied by the app owner");
   expect(art.image_modification).toContain("Square-cropped");
   expect(art.image_url.includes("coptic-simon")).toBe(false);
+});
+
+test("Byzantine Saints middle row shows the supplied Christ and hierarch icons, square-cropped", () => {
+  const monastics = categoryArtwork("saints", "byzantine", "monastics");
+  const fathers = categoryArtwork("saints", "byzantine", "fathers-hierarchs");
+  expect(monastics.image_url).toContain("byzantine-owner-christ");
+  expect(fathers.image_url).toContain("byzantine-owner-hierarch");
+  for (const art of [monastics, fathers]) {
+    expect(art.image_license).toBe("Supplied by the app owner");
+    expect(art.image_source).toBe("");
+    expect(art.image_license_url).toBe("");
+    expect(art.image_author).toContain("supplied by the app owner");
+    expect(art.image_modification).toContain("Square-cropped");
+  }
+  for (const category of PRAYER_CATEGORIES) {
+    const art = categoryArtwork("prayers", "byzantine", category.id);
+    expect(art.image_url.includes("byzantine-owner-christ")).toBe(false);
+    expect(art.image_url.includes("byzantine-owner-hierarch")).toBe(false);
+  }
 });
 
 test("supplied photographs stay out of the remaining Tewahedo category and every prayer tile", () => {
