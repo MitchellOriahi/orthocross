@@ -255,7 +255,7 @@ test("Coptic prayers top row shows the supplied Gospel book and scroll panels, s
   }
   // The tiles below the top row carry their own panels, including the supplied left-column pair.
   expect(categoryArtwork("prayers", "coptic", "christ-saints").image_url).toContain("coptic-prayer-christ-saints-sq.jpg");
-  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-prayer-occasions-egret-v2-sq.jpg");
+  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-prayer-occasions-sq.jpg");
   // Neither panel replaces a Coptic Saints tile.
   for (const category of SAINT_CATEGORIES) {
     const url = categoryArtwork("saints", "coptic", category.id).image_url;
@@ -281,7 +281,7 @@ test("Coptic prayers right column shows the supplied Eucharist and Lamb panels, 
   // The whole left column is supplied artwork now.
   expect(categoryArtwork("prayers", "coptic", "foundational").image_url).toContain("coptic-prayer-foundational-sq.jpg");
   expect(categoryArtwork("prayers", "coptic", "christ-saints").image_url).toContain("coptic-prayer-christ-saints-sq.jpg");
-  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-prayer-occasions-egret-v2-sq.jpg");
+  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-prayer-occasions-sq.jpg");
   // Neither panel replaces a Coptic Saints tile.
   for (const category of SAINT_CATEGORIES) {
     const url = categoryArtwork("saints", "coptic", category.id).image_url;
@@ -290,13 +290,11 @@ test("Coptic prayers right column shows the supplied Eucharist and Lamb panels, 
   }
 });
 
-test("Coptic prayers left column shows the supplied blessing-hands and wading-bird panels, square-cropped", () => {
+test("Coptic prayers left column shows the supplied blessing-hands and jar panels, square-cropped", () => {
   const christSaints = categoryArtwork("prayers", "coptic", "christ-saints");
   const occasions = categoryArtwork("prayers", "coptic", "occasions");
   expect(christSaints.image_url).toContain("coptic-prayer-christ-saints-sq.jpg");
-  expect(occasions.image_url).toContain("coptic-prayer-occasions-egret-v2-sq.jpg");
-  // The wading-bird panel replaces the water-jar panel in this tile.
-  expect(occasions.image_url.includes("coptic-prayer-occasions-sq.jpg")).toBe(false);
+  expect(occasions.image_url).toContain("coptic-prayer-occasions-sq.jpg");
   for (const panel of [christSaints, occasions]) {
     expect(panel.image_license).toBe("Supplied by the app owner");
     expect(panel.image_source).toBe("");
