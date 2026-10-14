@@ -263,3 +263,29 @@ test("Coptic prayers top row shows the supplied Gospel book and scroll panels, s
     expect(url.includes("coptic-prayer-daily")).toBe(false);
   }
 });
+
+test("Coptic prayers right column shows the supplied Eucharist and Lamb panels, square-cropped", () => {
+  const communion = categoryArtwork("prayers", "coptic", "communion");
+  const psalms = categoryArtwork("prayers", "coptic", "psalms");
+  expect(communion.image_url).toContain("coptic-prayer-communion-sq.jpg");
+  expect(psalms.image_url).toContain("coptic-prayer-psalms-sq.jpg");
+  // The top-right tile keeps the scroll panel, so the whole right column is supplied artwork.
+  expect(categoryArtwork("prayers", "coptic", "daily").image_url).toContain("coptic-prayer-daily-sq.jpg");
+  for (const panel of [communion, psalms]) {
+    expect(panel.image_license).toBe("Supplied by the app owner");
+    expect(panel.image_source).toBe("");
+    expect(panel.image_license_url).toBe("");
+    expect(panel.image_author).toContain("supplied by the app owner");
+    expect(panel.image_modification).toContain("Square-cropped");
+  }
+  // The left column keeps the artwork it had before.
+  expect(categoryArtwork("prayers", "coptic", "foundational").image_url).toContain("coptic-prayer-foundational-sq.jpg");
+  expect(categoryArtwork("prayers", "coptic", "christ-saints").image_url).toContain("coptic-christ");
+  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-holy-family");
+  // Neither panel replaces a Coptic Saints tile.
+  for (const category of SAINT_CATEGORIES) {
+    const url = categoryArtwork("saints", "coptic", category.id).image_url;
+    expect(url.includes("coptic-prayer-communion")).toBe(false);
+    expect(url.includes("coptic-prayer-psalms")).toBe(false);
+  }
+});
