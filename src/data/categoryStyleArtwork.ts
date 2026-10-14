@@ -69,6 +69,12 @@ import russian_prayer_psalms from "@/assets/category-styles/russian-prayer-psalm
 
 export type CategoryStyleArtwork = SaintDisplayIcon & { image_shape?: "silhouette" };
 
+// Attribution pages for the artists whose work fills the prayer tiles. The images
+// themselves were supplied by the app owner, so the licence stays owner-supplied;
+// these links only say whose work it is, so the credit line renders them as a link.
+const MAKARY_PAGE = "https://www.copticicon.com/";
+const YAHUDAH_PROTECTION = "https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cmthYmV0Zjcw";
+
 const art: Record<string, CategoryStyleArtwork> = {
   "russian-prayer-foundational": { image_url: russian_prayer_foundational.url, image_shape: "silhouette", image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Andrei Rublev, Holy Gates — curved historical icon panel depicting an angel", image_modification: "Exterior white background made transparent; complete curved panel and original artwork retained without repainting." },
   "russian-prayer-daily": { image_url: russian_prayer_daily.url, image_shape: "silhouette", image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Andrei Rublev, Holy Gates — curved historical icon panel depicting seated figures and architecture", image_modification: "Exterior white background made transparent; complete curved panel and original artwork retained without repainting." },
