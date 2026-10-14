@@ -83,8 +83,8 @@ test("the laypeople tile shows the supplied cherubim-grid photograph, square-cro
 test("Coptic Saints top row shows the two supplied Coptic icons", () => {
   const angels = categoryArtwork("saints", "coptic", "angels");
   const biblical = categoryArtwork("saints", "coptic", "biblical");
-  expect(angels.image_url).toContain("coptic-trinity");
-  expect(biblical.image_url).toContain("coptic-fathers");
+  expect(angels.image_url).toContain("coptic-angel-three-saints");
+  expect(biblical.image_url).toContain("coptic-family-christ");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -104,8 +104,8 @@ test("the supplied Coptic icons stay out of the remaining Coptic saint tiles", (
 test("Coptic Saints middle row shows the two supplied Coptic icons, square-cropped", () => {
   const monastics = categoryArtwork("saints", "coptic", "monastics");
   const fathers = categoryArtwork("saints", "coptic", "fathers-hierarchs");
-  expect(monastics.image_url).toContain("coptic-john-olympia");
-  expect(fathers.image_url).toContain("coptic-christ-photini");
+  expect(monastics.image_url).toContain("coptic-moses-strong");
+  expect(fathers.image_url).toContain("coptic-john-olympia");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -140,9 +140,9 @@ test("Coptic Saints row under the middle shows the supplied Saint Photini and Sa
   }
 });
 
-test("the Coptic laypeople tile shows the supplied King David icon, square-cropped", () => {
+test("the Coptic laypeople tile shows the third supplied image of a martyr beneath an angel, square-cropped", () => {
   const art = categoryArtwork("saints", "coptic", "laypeople");
-  expect(art.image_url).toContain("coptic-david");
+  expect(art.image_url).toContain("coptic-martyr-angel");
   expect(art.image_license).toBe("Supplied by the app owner");
   expect(art.image_source).toBe("");
   expect(art.image_license_url).toBe("");
