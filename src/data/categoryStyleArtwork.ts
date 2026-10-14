@@ -46,6 +46,8 @@ import byzantine_creation_light from "@/assets/category-styles/byzantine-creatio
 import byzantine_firmament from "@/assets/category-styles/byzantine-firmament-sq.jpg.asset.json";
 import byzantine_dry_land from "@/assets/category-styles/byzantine-dry-land-sq.jpg.asset.json";
 import byzantine_lights from "@/assets/category-styles/byzantine-lights-sq.jpg.asset.json";
+import byzantine_swarms from "@/assets/category-styles/byzantine-swarms-sq.jpg.asset.json";
+import byzantine_adam from "@/assets/category-styles/byzantine-adam-sq.jpg.asset.json";
 
 const art: Record<string, SaintDisplayIcon> = {
   "byzantine-owner-michael": { image_url: byzantine_owner_michael.url, image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Byzantine-style icon of Archangel Michael with sword and outstretched wings; image supplied by the app owner", image_modification: "Square-cropped from the top to keep the halo whole; original colors retained." },
