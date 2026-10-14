@@ -11,6 +11,22 @@ test("Original leaves all existing category art untouched", () => {
   for (const category of PRAYER_CATEGORIES) expect(categoryArtwork("prayers", "original", category.id)).toBeNull();
 });
 
+test("Tewahedo prayers use all six supplied panels in upload order without replacing Saints art", () => {
+  const categories = ["foundational", "daily", "christ-saints", "communion", "occasions", "psalms"];
+  const urls = categories.map(category => {
+    const artwork = categoryArtwork("prayers", "tewahedo", category);
+    expect(artwork.image_url).toContain(`tewahedo-prayer-${category}-sq.jpg`);
+    expect(artwork.image_license).toBe("Supplied by the app owner");
+    expect(artwork.image_source).toBe("");
+    expect(artwork.image_license_url).toBe("");
+    return artwork.image_url;
+  });
+  expect(new Set(urls).size).toBe(6);
+  for (const category of SAINT_CATEGORIES) {
+    expect(urls.includes(categoryArtwork("saints", "tewahedo", category.id).image_url)).toBe(false);
+  }
+});
+
 test("each tradition covers all seven saint and six prayer categories with stored credited art", () => {
   expect(SAINT_CATEGORIES).toHaveLength(7);
   expect(PRAYER_CATEGORIES).toHaveLength(6);
