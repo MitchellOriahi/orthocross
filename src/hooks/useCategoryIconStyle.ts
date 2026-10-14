@@ -3,7 +3,7 @@ import { useSyncExternalStore } from "react";
 export const CATEGORY_ICON_STYLES = ["original", "tewahedo", "coptic", "byzantine"] as const;
 export type CategoryIconStyle = typeof CATEGORY_ICON_STYLES[number];
 export const CATEGORY_ICON_STYLE_LABELS: Record<CategoryIconStyle, string> = {
-  original: "Greek", tewahedo: "Tewahedo", coptic: "Coptic", byzantine: "Byzantine",
+  original: "Greek", tewahedo: "Tewahedo", coptic: "Coptic", byzantine: "Russian",
 };
 const KEY = "category-icon-style";
 const EVENT = "category-icon-style-change";
