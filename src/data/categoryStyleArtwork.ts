@@ -40,6 +40,8 @@ import coptic_prayer_foundational from "@/assets/category-styles/coptic-prayer-f
 import coptic_prayer_daily from "@/assets/category-styles/coptic-prayer-daily-sq.jpg.asset.json";
 import coptic_prayer_communion from "@/assets/category-styles/coptic-prayer-communion-sq.jpg.asset.json";
 import coptic_prayer_psalms from "@/assets/category-styles/coptic-prayer-psalms-sq.jpg.asset.json";
+import coptic_prayer_christ_saints from "@/assets/category-styles/coptic-prayer-christ-saints-sq.jpg.asset.json";
+import coptic_prayer_occasions from "@/assets/category-styles/coptic-prayer-occasions-sq.jpg.asset.json";
 import byzantine_owner_michael from "@/assets/category-styles/byzantine-owner-michael-sq.jpg.asset.json";
 import byzantine_owner_theotokos from "@/assets/category-styles/byzantine-owner-theotokos-sq.jpg.asset.json";
 import byzantine_owner_christ from "@/assets/category-styles/byzantine-owner-christ-sq.jpg.asset.json";
@@ -142,7 +144,7 @@ export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<Sai
 
 export const PRAYER_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<PrayerCategoryId, SaintDisplayIcon>> = {
   tewahedo: { foundational: art["tewahedo-prayer-occasions"], daily: art["tewahedo-prayer-daily"], "christ-saints": art["tewahedo-prayer-communion"], communion: art["tewahedo-prayer-psalms"], occasions: art["tewahedo-prayer-foundational"], psalms: art["tewahedo-prayer-christ-saints"] },
-  coptic: { foundational: art["coptic-prayer-foundational"], daily: art["coptic-prayer-daily"], "christ-saints": art["coptic-christ"], psalms: art["coptic-prayer-psalms"], communion: art["coptic-prayer-communion"], occasions: art["coptic-holy-family"] },
+  coptic: { foundational: art["coptic-prayer-foundational"], daily: art["coptic-prayer-daily"], "christ-saints": art["coptic-prayer-christ-saints"], psalms: art["coptic-prayer-psalms"], communion: art["coptic-prayer-communion"], occasions: art["coptic-prayer-occasions"] },
   byzantine: { foundational: SAINT_DISPLAY_ICONS["peter-apostle"], daily: SAINT_DISPLAY_ICONS.anthony, "christ-saints": SAINT_DISPLAY_ICONS["mary-magdalene"], psalms: byzantineDavid, communion: art["byzantine-communion"], occasions: byzantineAnna },
 };
 
