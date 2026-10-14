@@ -201,11 +201,11 @@ test("supplied photographs stay out of the remaining Tewahedo category and every
   }
 });
 
-test("Byzantine Saints row under the middle shows the supplied Saint George and Mandylion icons, square-cropped", () => {
+test("Byzantine Saints row under the middle shows the supplied fifth- and sixth-day creation icons, square-cropped", () => {
   const martyrs = categoryArtwork("saints", "byzantine", "martyrs");
   const missionaries = categoryArtwork("saints", "byzantine", "apostles-missionaries");
-  expect(martyrs.image_url).toContain("byzantine-owner-george");
-  expect(missionaries.image_url).toContain("byzantine-owner-mandylion");
+  expect(martyrs.image_url).toContain("byzantine-swarms");
+  expect(missionaries.image_url).toContain("byzantine-adam");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -215,7 +215,7 @@ test("Byzantine Saints row under the middle shows the supplied Saint George and 
   }
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "byzantine", category.id);
-    expect(art.image_url.includes("byzantine-owner-george")).toBe(false);
-    expect(art.image_url.includes("byzantine-owner-mandylion")).toBe(false);
+    expect(art.image_url.includes("byzantine-swarms")).toBe(false);
+    expect(art.image_url.includes("byzantine-adam")).toBe(false);
   }
 });
