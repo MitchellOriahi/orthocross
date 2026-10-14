@@ -152,6 +152,25 @@ test("the Coptic laypeople tile shows the third supplied image of a martyr benea
   expect(art.image_url.includes("coptic-simon")).toBe(false);
 });
 
+test("Byzantine Saints top row shows the supplied creation icons, square-cropped", () => {
+  const angels = categoryArtwork("saints", "byzantine", "angels");
+  const biblical = categoryArtwork("saints", "byzantine", "biblical");
+  expect(angels.image_url).toContain("byzantine-creation-light");
+  expect(biblical.image_url).toContain("byzantine-firmament");
+  for (const art of [angels, biblical]) {
+    expect(art.image_license).toBe("Supplied by the app owner");
+    expect(art.image_source).toBe("");
+    expect(art.image_license_url).toBe("");
+    expect(art.image_author).toContain("supplied by the app owner");
+    expect(art.image_modification).toContain("Square-cropped");
+  }
+  for (const category of PRAYER_CATEGORIES) {
+    const art = categoryArtwork("prayers", "byzantine", category.id);
+    expect(art.image_url.includes("byzantine-creation-light")).toBe(false);
+    expect(art.image_url.includes("byzantine-firmament")).toBe(false);
+  }
+});
+
 test("Byzantine Saints middle row shows the supplied Christ and hierarch icons, square-cropped", () => {
   const monastics = categoryArtwork("saints", "byzantine", "monastics");
   const fathers = categoryArtwork("saints", "byzantine", "fathers-hierarchs");
