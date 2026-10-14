@@ -157,7 +157,7 @@ export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<Sai
 export const PRAYER_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<PrayerCategoryId, CategoryStyleArtwork>> = {
   tewahedo: { foundational: art["tewahedo-prayer-occasions"], daily: art["tewahedo-prayer-daily"], "christ-saints": art["tewahedo-prayer-communion"], communion: art["tewahedo-prayer-psalms"], occasions: art["tewahedo-prayer-foundational"], psalms: art["tewahedo-prayer-christ-saints"] },
   coptic: { foundational: art["coptic-prayer-foundational"], daily: art["coptic-prayer-daily"], "christ-saints": art["coptic-prayer-christ-saints"], psalms: art["coptic-prayer-psalms"], communion: art["coptic-prayer-communion"], occasions: art["coptic-prayer-occasions"] },
-  byzantine: { foundational: art["russian-prayer-foundational"], daily: art["russian-prayer-daily"], "christ-saints": SAINT_DISPLAY_ICONS["mary-magdalene"], psalms: byzantineDavid, communion: art["byzantine-communion"], occasions: byzantineAnna },
+  byzantine: { foundational: art["russian-prayer-foundational"], daily: art["russian-prayer-daily"], "christ-saints": art["russian-prayer-christ-saints"], psalms: byzantineDavid, communion: art["russian-prayer-communion"], occasions: byzantineAnna },
 };
 
 export function categoryArtwork(section: "saints" | "prayers", style: CategoryIconStyle, category: string): CategoryStyleArtwork | null {
