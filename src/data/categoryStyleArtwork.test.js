@@ -55,11 +55,11 @@ test("each tradition covers all seven saint and six prayer categories with store
   }
 });
 
-test("Tewahedo Saints top row shows the two supplied Trinity photographs", () => {
+test("Tewahedo Saints top row shows the supplied Trinity panel and the rainbow-winged archangel", () => {
   const angels = categoryArtwork("saints", "tewahedo", "angels");
   const biblical = categoryArtwork("saints", "tewahedo", "biblical");
   expect(angels.image_url).toContain(SUPPLIED[0]);
-  expect(biblical.image_url).toContain(SUPPLIED[1]);
+  expect(biblical.image_url).toContain("tewahedo-archangel-wings");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -79,11 +79,11 @@ test("Tewahedo Saints middle row shows the supplied Theotokos and Saint George p
   }
 });
 
-test("Tewahedo Saints row below the middle shows the two supplied archangel photographs", () => {
+test("Tewahedo Saints row below the middle shows the supplied archangel and Trinity manuscript photographs", () => {
   const martyrs = categoryArtwork("saints", "tewahedo", "martyrs");
   const missionaries = categoryArtwork("saints", "tewahedo", "apostles-missionaries");
   expect(martyrs.image_url).toContain("tewahedo-angels-michael");
-  expect(missionaries.image_url).toContain("tewahedo-archangel-wings");
+  expect(missionaries.image_url).toContain("tewahedo-selassie-manuscript");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
