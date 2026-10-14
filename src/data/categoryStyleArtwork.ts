@@ -133,7 +133,7 @@ export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<Sai
 };
 
 export const PRAYER_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<PrayerCategoryId, SaintDisplayIcon>> = {
-  tewahedo: { foundational: art["tewahedo-prayer-foundational"], daily: art["tewahedo-prayer-daily"], "christ-saints": art["tewahedo-prayer-communion"], communion: art["tewahedo-prayer-psalms"], occasions: art["tewahedo-prayer-occasions"], psalms: art["tewahedo-prayer-christ-saints"] },
+  tewahedo: { foundational: art["tewahedo-prayer-occasions"], daily: art["tewahedo-prayer-daily"], "christ-saints": art["tewahedo-prayer-communion"], communion: art["tewahedo-prayer-psalms"], occasions: art["tewahedo-prayer-foundational"], psalms: art["tewahedo-prayer-christ-saints"] },
   coptic: { foundational: art["coptic-mark"], daily: art["coptic-desert-fathers"], "christ-saints": art["coptic-christ"], psalms: art["coptic-mark"], communion: art["coptic-communion"], occasions: art["coptic-holy-family"] },
   byzantine: { foundational: SAINT_DISPLAY_ICONS["peter-apostle"], daily: SAINT_DISPLAY_ICONS.anthony, "christ-saints": SAINT_DISPLAY_ICONS["mary-magdalene"], psalms: byzantineDavid, communion: art["byzantine-communion"], occasions: byzantineAnna },
 };
