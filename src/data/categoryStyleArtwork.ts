@@ -36,6 +36,8 @@ import coptic_angel_three_saints from "@/assets/category-styles/coptic-angel-thr
 import coptic_martyr_angel from "@/assets/category-styles/coptic-martyr-angel-sq.jpg.asset.json";
 import coptic_moses_strong from "@/assets/category-styles/coptic-moses-strong-sq.jpg.asset.json";
 import coptic_church_bridegroom from "@/assets/category-styles/coptic-church-bridegroom-sq.jpg.asset.json";
+import coptic_prayer_foundational from "@/assets/category-styles/coptic-prayer-foundational-sq.jpg.asset.json";
+import coptic_prayer_daily from "@/assets/category-styles/coptic-prayer-daily-sq.jpg.asset.json";
 import byzantine_owner_michael from "@/assets/category-styles/byzantine-owner-michael-sq.jpg.asset.json";
 import byzantine_owner_theotokos from "@/assets/category-styles/byzantine-owner-theotokos-sq.jpg.asset.json";
 import byzantine_owner_christ from "@/assets/category-styles/byzantine-owner-christ-sq.jpg.asset.json";
@@ -102,6 +104,8 @@ const art: Record<string, SaintDisplayIcon> = {
   "coptic-christ-photini": { image_url: coptic_christ_photini.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Coptic icon of Christ and the Samaritan woman Photini at the well, with the chalice on the altar before them; image supplied by the app owner", "image_modification": "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
   "coptic-katherine": { image_url: coptic_katherine.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Coptic icon of Saint Catherine holding the wisdom scroll and her ring; image supplied by the app owner", "image_modification": "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
   "coptic-david": { image_url: coptic_david.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Coptic-style icon of King David the psalmist playing the lyre beneath the cruciform halo of the divine figure; image supplied by the app owner", "image_modification": "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
+  "coptic-prayer-foundational": { image_url: coptic_prayer_foundational.url, image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Coptic-style icon detail of a hand holding a closed Gospel book with an ornate crimson cover; image supplied by the app owner", image_modification: "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
+  "coptic-prayer-daily": { image_url: coptic_prayer_daily.url, image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Coptic-style icon detail of two hands unrolling an open scroll inscribed with eight lines beginning You abandon nothing you have made; image supplied by the app owner", image_modification: "Square-cropped from the supplied image so the tile fills without background bands; all eight lines of the inscription kept whole; original colors retained." },
   "tewahedo-angels": { image_url: tewahedo_angels.url, "image_source": "https://commons.wikimedia.org/wiki/File:Ethiopian_-_Folding_Processional_Icon_in_the_Shape_of_a_Fan_-_Walters_369_-_Open.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Anonymous  (  Ethiopia  ) Unknown author", "image_modification": "Cropped central register including museum-identified Michael, Mary and Raphael from the Ethiopian processional icon; resized." },
   // Owner-supplied photographs of Tewahedo artwork: no online source or licence
   // link exists, so both stay empty and the credit line renders as plain text.
@@ -134,7 +138,7 @@ export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<Sai
 
 export const PRAYER_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<PrayerCategoryId, SaintDisplayIcon>> = {
   tewahedo: { foundational: art["tewahedo-prayer-occasions"], daily: art["tewahedo-prayer-daily"], "christ-saints": art["tewahedo-prayer-communion"], communion: art["tewahedo-prayer-psalms"], occasions: art["tewahedo-prayer-foundational"], psalms: art["tewahedo-prayer-christ-saints"] },
-  coptic: { foundational: art["coptic-mark"], daily: art["coptic-desert-fathers"], "christ-saints": art["coptic-christ"], psalms: art["coptic-mark"], communion: art["coptic-communion"], occasions: art["coptic-holy-family"] },
+  coptic: { foundational: art["coptic-prayer-foundational"], daily: art["coptic-prayer-daily"], "christ-saints": art["coptic-christ"], psalms: art["coptic-mark"], communion: art["coptic-communion"], occasions: art["coptic-holy-family"] },
   byzantine: { foundational: SAINT_DISPLAY_ICONS["peter-apostle"], daily: SAINT_DISPLAY_ICONS.anthony, "christ-saints": SAINT_DISPLAY_ICONS["mary-magdalene"], psalms: byzantineDavid, communion: art["byzantine-communion"], occasions: byzantineAnna },
 };
 
