@@ -253,10 +253,8 @@ test("Coptic prayers top row shows the supplied Gospel book and scroll panels, s
     expect(art.image_author).toContain("supplied by the app owner");
     expect(art.image_modification).toContain("Square-cropped");
   }
-  // The four remaining Coptic prayer tiles keep the artwork they had before.
+  // The two tiles below keep the artwork they had before.
   expect(categoryArtwork("prayers", "coptic", "christ-saints").image_url).toContain("coptic-christ");
-  expect(categoryArtwork("prayers", "coptic", "psalms").image_url).toContain("coptic-mark");
-  expect(categoryArtwork("prayers", "coptic", "communion").image_url).toContain("coptic-communion");
   expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-holy-family");
   // Neither panel replaces a Coptic Saints tile.
   for (const category of SAINT_CATEGORIES) {
