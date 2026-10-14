@@ -240,3 +240,28 @@ test("Byzantine Saints row under the middle shows the supplied fifth- and sixth-
     expect(art.image_url.includes("byzantine-adam")).toBe(false);
   }
 });
+
+test("Coptic prayers top row shows the supplied Gospel book and scroll panels, square-cropped", () => {
+  const foundational = categoryArtwork("prayers", "coptic", "foundational");
+  const daily = categoryArtwork("prayers", "coptic", "daily");
+  expect(foundational.image_url).toContain("coptic-prayer-foundational-sq.jpg");
+  expect(daily.image_url).toContain("coptic-prayer-daily-sq.jpg");
+  for (const art of [foundational, daily]) {
+    expect(art.image_license).toBe("Supplied by the app owner");
+    expect(art.image_source).toBe("");
+    expect(art.image_license_url).toBe("");
+    expect(art.image_author).toContain("supplied by the app owner");
+    expect(art.image_modification).toContain("Square-cropped");
+  }
+  // The four remaining Coptic prayer tiles keep the artwork they had before.
+  expect(categoryArtwork("prayers", "coptic", "christ-saints").image_url).toContain("coptic-christ");
+  expect(categoryArtwork("prayers", "coptic", "psalms").image_url).toContain("coptic-mark");
+  expect(categoryArtwork("prayers", "coptic", "communion").image_url).toContain("coptic-communion");
+  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-holy-family");
+  // Neither panel replaces a Coptic Saints tile.
+  for (const category of SAINT_CATEGORIES) {
+    const url = categoryArtwork("saints", "coptic", category.id).image_url;
+    expect(url.includes("coptic-prayer-foundational")).toBe(false);
+    expect(url.includes("coptic-prayer-daily")).toBe(false);
+  }
+});
