@@ -1,5 +1,6 @@
 # Prayers category browser
 ## Category icon styles
+- [ ] Rearrange Coptic Saints top and middle rows with the four supplied images; replace Righteous Laypeople and verify the delivered tiles.
 - [x] Add a far-right Icons dropdown to Saints and Prayers with shared persistent Original, Tewahedo, Coptic and Byzantine choices.
 - [x] Source authentic licensed artwork for every category; preserve original images and layout. Twenty tests pass; all 52 category images load across four styles, and shared selection/reload verified signed in using live asset delivery (localhost does not serve the CDN path).
 - [x] Place the owner's supplied Tewahedo photographs: Trinity panel and manuscript miniature in the top row (Angels, Biblical Saints), Theotokos and Saint George in the middle row (Monastics, Church Fathers); five tests pass, all seven tiles load, credits plain text, build clean.
