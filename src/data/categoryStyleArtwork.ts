@@ -38,6 +38,8 @@ import coptic_moses_strong from "@/assets/category-styles/coptic-moses-strong-sq
 import coptic_church_bridegroom from "@/assets/category-styles/coptic-church-bridegroom-sq.jpg.asset.json";
 import coptic_prayer_foundational from "@/assets/category-styles/coptic-prayer-foundational-sq.jpg.asset.json";
 import coptic_prayer_daily from "@/assets/category-styles/coptic-prayer-daily-sq.jpg.asset.json";
+import coptic_prayer_communion from "@/assets/category-styles/coptic-prayer-communion-sq.jpg.asset.json";
+import coptic_prayer_psalms from "@/assets/category-styles/coptic-prayer-psalms-sq.jpg.asset.json";
 import byzantine_owner_michael from "@/assets/category-styles/byzantine-owner-michael-sq.jpg.asset.json";
 import byzantine_owner_theotokos from "@/assets/category-styles/byzantine-owner-theotokos-sq.jpg.asset.json";
 import byzantine_owner_christ from "@/assets/category-styles/byzantine-owner-christ-sq.jpg.asset.json";
