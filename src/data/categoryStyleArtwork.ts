@@ -42,7 +42,7 @@ import coptic_prayer_communion from "@/assets/category-styles/coptic-prayer-comm
 import coptic_prayer_psalms from "@/assets/category-styles/coptic-prayer-psalms-sq.jpg.asset.json";
 import coptic_prayer_christ_saints from "@/assets/category-styles/coptic-prayer-christ-saints-sq.jpg.asset.json";
 import coptic_prayer_occasions from "@/assets/category-styles/coptic-prayer-occasions-sq.jpg.asset.json";
-import coptic_prayer_occasions_egret from "@/assets/category-styles/coptic-prayer-occasions-egret-sq.jpg.asset.json";
+import coptic_prayer_occasions_egret from "@/assets/category-styles/coptic-prayer-occasions-church-sq.jpg.asset.json";
 import byzantine_owner_michael from "@/assets/category-styles/byzantine-owner-michael-sq.jpg.asset.json";
 import byzantine_owner_theotokos from "@/assets/category-styles/byzantine-owner-theotokos-sq.jpg.asset.json";
 import byzantine_owner_christ from "@/assets/category-styles/byzantine-owner-christ-sq.jpg.asset.json";
