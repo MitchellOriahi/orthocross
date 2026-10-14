@@ -30,6 +30,7 @@ import coptic_john_olympia from "@/assets/category-styles/coptic-john-olympia-sq
 import coptic_photini from "@/assets/category-styles/coptic-photini-sq.jpg.asset.json";
 import coptic_christ_photini from "@/assets/category-styles/coptic-christ-photini-sq.jpg.asset.json";
 import coptic_katherine from "@/assets/category-styles/coptic-katherine-sq.jpg.asset.json";
+import coptic_david from "@/assets/category-styles/coptic-david-sq.jpg.asset.json";
 
 const art: Record<string, SaintDisplayIcon> = {
   "coptic-michael": { image_url: coptic_michael.url, "image_source": "https://commons.wikimedia.org/wiki/File:Coptic_Icon_of_the_Archangel_Michael.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Unknown author Unknown author", "image_modification": "Resized; square cover framing at display; original painting colors retained." },
@@ -52,6 +53,7 @@ const art: Record<string, SaintDisplayIcon> = {
   "coptic-photini": { image_url: coptic_photini.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Coptic icon of Saint Photini, the Samaritan woman, holding her water jar as living water pours into it; image supplied by the app owner", "image_modification": "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
   "coptic-christ-photini": { image_url: coptic_christ_photini.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Coptic icon of Christ and the Samaritan woman Photini at the well, with the chalice on the altar before them; image supplied by the app owner", "image_modification": "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
   "coptic-katherine": { image_url: coptic_katherine.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Coptic icon of Saint Catherine holding the wisdom scroll and her ring; image supplied by the app owner", "image_modification": "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
+  "coptic-david": { image_url: coptic_david.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Coptic-style icon of King David the psalmist playing the lyre beneath the cruciform halo of the divine figure; image supplied by the app owner", "image_modification": "Square-cropped from the supplied image so the tile fills without background bands; original colors retained." },
   "tewahedo-angels": { image_url: tewahedo_angels.url, "image_source": "https://commons.wikimedia.org/wiki/File:Ethiopian_-_Folding_Processional_Icon_in_the_Shape_of_a_Fan_-_Walters_369_-_Open.jpg", "image_license": "Public domain", "image_license_url": "https://creativecommons.org/publicdomain/mark/1.0/", "image_author": "Anonymous  (  Ethiopia  ) Unknown author", "image_modification": "Cropped central register including museum-identified Michael, Mary and Raphael from the Ethiopian processional icon; resized." },
   // Owner-supplied photographs of Tewahedo artwork: no online source or licence
   // link exists, so both stay empty and the credit line renders as plain text.
@@ -78,7 +80,7 @@ type AlternateStyle = Exclude<CategoryIconStyle, "original">;
 
 export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<SaintCategoryId, "rulers">, SaintDisplayIcon>> = {
   tewahedo: { angels: art["tewahedo-selassie-panel"], biblical: art["tewahedo-selassie-manuscript"], monastics: art["tewahedo-theotokos"], "fathers-hierarchs": art["tewahedo-george"], martyrs: art["tewahedo-angels-michael"], "apostles-missionaries": art["tewahedo-archangel-wings"], laypeople: art["tewahedo-laypeople"] },
-  coptic: { angels: art["coptic-trinity-sq"], biblical: art["coptic-fathers-sq"], monastics: art["coptic-john-olympia"], "fathers-hierarchs": art["coptic-christ-photini"], martyrs: art["coptic-photini"], "apostles-missionaries": art["coptic-katherine"], laypeople: art["coptic-simon"] },
+  coptic: { angels: art["coptic-trinity-sq"], biblical: art["coptic-fathers-sq"], monastics: art["coptic-john-olympia"], "fathers-hierarchs": art["coptic-christ-photini"], martyrs: art["coptic-photini"], "apostles-missionaries": art["coptic-katherine"], laypeople: art["coptic-david"] },
   byzantine: { angels: byzantineAngel, biblical: SAINT_DISPLAY_ICONS["mary-magdalene"], monastics: SAINT_DISPLAY_ICONS.anthony, "fathers-hierarchs": SAINT_DISPLAY_ICONS.athanasius, martyrs: SAINT_DISPLAY_ICONS.george, "apostles-missionaries": SAINT_DISPLAY_ICONS["peter-apostle"], laypeople: byzantineAnna },
 };
 
