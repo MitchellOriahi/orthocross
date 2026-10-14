@@ -61,8 +61,14 @@ import tewahedo_prayer_christ_saints from "@/assets/category-styles/tewahedo-pra
 import tewahedo_prayer_communion from "@/assets/category-styles/tewahedo-prayer-communion-sq.jpg.asset.json";
 import tewahedo_prayer_occasions from "@/assets/category-styles/tewahedo-prayer-occasions-sq.jpg.asset.json";
 import tewahedo_prayer_psalms from "@/assets/category-styles/tewahedo-prayer-psalms-sq.jpg.asset.json";
+import russian_prayer_foundational from "@/assets/category-styles/russian-prayer-foundational.png.asset.json";
+import russian_prayer_daily from "@/assets/category-styles/russian-prayer-daily.png.asset.json";
 
-const art: Record<string, SaintDisplayIcon> = {
+export type CategoryStyleArtwork = SaintDisplayIcon & { image_shape?: "silhouette" };
+
+const art: Record<string, CategoryStyleArtwork> = {
+  "russian-prayer-foundational": { image_url: russian_prayer_foundational.url, image_shape: "silhouette", image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Curved historical icon panel depicting an angel; image supplied by the app owner", image_modification: "Exterior white background made transparent; complete curved panel and original artwork retained without repainting." },
+  "russian-prayer-daily": { image_url: russian_prayer_daily.url, image_shape: "silhouette", image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Curved historical icon panel depicting seated figures and architecture; image supplied by the app owner", image_modification: "Exterior white background made transparent; complete curved panel and original artwork retained without repainting." },
   "tewahedo-prayer-foundational": { image_url: tewahedo_prayer_foundational.url, image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Tewahedo geometric panel with a central red face, green star points and four corner eyes; photograph supplied by the app owner", image_modification: "Square-cropped and resized from the supplied photograph; original colors retained." },
   "tewahedo-prayer-daily": { image_url: tewahedo_prayer_daily.url, image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Tewahedo geometric panel with surrounding red faces, black-and-white chevrons and a central green ring; photograph supplied by the app owner", image_modification: "Square-cropped and resized from the supplied photograph; original colors retained." },
   "tewahedo-prayer-christ-saints": { image_url: tewahedo_prayer_christ_saints.url, image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Tewahedo close-up panel of a red and gold face with white eyes; photograph supplied by the app owner", image_modification: "Square-cropped and resized from the supplied photograph; original colors retained." },
@@ -144,14 +150,14 @@ export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<Sai
   byzantine: { angels: art["byzantine-creation-light"], biblical: art["byzantine-firmament"], monastics: art["byzantine-dry-land"], "fathers-hierarchs": art["byzantine-lights"], martyrs: art["byzantine-swarms"], "apostles-missionaries": art["byzantine-adam"], laypeople: art["byzantine-rest"] },
 };
 
-export const PRAYER_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<PrayerCategoryId, SaintDisplayIcon>> = {
+export const PRAYER_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<PrayerCategoryId, CategoryStyleArtwork>> = {
   tewahedo: { foundational: art["tewahedo-prayer-occasions"], daily: art["tewahedo-prayer-daily"], "christ-saints": art["tewahedo-prayer-communion"], communion: art["tewahedo-prayer-psalms"], occasions: art["tewahedo-prayer-foundational"], psalms: art["tewahedo-prayer-christ-saints"] },
   coptic: { foundational: art["coptic-prayer-foundational"], daily: art["coptic-prayer-daily"], "christ-saints": art["coptic-prayer-christ-saints"], psalms: art["coptic-prayer-psalms"], communion: art["coptic-prayer-communion"], occasions: art["coptic-prayer-occasions"] },
-  byzantine: { foundational: SAINT_DISPLAY_ICONS["peter-apostle"], daily: SAINT_DISPLAY_ICONS.anthony, "christ-saints": SAINT_DISPLAY_ICONS["mary-magdalene"], psalms: byzantineDavid, communion: art["byzantine-communion"], occasions: byzantineAnna },
+  byzantine: { foundational: art["russian-prayer-foundational"], daily: art["russian-prayer-daily"], "christ-saints": SAINT_DISPLAY_ICONS["mary-magdalene"], psalms: byzantineDavid, communion: art["byzantine-communion"], occasions: byzantineAnna },
 };
 
-export function categoryArtwork(section: "saints" | "prayers", style: CategoryIconStyle, category: string): SaintDisplayIcon | null {
+export function categoryArtwork(section: "saints" | "prayers", style: CategoryIconStyle, category: string): CategoryStyleArtwork | null {
   if (style === "original") return null;
-  const registry: Record<string, SaintDisplayIcon> = section === "saints" ? SAINT_CATEGORY_STYLE_ART[style] : PRAYER_CATEGORY_STYLE_ART[style];
+  const registry: Record<string, CategoryStyleArtwork> = section === "saints" ? SAINT_CATEGORY_STYLE_ART[style] : PRAYER_CATEGORY_STYLE_ART[style];
   return registry[category] ?? null;
 }
