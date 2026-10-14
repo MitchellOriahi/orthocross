@@ -4,7 +4,7 @@ import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
 // Photographs and icons the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch"];
+const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
@@ -179,5 +179,24 @@ test("supplied photographs stay out of the remaining Tewahedo category and every
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "tewahedo", category.id);
     for (const name of SUPPLIED) expect(art.image_url.includes(name)).toBe(false);
+  }
+});
+
+test("Byzantine Saints row under the middle shows the supplied Saint George and Mandylion icons, square-cropped", () => {
+  const martyrs = categoryArtwork("saints", "byzantine", "martyrs");
+  const missionaries = categoryArtwork("saints", "byzantine", "apostles-missionaries");
+  expect(martyrs.image_url).toContain("byzantine-owner-george");
+  expect(missionaries.image_url).toContain("byzantine-owner-mandylion");
+  for (const art of [martyrs, missionaries]) {
+    expect(art.image_license).toBe("Supplied by the app owner");
+    expect(art.image_source).toBe("");
+    expect(art.image_license_url).toBe("");
+    expect(art.image_author).toContain("supplied by the app owner");
+    expect(art.image_modification).toContain("Square-cropped");
+  }
+  for (const category of PRAYER_CATEGORIES) {
+    const art = categoryArtwork("prayers", "byzantine", category.id);
+    expect(art.image_url.includes("byzantine-owner-george")).toBe(false);
+    expect(art.image_url.includes("byzantine-owner-mandylion")).toBe(false);
   }
 });
