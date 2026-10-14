@@ -253,9 +253,9 @@ test("Coptic prayers top row shows the supplied Gospel book and scroll panels, s
     expect(art.image_author).toContain("supplied by the app owner");
     expect(art.image_modification).toContain("Square-cropped");
   }
-  // The two tiles below keep the artwork they had before.
-  expect(categoryArtwork("prayers", "coptic", "christ-saints").image_url).toContain("coptic-christ");
-  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-holy-family");
+  // The tiles below the top row carry their own panels, including the supplied left-column pair.
+  expect(categoryArtwork("prayers", "coptic", "christ-saints").image_url).toContain("coptic-prayer-christ-saints-sq.jpg");
+  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-prayer-occasions-sq.jpg");
   // Neither panel replaces a Coptic Saints tile.
   for (const category of SAINT_CATEGORIES) {
     const url = categoryArtwork("saints", "coptic", category.id).image_url;
@@ -278,10 +278,10 @@ test("Coptic prayers right column shows the supplied Eucharist and Lamb panels, 
     expect(panel.image_author).toContain("supplied by the app owner");
     expect(panel.image_modification).toContain("Square-cropped");
   }
-  // The left column keeps the artwork it had before.
+  // The whole left column is supplied artwork now.
   expect(categoryArtwork("prayers", "coptic", "foundational").image_url).toContain("coptic-prayer-foundational-sq.jpg");
-  expect(categoryArtwork("prayers", "coptic", "christ-saints").image_url).toContain("coptic-christ");
-  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-holy-family");
+  expect(categoryArtwork("prayers", "coptic", "christ-saints").image_url).toContain("coptic-prayer-christ-saints-sq.jpg");
+  expect(categoryArtwork("prayers", "coptic", "occasions").image_url).toContain("coptic-prayer-occasions-sq.jpg");
   // Neither panel replaces a Coptic Saints tile.
   for (const category of SAINT_CATEGORIES) {
     const url = categoryArtwork("saints", "coptic", category.id).image_url;
