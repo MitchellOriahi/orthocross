@@ -99,7 +99,7 @@ type AlternateStyle = Exclude<CategoryIconStyle, "original">;
 export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<SaintCategoryId, "rulers">, SaintDisplayIcon>> = {
   tewahedo: { angels: art["tewahedo-selassie-panel"], biblical: art["tewahedo-selassie-manuscript"], monastics: art["tewahedo-theotokos"], "fathers-hierarchs": art["tewahedo-george"], martyrs: art["tewahedo-angels-michael"], "apostles-missionaries": art["tewahedo-archangel-wings"], laypeople: art["tewahedo-laypeople"] },
   coptic: { angels: art["coptic-angel-three-saints"], biblical: art["coptic-family-christ"], monastics: art["coptic-church-bridegroom"], "fathers-hierarchs": art["coptic-john-olympia"], martyrs: art["coptic-photini"], "apostles-missionaries": art["coptic-katherine"], laypeople: art["coptic-martyr-angel"] },
-  byzantine: { angels: art["byzantine-owner-michael"], biblical: art["byzantine-owner-theotokos"], monastics: SAINT_DISPLAY_ICONS.anthony, "fathers-hierarchs": SAINT_DISPLAY_ICONS.athanasius, martyrs: SAINT_DISPLAY_ICONS.george, "apostles-missionaries": SAINT_DISPLAY_ICONS["peter-apostle"], laypeople: byzantineAnna },
+  byzantine: { angels: art["byzantine-owner-michael"], biblical: art["byzantine-owner-theotokos"], monastics: art["byzantine-owner-christ"], "fathers-hierarchs": art["byzantine-owner-hierarch"], martyrs: SAINT_DISPLAY_ICONS.george, "apostles-missionaries": SAINT_DISPLAY_ICONS["peter-apostle"], laypeople: byzantineAnna },
 };
 
 export const PRAYER_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<PrayerCategoryId, SaintDisplayIcon>> = {
