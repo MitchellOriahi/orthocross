@@ -6,6 +6,13 @@ import { categoryArtwork } from "./categoryStyleArtwork";
 // Photographs and icons the app owner supplied; they carry no online source or licence link.
 const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
 
+test("Russian prayer top row uses supplied panels in upload order and preserves Saints", () => {
+  expect(categoryArtwork("prayers", "byzantine", "foundational").image_url).toContain("russian-prayer-foundational.png");
+  expect(categoryArtwork("prayers", "byzantine", "daily").image_url).toContain("russian-prayer-daily.png");
+  expect(categoryArtwork("saints", "byzantine", "angels").image_url).toContain("byzantine-creation-light");
+  expect(categoryArtwork("saints", "byzantine", "biblical").image_url).toContain("byzantine-firmament");
+});
+
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
   for (const category of PRAYER_CATEGORIES) expect(categoryArtwork("prayers", "original", category.id)).toBeNull();
