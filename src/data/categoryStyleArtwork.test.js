@@ -4,7 +4,7 @@ import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
 // Photographs and icons the app owner supplied; they carry no online source or licence link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch"];
+const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
 
 test("Original leaves all existing category art untouched", () => {
   for (const category of SAINT_CATEGORIES) expect(categoryArtwork("saints", "original", category.id)).toBeNull();
