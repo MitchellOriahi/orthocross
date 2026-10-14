@@ -11,11 +11,15 @@ test("Original leaves all existing category art untouched", () => {
   for (const category of PRAYER_CATEGORIES) expect(categoryArtwork("prayers", "original", category.id)).toBeNull();
 });
 
-test("Tewahedo prayers use all six supplied panels in upload order without replacing Saints art", () => {
+test("Tewahedo prayers show all six supplied panels in the arranged order without replacing Saints art", () => {
+  // Tiles sit in a two-column grid: foundational/daily on top, christ-saints/communion in
+  // the middle, occasions/psalms at the bottom. The middle-left tile was swapped with the
+  // bottom-right one, then with the middle-right one.
+  const placed = { foundational: "foundational", daily: "daily", "christ-saints": "communion", communion: "psalms", occasions: "occasions", psalms: "christ-saints" };
   const categories = ["foundational", "daily", "christ-saints", "communion", "occasions", "psalms"];
   const urls = categories.map(category => {
     const artwork = categoryArtwork("prayers", "tewahedo", category);
-    expect(artwork.image_url).toContain(`tewahedo-prayer-${category}-sq.jpg`);
+    expect(artwork.image_url).toContain(`tewahedo-prayer-${placed[category]}-sq.jpg`);
     expect(artwork.image_license).toBe("Supplied by the app owner");
     expect(artwork.image_source).toBe("");
     expect(artwork.image_license_url).toBe("");
