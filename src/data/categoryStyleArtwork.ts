@@ -1,5 +1,4 @@
 import type { SaintDisplayIcon } from "./saintDisplayIcons";
-import { SAINT_DISPLAY_ICONS } from "./saintDisplayIcons";
 import { SAINT_CARD_ICONS } from "./saintCardIcons";
 import type { SaintCategoryId } from "./saintCategories";
 import type { PrayerCategoryId } from "./prayerCategories";
