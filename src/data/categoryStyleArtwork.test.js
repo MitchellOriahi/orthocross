@@ -171,11 +171,11 @@ test("Byzantine Saints top row shows the supplied creation icons, square-cropped
   }
 });
 
-test("Byzantine Saints middle row shows the supplied Christ and hierarch icons, square-cropped", () => {
+test("Byzantine Saints middle row shows the supplied third- and fourth-day creation icons, square-cropped", () => {
   const monastics = categoryArtwork("saints", "byzantine", "monastics");
   const fathers = categoryArtwork("saints", "byzantine", "fathers-hierarchs");
-  expect(monastics.image_url).toContain("byzantine-owner-christ");
-  expect(fathers.image_url).toContain("byzantine-owner-hierarch");
+  expect(monastics.image_url).toContain("byzantine-dry-land");
+  expect(fathers.image_url).toContain("byzantine-lights");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -185,8 +185,8 @@ test("Byzantine Saints middle row shows the supplied Christ and hierarch icons, 
   }
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "byzantine", category.id);
-    expect(art.image_url.includes("byzantine-owner-christ")).toBe(false);
-    expect(art.image_url.includes("byzantine-owner-hierarch")).toBe(false);
+    expect(art.image_url.includes("byzantine-dry-land")).toBe(false);
+    expect(art.image_url.includes("byzantine-lights")).toBe(false);
   }
 });
 
