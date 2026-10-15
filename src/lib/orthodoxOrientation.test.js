@@ -59,9 +59,9 @@ describe("manual icon style choices", () => {
   }
   test("a manual icon choice survives later branch changes", async () => {
     stubStorage();
-    const { setCategoryIconStyle, hasManualCategoryIconStyle } = await import("./useCategoryIconStyle");
+    const { setCategoryIconStyle, hasManualCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
     const { applyBranchPreferences } = await import("./orthodoxOrientation");
-    const { parseCategoryIconStyle } = await import("./useCategoryIconStyle");
+    const { parseCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
     setCategoryIconStyle("coptic", { manual: true });
     expect(hasManualCategoryIconStyle()).toBe(true);
     applyBranchPreferences("Russian Orthodox");
@@ -70,7 +70,7 @@ describe("manual icon style choices", () => {
   test("branch defaults still apply when the user never picked a style", async () => {
     stubStorage();
     const { applyBranchPreferences } = await import("./orthodoxOrientation");
-    const { parseCategoryIconStyle } = await import("./useCategoryIconStyle");
+    const { parseCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
     applyBranchPreferences("Russian Orthodox");
     expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("byzantine");
   });
