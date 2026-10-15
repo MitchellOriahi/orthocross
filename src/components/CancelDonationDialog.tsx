@@ -9,9 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Heart, Pause, XCircle } from "lucide-react";
+import { Heart, Pause } from "lucide-react";
 
-type CancelStep = "confirm" | "pause-offer" | "final";
+type CancelStep = "confirm" | "pause-offer" | "thanks";
 
 interface CancelDonationDialogProps {
   open: boolean;
@@ -47,19 +47,17 @@ export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialo
   const handleCancelDonation = async () => {
     setIsLoading(true);
     try {
-      // Send thank you email
-      await supabase.functions.invoke("send-cancellation-email");
-      
-      // Open customer portal to cancel
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-      if (error) throw error;
-      if (data?.url) {
-        window.open(data.url, "_blank");
-        toast.success("Opening subscription portal. Thank you for your support!");
+      const { data, error } = await supabase.functions.invoke("cancel-monthly-donation");
+      if (error || data?.error) {
+        let msg = data?.error;
+        try { msg = msg || (await (error as any)?.context?.json?.())?.error; } catch { /* ignore */ }
+        throw new Error(msg || "We couldn't cancel your donation. Please try again.");
       }
-      handleClose();
+      supabase.functions.invoke("send-cancellation-email").catch(() => {});
+      window.dispatchEvent(new Event("monthly-donation-changed"));
+      setStep("thanks");
     } catch (error: any) {
-      toast.error(error.message || "Failed to process cancellation");
+      toast.error(error.message || "We couldn't cancel your donation. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -137,43 +135,31 @@ export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialo
               </Button>
               <Button
                 variant="ghost"
-                onClick={() => setStep("final")}
+                onClick={handleCancelDonation}
                 disabled={isLoading}
                 className="w-full"
               >
-                No, I Still Want to Cancel
+                {isLoading ? "Cancelling..." : "No, I Still Want to Cancel"}
               </Button>
             </div>
           </>
         );
 
-      case "final":
+      case "thanks":
         return (
           <>
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <XCircle className="w-5 h-5" />
-                We're sad to see you go
+                <Heart className="w-5 h-5" />
+                Thank you, from all of us
               </DialogTitle>
               <DialogDescription>
-                Thank you so much for your generous support. Your donations have truly made a difference. We'll send you a thank you email shortly.
+                Your monthly donation has been cancelled. Every gift you gave helped bring prayers, saints and Scripture to people around the world. We are deeply grateful for your generosity. May God continue to bless you.
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-3 mt-4">
-              <Button
-                variant="outline"
-                onClick={handleClose}
-                className="w-full"
-              >
-                Wait, I Changed My Mind
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={handleCancelDonation}
-                disabled={isLoading}
-                className="w-full"
-              >
-                {isLoading ? "Processing..." : "Confirm Cancellation"}
+              <Button variant="outline" onClick={handleClose} className="w-full">
+                Close
               </Button>
             </div>
           </>
