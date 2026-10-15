@@ -113,9 +113,9 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
                 {style !== "original" ? SAINT_CATEGORIES.map(item => {
                   const artwork = categoryArtwork("saints", style, item.id);
                   return artwork ? <CategoryArtworkCredit key={item.id} artwork={artwork} label={item.label} /> : null;
-                }) : [...new Set(Object.values(SAINT_CATEGORY_DISPLAY_ICON))].map(id => {
-                  const icon = SAINT_DISPLAY_ICONS[id];
-                  return icon ? <p key={id}><a href={icon.image_source} target="_blank" rel="noopener noreferrer" className="underline">{id.replace(/-/g, " ")}</a>{" · "}<a href={icon.image_license_url} target="_blank" rel="noopener noreferrer" className="underline">{icon.image_license}</a><span className="block">{icon.image_author}</span><span className="block">{icon.image_modification}</span></p> : null;
+                }) : SAINT_CATEGORIES.map(item => {
+                  const icon = SAINT_DISPLAY_ICONS[SAINT_CATEGORY_DISPLAY_ICON[item.id]];
+                  return icon ? <CategoryArtworkCredit key={item.id} artwork={icon} label={item.label} /> : null;
                 })}
               </div>
             </details>
