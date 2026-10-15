@@ -439,6 +439,12 @@ const Settings = () => {
             </CardContent>
           </Card>
 
+          <TraditionChoiceDialog
+            open={traditionDialog !== null}
+            initialStep={traditionDialog ?? "family"}
+            onClose={() => setTraditionDialog(null)}
+          />
+
           {/* Refer a Friend */}
           <Card className="shadow-elevated">
             <CardHeader>
