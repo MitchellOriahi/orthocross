@@ -184,7 +184,7 @@ const Settings = () => {
   const handleSaveReferralCode = async () => {
     if (!user) return;
     const result = normalizeReferralCode(referralCodeValue);
-    if (!result.ok) {
+    if (result.status === "invalid") {
       toast.error(result.message);
       return;
     }

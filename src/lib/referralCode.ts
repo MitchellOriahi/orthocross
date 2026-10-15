@@ -15,18 +15,21 @@ const referralCodeSchema = z
   });
 
 export type ReferralCodeResult =
-  | { ok: true; code: string }
-  | { ok: false; message: string };
+  | { status: "valid"; code: string }
+  | { status: "invalid"; message: string };
 
 /** Validate a typed referral code and return it in its canonical (uppercase) form. */
 export function normalizeReferralCode(raw: string): ReferralCodeResult {
   const trimmed = (raw ?? "").trim();
   if (trimmed === "") {
-    return { ok: false, message: "Enter a referral code" };
+    return { status: "invalid", message: "Enter a referral code" };
   }
   const parsed = referralCodeSchema.safeParse(trimmed);
   if (!parsed.success) {
-    return { ok: false, message: parsed.error.issues[0]?.message ?? "Invalid referral code" };
+    return {
+      status: "invalid",
+      message: parsed.error.issues[0]?.message ?? "Invalid referral code",
+    };
   }
-  return { ok: true, code: parsed.data.toUpperCase() };
+  return { status: "valid", code: parsed.data.toUpperCase() };
 }
