@@ -413,7 +413,15 @@ const Settings = () => {
             </CardHeader>
             <CardContent>
               <Select value={orientation} onValueChange={v => setOrientation(v as OrthodoxOrientation)}>
-                <SelectTrigger aria-label="Default Orthodox tradition"><SelectValue /></SelectTrigger>
+                <SelectTrigger
+                  aria-label="Default Orthodox tradition"
+                  className="font-semibold transition-colors"
+                  style={orientation === "eastern"
+                    ? { backgroundColor: "rgb(60 131 246 / 0.18)", borderColor: "rgb(60 131 246)", color: "rgb(60 131 246)" }
+                    : orientation === "oriental"
+                      ? { backgroundColor: "rgb(249 116 21 / 0.18)", borderColor: "rgb(249 116 21)", color: "rgb(249 116 21)" }
+                      : undefined}
+                ><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {(["eastern", "oriental", "undecided"] as const).map(o => <SelectItem key={o} value={o}>{ORIENTATION_LABELS[o]}</SelectItem>)}
                 </SelectContent>
