@@ -46,3 +46,32 @@ describe("orthodox orientation rules", () => {
   test("undecided shows everything", () => expect(orientationFilter("undecided")).toBe("all"));
   test("oriental filters to Oriental", () => expect(orientationFilter("oriental")).toBe("Oriental"));
 });
+
+describe("manual icon style choices", () => {
+  function stubStorage() {
+    const store = new Map();
+    globalThis.localStorage = {
+      getItem: k => (store.has(k) ? store.get(k) : null),
+      setItem: (k, v) => store.set(k, String(v)),
+      removeItem: k => store.delete(k),
+    };
+    return store;
+  }
+  test("a manual icon choice survives later branch changes", async () => {
+    stubStorage();
+    const { setCategoryIconStyle, hasManualCategoryIconStyle } = await import("./useCategoryIconStyle");
+    const { applyBranchPreferences } = await import("./orthodoxOrientation");
+    const { parseCategoryIconStyle } = await import("./useCategoryIconStyle");
+    setCategoryIconStyle("coptic", { manual: true });
+    expect(hasManualCategoryIconStyle()).toBe(true);
+    applyBranchPreferences("Russian Orthodox");
+    expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("coptic");
+  });
+  test("branch defaults still apply when the user never picked a style", async () => {
+    stubStorage();
+    const { applyBranchPreferences } = await import("./orthodoxOrientation");
+    const { parseCategoryIconStyle } = await import("./useCategoryIconStyle");
+    applyBranchPreferences("Russian Orthodox");
+    expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("byzantine");
+  });
+});
