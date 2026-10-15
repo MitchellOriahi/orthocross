@@ -21,6 +21,7 @@ import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { TraditionChoiceDialog } from "@/components/OrientationOnboarding";
 
 const Settings = () => {
   const orientation = useOrthodoxOrientation();
@@ -33,6 +34,7 @@ const Settings = () => {
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDonationDialogOpen, setCancelDonationDialogOpen] = useState(false);
+  const [traditionDialog, setTraditionDialog] = useState<null | "family" | "eastern" | "oriental">(null);
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
   const [activityVisible, setActivityVisible] = useState(true);
