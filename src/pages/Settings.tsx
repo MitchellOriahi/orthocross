@@ -471,31 +471,6 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-          {/* Support OrthoCross (permanent entry) */}
-          <Card className="shadow-elevated">
-            <CardHeader>
-              <CardTitle>Become a donator</CardTitle>
-              <CardDescription>Give whenever you wish — it is always optional.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button variant="sacred" className="w-full" onClick={() => setSupportOpen(true)}>Become a donator</Button>
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium">Occasional donation reminders</p>
-                  <p className="text-sm text-muted-foreground">A rare, gentle invitation after you've been reading for a while</p>
-                </div>
-                <Switch
-                  checked={donationReminders}
-                  onCheckedChange={(on) => {
-                    setDonationReminders(on);
-                    updateState(user?.id, s => ({ ...s, donationRemindersOff: !on }));
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-          <DonationDialog open={supportOpen} onOpenChange={setSupportOpen} />
-
           {/* Cancel Monthly Donation */}
           <Card className="shadow-elevated">
             <CardHeader>
