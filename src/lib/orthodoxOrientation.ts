@@ -27,14 +27,14 @@ export function orientationForBranch(branch: string | null | undefined): Orthodo
   const t = getBranchTradition(branch);
   return t === "unaffiliated" ? "undecided" : t;
 }
-/** Icon style implied by a branch; null leaves the current style untouched. */
+/** Icon style implied by a branch; null branch leaves the style untouched, every other church falls back to Greek. */
 export function iconStyleForBranch(branch: string | null | undefined): CategoryIconStyle | null {
+  if (branch == null) return null;
   switch (branch) {
     case "Coptic": return "coptic";
     case "Ethiopian Tewahedo": case "Eritrean Tewahedo": return "tewahedo";
     case "Russian Orthodox": return "byzantine";
-    case "Greek Orthodox": return "original";
-    default: return null;
+    default: return "original";
   }
 }
 
@@ -49,11 +49,11 @@ export function setOrientation(value: OrthodoxOrientation) {
   try { localStorage.setItem(KEY, value); } catch { /* keep in memory */ }
   window.dispatchEvent(new Event(EVENT));
 }
-/** Apply a profile branch choice: orientation follows its family; icons follow known churches unless the user picked a style themselves. */
-export function applyBranchPreferences(branch: string | null | undefined) {
+/** Apply a profile branch choice: orientation follows its family; icons follow the church. An explicit church choice (force) overrides a manual icon pick; passive derivation respects it. */
+export function applyBranchPreferences(branch: string | null | undefined, options?: { force?: boolean }) {
   setOrientation(orientationForBranch(branch));
   const style = iconStyleForBranch(branch);
-  if (style && !hasManualCategoryIconStyle()) setCategoryIconStyle(style);
+  if (style && (options?.force || !hasManualCategoryIconStyle())) setCategoryIconStyle(style);
 }
 function subscribe(listener: () => void) {
   const storage = (e: StorageEvent) => { if (e.key === KEY || e.key === null) { current = parseOrientation(e.newValue); listener(); } };
