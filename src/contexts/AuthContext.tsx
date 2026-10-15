@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { initializeIAP } from '@/utils/inAppPurchases';
+import { ORIENTATION_SIGNUP_METADATA } from '@/lib/orthodoxOrientation';
 
 interface AuthContextType {
   user: User | null;
@@ -91,7 +92,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl
+        emailRedirectTo: redirectUrl,
+        data: ORIENTATION_SIGNUP_METADATA,
       }
     });
 

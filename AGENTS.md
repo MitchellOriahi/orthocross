@@ -32,4 +32,5 @@
 
 - Resolve category artwork and silhouette framing through the shared provenance registry; preserve originals and identities. Transparent panels render without borders or backgrounds at stable dimensions.
 - Derive tradition defaults (history, Saints/Prayers filters, icons) from one orientation store; branch edits and onboarding write through it for consistency.
+- Mark tradition onboarding eligibility at signup and persist completion in account metadata; absent markers exclude existing accounts and completion follows users across devices.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.

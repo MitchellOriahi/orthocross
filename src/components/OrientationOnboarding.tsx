@@ -4,17 +4,18 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { ORTHODOX_BRANCHES } from "@/data/profileIdentity";
-import { applyBranchPreferences, hasStoredOrientation, orientationForBranch, setOrientation } from "@/lib/orthodoxOrientation";
+import { useToast } from "@/hooks/use-toast";
+import { applyBranchPreferences, hasStoredOrientation, orientationForBranch, setOrientation, orientationChurchOptions, shouldShowOrientationOnboarding } from "@/lib/orthodoxOrientation";
 
 const doneKey = (id: string) => `orientation-onboarded:${id}`;
-const ORIENTAL = ORTHODOX_BRANCHES.filter(b => b.tradition === "oriental");
-const EASTERN = ORTHODOX_BRANCHES.filter(b => b.tradition === "eastern");
+const ORIENTAL = orientationChurchOptions("oriental");
+const EASTERN = orientationChurchOptions("eastern");
 
-/** First-sign-in sticker asking Eastern / Oriental / Inquirer; sets profile branch and app defaults. */
+/** Account-creation sticker; completion is saved to the account, not just this device. */
 export function OrientationOnboarding() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<"family" | "oriental" | "eastern">("family");
   const [saving, setSaving] = useState(false);
@@ -35,25 +36,40 @@ export function OrientationOnboarding() {
         // Already chosen on another device: adopt it here without asking.
         localStorage.setItem(doneKey(user.id), "1");
         if (!hasStoredOrientation()) applyBranchPreferences(data.branch);
-      } else { setStep("family"); setOpen(true); }
+      } else if (shouldShowOrientationOnboarding(user.user_metadata, false)) { setStep("family"); setOpen(true); }
     });
     return () => { cancelled = true; };
   }, [user, tutorialDone]);
 
-  const finish = () => { if (user) localStorage.setItem(doneKey(user.id), "1"); setOpen(false); };
+  const finish = async () => {
+    if (!user || saving) return;
+    setSaving(true);
+    const { error } = await supabase.auth.updateUser({ data: { orientation_onboarding_status: "completed" } });
+    setSaving(false);
+    if (error) {
+      toast({ title: "Couldn't save your choice", description: "Please try again.", variant: "destructive" });
+      return;
+    }
+    localStorage.setItem(doneKey(user.id), "1");
+    setOpen(false);
+  };
   const chooseBranch = async (branch: string) => {
     if (!user) return;
     setSaving(true);
     const { error } = await supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch }, { onConflict: "user_id" });
     setSaving(false);
-    if (!error) queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
+    if (error) {
+      toast({ title: "Couldn't save your church", description: "Please try again.", variant: "destructive" });
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
     applyBranchPreferences(branch);
     if (orientationForBranch(branch) === "undecided") setOrientation("undecided");
-    finish();
+    await finish();
   };
 
   return (
-    <Dialog open={open} onOpenChange={o => { if (!o) finish(); }}>
+    <Dialog open={open} onOpenChange={o => { if (!o) void finish(); }}>
       <DialogContent className="max-w-sm rounded-3xl text-center">
         {step === "family" ? <>
           <DialogTitle className="text-2xl">Welcome to OrthoCross</DialogTitle>
@@ -67,7 +83,7 @@ export function OrientationOnboarding() {
           <div className="flex flex-col gap-3 pt-2">
             <Button disabled={saving} className="profile-branch-eastern h-12 rounded-full" variant="ghost" onClick={() => setStep("eastern")}>Eastern</Button>
             <Button disabled={saving} className="profile-branch-oriental h-12 rounded-full" variant="ghost" onClick={() => setStep("oriental")}>Oriental</Button>
-            <Button disabled={saving} className="profile-branch-unaffiliated h-12 rounded-full" variant="ghost" onClick={() => { setOrientation("undecided"); finish(); }}>Inquirer</Button>
+            <Button disabled={saving} className="profile-branch-unaffiliated h-12 rounded-full" variant="ghost" onClick={() => { setOrientation("undecided"); void finish(); }}>Neither</Button>
           </div>
         </> : step === "eastern" ? <>
           <DialogTitle className="text-2xl">Which Eastern church?</DialogTitle>
