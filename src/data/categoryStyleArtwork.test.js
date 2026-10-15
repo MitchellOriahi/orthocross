@@ -235,6 +235,17 @@ test("supplied photographs stay out of the remaining Tewahedo category and every
   }
 });
 
+test("Russian Saints laypeople tile shows the supplied Khlebnikov triptych with a transparent background", () => {
+  const art = categoryArtwork("saints", "byzantine", "laypeople");
+  expect(art.image_url).toContain("russian-saint-laypeople-triptych.png");
+  expect(art.image_shape).toBe("silhouette");
+  expect(art.image_license).toBe("Supplied by the app owner");
+  expect(art.image_source).toBe("");
+  expect(art.image_license_url).toBe("");
+  expect(art.image_author).toContain("supplied by the app owner");
+  expect(art.image_modification).toContain("transparent");
+});
+
 test("Russian Saints bottom row shows the supplied crowned-saint and hierarch icons, square-cropped", () => {
   const martyrs = categoryArtwork("saints", "byzantine", "martyrs");
   const missionaries = categoryArtwork("saints", "byzantine", "apostles-missionaries");
