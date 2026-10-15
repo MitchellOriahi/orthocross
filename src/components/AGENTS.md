@@ -1,0 +1,1 @@
+- Red confirm buttons use the alert dialog's `destructive` prop, not a `bg-destructive` override.

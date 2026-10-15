@@ -34,7 +34,7 @@
 - Share donation interval validation between dialog and checkout to keep billing consistent.
 - Use a tested gift-preview selector for slider position, portrait tier and glow; shared thresholds align custom gifts.
 - Schedule donation and rating prompts through one pure, tested coordinator (src/lib/promptScheduler) mounted only on the Board, so prompts never collide or interrupt reading.
-- Red confirm buttons use the alert dialog's `destructive` prop, not a `bg-destructive` override.
 
 - Resolve category artwork and silhouette framing through the shared provenance registry; preserve originals and identities. Transparent panels render without borders or backgrounds at stable dimensions.
-- Derive tradition defaults (history campaign, Saints/Prayers filters, icon style) from one device-persisted orientation store in src/lib/orthodoxOrientation; profile branch changes and first-sign-in onboarding write through it so all sections stay consistent.
+- Derive tradition defaults (history, Saints/Prayers filters, icons) from one orientation store; branch edits and onboarding write through it for consistency.
+- Some subdirectories have their own AGENTS.md; read it before changing files there.
