@@ -19,6 +19,8 @@ import { OrientationOnboarding } from "@/components/OrientationOnboarding";
 import { NotificationManager } from "@/components/NotificationManager";
 import { DonationThankYouDialog } from "@/components/DonationThankYouDialog";
 import Auth from "./pages/Auth";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import IconTuner from "./pages/IconTuner";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
@@ -88,6 +90,8 @@ const AppContent = () => {
         <Routes>
           {/* Root route - redirect based on auth state */}
           <Route path="/" element={<RootRoute />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/home" element={<Home />} />
           <Route path="/index" element={<ProtectedRoute><Index /></ProtectedRoute>} />
           <Route path="/icon-tuner" element={<AdminRoute><IconTuner /></AdminRoute>} />

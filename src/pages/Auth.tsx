@@ -274,6 +274,15 @@ const Auth = () => {
                   {loading ? 'Signing In...' : 'Sign In'}
                 </Button>
               </form>
+              <div className="text-center mt-3">
+                <button
+                  type="button"
+                  onClick={() => navigate('/forgot-password')}
+                  className="text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
             </TabsContent>
             
             <TabsContent value="signup">
