@@ -4,20 +4,16 @@ import {
   nextCancelStep,
 } from "./donationCancellation.ts";
 
-test("cancelling goes straight to the thank-you step", () => {
-  expect(nextCancelStep("confirm", "cancel")).toBe("thanks");
+test("the first cancellation attempt offers a pause instead of cancelling", () => {
+  expect(nextCancelStep("confirm", "cancel")).toBe("pause");
 });
 
-test("no action ever sends a cancelling donor to a pause step", () => {
-  const actions = ["keep", "cancel", "close", "pause", "pause_1_month", "maybe"];
-  for (const action of actions) {
-    const next = String(nextCancelStep("confirm", action));
-    expect(next).not.toMatch(/pause/i);
-    expect(next === "confirm" || next === "thanks").toBe(true);
-  }
+test("declining the pause cancels for real and shows the thank-you", () => {
+  expect(nextCancelStep("pause", "cancel_final")).toBe("thanks");
 });
 
 test("keeping or closing returns the donor to the first screen", () => {
   expect(nextCancelStep("thanks", "close")).toBe(INITIAL_CANCEL_STEP);
+  expect(nextCancelStep("pause", "close")).toBe(INITIAL_CANCEL_STEP);
   expect(nextCancelStep("confirm", "keep")).toBe("confirm");
 });

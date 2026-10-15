@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Heart } from "lucide-react";
+import { Heart, Pause } from "lucide-react";
 import {
   INITIAL_CANCEL_STEP,
   nextCancelStep,
@@ -24,10 +24,33 @@ interface CancelDonationDialogProps {
 export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialogProps) => {
   const [step, setStep] = useState<CancelStep>(INITIAL_CANCEL_STEP);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPausing, setIsPausing] = useState(false);
 
   const handleClose = () => {
     setStep(nextCancelStep(step, "close"));
     onOpenChange(false);
+  };
+
+  const handlePause = async () => {
+    setIsPausing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("customer-portal");
+      if (error || data?.error) {
+        let msg = data?.error;
+        try { msg = msg || (await (error as any)?.context?.json?.())?.error; } catch { /* ignore */ }
+        throw new Error(msg || "We couldn't open the pause page. Please try again.");
+      }
+      if (data?.url) {
+        window.open(data.url, "_blank", "noopener,noreferrer");
+        handleClose();
+      } else {
+        throw new Error("We couldn't open the pause page. Please try again.");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "We couldn't open the pause page. Please try again.");
+    } finally {
+      setIsPausing(false);
+    }
   };
 
   const handleCancelDonation = async () => {
@@ -41,7 +64,7 @@ export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialo
       }
       supabase.functions.invoke("send-cancellation-email").catch(() => {});
       window.dispatchEvent(new Event("monthly-donation-changed"));
-      setStep(nextCancelStep(step, "cancel"));
+      setStep(nextCancelStep(step, "cancel_final"));
     } catch (error: any) {
       toast.error(error.message || "We couldn't cancel your donation. Please try again.");
     } finally {
@@ -73,11 +96,59 @@ export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialo
               </Button>
               <Button
                 variant="ghost"
-                onClick={handleCancelDonation}
-                disabled={isLoading}
+                onClick={() => setStep(nextCancelStep(step, "cancel"))}
                 className="w-full"
               >
-                {isLoading ? "Cancelling..." : "Yes, I Want to Cancel"}
+                Yes, I Want to Cancel
+              </Button>
+            </div>
+          </>
+        );
+
+      case "pause":
+        return (
+          <>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Pause className="w-5 h-5" />
+                Would you like to pause instead?
+              </DialogTitle>
+              <DialogDescription>
+                You can pause your monthly donation for a while and pick it back up whenever you're ready — every gift, big or small, means the world to us.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-3 mt-4">
+              <Button
+                variant="outline"
+                onClick={handlePause}
+                disabled={isPausing || isLoading}
+                className="w-full"
+              >
+                Pause for 1 Month
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handlePause}
+                disabled={isPausing || isLoading}
+                className="w-full"
+              >
+                Pause for 2 Months
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handlePause}
+                disabled={isPausing || isLoading}
+                className="w-full"
+              >
+                Pause for 3 Months
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={handleCancelDonation}
+                disabled={isLoading || isPausing}
+                className="w-full"
+              >
+                {isLoading ? "Cancelling..." : "No, I Still Want to Cancel"}
               </Button>
             </div>
           </>
