@@ -1,20 +1,10 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { initializeIAP } from '@/utils/inAppPurchases';
 import { ORIENTATION_SIGNUP_METADATA } from '@/lib/orthodoxOrientation';
-
-interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string) => Promise<{ error: any }>;
-  signOut: () => Promise<void>;
-  loading: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from '@/contexts/authContextStore';
 
 let cachedAuthState: {
   user: User | null;
