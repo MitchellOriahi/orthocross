@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle, Globe, Cross } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle, Globe, Cross, Ticket, BadgeCheck } from "lucide-react";
 import { ORIENTATION_LABELS, setOrientation, useOrthodoxOrientation, type OrthodoxOrientation } from "@/lib/orthodoxOrientation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -22,6 +24,7 @@ import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { TraditionChoiceDialog } from "@/components/OrientationOnboarding";
+import { normalizeReferralCode, REFERRAL_CODE_MAX } from "@/lib/referralCode";
 
 const Settings = () => {
   const orientation = useOrthodoxOrientation();
@@ -39,6 +42,10 @@ const Settings = () => {
   const [streakVisible, setStreakVisible] = useState(true);
   const [activityVisible, setActivityVisible] = useState(true);
   const [timezone, setTimezone] = useState('America/New_York');
+  const [referralDraft, setReferralDraft] = useState<string | null>(null);
+  const [savingReferral, setSavingReferral] = useState(false);
+  const savedReferralCode = profile?.referral_code ?? "";
+  const referralCodeValue = referralDraft ?? savedReferralCode;
 
   // Common timezone options
   const timezones = [
@@ -172,6 +179,28 @@ const Settings = () => {
       const body = encodeURIComponent(message);
       window.open(`sms:?body=${body}`);
     }
+  };
+
+  const handleSaveReferralCode = async () => {
+    if (!user) return;
+    const result = normalizeReferralCode(referralCodeValue);
+    if (!result.ok) {
+      toast.error(result.message);
+      return;
+    }
+    setSavingReferral(true);
+    const { error } = await supabase
+      .from('profiles')
+      .update({ referral_code: result.code })
+      .eq('id', user.id);
+    setSavingReferral(false);
+    if (error) {
+      toast.error("Could not save your referral code. Please try again.");
+      return;
+    }
+    setReferralDraft(result.code);
+    refetchProfile();
+    toast.success("Referral code saved to your profile");
   };
 
   const getUserInitials = () => {
@@ -490,6 +519,43 @@ const Settings = () => {
                   <MessageSquare className="w-4 h-4 mr-3" />
                   Share via SMS
                 </Button>
+              </div>
+
+              <div className="pt-4 mt-2 border-t border-border/50">
+                <Label htmlFor="referral-code" className="flex items-center gap-2 text-sm">
+                  <Ticket className="w-4 h-4 text-primary" />
+                  Have a referral code?
+                </Label>
+                <p className="text-xs text-muted-foreground mt-1 mb-2">
+                  Type in the code a friend gave you so we can credit them.
+                </p>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="referral-code"
+                    value={referralCodeValue}
+                    onChange={(event) => setReferralDraft(event.target.value)}
+                    placeholder="e.g. ORTHO-CROSS9"
+                    maxLength={REFERRAL_CODE_MAX}
+                    autoComplete="off"
+                    spellCheck={false}
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleSaveReferralCode}
+                    disabled={savingReferral}
+                    className="shrink-0"
+                  >
+                    {savingReferral ? "Saving…" : "Apply"}
+                  </Button>
+                </div>
+                {savedReferralCode && (
+                  <p className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+                    <BadgeCheck className="w-3.5 h-3.5 text-primary" />
+                    {savedReferralCode} is on your profile.
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>
