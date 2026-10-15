@@ -49,7 +49,7 @@ export function OrientationOnboarding() {
       return;
     }
     localStorage.setItem(doneKey(user.id), "1");
-    toast({ title: "Profile updated", description: "Your Orthodox tradition has been saved." });
+    toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
     setOpen(false);
   };
   const chooseBranch = async (branch: string) => {
