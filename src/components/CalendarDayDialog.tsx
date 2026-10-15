@@ -58,12 +58,11 @@ export function CalendarDayDialog({ date, events, weeklyFast, reminders, error, 
      <div className="space-y-2"><Label htmlFor="reminder-notes">Notes</Label><Textarea id="reminder-notes" value={notes} onChange={e=>setNotes(e.target.value)} maxLength={2000} rows={3} /></div>
      <Button type="submit" className="w-full" disabled={busy}><Bell />{busy ? "Saving…" : "Save reminder"}</Button>
     </form> : <div className="space-y-5">
-      {events.length > 0 && <div className="divide-y divide-border">{events.map((event,index)=><div key={index} className="flex items-start justify-between gap-3 py-3">
+      {events.length > 0 && <div className="divide-y divide-border">{events.map((event,index)=><div key={index} className="py-3">
        <div className="min-w-0"><p className="font-semibold break-words">{event.name}</p><p className="text-xs text-muted-foreground capitalize mt-1">{event.type}{event.endDate ? ` · ${event.date.toLocaleDateString(undefined,{month:"short",day:"numeric"})} – ${event.endDate.toLocaleDateString(undefined,{month:"short",day:"numeric"})}` : ""}</p></div>
-       <Button variant="ghost" size="icon" aria-label={`Set reminder for ${event.name}`} onClick={()=>start(undefined,event.name)}><Bell /></Button>
       </div>)}</div>}
       {weeklyFast && !events.some(e=>e.type==="feast") && <p className="text-sm text-muted-foreground">Wednesday / Friday fast</p>}
-      <div className="space-y-2"><h3 className="text-sm font-semibold">Your reminders</h3>
+      <div className="space-y-2"><h3 className="text-sm font-semibold">Personal Reminders</h3>
        {error && <p className="text-sm text-destructive">Could not load reminders. Please reopen this date.</p>}
        {!error && reminders.length === 0 && <p className="text-sm text-muted-foreground">No reminders</p>}
        {reminders.map(r=><div key={r.id} className="flex items-start gap-2 border-b border-border py-2">
