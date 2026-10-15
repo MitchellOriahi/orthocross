@@ -414,7 +414,15 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Select value={orientation} onValueChange={v => setOrientation(v as OrthodoxOrientation)}>
+              <Select value={orientation} onValueChange={v => {
+                const value = v as OrthodoxOrientation;
+                if (value === "undecided") {
+                  setOrientation("undecided");
+                  setTraditionDialog("family");
+                } else {
+                  setTraditionDialog(value);
+                }
+              }}>
                 <SelectTrigger
                   aria-label="Default Orthodox tradition"
                   className="font-semibold transition-colors"
