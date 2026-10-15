@@ -9,9 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Heart, Pause } from "lucide-react";
+import { Heart } from "lucide-react";
 
-type CancelStep = "confirm" | "pause-offer" | "thanks";
+type CancelStep = "confirm" | "thanks";
 
 interface CancelDonationDialogProps {
   open: boolean;
@@ -25,23 +25,6 @@ export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialo
   const handleClose = () => {
     setStep("confirm");
     onOpenChange(false);
-  };
-
-  const handlePauseDonation = async (months: number) => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-      if (error) throw error;
-      if (data?.url) {
-        window.open(data.url, "_blank");
-        toast.success(`Opening subscription portal to pause for ${months} month${months > 1 ? 's' : ''}`);
-      }
-      handleClose();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to open subscription management");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const handleCancelDonation = async () => {
@@ -87,59 +70,11 @@ export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialo
               </Button>
               <Button
                 variant="ghost"
-                onClick={() => setStep("pause-offer")}
-                className="w-full"
-              >
-                Yes, I Want to Cancel
-              </Button>
-            </div>
-          </>
-        );
-
-      case "pause-offer":
-        return (
-          <>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Pause className="w-5 h-5" />
-                Would you like to pause instead?
-              </DialogTitle>
-              <DialogDescription>
-                Instead of canceling, you can pause your donations for 1-3 months. Your subscription will automatically resume after the pause period.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex flex-col gap-3 mt-4">
-              <Button
-                variant="outline"
-                onClick={() => handlePauseDonation(1)}
-                disabled={isLoading}
-                className="w-full"
-              >
-                Pause for 1 Month
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handlePauseDonation(2)}
-                disabled={isLoading}
-                className="w-full"
-              >
-                Pause for 2 Months
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handlePauseDonation(3)}
-                disabled={isLoading}
-                className="w-full"
-              >
-                Pause for 3 Months
-              </Button>
-              <Button
-                variant="ghost"
                 onClick={handleCancelDonation}
                 disabled={isLoading}
                 className="w-full"
               >
-                {isLoading ? "Cancelling..." : "No, I Still Want to Cancel"}
+                {isLoading ? "Cancelling..." : "Yes, I Want to Cancel"}
               </Button>
             </div>
           </>
