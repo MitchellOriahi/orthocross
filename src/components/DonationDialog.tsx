@@ -287,7 +287,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                   const current = giftTier?.key === t.key;
                   return (
                     <li key={t.key}>
-                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
+                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option ${t.key === "archangel" ? "donor-gift-tier-pulse" : ""} h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
                         setCustomAmount(String(t.minCents / 100));
                         setSelectedAmount(t.minCents / 100);
                         setUseCustom(true);
@@ -323,10 +323,16 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</> : "Donate"}
           </Button>
 
+          {!isNative && (
+            <Button onClick={handleOneTimeDonate} disabled={loading} variant="outline" className="h-11 w-full rounded-full">
+              One-time donation
+            </Button>
+          )}
+
           <p className="text-xs text-muted-foreground">
             {isNative
               ? "One-time donation processed securely through the app store."
-              : "Your gift renews monthly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings."}
+              : "Donate renews monthly at the same amount — cancel anytime from Settings. One-time donation is a single gift. Both are processed securely by Stripe."}
           </p>
         </div>
       </DialogContent>
