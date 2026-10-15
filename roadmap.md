@@ -97,3 +97,6 @@
 
 ## Thank-you sticker wording
 - [x] Dropped the "$X more to reach Y" line, put "May God continue to bless you." on its own line, added a breathing golden rim glow around the portrait, and capitalized the donator's first letter; 11 donor tests pass, glow/line-break/wording checked in both themes, thank-you email wording redeployed, build clean.
+
+## Settings donation card
+- [x] Removed the "Become a donator" card from Settings (heading, button and the occasional-reminders switch); Manage Donation and the Donate pill elsewhere are untouched; verified signed-in that the card is gone with no runtime errors, build clean.
