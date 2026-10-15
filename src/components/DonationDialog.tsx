@@ -126,6 +126,38 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     }
   };
 
+  // Web path, one-time gift: Stripe Checkout (single payment)
+  const handleOneTimeDonate = async () => {
+    const amount = getEffectiveAmount();
+    if (isNaN(amount) || amount < 1) {
+      toast({ title: "Invalid amount", description: "Minimum donation is $1.00", variant: "destructive" });
+      return;
+    }
+
+    if (!user) {
+      toast({ title: "Please sign in", description: "Sign in to donate so your gift is tied to your account.", variant: "destructive" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      localStorage.setItem("orthocross:donation-started", new Date().toISOString());
+      const { data, error } = await supabase.functions.invoke("create-donation", {
+        body: { amount: Math.round(amount * 100) },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        onOpenChange(false);
+      }
+    } catch (error: any) {
+      console.error("Donation error:", error);
+      toast({ title: "Error", description: error.message || "Failed to process donation", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Web path: Stripe Checkout (monthly subscription)
   const handleWebDonate = async () => {
     const amount = getEffectiveAmount();
@@ -255,7 +287,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                   const current = giftTier?.key === t.key;
                   return (
                     <li key={t.key}>
-                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
+                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option ${t.key === "archangel" ? "donor-gift-tier-pulse" : ""} h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
                         setCustomAmount(String(t.minCents / 100));
                         setSelectedAmount(t.minCents / 100);
                         setUseCustom(true);
@@ -291,10 +323,16 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</> : "Donate"}
           </Button>
 
+          {!isNative && (
+            <Button onClick={handleOneTimeDonate} disabled={loading} variant="outline" className="h-11 w-full rounded-full">
+              One-time donation
+            </Button>
+          )}
+
           <p className="text-xs text-muted-foreground">
             {isNative
               ? "One-time donation processed securely through the app store."
-              : "Your gift renews monthly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings."}
+              : "Donate renews monthly at the same amount — cancel anytime from Settings. One-time donation is a single gift. Both are processed securely by Stripe."}
           </p>
         </div>
       </DialogContent>
