@@ -8,7 +8,13 @@ export function CategoryArtwork({ artwork, label }: { artwork: CategoryStyleArtw
   const silhouette = artwork.image_shape === "silhouette";
   // A silhouette panel keeps its own outline, so the tile follows the artwork's
   // own proportions (image_box_aspect) instead of one fixed frame for all of them.
-  const boxStyle = silhouette ? { aspectRatio: artwork.image_box_aspect ?? "3 / 4" } : undefined;
+  // An arched panel also carries transparent space above its own peak, so it can
+  // be lifted by a share of the tile width (image_shift_up); a percentage margin
+  // scales with the tile instead of being a fixed pixel count.
+  const boxStyle = silhouette ? {
+    aspectRatio: artwork.image_box_aspect ?? "3 / 4",
+    marginTop: artwork.image_shift_up ? `-${artwork.image_shift_up}%` : undefined,
+  } : undefined;
   return <span className={silhouette ? "block w-full shrink-0" : "block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"} style={boxStyle}>
     {failed ? <span className="flex h-full items-center justify-center text-muted-foreground"><Cross className="h-7 w-7" aria-hidden="true" /></span>
       : <img src={artwork.image_url} alt={label} decoding="async" onError={() => setFailed(true)} className="h-full w-full object-contain object-center" />}
