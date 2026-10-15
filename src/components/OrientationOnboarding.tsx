@@ -49,7 +49,7 @@ export function OrientationOnboarding() {
       return;
     }
     localStorage.setItem(doneKey(user.id), "1");
-    toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
+    toast(PROFILE_UPDATED_TOAST);
     setOpen(false);
   };
   const chooseBranch = async (branch: string) => {
@@ -151,14 +151,14 @@ export function TraditionChoiceDialog({ open, initialStep, onClose }: {
     }
     queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
     applyBranchPreferences(branch, { force: true });
-    toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
+    toast(PROFILE_UPDATED_TOAST);
     onClose();
   };
 
   const chooseNeither = async () => {
     setOrientation("undecided");
     await clearBranch();
-    toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
+    toast(PROFILE_UPDATED_TOAST);
     onClose();
   };
 
