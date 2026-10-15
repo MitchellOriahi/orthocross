@@ -85,7 +85,7 @@ export default function ProfileIdentityTags() {
         .select("branch, patron_saint_id, country_code, age").single();
       if (error) throw error;
       queryClient.setQueryData(queryKey, updated);
-      if (field === "branch") applyBranchPreferences(value as string | null);
+      if (field === "branch") applyBranchPreferences(value as string | null, { force: true });
       return true;
     } catch {
       toast.error("Could not save your tag. Please try again.");

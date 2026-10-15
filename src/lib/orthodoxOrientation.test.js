@@ -34,9 +34,13 @@ describe("orthodox orientation rules", () => {
   });
   test("Russian sets Russian icons", () => expect(iconStyleForBranch("Russian Orthodox")).toBe("byzantine"));
   test("Greek sets Greek icons", () => expect(iconStyleForBranch("Greek Orthodox")).toBe("original"));
-  test("other churches leave icons as they are", () => {
-    expect(iconStyleForBranch("Armenian Apostolic")).toBeNull();
-    expect(iconStyleForBranch("Serbian Orthodox")).toBeNull();
+  test("any other church falls back to Greek icons", () => {
+    expect(iconStyleForBranch("Armenian Apostolic")).toBe("original");
+    expect(iconStyleForBranch("Serbian Orthodox")).toBe("original");
+  });
+  test("a cleared branch leaves icons untouched", () => {
+    expect(iconStyleForBranch(null)).toBeNull();
+    expect(iconStyleForBranch(undefined)).toBeNull();
   });
   test("branch family sets orientation", () => {
     expect(orientationForBranch("Syriac Orthodox")).toBe("oriental");
