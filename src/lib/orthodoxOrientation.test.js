@@ -34,9 +34,13 @@ describe("orthodox orientation rules", () => {
   });
   test("Russian sets Russian icons", () => expect(iconStyleForBranch("Russian Orthodox")).toBe("byzantine"));
   test("Greek sets Greek icons", () => expect(iconStyleForBranch("Greek Orthodox")).toBe("original"));
-  test("other churches leave icons as they are", () => {
-    expect(iconStyleForBranch("Armenian Apostolic")).toBeNull();
-    expect(iconStyleForBranch("Serbian Orthodox")).toBeNull();
+  test("any other church falls back to Greek icons", () => {
+    expect(iconStyleForBranch("Armenian Apostolic")).toBe("original");
+    expect(iconStyleForBranch("Serbian Orthodox")).toBe("original");
+  });
+  test("a cleared branch leaves icons untouched", () => {
+    expect(iconStyleForBranch(null)).toBeNull();
+    expect(iconStyleForBranch(undefined)).toBeNull();
   });
   test("branch family sets orientation", () => {
     expect(orientationForBranch("Syriac Orthodox")).toBe("oriental");
@@ -74,5 +78,21 @@ describe("manual icon style choices", () => {
     const { parseCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
     applyBranchPreferences("Russian Orthodox");
     expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("byzantine");
+  });
+  test("an explicit church choice overrides an earlier manual icon pick", async () => {
+    stubStorage();
+    const { setCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
+    const { applyBranchPreferences } = await import("./orthodoxOrientation");
+    const { parseCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
+    setCategoryIconStyle("coptic", { manual: true });
+    applyBranchPreferences("Ethiopian Tewahedo", { force: true });
+    expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("tewahedo");
+  });
+  test("an explicit choice of any other church gives Greek icons", async () => {
+    stubStorage();
+    const { applyBranchPreferences } = await import("./orthodoxOrientation");
+    const { parseCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
+    applyBranchPreferences("Armenian Apostolic", { force: true });
+    expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("original");
   });
 });
