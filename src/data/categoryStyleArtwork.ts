@@ -66,6 +66,8 @@ import russian_prayer_christ_saints from "@/assets/category-styles/russian-praye
 import russian_prayer_communion from "@/assets/category-styles/russian-prayer-communion.png.asset.json";
 import russian_prayer_occasions from "@/assets/category-styles/russian-prayer-occasions.png.asset.json";
 import russian_prayer_psalms from "@/assets/category-styles/russian-prayer-psalms.png.asset.json";
+import russian_saint_annunciation from "@/assets/category-styles/russian-saint-annunciation-sq.jpg.asset.json";
+import russian_saint_theotokos from "@/assets/category-styles/russian-saint-theotokos-sq.jpg.asset.json";
 
 export type CategoryStyleArtwork = SaintDisplayIcon & { image_shape?: "silhouette" };
 
