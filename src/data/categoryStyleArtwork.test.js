@@ -238,8 +238,8 @@ test("supplied photographs stay out of the remaining Tewahedo category and every
 test("Byzantine Saints row under the middle shows the supplied fifth- and sixth-day creation icons, square-cropped", () => {
   const martyrs = categoryArtwork("saints", "byzantine", "martyrs");
   const missionaries = categoryArtwork("saints", "byzantine", "apostles-missionaries");
-  expect(martyrs.image_url).toContain("byzantine-swarms");
-  expect(missionaries.image_url).toContain("byzantine-adam");
+  expect(martyrs.image_url).toContain("russian-saint-crowned-martyrs");
+  expect(missionaries.image_url).toContain("russian-saint-nicholas-missionaries");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
