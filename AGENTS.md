@@ -37,3 +37,4 @@
 - Red confirm buttons use the alert dialog's `destructive` prop, not a `bg-destructive` override.
 
 - Resolve category artwork and silhouette framing through the shared provenance registry; preserve originals and identities. Transparent panels render without borders or backgrounds at stable dimensions.
+- Derive tradition defaults (history campaign, Saints/Prayers filters, icon style) from one device-persisted orientation store in src/lib/orthodoxOrientation; profile branch changes and first-sign-in onboarding write through it so all sections stay consistent.
