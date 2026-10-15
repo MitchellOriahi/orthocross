@@ -69,6 +69,19 @@ export function OrientationOnboarding() {
 
   return (
     <Dialog open={open} onOpenChange={o => { if (!o) void finish(); }}>
+      <OrientationSteps step={step} setStep={setStep} saving={saving} onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
+    </Dialog>
+  );
+}
+
+function OrientationSteps({ step, setStep, saving, onChooseBranch, onNeither }: {
+  step: "family" | "oriental" | "eastern";
+  setStep: (s: "family" | "oriental" | "eastern") => void;
+  saving: boolean;
+  onChooseBranch: (branch: string) => void;
+  onNeither: () => void;
+}) {
+  return (
       <DialogContent className="max-w-sm rounded-3xl text-center">
         {step === "family" ? <>
           <DialogTitle className="text-2xl">Welcome to OrthoCross</DialogTitle>
