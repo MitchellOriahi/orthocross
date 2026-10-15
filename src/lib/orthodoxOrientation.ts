@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { getBranchTradition, ORTHODOX_BRANCHES } from "@/data/profileIdentity";
-import { hasManualCategoryIconStyle, setCategoryIconStyle, type CategoryIconStyle } from "@/hooks/useCategoryIconStyle";
+import { CATEGORY_ICON_SCOPES, hasManualCategoryIconStyle, setCategoryIconStyle, type CategoryIconStyle } from "@/hooks/useCategoryIconStyle";
 
 export type OrthodoxOrientation = "eastern" | "oriental" | "undecided";
 export const ORIENTATION_LABELS: Record<OrthodoxOrientation, string> = { eastern: "Eastern", oriental: "Oriental", undecided: "Neither" };
@@ -53,7 +53,11 @@ export function setOrientation(value: OrthodoxOrientation) {
 export function applyBranchPreferences(branch: string | null | undefined, options?: { force?: boolean }) {
   setOrientation(orientationForBranch(branch));
   const style = iconStyleForBranch(branch);
-  if (style && (options?.force || !hasManualCategoryIconStyle())) setCategoryIconStyle(style);
+  if (!style) return;
+  // A church choice still sets both sections; a section picked by hand is only overridden by an explicit choice.
+  for (const scope of CATEGORY_ICON_SCOPES) {
+    if (options?.force || !hasManualCategoryIconStyle(scope)) setCategoryIconStyle(scope, style);
+  }
 }
 function subscribe(listener: () => void) {
   const storage = (e: StorageEvent) => { if (e.key === KEY || e.key === null) { current = parseOrientation(e.newValue); listener(); } };
