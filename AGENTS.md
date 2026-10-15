@@ -32,6 +32,6 @@
 
 - Resolve category artwork and silhouette framing through the shared provenance registry; preserve originals and identities. Transparent panels render without borders or backgrounds at stable dimensions.
 - Derive tradition defaults (history, Saints/Prayers filters, icons) from one orientation store; branch edits and onboarding write through it for consistency.
-- Mark tradition onboarding eligibility at signup and persist completion in account metadata; absent markers exclude existing accounts and completion follows users across devices.
+- Determine tradition onboarding eligibility from account completion metadata and legacy local completion, not a saved branch or signup marker; this includes unseen existing accounts while preventing repeats across devices after completion.
 - Define the auth context in a separate non-component module so provider refreshes preserve context identity for mounted consumers.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
