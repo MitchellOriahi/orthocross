@@ -24,8 +24,8 @@ export function CalendarDayDialog({ date, events, weeklyFast, reminders, error, 
  const [time, setTime] = useState("09:00");
  const [busy, setBusy] = useState(false);
  const dateKey = calendarDateKey(date);
- const start = (reminder?: CalendarReminder, eventName = "") => {
-   setId(reminder?.id); setTitle(reminder?.title ?? eventName); setNotes(reminder?.notes ?? "");
+ const start = (reminder?: CalendarReminder) => {
+   setId(reminder?.id); setTitle(reminder?.title ?? ""); setNotes(reminder?.notes ?? "");
    const at = reminder ? new Date(reminder.remind_at) : null;
    setTime(at ? `${String(at.getHours()).padStart(2,"0")}:${String(at.getMinutes()).padStart(2,"0")}` : "09:00"); setEditing(true);
  };
