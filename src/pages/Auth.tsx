@@ -274,11 +274,11 @@ const Auth = () => {
                   {loading ? 'Signing In...' : 'Sign In'}
                 </Button>
               </form>
-              <div className="text-center mt-3">
+              <div className="flex justify-end mt-2 -mb-1">
                 <button
                   type="button"
                   onClick={() => navigate('/forgot-password')}
-                  className="text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+                  className="text-xs text-muted-foreground/70 hover:text-foreground underline-offset-4 hover:underline transition-colors"
                 >
                   Forgot password?
                 </button>
