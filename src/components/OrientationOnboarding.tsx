@@ -40,17 +40,18 @@ export function OrientationOnboarding() {
     return () => { cancelled = true; };
   }, [user, tutorialDone]);
 
-  const finish = async () => {
+  /** Persist completion; silent when the sticker is dismissed without choosing, so no toast is shown. */
+  const finish = async (silent = false) => {
     if (!user || saving) return;
     setSaving(true);
     const { error } = await supabase.auth.updateUser({ data: { orientation_onboarding_status: "completed" } });
     setSaving(false);
     if (error) {
-      toast({ title: "Couldn't save your choice", description: "Please try again.", variant: "destructive" });
+      if (!silent) toast({ title: "Couldn't save your choice", description: "Please try again.", variant: "destructive" });
       return;
     }
     localStorage.setItem(doneKey(user.id), "1");
-    toast(PROFILE_UPDATED_TOAST);
+    if (!silent) toast(PROFILE_UPDATED_TOAST);
     setOpen(false);
   };
   const chooseBranch = async (branch: string) => {
@@ -69,7 +70,7 @@ export function OrientationOnboarding() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={o => { if (!o) void finish(); }}>
+    <Dialog open={open} onOpenChange={o => { if (!o) void finish(true); }}>
       <OrientationSteps step={step} setStep={setStep} saving={saving} onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
     </Dialog>
   );
