@@ -1,0 +1,5 @@
+- Use category-qualified memberships and shared roster identities to prevent duplicated saints and overwritten classifications.
+- Apply Saints tradition filtering in the roster selector alongside category, subgroup and search; shared-tradition records belong to both filters so presentation never rewrites classifications.
+- Merge additional typed saint lives alphabetically with originals, keeping icon pointers and provenance to preserve identities and presentation.
+- Prefer separate ID-keyed Synaxaria roster stories over preserved biographies, so expanded lives never overwrite the saved catalog.
+- Share prayers in one catalog with category-qualified placements; retain IDs, text, pins and highlights.

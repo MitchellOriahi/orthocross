@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Music, Volume2, Bell, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle, Globe } from "lucide-react";
+import { ArrowLeft, Music, Volume2, Bell, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle, Globe, Cross } from "lucide-react";
+import { ORIENTATION_LABELS, setOrientation, useOrthodoxOrientation, type OrthodoxOrientation } from "@/lib/orthodoxOrientation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,6 +25,7 @@ import { DonationDialog } from "@/components/DonationDialog";
 import { loadState, updateState } from "@/lib/promptScheduler";
 
 const Settings = () => {
+  const orientation = useOrthodoxOrientation();
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
@@ -399,6 +401,27 @@ const Settings = () => {
                   </Select>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Orthodox tradition default */}
+          <Card className="shadow-elevated">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Cross className="w-5 h-5 text-primary" />
+                Orthodox Tradition
+              </CardTitle>
+              <CardDescription>
+                Islands, saints and prayers open to this tradition by default
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Select value={orientation} onValueChange={v => setOrientation(v as OrthodoxOrientation)}>
+                <SelectTrigger aria-label="Default Orthodox tradition"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {(["eastern", "oriental", "undecided"] as const).map(o => <SelectItem key={o} value={o}>{ORIENTATION_LABELS[o]}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </CardContent>
           </Card>
 

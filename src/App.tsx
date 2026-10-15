@@ -15,6 +15,7 @@ import GroupDetail from "./pages/GroupDetail";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { TutorialIntro } from "@/components/TutorialIntro";
+import { OrientationOnboarding } from "@/components/OrientationOnboarding";
 import { NotificationManager } from "@/components/NotificationManager";
 import { DonationThankYouDialog } from "@/components/DonationThankYouDialog";
 import Auth from "./pages/Auth";
@@ -79,6 +80,7 @@ const AppContent = () => {
       <AuthProvider>
         <NotificationManager />
         <TutorialIntro />
+        <OrientationOnboarding />
         {/* Thank-you sticker after a donation, on whichever page the donor returns to */}
         <DonationThankYouDialog />
         <PageTransition>
