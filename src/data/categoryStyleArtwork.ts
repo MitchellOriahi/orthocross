@@ -68,6 +68,8 @@ import russian_prayer_occasions from "@/assets/category-styles/russian-prayer-oc
 import russian_prayer_psalms from "@/assets/category-styles/russian-prayer-psalms.png.asset.json";
 import russian_saint_annunciation from "@/assets/category-styles/russian-saint-annunciation-sq.jpg.asset.json";
 import russian_saint_theotokos from "@/assets/category-styles/russian-saint-theotokos-sq.jpg.asset.json";
+import russian_saint_job_monastics from "@/assets/category-styles/russian-saint-job-monastics-sq.jpg.asset.json";
+import russian_saint_mitre_fathers from "@/assets/category-styles/russian-saint-mitre-fathers-sq.jpg.asset.json";
 
 export type CategoryStyleArtwork = SaintDisplayIcon & { image_shape?: "silhouette" };
 
