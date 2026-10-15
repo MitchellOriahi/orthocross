@@ -36,6 +36,9 @@ export const DONOR_TEXT = {
   anonymousName: "Anonymous Donor",
   showMyName: "Show my name",
   donateAnonymously: "Donate anonymously",
+  donateAnonymouslyShort: "Anonymous",
+  oneTime: "One-time",
+  oneTimeFull: "One-time donation",
   thankYouTitle: (name: string) => `Thank you, ${capitalizeName(name)}.`,
   thankYouBody:
     "Your gift helps keep this app free and growing, and we are grateful for you.",
