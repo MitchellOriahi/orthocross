@@ -25,6 +25,7 @@ import { DonationDialog } from "@/components/DonationDialog";
 import { loadState, updateState } from "@/lib/promptScheduler";
 
 const Settings = () => {
+  const orientation = useOrthodoxOrientation();
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
