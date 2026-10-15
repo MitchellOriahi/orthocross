@@ -11,7 +11,7 @@ const doneKey = (id: string) => `orientation-onboarded:${id}`;
 const ORIENTAL = ORTHODOX_BRANCHES.filter(b => b.tradition === "oriental");
 const EASTERN = ORTHODOX_BRANCHES.filter(b => b.tradition === "eastern");
 
-/** First-sign-in sticker asking Eastern / Oriental / Undecided; sets profile branch and app defaults. */
+/** First-sign-in sticker asking Eastern / Oriental / Inquirer; sets profile branch and app defaults. */
 export function OrientationOnboarding() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
