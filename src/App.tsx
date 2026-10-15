@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { ThemeProvider } from "next-themes";
 import { StatusBarSync } from "@/components/StatusBarSync";
 import { MusicProvider } from "@/contexts/MusicContext";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { AppLoader } from "@/components/AppLoader";
 import Friends from "./pages/Friends";
 import FriendProfile from "./pages/FriendProfile";
@@ -65,18 +65,19 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// The root path is the app's home: the sign-in screen when nobody is signed in,
+// and the Board for a signed-in user. Reading live auth state (rather than the
+// launch-time snapshot) means signing out or deleting an account lands here
+// instead of bouncing back into a protected page.
+const RootRoute = () => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  return user ? <Navigate to="/dashboard" replace /> : <Auth />;
+};
+
 const AppContent = () => {
-  const [authState, setAuthState] = useState<{
-    isReady: boolean;
-    isAuthenticated: boolean;
-  }>({ isReady: false, isAuthenticated: false });
-
-  const handleAuthReady = useCallback((isAuthenticated: boolean) => {
-    setAuthState({ isReady: true, isAuthenticated });
-  }, []);
-
   return (
-    <AppLoader onAuthReady={handleAuthReady}>
+    <AppLoader onAuthReady={() => {}}>
       <AuthProvider>
         <NotificationManager />
         <TutorialIntro />
@@ -86,14 +87,7 @@ const AppContent = () => {
         <PageTransition>
         <Routes>
           {/* Root route - redirect based on auth state */}
-          <Route 
-            path="/" 
-            element={
-              authState.isReady && authState.isAuthenticated 
-                ? <Navigate to="/dashboard" replace /> 
-                : <Auth />
-            } 
-          />
+          <Route path="/" element={<RootRoute />} />
           <Route path="/home" element={<Home />} />
           <Route path="/index" element={<ProtectedRoute><Index /></ProtectedRoute>} />
           <Route path="/icon-tuner" element={<AdminRoute><IconTuner /></AdminRoute>} />
