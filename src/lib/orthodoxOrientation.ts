@@ -6,7 +6,7 @@ export type OrthodoxOrientation = "eastern" | "oriental" | "undecided";
 export const ORIENTATION_LABELS: Record<OrthodoxOrientation, string> = { eastern: "Eastern", oriental: "Oriental", undecided: "Neither" };
 export const ORIENTATION_SIGNUP_METADATA = { orientation_onboarding_status: "pending" } as const;
 export function shouldShowOrientationOnboarding(metadata: Record<string, unknown> | undefined, locallyCompleted: boolean) {
-  return !locallyCompleted && metadata?.orientation_onboarding_status === "pending";
+  return !locallyCompleted && metadata?.orientation_onboarding_status !== "completed";
 }
 export function orientationChurchOptions(tradition: "eastern" | "oriental") {
   return ORTHODOX_BRANCHES

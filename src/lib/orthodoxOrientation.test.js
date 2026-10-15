@@ -13,10 +13,15 @@ describe("orthodox orientation rules", () => {
     expect(orientationChurchOptions("eastern").map(b => b.value)).not.toContain("Eastern Orthodox");
     expect(orientationChurchOptions("oriental").map(b => b.value)).not.toContain("Oriental Orthodox");
   });
-  test("only newly created accounts are eligible for the sticker", () => {
+  test("new accounts are eligible for the sticker", () => {
     expect(shouldShowOrientationOnboarding(ORIENTATION_SIGNUP_METADATA, false)).toBe(true);
-    expect(shouldShowOrientationOnboarding({}, false)).toBe(false);
-    expect(shouldShowOrientationOnboarding(undefined, false)).toBe(false);
+  });
+  test("existing accounts that have never seen the sticker are eligible on next use", () => {
+    expect(shouldShowOrientationOnboarding({}, false)).toBe(true);
+    expect(shouldShowOrientationOnboarding(undefined, false)).toBe(true);
+  });
+  test("previously completed existing accounts remain ineligible", () => {
+    expect(shouldShowOrientationOnboarding({}, true)).toBe(false);
   });
   test("completed accounts never see the sticker even on another device", () => {
     expect(shouldShowOrientationOnboarding({ orientation_onboarding_status: "completed" }, false)).toBe(false);
