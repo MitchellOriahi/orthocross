@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
 import { applyBranchPreferences, hasStoredOrientation, orientationForBranch, setOrientation, orientationChurchOptions, shouldShowOrientationOnboarding } from "@/lib/orthodoxOrientation";
 
 const doneKey = (id: string) => `orientation-onboarded:${id}`;
