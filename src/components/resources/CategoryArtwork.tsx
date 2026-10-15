@@ -5,7 +5,11 @@ import type { CategoryStyleArtwork } from "@/data/categoryStyleArtwork";
 
 export function CategoryArtwork({ artwork, label }: { artwork: CategoryStyleArtwork; label: string }) {
   const [failed, setFailed] = useState(false);
-  return <span className={artwork.image_shape === "silhouette" ? "block aspect-[3/4] w-full shrink-0" : "block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"}>
+  const silhouette = artwork.image_shape === "silhouette";
+  // A silhouette panel keeps its own outline, so the tile follows the artwork's
+  // own proportions (image_box_aspect) instead of one fixed frame for all of them.
+  const boxStyle = silhouette ? { aspectRatio: artwork.image_box_aspect ?? "3 / 4" } : undefined;
+  return <span className={silhouette ? "block w-full shrink-0" : "block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"} style={boxStyle}>
     {failed ? <span className="flex h-full items-center justify-center text-muted-foreground"><Cross className="h-7 w-7" aria-hidden="true" /></span>
       : <img src={artwork.image_url} alt={label} decoding="async" onError={() => setFailed(true)} className="h-full w-full object-contain object-center" />}
   </span>;
