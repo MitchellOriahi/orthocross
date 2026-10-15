@@ -235,7 +235,7 @@ test("supplied photographs stay out of the remaining Tewahedo category and every
   }
 });
 
-test("Byzantine Saints row under the middle shows the supplied fifth- and sixth-day creation icons, square-cropped", () => {
+test("Russian Saints bottom row shows the supplied crowned-saint and hierarch icons, square-cropped", () => {
   const martyrs = categoryArtwork("saints", "byzantine", "martyrs");
   const missionaries = categoryArtwork("saints", "byzantine", "apostles-missionaries");
   expect(martyrs.image_url).toContain("russian-saint-crowned-martyrs");
