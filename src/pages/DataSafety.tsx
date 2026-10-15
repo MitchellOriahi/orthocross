@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Trash2, Shield, AlertTriangle, ArrowLeft } from 'lucide-react';
@@ -22,6 +22,10 @@ const DataSafety = () => {
   const navigate = useNavigate();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Opening from Settings keeps the old scroll position, so start at the top.
+  useLayoutEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }, []);
+
 
   const handleDeleteAccount = async () => {
     if (!user) {
@@ -69,6 +73,35 @@ const DataSafety = () => {
           </p>
         </div>
 
+
+        <Card className="p-6 md:p-8 space-y-4">
+          <h2 className="text-2xl font-semibold text-foreground">Data We Collect</h2>
+          <div className="space-y-3 text-muted-foreground">
+            <p>We collect and store the following information:</p>
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li>Account credentials (email and encrypted password)</li>
+              <li>Reading progress and completed chapters</li>
+              <li>Personal journal entries and notes</li>
+              <li>Bookmarks and highlighted verses</li>
+              <li>Activity streaks and achievements</li>
+              <li>Prayer and fasting reminders</li>
+            </ul>
+          </div>
+        </Card>
+
+        <Card className="p-6 md:p-8 space-y-4">
+          <h2 className="text-2xl font-semibold text-foreground">How We Protect Your Data</h2>
+          <div className="space-y-3 text-muted-foreground">
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li>All data is encrypted in transit and at rest</li>
+              <li>We use industry-standard security practices</li>
+              <li>Your journal entries are private and only visible to you</li>
+              <li>We never share your personal data with third parties</li>
+              <li>Regular security audits and updates</li>
+            </ul>
+          </div>
+        </Card>
+
         <Card className="p-6 md:p-8 space-y-6">
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2">
@@ -102,34 +135,6 @@ const DataSafety = () => {
             <p className="text-sm text-muted-foreground">
               This action is permanent and cannot be undone.
             </p>
-          </div>
-        </Card>
-
-        <Card className="p-6 md:p-8 space-y-4">
-          <h2 className="text-2xl font-semibold text-foreground">Data We Collect</h2>
-          <div className="space-y-3 text-muted-foreground">
-            <p>We collect and store the following information:</p>
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Account credentials (email and encrypted password)</li>
-              <li>Reading progress and completed chapters</li>
-              <li>Personal journal entries and notes</li>
-              <li>Bookmarks and highlighted verses</li>
-              <li>Activity streaks and achievements</li>
-              <li>Prayer and fasting reminders</li>
-            </ul>
-          </div>
-        </Card>
-
-        <Card className="p-6 md:p-8 space-y-4">
-          <h2 className="text-2xl font-semibold text-foreground">How We Protect Your Data</h2>
-          <div className="space-y-3 text-muted-foreground">
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>All data is encrypted in transit and at rest</li>
-              <li>We use industry-standard security practices</li>
-              <li>Your journal entries are private and only visible to you</li>
-              <li>We never share your personal data with third parties</li>
-              <li>Regular security audits and updates</li>
-            </ul>
           </div>
         </Card>
 
