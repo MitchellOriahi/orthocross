@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import { SAINT_CATEGORIES } from "./saintCategories";
 import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
+import { SAINT_DISPLAY_ICONS, SAINT_CATEGORY_DISPLAY_ICON } from "./saintDisplayIcons";
 
 // Photographs and icons the app owner supplied. The Coptic ones are George
 // Makary's work and credit his page; the rest carry no online source link.
@@ -358,9 +359,28 @@ test("prayer tiles credit the artists of the supplied artwork", () => {
     expect(tewahedo.image_author).toContain(YAHUDAH);
     expect(tewahedo.image_source).toBe(YAHUDAH_POST);
   }
-  // Saints tiles keep their own credits: the prayer artists' links stay out of them.
+  // Russian and Tewahedo saint tiles keep their own credits: the prayer artists'
+  // links stay out of them.
   for (const category of SAINT_CATEGORIES) {
-    expect(categoryArtwork("saints", "coptic", category.id).image_source).toBe("");
+    expect(categoryArtwork("saints", "byzantine", category.id).image_source).toBe("");
     expect(categoryArtwork("saints", "tewahedo", category.id).image_source).toBe("");
+  }
+});
+
+test("saint tiles credit the artist page of each tradition", () => {
+  const MAKARY_PAGE = "https://www.copticicon.com/";
+  const ATHONITE_PAGE = "https://www.athoniteusa.com/";
+  // The Coptic saint tiles are photographs of George Makary's icons.
+  for (const category of SAINT_CATEGORIES) {
+    const coptic = categoryArtwork("saints", "coptic", category.id);
+    expect(coptic.image_author).toContain("George Makary");
+    expect(coptic.image_source).toBe(MAKARY_PAGE);
+    expect(coptic.image_license_url).toBe("");
+  }
+  // The Greek saint tiles are the saved Athonite portraits, crediting the studio page.
+  for (const category of SAINT_CATEGORIES) {
+    const icon = SAINT_DISPLAY_ICONS[SAINT_CATEGORY_DISPLAY_ICON[category.id]];
+    expect(icon.image_source).toBe(ATHONITE_PAGE);
+    expect(icon.image_license_url).toBe("");
   }
 });
