@@ -3,7 +3,7 @@ import { getBranchTradition } from "@/data/profileIdentity";
 import { setCategoryIconStyle, type CategoryIconStyle } from "@/hooks/useCategoryIconStyle";
 
 export type OrthodoxOrientation = "eastern" | "oriental" | "undecided";
-export const ORIENTATION_LABELS: Record<OrthodoxOrientation, string> = { eastern: "Eastern", oriental: "Oriental", undecided: "Undecided" };
+export const ORIENTATION_LABELS: Record<OrthodoxOrientation, string> = { eastern: "Eastern", oriental: "Oriental", undecided: "Inquirer" };
 const KEY = "orthodox-orientation";
 const EVENT = "orthodox-orientation-change";
 
