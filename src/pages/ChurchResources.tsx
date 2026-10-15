@@ -128,6 +128,14 @@ const ChurchResources = () => {
     }
   }, [selectedSection, selectedPrayer]);
 
+  // Church Etiquette sections (and each Oriental church) always open at the top
+  useLayoutEffect(() => {
+    if (selectedSection === "eastern" || selectedSection === "oriental") {
+      window.scrollTo(0, 0);
+    }
+  }, [selectedSection, selectedOrientalChurch]);
+
+
 
   // Load pinned prayers
   useEffect(() => {
