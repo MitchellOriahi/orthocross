@@ -1,4 +1,8 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { Bell } from "lucide-react";
+import { useCalendarReminders } from "@/hooks/useCalendarReminders";
+import { CalendarDayDialog } from "./CalendarDayDialog";
+import { calendarDateKey } from "@/lib/calendarReminders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getAllFastingEvents, createDateFromEvent, type CalendarSystem } from "@/data/fastingEvents";
@@ -61,6 +65,8 @@ interface FastingCalendarViewProps {
 }
 
 export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, calendarSystem = "Gregorian" }: FastingCalendarViewProps) => {
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const { reminders, error, save, remove } = useCalendarReminders();
   const currentMonth = selectedMonth;
   const currentYear = selectedYear;
 
@@ -112,22 +118,25 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
       const hasHoliday = events.some(e => e.type === "holiday");
       
       days.push(
-        <div
+        <Button
+          variant="ghost"
           key={day}
-          className={`h-20 border border-border/50 p-1 overflow-hidden ${
+          aria-label={`Open ${new Date(currentYear, currentMonth, day).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`}
+          onClick={() => setSelectedDay(day)}
+          className={`calendar-day h-20 min-w-0 rounded-none border border-border/50 p-1 overflow-hidden flex-col items-start justify-start gap-0 whitespace-normal ${
             hasFeast 
-              ? "bg-blue-200 dark:bg-blue-900/50" 
-              : hasFast 
-                ? "bg-red-200 dark:bg-red-900/50"
-                : hasHoliday
-                  ? "bg-amber-200 dark:bg-amber-900/50"
+              ? "calendar-feast" 
+              : hasHoliday
+                ? "calendar-holiday"
+                : hasFast
+                  ? "calendar-fast"
                   : isWeeklyFast 
-                    ? "bg-purple-100 dark:bg-purple-950/30" 
+                    ? "calendar-weekly" 
                     : "bg-background"
           }`}
         >
-          <div className="font-semibold text-sm">{day}</div>
-          <div className="space-y-0.5 mt-1">
+          <div className="flex w-full items-center justify-between font-semibold text-sm"><span>{day}</span>{reminders.some(r => r.event_date === calendarDateKey(new Date(currentYear, currentMonth, day))) && <Bell className="h-3 w-3" />}</div>
+          <div className="space-y-0.5 mt-1 w-full min-w-0 text-left">
             {events.map((event, idx) => (
               <div
                 key={idx}
@@ -143,7 +152,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
               </div>
             ))}
           </div>
-        </div>
+        </Button>
       );
     }
     
@@ -153,6 +162,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
   const traditionIcon = "⛪";
 
   return (
+    <>
     <Card className="shadow-elevated border-border/50">
       <CardHeader>
         <CardTitle className="text-xl flex items-center gap-2">
@@ -195,5 +205,11 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
         </div>
       </CardContent>
     </Card>
+    {selectedDay !== null && <CalendarDayDialog key={`${currentYear}-${currentMonth}-${selectedDay}`}
+      date={new Date(currentYear, currentMonth, selectedDay)} events={getEventsForDay(selectedDay)}
+      weeklyFast={weeklyFasts.includes(selectedDay)}
+      reminders={reminders.filter(r => r.event_date === calendarDateKey(new Date(currentYear, currentMonth, selectedDay)))}
+      error={!!error} onClose={() => setSelectedDay(null)} onSave={save} onDelete={remove} />}
+    </>
   );
 };
