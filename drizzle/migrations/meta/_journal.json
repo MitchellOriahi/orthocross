@@ -71,13 +71,6 @@
       "when": 1791852826416,
       "tag": "0009_add_profile_age_tag",
       "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1792067283437,
-      "tag": "0010_add_profile_referral_code",
-      "breakpoints": true
     }
   ]
 }
