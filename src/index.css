@@ -741,3 +741,12 @@ All colors MUST be HSL.
   .tts-word, .tts-fade-out .tts-spoken { transition: none; }
   .tts-current { animation: none; }
 }
+
+/* Calendar cell roles preserve the existing fast/feast palette. */
+:root { --calendar-feast: 213 97% 87%; --calendar-holiday: 48 96% 76%; --calendar-fast: 0 96% 89%; --calendar-weekly: 269 100% 95%; }
+.dark { --calendar-feast: 217 71% 18%; --calendar-holiday: 24 78% 13%; --calendar-fast: 0 63% 16%; --calendar-weekly: 274 69% 7%; }
+.calendar-feast { background: hsl(var(--calendar-feast)); }
+.calendar-holiday { background: hsl(var(--calendar-holiday)); }
+.calendar-fast { background: hsl(var(--calendar-fast)); }
+.calendar-weekly { background: hsl(var(--calendar-weekly)); }
+.calendar-day:hover { filter: brightness(1.15); }

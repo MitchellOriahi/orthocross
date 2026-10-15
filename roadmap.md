@@ -109,3 +109,6 @@
 
 ## Sign-out and account-deletion landing
 - [x] Signing out or deleting an account now returns to the app's home screen. The root page used a launch-time sign-in snapshot, so after signing out it bounced back to the Board in an endless redirect; it now follows live sign-in state. Verified signed in: Sign Out from Settings and Delete Account from Data Safety both land on the home screen with no runtime errors, and a signed-in visit to the home page still opens the Board.
+
+## Personal calendar reminders
+- [x] Open every date with full church-event names and private editable reminders. Signed-in create/reload/edit/delete and empty-date flows verified; four date/notification-ID tests pass, no runtime errors, build clean. Web alerts require the app open; native scheduling wired but phone delivery not tested.
