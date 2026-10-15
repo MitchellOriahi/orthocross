@@ -27,6 +27,7 @@ import { useTheme } from "next-themes";
 import { formatDistanceToNow } from "date-fns";
 import { useFriendsData } from "@/hooks/useFriendsData";
 import { useProfileData } from "@/hooks/useProfileData";
+import { useProfileDonorTier } from "@/hooks/useProfileDonorTier";
 import { useGroupsData } from "@/hooks/useGroupsData";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Friend } from "@/hooks/useFriendsData";
@@ -58,6 +59,7 @@ interface DonatorEntry {
 export default function Friends() {
   const { user } = useAuth();
   const userId = user?.id;
+  const profileDonorTier = useProfileDonorTier(userId);
   const navigate = useNavigate();
   const { theme } = useTheme();
   const queryClient = useQueryClient();
@@ -819,7 +821,7 @@ export default function Friends() {
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
                   <Button variant="ghost" size="icon" aria-label="Edit profile" className="rounded-full p-0 h-12 w-12">
-                    <Avatar className="h-12 w-12 cursor-pointer">
+                    <Avatar className={`h-12 w-12 cursor-pointer${profileDonorTier ? ` donor-avatar-ring donor-tier-${profileDonorTier}` : ""}`}>
                       <AvatarImage src={profile?.profile_picture_url || undefined} />
                       <AvatarFallback>{getUserInitials()}</AvatarFallback>
                     </Avatar>
