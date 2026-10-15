@@ -11,3 +11,14 @@ export function getGiftPreview(amount: number, custom: boolean) {
     : Math.max(0, GIFT_SLIDER_AMOUNTS.findIndex(value => value >= amount));
   return { sliderIndex, glowLevel: sliderIndex, tier: getTier(Math.round(amount * 100)) };
 }
+
+/** The gift the dialog is left with after the monthly / one-time toggle is flipped: nothing chosen yet. */
+export interface GiftAmount {
+  amount: number;
+  customAmount: string;
+  useCustom: boolean;
+}
+
+export const EMPTY_GIFT: GiftAmount = { amount: 0, customAmount: "", useCustom: false };
+
+export const giftAfterModeToggle = (): GiftAmount => ({ ...EMPTY_GIFT });

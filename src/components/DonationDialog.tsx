@@ -9,7 +9,7 @@ import { Capacitor } from "@capacitor/core";
 import { ChevronDown, Eye, EyeOff, Gift, HandCoins, Loader2, Sprout, User } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
-import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview } from "@/config/donationGift";
+import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
@@ -69,6 +69,15 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const updateAnonymous = async (value: boolean) => {
     setAnonymous(value);
     if (user) await supabase.from("profiles").update({ donor_anonymous: value }).eq("id", user.id);
+  };
+
+  // Flipping between a monthly gift and a one-time gift starts the amount over at $0.
+  const toggleOneTime = () => {
+    setOneTime(!oneTime);
+    const next = giftAfterModeToggle();
+    setSelectedAmount(next.amount);
+    setCustomAmount(next.customAmount);
+    setUseCustom(next.useCustom);
   };
 
   // On native, check if IAP products are available when dialog opens
@@ -314,24 +323,24 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <div className="flex flex-wrap items-center justify-center gap-2">
             {!isNative && (
               <Button variant="ghost"
-                type="button" role="switch" aria-checked={oneTime}
-                onClick={() => setOneTime(!oneTime)}
+                type="button" role="switch" aria-checked={oneTime} aria-label={DONOR_TEXT.oneTimeFull}
+                onClick={toggleOneTime}
                 className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${oneTime ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
               >
                 <HandCoins className="h-3.5 w-3.5" />
-                <span>One-time donation</span>
+                <span>{DONOR_TEXT.oneTime}</span>
                 <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${oneTime ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
                   <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${oneTime ? "translate-x-3" : "translate-x-0"}`} />
                 </span>
               </Button>
             )}
             <Button variant="ghost"
-              type="button" role="switch" aria-checked={anonymous}
+              type="button" role="switch" aria-checked={anonymous} aria-label={DONOR_TEXT.donateAnonymously}
               onClick={() => updateAnonymous(!anonymous)}
               className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${anonymous ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
             >
               {anonymous ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-              <span>{DONOR_TEXT.donateAnonymously}</span>
+              <span>{DONOR_TEXT.donateAnonymouslyShort}</span>
               <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${anonymous ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
                 <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${anonymous ? "translate-x-3" : "translate-x-0"}`} />
               </span>

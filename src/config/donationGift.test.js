@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview } from "./donationGift";
+import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle } from "./donationGift";
 import { DONOR_TIERS } from "../../supabase/functions/_shared/donorTiers";
 
 describe("gift selection", () => {
@@ -19,5 +19,12 @@ describe("gift selection", () => {
       expect(getGiftPreview(tier.minCents / 100, true).tier?.key).toBe(tier.key);
       expect(getGiftPreview(tier.minCents / 100, true).sliderIndex).toBe(2);
     }
+  });
+  test("flipping the one-time toggle starts the gift at $0", () => {
+    const next = giftAfterModeToggle();
+    expect(next.amount).toBe(0);
+    expect(next.customAmount).toBe("");
+    expect(next.useCustom).toBe(false);
+    expect(getGiftPreview(next.amount, next.useCustom).tier).toBe(null);
   });
 });
