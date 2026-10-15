@@ -55,6 +55,7 @@ describe("manual icon style choices", () => {
       setItem: (k, v) => store.set(k, String(v)),
       removeItem: k => store.delete(k),
     };
+    globalThis.window = { addEventListener() {}, removeEventListener() {}, dispatchEvent() { return true; } };
     return store;
   }
   test("a manual icon choice survives later branch changes", async () => {
