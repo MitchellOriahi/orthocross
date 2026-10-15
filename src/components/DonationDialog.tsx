@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
-import { ChevronDown, Eye, EyeOff, Gift, Loader2, Sprout, User } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, Gift, HandCoins, Loader2, Sprout, User } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
 import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview } from "@/config/donationGift";
@@ -33,6 +33,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const [openReason, setOpenReason] = useState<number | null>(null);
   const [tiersOpen, setTiersOpen] = useState(false);
   const [anonymous, setAnonymous] = useState(false);
+  const [oneTime, setOneTime] = useState(false);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -194,6 +195,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     submittedRef.current = true;
     if (isNative) {
       handleNativeDonate();
+    } else if (oneTime) {
+      handleOneTimeDonate();
     } else {
       handleWebDonate();
     }
@@ -242,23 +245,27 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               {giftTier && <img src={TIER_ICONS[giftTier.key]} alt={giftTier.name} className="h-full w-full object-cover" />}
             </div>
-            <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && "/month"}</p>
+            <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && !oneTime && "/month"}</p>
             <p className="text-sm text-muted-foreground text-center">Your gift keeps OrthoCross free for everyone.</p>
           </div>
 
-          <input
-            type="range"
-            aria-label="Donation amount"
-            min={0}
-            max={SLIDER_STEPS.length - 1}
-            step={1}
-            value={stepIndex}
-            onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); }}
-            className="w-full accent-[hsl(var(--primary))]"
-          />
-          <div className="flex justify-between text-sm font-medium text-muted-foreground">
-            {SLIDER_STEPS.map((amount, i) => <span key={amount}>${amount}{!isNative && i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
-          </div>
+          {(isNative || !oneTime) && (
+            <>
+              <input
+                type="range"
+                aria-label="Donation amount"
+                min={0}
+                max={SLIDER_STEPS.length - 1}
+                step={1}
+                value={stepIndex}
+                onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); }}
+                className="w-full accent-[hsl(var(--primary))]"
+              />
+              <div className="flex justify-between text-sm font-medium text-muted-foreground">
+                {SLIDER_STEPS.map((amount, i) => <span key={amount}>${amount}{!isNative && i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
+              </div>
+            </>
+          )}
 
           {!isNative && (
             <div className="relative">
@@ -291,6 +298,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                         setCustomAmount(String(t.minCents / 100));
                         setSelectedAmount(t.minCents / 100);
                         setUseCustom(true);
+                        setTiersOpen(false);
                       }}>
                         <span>{t.name}{current && " · this gift"}</span>
                         <span>${(t.minCents / 100).toLocaleString()}+</span>
@@ -303,17 +311,32 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             )}
           </div>
 
-          <Button variant="ghost"
-            type="button" role="switch" aria-checked={anonymous}
-            onClick={() => updateAnonymous(!anonymous)}
-            className={`mx-auto flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${anonymous ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
-          >
-            {anonymous ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-            <span>{DONOR_TEXT.donateAnonymously}</span>
-            <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${anonymous ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
-              <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${anonymous ? "translate-x-3" : "translate-x-0"}`} />
-            </span>
-          </Button>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {!isNative && (
+              <Button variant="ghost"
+                type="button" role="switch" aria-checked={oneTime}
+                onClick={() => setOneTime(!oneTime)}
+                className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${oneTime ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
+              >
+                <HandCoins className="h-3.5 w-3.5" />
+                <span>One-time donation</span>
+                <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${oneTime ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
+                  <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${oneTime ? "translate-x-3" : "translate-x-0"}`} />
+                </span>
+              </Button>
+            )}
+            <Button variant="ghost"
+              type="button" role="switch" aria-checked={anonymous}
+              onClick={() => updateAnonymous(!anonymous)}
+              className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${anonymous ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
+            >
+              {anonymous ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              <span>{DONOR_TEXT.donateAnonymously}</span>
+              <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${anonymous ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
+                <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${anonymous ? "translate-x-3" : "translate-x-0"}`} />
+              </span>
+            </Button>
+          </div>
 
           {isNative && productsAvailable === false && (
             <p className="text-xs text-destructive text-center">In-app purchases are not available right now. Please try again later.</p>
@@ -323,16 +346,12 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</> : "Donate"}
           </Button>
 
-          {!isNative && (
-            <Button onClick={handleOneTimeDonate} disabled={loading} variant="outline" className="h-11 w-full rounded-full">
-              One-time donation
-            </Button>
-          )}
-
           <p className="text-xs text-muted-foreground">
             {isNative
               ? "One-time donation processed securely through the app store."
-              : "Donate renews monthly at the same amount — cancel anytime from Settings. One-time donation is a single gift. Both are processed securely by Stripe."}
+              : oneTime
+                ? "A single gift, processed securely by Stripe."
+                : "Your gift renews monthly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings."}
           </p>
         </div>
       </DialogContent>
