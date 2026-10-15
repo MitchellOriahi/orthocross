@@ -418,6 +418,9 @@ const Settings = () => {
                 const value = v as OrthodoxOrientation;
                 if (value === "undecided") {
                   setOrientation("undecided");
+                  if (user) {
+                    void supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch: null }, { onConflict: "user_id" });
+                  }
                   setTraditionDialog("family");
                 } else {
                   setTraditionDialog(value);
