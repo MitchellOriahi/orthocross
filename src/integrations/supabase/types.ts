@@ -138,6 +138,44 @@ export type Database = {
         }
         Relationships: []
       }
+      calendar_reminders: {
+        Row: {
+          created_at: string
+          event_date: string
+          id: string
+          notes: string
+          remind_at: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_date: string
+          id?: string
+          notes?: string
+          remind_at: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_date?: string
+          id?: string
+          notes?: string
+          remind_at?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_reminders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       completed_chapters: {
         Row: {
           book_key: string
