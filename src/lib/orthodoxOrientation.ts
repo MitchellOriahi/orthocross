@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { getBranchTradition, ORTHODOX_BRANCHES } from "@/data/profileIdentity";
-import { setCategoryIconStyle, type CategoryIconStyle } from "@/hooks/useCategoryIconStyle";
+import { hasManualCategoryIconStyle, setCategoryIconStyle, type CategoryIconStyle } from "@/hooks/useCategoryIconStyle";
 
 export type OrthodoxOrientation = "eastern" | "oriental" | "undecided";
 export const ORIENTATION_LABELS: Record<OrthodoxOrientation, string> = { eastern: "Eastern", oriental: "Oriental", undecided: "Neither" };
@@ -49,11 +49,11 @@ export function setOrientation(value: OrthodoxOrientation) {
   try { localStorage.setItem(KEY, value); } catch { /* keep in memory */ }
   window.dispatchEvent(new Event(EVENT));
 }
-/** Apply a profile branch choice: orientation follows its family; icons follow known churches. */
+/** Apply a profile branch choice: orientation follows its family; icons follow known churches unless the user picked a style themselves. */
 export function applyBranchPreferences(branch: string | null | undefined) {
   setOrientation(orientationForBranch(branch));
   const style = iconStyleForBranch(branch);
-  if (style) setCategoryIconStyle(style);
+  if (style && !hasManualCategoryIconStyle()) setCategoryIconStyle(style);
 }
 function subscribe(listener: () => void) {
   const storage = (e: StorageEvent) => { if (e.key === KEY || e.key === null) { current = parseOrientation(e.newValue); listener(); } };
