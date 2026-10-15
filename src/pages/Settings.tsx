@@ -35,8 +35,6 @@ const Settings = () => {
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDonationDialogOpen, setCancelDonationDialogOpen] = useState(false);
-  const [supportOpen, setSupportOpen] = useState(false);
-  const [donationReminders, setDonationReminders] = useState(() => !loadState(user?.id).donationRemindersOff);
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
   const [activityVisible, setActivityVisible] = useState(true);
