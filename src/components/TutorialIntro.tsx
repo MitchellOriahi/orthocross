@@ -67,6 +67,7 @@ export const TutorialIntro = () => {
 
   const handleComplete = () => {
     localStorage.setItem("hasSeenTutorial", "true");
+    window.dispatchEvent(new Event("orthocross:tutorial-done"));
     setIsOpen(false);
   };
 

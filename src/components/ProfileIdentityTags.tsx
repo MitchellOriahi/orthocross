@@ -10,6 +10,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { getBranchTradition, ORTHODOX_BRANCHES, PATRON_SAINT_OPTIONS, type IdentityOption } from "@/data/profileIdentity";
 import { PROFILE_COUNTRIES } from "@/data/profileCountries";
 import { cn } from "@/lib/utils";
+import { applyBranchPreferences } from "@/lib/orthodoxOrientation";
 
 type Field = "branch" | "patron_saint_id" | "country_code" | "age";
 const AGE_OPTIONS: IdentityOption[] = Array.from({ length: 108 }, (_, i) => ({ value: String(i + 13), label: String(i + 13) }));
@@ -84,6 +85,7 @@ export default function ProfileIdentityTags() {
         .select("branch, patron_saint_id, country_code, age").single();
       if (error) throw error;
       queryClient.setQueryData(queryKey, updated);
+      if (field === "branch") applyBranchPreferences(value as string | null);
       return true;
     } catch {
       toast.error("Could not save your tag. Please try again.");

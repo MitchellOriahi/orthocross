@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useOrthodoxOrientation } from "@/lib/orthodoxOrientation";
 import { useNavigate } from "react-router-dom";
 import { Settings as SettingsIcon, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,8 @@ const OrthodoxHistory = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
   const { theme } = useTheme();
-  const [selectedCampaign, setSelectedCampaign] = useState(historyContent.campaigns[0].id);
+  const orientation = useOrthodoxOrientation();
+  const [selectedCampaign, setSelectedCampaign] = useState(() => (orientation === "oriental" ? historyContent.campaigns.find(c => c.id === "oriental_orthodox_history") : undefined)?.id ?? historyContent.campaigns[0].id);
   const [selectedIsland, setSelectedIsland] = useState<{ campaignId: string; islandId: string } | null>(null);
   const [progress, setProgress] = useState<UserProgress[]>(() => {
     try {

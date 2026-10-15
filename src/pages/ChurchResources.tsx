@@ -1,3 +1,4 @@
+import { getOrientation, orientationFilter } from "@/lib/orthodoxOrientation";
 import { OrientalEtiquette } from "@/components/resources/OrientalEtiquette";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -45,7 +46,7 @@ const ChurchResources = () => {
   const [selectedSaint, setSelectedSaint] = useState<SaintDetail | null>(null);
   const [selectedPrayer, setSelectedPrayer] = useState<PrayerDetail | null>(null);
   const [pinnedPrayerIds, setPinnedPrayerIds] = useState<Set<string>>(new Set());
-  const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>("all");
+  const [prayerFilter, setPrayerFilter] = useState<PrayerFilterType>(() => orientationFilter(getOrientation()));
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [showAllSaintsAward, setShowAllSaintsAward] = useState(false);
   const [saintReturn, setSaintReturn] = useState<{ saintId: string; sequence: number } | null>(null);

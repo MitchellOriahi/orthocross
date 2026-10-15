@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState } from "react";
+import { orientationFilter, useOrthodoxOrientation } from "@/lib/orthodoxOrientation";
 import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string | null;
 
 export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange, pinnedIds, onPin }: { onSelect: (prayer: PrayerDetail) => void; onClose: () => void; tradition: PrayerTraditionFilter; onTraditionChange: (tradition: PrayerTraditionFilter) => void; pinnedIds: ReadonlySet<string>; onPin?: (id: string) => void }) {
   const { style } = useCategoryIconStyle();
+  const defaultTradition = orientationFilter(useOrthodoxOrientation());
   const [category, setCategory] = useState<PrayerCategoryId | null>(null);
   const [landingQuery, setLandingQuery] = useState("");
   const [categoryQuery, setCategoryQuery] = useState("");
@@ -52,7 +54,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
 
   return (
     <section className="bg-card border border-border/50 rounded-lg">
-      <div className="p-4 border-b border-border/50"><Button variant="ghost" onClick={() => { if (category) { setCategory(null); setSubgroup(null); setCategoryQuery(""); onTraditionChange("all"); } else onClose(); }}><ArrowLeft className="h-4 w-4" />Back</Button></div>
+      <div className="p-4 border-b border-border/50"><Button variant="ghost" onClick={() => { if (category) { setCategory(null); setSubgroup(null); setCategoryQuery(""); onTraditionChange(defaultTradition); } else onClose(); }}><ArrowLeft className="h-4 w-4" />Back</Button></div>
       <div className="p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <h2 className="text-2xl font-semibold min-w-0 break-words">{selectedCategory?.label ?? "Prayers"}</h2>
@@ -76,7 +78,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
           {!prayers.length && <p className="py-6 text-center text-sm text-muted-foreground">{query.trim() ? `No prayers found matching "${query}"` : "No prayers here yet."}</p>}
         </> : <>
           <div className="grid grid-cols-2 gap-3 mb-4">
-            {PRAYER_CATEGORIES.map(item => { const artwork = categoryArtwork("prayers", style, item.id); return <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setCategoryQuery(""); setSubgroup(null); onTraditionChange("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
+            {PRAYER_CATEGORIES.map(item => { const artwork = categoryArtwork("prayers", style, item.id); return <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setCategoryQuery(""); setSubgroup(null); onTraditionChange(defaultTradition); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
               {artwork ? <CategoryArtwork key={artwork.image_url} artwork={artwork} label={item.label} /> : <span className="block aspect-square w-full shrink-0 overflow-hidden rounded-lg border border-border bg-muted"><img src={THUMBNAILS[item.id].url} alt="" decoding="async" className={`h-full w-full object-cover saint-portrait-image ${item.id === "christ-saints" ? "object-[center_34%]" : item.id === "foundational" ? "object-[center_35%]" : item.id === "communion" ? "object-[center_45%]" : item.id === "daily" ? "object-[38%_center]" : item.id === "psalms" ? "object-[center_50%]" : item.id === "occasions" ? "object-[center_50%]" : "object-[center_30%]"}`} /></span>}
               <span className="mt-2 min-h-10 w-full text-sm font-medium leading-5">{item.label}</span>
             </Button>; })}

@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
+import { orientationFilter, useOrthodoxOrientation } from "@/lib/orthodoxOrientation";
 import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +26,8 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
   const setQuery = category ? setCategoryQuery : setLandingQuery;
   const [tag, setTag] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
-  const [tradition, setTradition] = useState<SaintTraditionFilter>("all");
+  const defaultTradition = orientationFilter(useOrthodoxOrientation()) as SaintTraditionFilter;
+  const [tradition, setTradition] = useState<SaintTraditionFilter>(defaultTradition);
   const selectedCategory = SAINT_CATEGORIES.find(item => item.id === category);
   const subcategories = category ? getSaintPageSubgroups(category) : undefined;
   const saints = getSaintPageList(category, subcategory, query, tradition);
@@ -53,7 +55,7 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
   }, [returnToSaint]);
 
   function back() {
-    if (category) { setCategory(null); setTag(null); setSubcategory(null); setTradition("all"); } else onClose();
+    if (category) { setCategory(null); setTag(null); setSubcategory(null); setTradition(defaultTradition); } else onClose();
   }
 
   return (
@@ -98,7 +100,7 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
                 // An odd tile count centers the final box under both columns.
                 const centered = index === SAINT_CATEGORIES.length - 1 && SAINT_CATEGORIES.length % 2 === 1;
                 const artwork = categoryArtwork("saints", style, item.id);
-                const tile = <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setTag(null); setSubcategory(null); setTradition("all"); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
+                const tile = <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setTag(null); setSubcategory(null); setTradition(defaultTradition); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
                   {artwork ? <CategoryArtwork key={artwork.image_url} artwork={artwork} label={item.label} /> : <SaintPortrait saintId={SAINT_CATEGORY_DISPLAY_ICON[item.id]} className="w-full" />}
                   <span className="mt-2 h-10 w-full text-sm font-medium leading-5 line-clamp-2">{item.label}</span>
                 </Button>;
