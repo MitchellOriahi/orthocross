@@ -2,9 +2,12 @@ import { expect, test } from "bun:test";
 import { SAINT_CATEGORIES } from "./saintCategories";
 import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
+import { SAINT_DISPLAY_ICONS, SAINT_CATEGORY_DISPLAY_ICON } from "./saintDisplayIcons";
 
-// Photographs and icons the app owner supplied; they carry no online source or licence link.
+// Photographs and icons the app owner supplied. The Coptic ones are George
+// Makary's work and credit his page; the rest carry no online source link.
 const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
+const MAKARY = "https://www.copticicon.com/";
 
 test("Russian prayer top and middle rows use supplied panels in upload order and preserve Saints", () => {
   expect(categoryArtwork("prayers", "byzantine", "foundational").image_url).toContain("russian-prayer-foundational.png");
@@ -121,7 +124,7 @@ test("Coptic Saints top row shows the two supplied Coptic icons", () => {
   expect(biblical.image_url).toContain("coptic-family-christ");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(MAKARY);
     expect(art.image_license_url).toBe("");
     expect(art.image_modification).toContain("Square-cropped");
   }
@@ -143,7 +146,7 @@ test("Coptic Saints middle row shows the two supplied Coptic icons, square-cropp
   expect(monastics.image_modification).toContain("both halos kept whole");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(MAKARY);
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
     expect(art.image_modification).toContain("Square-cropped");
@@ -163,7 +166,7 @@ test("Coptic Saints row under the middle shows the supplied Saint Photini and Sa
   expect(missionaries.image_url).toContain("coptic-katherine");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(MAKARY);
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
     expect(art.image_modification).toContain("Square-cropped");
@@ -179,7 +182,7 @@ test("the Coptic laypeople tile shows the third supplied image of a martyr benea
   const art = categoryArtwork("saints", "coptic", "laypeople");
   expect(art.image_url).toContain("coptic-martyr-angel");
   expect(art.image_license).toBe("Supplied by the app owner");
-  expect(art.image_source).toBe("");
+  expect(art.image_source).toBe(MAKARY);
   expect(art.image_license_url).toBe("");
   expect(art.image_author).toContain("supplied by the app owner");
   expect(art.image_modification).toContain("Square-cropped");
@@ -356,9 +359,28 @@ test("prayer tiles credit the artists of the supplied artwork", () => {
     expect(tewahedo.image_author).toContain(YAHUDAH);
     expect(tewahedo.image_source).toBe(YAHUDAH_POST);
   }
-  // Saints tiles keep their own credits: the prayer artists' links stay out of them.
+  // Russian and Tewahedo saint tiles keep their own credits: the prayer artists'
+  // links stay out of them.
   for (const category of SAINT_CATEGORIES) {
-    expect(categoryArtwork("saints", "coptic", category.id).image_source).toBe("");
+    expect(categoryArtwork("saints", "byzantine", category.id).image_source).toBe("");
     expect(categoryArtwork("saints", "tewahedo", category.id).image_source).toBe("");
+  }
+});
+
+test("saint tiles credit the artist page of each tradition", () => {
+  const MAKARY_PAGE = "https://www.copticicon.com/";
+  const ATHONITE_PAGE = "https://www.athoniteusa.com/";
+  // The Coptic saint tiles are photographs of George Makary's icons.
+  for (const category of SAINT_CATEGORIES) {
+    const coptic = categoryArtwork("saints", "coptic", category.id);
+    expect(coptic.image_author).toContain("George Makary");
+    expect(coptic.image_source).toBe(MAKARY_PAGE);
+    expect(coptic.image_license_url).toBe("");
+  }
+  // The Greek saint tiles are the saved Athonite portraits, crediting the studio page.
+  for (const category of SAINT_CATEGORIES) {
+    const icon = SAINT_DISPLAY_ICONS[SAINT_CATEGORY_DISPLAY_ICON[category.id]];
+    expect(icon.image_source).toBe(ATHONITE_PAGE);
+    expect(icon.image_license_url).toBe("");
   }
 });
