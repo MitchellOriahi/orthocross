@@ -1,6 +1,6 @@
 # Prayers category browser
 ## Tradition sticker update
-- [ ] Alphabetize church lists, remove generic family entries, rename the neutral choice Neither, and restrict the sticker to first account creation; verify saved completion and returning-user behavior.
+- [x] Alphabetize church lists, remove generic family entries, rename the neutral choice Neither, and mark eligibility only at signup with account-persisted completion. Rule tests pass; real signed-in returning account shows no sticker or runtime errors. Fresh signup and cross-device completion were not exercised end-to-end.
 ## Category icon styles
 - [x] Rearrange Coptic Saints top and middle rows with the four supplied images; replace Righteous Laypeople. All seven delivered tiles verified signed in, previous artwork preserved, 15 tests pass, build clean.
 - [x] Add a far-right Icons dropdown to Saints and Prayers with shared persistent Original, Tewahedo, Coptic and Byzantine choices.
