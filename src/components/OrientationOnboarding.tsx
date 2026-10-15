@@ -62,7 +62,7 @@ export function OrientationOnboarding() {
       return;
     }
     queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
-    applyBranchPreferences(branch);
+    applyBranchPreferences(branch, { force: true });
     if (orientationForBranch(branch) === "undecided") setOrientation("undecided");
     await finish();
   };
@@ -150,7 +150,7 @@ export function TraditionChoiceDialog({ open, initialStep, onClose }: {
       return;
     }
     queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
-    applyBranchPreferences(branch);
+    applyBranchPreferences(branch, { force: true });
     toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
     onClose();
   };
