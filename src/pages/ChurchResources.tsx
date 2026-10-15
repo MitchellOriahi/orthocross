@@ -1,6 +1,6 @@
 import { getOrientation, orientationFilter } from "@/lib/orthodoxOrientation";
 import { OrientalEtiquette } from "@/components/resources/OrientalEtiquette";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -127,6 +127,14 @@ const ChurchResources = () => {
       setSelectedOrientalChurch(null);
     }
   }, [selectedSection, selectedPrayer]);
+
+  // Church Etiquette sections (and each Oriental church) always open at the top
+  useLayoutEffect(() => {
+    if (selectedSection === "eastern" || selectedSection === "oriental") {
+      window.scrollTo(0, 0);
+    }
+  }, [selectedSection, selectedOrientalChurch]);
+
 
 
   // Load pinned prayers
