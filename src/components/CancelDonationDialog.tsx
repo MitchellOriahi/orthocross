@@ -10,8 +10,11 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Heart } from "lucide-react";
-
-type CancelStep = "confirm" | "thanks";
+import {
+  INITIAL_CANCEL_STEP,
+  nextCancelStep,
+  type CancelStep,
+} from "@/lib/donationCancellation";
 
 interface CancelDonationDialogProps {
   open: boolean;
@@ -19,11 +22,11 @@ interface CancelDonationDialogProps {
 }
 
 export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialogProps) => {
-  const [step, setStep] = useState<CancelStep>("confirm");
+  const [step, setStep] = useState<CancelStep>(INITIAL_CANCEL_STEP);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClose = () => {
-    setStep("confirm");
+    setStep(nextCancelStep(step, "close"));
     onOpenChange(false);
   };
 
@@ -38,7 +41,7 @@ export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialo
       }
       supabase.functions.invoke("send-cancellation-email").catch(() => {});
       window.dispatchEvent(new Event("monthly-donation-changed"));
-      setStep("thanks");
+      setStep(nextCancelStep(step, "cancel"));
     } catch (error: any) {
       toast.error(error.message || "We couldn't cancel your donation. Please try again.");
     } finally {
