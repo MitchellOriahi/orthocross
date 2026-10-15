@@ -15,8 +15,8 @@ test("Russian prayer top and middle rows use supplied panels in upload order and
   expect(categoryArtwork("prayers", "byzantine", "communion").image_shape).toBe("silhouette");
   expect(categoryArtwork("prayers", "byzantine", "christ-saints").image_license).toBe("Supplied by the app owner");
   expect(categoryArtwork("prayers", "byzantine", "communion").image_source).toBe("");
-  expect(categoryArtwork("saints", "byzantine", "angels").image_url).toContain("byzantine-creation-light");
-  expect(categoryArtwork("saints", "byzantine", "biblical").image_url).toContain("byzantine-firmament");
+  expect(categoryArtwork("saints", "byzantine", "angels").image_url).toContain("russian-saint-annunciation");
+  expect(categoryArtwork("saints", "byzantine", "biblical").image_url).toContain("russian-saint-theotokos");
 });
 
 test("Original leaves all existing category art untouched", () => {
@@ -186,11 +186,11 @@ test("the Coptic laypeople tile shows the third supplied image of a martyr benea
   expect(art.image_url.includes("coptic-simon")).toBe(false);
 });
 
-test("Byzantine Saints top row shows the supplied creation icons, square-cropped", () => {
+test("Russian Saints top row shows the supplied Annunciation and Theotokos icons, square-cropped", () => {
   const angels = categoryArtwork("saints", "byzantine", "angels");
   const biblical = categoryArtwork("saints", "byzantine", "biblical");
-  expect(angels.image_url).toContain("byzantine-creation-light");
-  expect(biblical.image_url).toContain("byzantine-firmament");
+  expect(angels.image_url).toContain("russian-saint-annunciation");
+  expect(biblical.image_url).toContain("russian-saint-theotokos");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
