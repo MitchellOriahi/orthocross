@@ -205,11 +205,11 @@ test("Russian Saints top row shows the supplied Annunciation and Theotokos icons
   }
 });
 
-test("Byzantine Saints middle row shows the supplied third- and fourth-day creation icons, square-cropped", () => {
+test("Russian Saints middle row shows the supplied monastic-hierarch and mitred-hierarch icons, square-cropped", () => {
   const monastics = categoryArtwork("saints", "byzantine", "monastics");
   const fathers = categoryArtwork("saints", "byzantine", "fathers-hierarchs");
-  expect(monastics.image_url).toContain("byzantine-dry-land");
-  expect(fathers.image_url).toContain("byzantine-lights");
+  expect(monastics.image_url).toContain("russian-saint-job-monastics");
+  expect(fathers.image_url).toContain("russian-saint-mitre-fathers");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
