@@ -11,7 +11,7 @@ const doneKey = (id: string) => `orientation-onboarded:${id}`;
 const ORIENTAL = orientationChurchOptions("oriental");
 const EASTERN = orientationChurchOptions("eastern");
 
-/** Account-creation sticker; completion is saved to the account, not just this device. */
+/** One-time sticker, including unseen existing accounts; completion follows the account. */
 export function OrientationOnboarding() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -32,11 +32,9 @@ export function OrientationOnboarding() {
     let cancelled = false;
     supabase.from("profile_identity_tags").select("branch").eq("user_id", user.id).maybeSingle().then(({ data, error }) => {
       if (cancelled || error) return;
-      if (data?.branch) {
-        // Already chosen on another device: adopt it here without asking.
-        localStorage.setItem(doneKey(user.id), "1");
-        if (!hasStoredOrientation()) applyBranchPreferences(data.branch);
-      } else if (shouldShowOrientationOnboarding(user.user_metadata, false)) { setStep("family"); setOpen(true); }
+      if (data?.branch && !hasStoredOrientation()) applyBranchPreferences(data.branch);
+      // A saved branch is not evidence that this account has seen the sticker.
+      if (shouldShowOrientationOnboarding(user.user_metadata, false)) { setStep("family"); setOpen(true); }
     });
     return () => { cancelled = true; };
   }, [user, tutorialDone]);
