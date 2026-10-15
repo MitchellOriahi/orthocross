@@ -3,8 +3,10 @@ import { SAINT_CATEGORIES } from "./saintCategories";
 import { PRAYER_CATEGORIES } from "./prayerCategories";
 import { categoryArtwork } from "./categoryStyleArtwork";
 
-// Photographs and icons the app owner supplied; they carry no online source or licence link.
+// Photographs and icons the app owner supplied. The Coptic ones are George
+// Makary's work and credit his page; the rest carry no online source link.
 const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
+const MAKARY = "https://www.copticicon.com/";
 
 test("Russian prayer top and middle rows use supplied panels in upload order and preserve Saints", () => {
   expect(categoryArtwork("prayers", "byzantine", "foundational").image_url).toContain("russian-prayer-foundational.png");
@@ -121,7 +123,7 @@ test("Coptic Saints top row shows the two supplied Coptic icons", () => {
   expect(biblical.image_url).toContain("coptic-family-christ");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(MAKARY);
     expect(art.image_license_url).toBe("");
     expect(art.image_modification).toContain("Square-cropped");
   }
@@ -143,7 +145,7 @@ test("Coptic Saints middle row shows the two supplied Coptic icons, square-cropp
   expect(monastics.image_modification).toContain("both halos kept whole");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(MAKARY);
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
     expect(art.image_modification).toContain("Square-cropped");
@@ -163,7 +165,7 @@ test("Coptic Saints row under the middle shows the supplied Saint Photini and Sa
   expect(missionaries.image_url).toContain("coptic-katherine");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(MAKARY);
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
     expect(art.image_modification).toContain("Square-cropped");
@@ -179,7 +181,7 @@ test("the Coptic laypeople tile shows the third supplied image of a martyr benea
   const art = categoryArtwork("saints", "coptic", "laypeople");
   expect(art.image_url).toContain("coptic-martyr-angel");
   expect(art.image_license).toBe("Supplied by the app owner");
-  expect(art.image_source).toBe("");
+  expect(art.image_source).toBe(MAKARY);
   expect(art.image_license_url).toBe("");
   expect(art.image_author).toContain("supplied by the app owner");
   expect(art.image_modification).toContain("Square-cropped");
