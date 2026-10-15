@@ -564,6 +564,20 @@ All colors MUST be HSL.
   color: hsl(var(--donor-tier-tone));
   background: hsl(var(--donor-tier-tone) / 0.08);
 }
+/* Gentle pulse drawing the eye to the Archangel tier when the tiers list opens. */
+.donor-gift-tier-pulse {
+  animation: donor-tier-pulse 1.6s ease-in-out infinite;
+}
+@keyframes donor-tier-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsl(var(--donor-tier-tone) / 0);
+    background: hsl(var(--donor-tier-tone) / 0.08);
+  }
+  50% {
+    box-shadow: 0 0 14px 3px hsl(var(--donor-tier-tone) / 0.45);
+    background: hsl(var(--donor-tier-tone) / 0.2);
+  }
+}
 .donor-gift-tier-option:hover, .donor-gift-tier-option:focus-visible {
   color: hsl(var(--donor-tier-tone));
   background: hsl(var(--donor-tier-tone) / 0.18);

@@ -126,6 +126,38 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     }
   };
 
+  // Web path, one-time gift: Stripe Checkout (single payment)
+  const handleOneTimeDonate = async () => {
+    const amount = getEffectiveAmount();
+    if (isNaN(amount) || amount < 1) {
+      toast({ title: "Invalid amount", description: "Minimum donation is $1.00", variant: "destructive" });
+      return;
+    }
+
+    if (!user) {
+      toast({ title: "Please sign in", description: "Sign in to donate so your gift is tied to your account.", variant: "destructive" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      localStorage.setItem("orthocross:donation-started", new Date().toISOString());
+      const { data, error } = await supabase.functions.invoke("create-donation", {
+        body: { amount: Math.round(amount * 100) },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        onOpenChange(false);
+      }
+    } catch (error: any) {
+      console.error("Donation error:", error);
+      toast({ title: "Error", description: error.message || "Failed to process donation", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Web path: Stripe Checkout (monthly subscription)
   const handleWebDonate = async () => {
     const amount = getEffectiveAmount();
