@@ -75,7 +75,9 @@ import russian_saint_crowned_martyrs from "@/assets/category-styles/russian-sain
 import russian_saint_nicholas_missionaries from "@/assets/category-styles/russian-saint-nicholas-missionaries-sq.jpg.asset.json";
 import russian_saint_laypeople_triptych from "@/assets/category-styles/russian-saint-laypeople-triptych.png.asset.json";
 
-export type CategoryStyleArtwork = SaintDisplayIcon & { image_shape?: "silhouette", image_box_aspect?: string };
+// image_shift_up lifts a silhouette tile by that percent of its own width, for
+// panels whose outline leaves visual space at the top (an arch, for instance).
+export type CategoryStyleArtwork = SaintDisplayIcon & { image_shape?: "silhouette", image_box_aspect?: string, image_shift_up?: number };
 
 // Attribution pages for the artists whose work fills the prayer tiles and the
 // Coptic saint tiles. The images themselves were supplied by the app owner, so
