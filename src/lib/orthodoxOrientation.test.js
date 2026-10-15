@@ -64,35 +64,56 @@ describe("manual icon style choices", () => {
   }
   test("a manual icon choice survives later branch changes", async () => {
     stubStorage();
-    const { setCategoryIconStyle, hasManualCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
+    const { setCategoryIconStyle, hasManualCategoryIconStyle, getCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
     const { applyBranchPreferences } = await import("./orthodoxOrientation");
-    const { parseCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
-    setCategoryIconStyle("coptic", { manual: true });
-    expect(hasManualCategoryIconStyle()).toBe(true);
+    setCategoryIconStyle("prayers", "coptic", { manual: true });
+    expect(hasManualCategoryIconStyle("prayers")).toBe(true);
     applyBranchPreferences("Russian Orthodox");
-    expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("coptic");
+    expect(getCategoryIconStyle("prayers")).toBe("coptic");
   });
   test("branch defaults still apply when the user never picked a style", async () => {
     stubStorage();
     const { applyBranchPreferences } = await import("./orthodoxOrientation");
-    const { parseCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
+    const { getCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
     applyBranchPreferences("Russian Orthodox");
-    expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("byzantine");
+    expect(getCategoryIconStyle("saints")).toBe("byzantine");
+    expect(getCategoryIconStyle("prayers")).toBe("byzantine");
   });
   test("an explicit church choice overrides an earlier manual icon pick", async () => {
     stubStorage();
-    const { setCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
+    const { setCategoryIconStyle, getCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
     const { applyBranchPreferences } = await import("./orthodoxOrientation");
-    const { parseCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
-    setCategoryIconStyle("coptic", { manual: true });
+    setCategoryIconStyle("prayers", "coptic", { manual: true });
     applyBranchPreferences("Ethiopian Tewahedo", { force: true });
-    expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("tewahedo");
+    expect(getCategoryIconStyle("prayers")).toBe("tewahedo");
+    expect(getCategoryIconStyle("saints")).toBe("tewahedo");
   });
   test("an explicit choice of any other church gives Greek icons", async () => {
     stubStorage();
     const { applyBranchPreferences } = await import("./orthodoxOrientation");
-    const { parseCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
+    const { getCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
     applyBranchPreferences("Armenian Apostolic", { force: true });
-    expect(parseCategoryIconStyle(localStorage.getItem("category-icon-style"))).toBe("original");
+    expect(getCategoryIconStyle("saints")).toBe("original");
+    expect(getCategoryIconStyle("prayers")).toBe("original");
+  });
+  test("a manual pick in Prayers leaves Saints on its own style", async () => {
+    stubStorage();
+    const { setCategoryIconStyle, getCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
+    const { applyBranchPreferences } = await import("./orthodoxOrientation");
+    applyBranchPreferences("Coptic");
+    setCategoryIconStyle("prayers", "tewahedo", { manual: true });
+    applyBranchPreferences("Russian Orthodox");
+    expect(getCategoryIconStyle("prayers")).toBe("tewahedo");
+    expect(getCategoryIconStyle("saints")).toBe("byzantine");
+  });
+  test("a manual pick in Saints leaves Prayers on its own style", async () => {
+    stubStorage();
+    const { setCategoryIconStyle, getCategoryIconStyle } = await import("../hooks/useCategoryIconStyle");
+    const { applyBranchPreferences } = await import("./orthodoxOrientation");
+    applyBranchPreferences("Coptic");
+    setCategoryIconStyle("saints", "byzantine", { manual: true });
+    applyBranchPreferences("Ethiopian Tewahedo");
+    expect(getCategoryIconStyle("saints")).toBe("byzantine");
+    expect(getCategoryIconStyle("prayers")).toBe("tewahedo");
   });
 });

@@ -16,7 +16,7 @@ import { categoryArtwork } from "@/data/categoryStyleArtwork";
 import { useCategoryIconStyle } from "@/hooks/useCategoryIconStyle";
 
 export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: (saint: SaintDetail) => void; onClose: () => void; returnToSaint?: { saintId: string; sequence: number } | null }) {
-  const { style } = useCategoryIconStyle();
+  const { style } = useCategoryIconStyle("saints");
   const [category, setCategory] = useState<SaintCategoryId | null>(null);
   // Landing and category searches are independent: backing out of a category
   // must not carry its text into the general Saints search, and vice versa.
@@ -66,7 +66,7 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
       <div className="p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <h2 className="text-2xl font-semibold">{selectedCategory?.label ?? "Saints"}</h2>
-          {!selectedCategory && <CategoryIconStyleMenu />}
+          {!selectedCategory && <CategoryIconStyleMenu scope="saints" />}
           {selectedCategory && (
             <div className="flex gap-2" role="group" aria-label="Saint tradition">
               <Button size="sm" variant={tradition === "all" ? "default" : "outline"} aria-pressed={tradition === "all"} onClick={() => setTradition("all")}>All</Button>

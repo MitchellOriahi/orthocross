@@ -31,7 +31,7 @@ const THUMBNAILS: Record<PrayerCategoryId, { url: string; source: string | null;
 };
 
 export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange, pinnedIds, onPin }: { onSelect: (prayer: PrayerDetail) => void; onClose: () => void; tradition: PrayerTraditionFilter; onTraditionChange: (tradition: PrayerTraditionFilter) => void; pinnedIds: ReadonlySet<string>; onPin?: (id: string) => void }) {
-  const { style } = useCategoryIconStyle();
+  const { style } = useCategoryIconStyle("prayers");
   const defaultTradition = orientationFilter(useOrthodoxOrientation());
   const [category, setCategory] = useState<PrayerCategoryId | null>(null);
   const [landingQuery, setLandingQuery] = useState("");
@@ -58,7 +58,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
       <div className="p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <h2 className="text-2xl font-semibold min-w-0 break-words">{selectedCategory?.label ?? "Prayers"}</h2>
-          {!selectedCategory && <CategoryIconStyleMenu />}
+          {!selectedCategory && <CategoryIconStyleMenu scope="prayers" />}
           {selectedCategory && <div className="flex gap-2" role="group" aria-label="Prayer tradition">
             {(["all", "Eastern", "Oriental"] as const).map(filter => <Button key={filter} size="sm" variant={tradition === filter ? "default" : "outline"} aria-pressed={tradition === filter} onClick={() => onTraditionChange(filter)} className={tradition === filter || filter === "all" ? "" : filter === "Eastern" ? "text-tradition-eastern hover:text-tradition-eastern border-tradition-eastern/50" : "text-tradition-oriental hover:text-tradition-oriental border-tradition-oriental/50"}>{filter === "all" ? "All" : filter}</Button>)}
           </div>}
