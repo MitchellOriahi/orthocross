@@ -9,13 +9,14 @@ import { applyBranchPreferences, hasStoredOrientation, orientationForBranch, set
 
 const doneKey = (id: string) => `orientation-onboarded:${id}`;
 const ORIENTAL = ORTHODOX_BRANCHES.filter(b => b.tradition === "oriental");
+const EASTERN = ORTHODOX_BRANCHES.filter(b => b.tradition === "eastern");
 
-/** First-sign-in sticker asking Eastern / Oriental / Undecided; sets profile branch and app defaults. */
+/** First-sign-in sticker asking Eastern / Oriental / Inquirer; sets profile branch and app defaults. */
 export function OrientationOnboarding() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<"family" | "oriental">("family");
+  const [step, setStep] = useState<"family" | "oriental" | "eastern">("family");
   const [saving, setSaving] = useState(false);
   const [tutorialDone, setTutorialDone] = useState(() => localStorage.getItem("hasSeenTutorial") === "true");
 
@@ -64,9 +65,16 @@ export function OrientationOnboarding() {
             </span>
           </DialogDescription>
           <div className="flex flex-col gap-3 pt-2">
-            <Button disabled={saving} className="profile-branch-eastern h-12 rounded-full" variant="ghost" onClick={() => void chooseBranch("Eastern Orthodox")}>Eastern</Button>
+            <Button disabled={saving} className="profile-branch-eastern h-12 rounded-full" variant="ghost" onClick={() => setStep("eastern")}>Eastern</Button>
             <Button disabled={saving} className="profile-branch-oriental h-12 rounded-full" variant="ghost" onClick={() => setStep("oriental")}>Oriental</Button>
-            <Button disabled={saving} className="profile-branch-unaffiliated h-12 rounded-full" variant="ghost" onClick={() => { setOrientation("undecided"); finish(); }}>Undecided</Button>
+            <Button disabled={saving} className="profile-branch-unaffiliated h-12 rounded-full" variant="ghost" onClick={() => { setOrientation("undecided"); finish(); }}>Inquirer</Button>
+          </div>
+        </> : step === "eastern" ? <>
+          <DialogTitle className="text-2xl">Which Eastern church?</DialogTitle>
+          <DialogDescription>Your choice also sets your profile's Orthodox branch.</DialogDescription>
+          <div className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto pt-2">
+            {EASTERN.map(b => <Button key={b.value} disabled={saving} variant="ghost" className="profile-branch-eastern h-11 rounded-full" onClick={() => void chooseBranch(b.value)}>{b.label}</Button>)}
+            <Button variant="link" onClick={() => setStep("family")}>Back</Button>
           </div>
         </> : <>
           <DialogTitle className="text-2xl">Which Oriental church?</DialogTitle>
