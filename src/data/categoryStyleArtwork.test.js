@@ -247,6 +247,14 @@ test("Russian Saints laypeople tile shows the supplied Khlebnikov triptych with 
   expect(art.image_license_url).toBe("");
   expect(art.image_author).toContain("supplied by the app owner");
   expect(art.image_modification).toContain("transparent");
+  // The triptych is wider than tall, so its tile follows its own proportions
+  // instead of the tall default frame that left a gap under the row above.
+  expect(art.image_box_aspect).toBe("934 / 899");
+  const [boxW, boxH] = art.image_box_aspect.split("/").map(Number);
+  expect(boxW / boxH).toBeGreaterThan(1);
+  expect(boxW / boxH).toBeLessThan(1.1);
+  // The Rublev prayer panels keep the tall default frame.
+  expect(categoryArtwork("prayers", "byzantine", "foundational").image_box_aspect).toBeUndefined();
 });
 
 test("Russian Saints bottom row shows the supplied crowned-saint and hierarch icons, square-cropped", () => {
