@@ -21,8 +21,6 @@ import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
-import { DonationDialog } from "@/components/DonationDialog";
-import { loadState, updateState } from "@/lib/promptScheduler";
 
 const Settings = () => {
   const orientation = useOrthodoxOrientation();
