@@ -21,6 +21,7 @@ import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { TraditionChoiceDialog } from "@/components/OrientationOnboarding";
 
 const Settings = () => {
   const orientation = useOrthodoxOrientation();
@@ -33,6 +34,7 @@ const Settings = () => {
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDonationDialogOpen, setCancelDonationDialogOpen] = useState(false);
+  const [traditionDialog, setTraditionDialog] = useState<null | "family" | "eastern" | "oriental">(null);
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
   const [activityVisible, setActivityVisible] = useState(true);
@@ -412,7 +414,18 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Select value={orientation} onValueChange={v => setOrientation(v as OrthodoxOrientation)}>
+              <Select value={orientation} onValueChange={v => {
+                const value = v as OrthodoxOrientation;
+                if (value === "undecided") {
+                  setOrientation("undecided");
+                  if (user) {
+                    void supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch: null }, { onConflict: "user_id" });
+                  }
+                  setTraditionDialog("family");
+                } else {
+                  setTraditionDialog(value);
+                }
+              }}>
                 <SelectTrigger
                   aria-label="Default Orthodox tradition"
                   className="font-semibold transition-colors"
@@ -428,6 +441,12 @@ const Settings = () => {
               </Select>
             </CardContent>
           </Card>
+
+          <TraditionChoiceDialog
+            open={traditionDialog !== null}
+            initialStep={traditionDialog ?? "family"}
+            onClose={() => setTraditionDialog(null)}
+          />
 
           {/* Refer a Friend */}
           <Card className="shadow-elevated">

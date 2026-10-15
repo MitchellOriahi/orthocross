@@ -69,6 +69,19 @@ export function OrientationOnboarding() {
 
   return (
     <Dialog open={open} onOpenChange={o => { if (!o) void finish(); }}>
+      <OrientationSteps step={step} setStep={setStep} saving={saving} onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
+    </Dialog>
+  );
+}
+
+function OrientationSteps({ step, setStep, saving, onChooseBranch, onNeither }: {
+  step: "family" | "oriental" | "eastern";
+  setStep: (s: "family" | "oriental" | "eastern") => void;
+  saving: boolean;
+  onChooseBranch: (branch: string) => void;
+  onNeither: () => void;
+}) {
+  return (
       <DialogContent className="max-w-sm rounded-3xl text-center">
         {step === "family" ? <>
           <DialogTitle className="text-2xl">Welcome to OrthoCross</DialogTitle>
@@ -82,24 +95,76 @@ export function OrientationOnboarding() {
           <div className="flex flex-col gap-3 pt-2">
             <Button disabled={saving} className="profile-branch-eastern h-12 rounded-full" variant="ghost" onClick={() => setStep("eastern")}>Eastern</Button>
             <Button disabled={saving} className="profile-branch-oriental h-12 rounded-full" variant="ghost" onClick={() => setStep("oriental")}>Oriental</Button>
-            <Button disabled={saving} className="profile-branch-unaffiliated h-12 rounded-full" variant="ghost" onClick={() => { setOrientation("undecided"); void finish(); }}>Neither</Button>
+            <Button disabled={saving} className="profile-branch-unaffiliated h-12 rounded-full" variant="ghost" onClick={onNeither}>Neither</Button>
           </div>
         </> : step === "eastern" ? <>
           <DialogTitle className="text-2xl">Which Eastern church?</DialogTitle>
           <DialogDescription>Your choice also sets your profile's Orthodox branch.</DialogDescription>
           <div className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto pt-2">
-            {EASTERN.map(b => <Button key={b.value} disabled={saving} variant="ghost" className="profile-branch-eastern h-11 rounded-full" onClick={() => void chooseBranch(b.value)}>{b.label}</Button>)}
+            {EASTERN.map(b => <Button key={b.value} disabled={saving} variant="ghost" className="profile-branch-eastern h-11 rounded-full" onClick={() => onChooseBranch(b.value)}>{b.label}</Button>)}
             <Button variant="link" onClick={() => setStep("family")}>Back</Button>
           </div>
         </> : <>
           <DialogTitle className="text-2xl">Which Oriental church?</DialogTitle>
           <DialogDescription>Your choice also sets your profile's Orthodox branch.</DialogDescription>
           <div className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto pt-2">
-            {ORIENTAL.map(b => <Button key={b.value} disabled={saving} variant="ghost" className="profile-branch-oriental h-11 rounded-full" onClick={() => void chooseBranch(b.value)}>{b.label}</Button>)}
+            {ORIENTAL.map(b => <Button key={b.value} disabled={saving} variant="ghost" className="profile-branch-oriental h-11 rounded-full" onClick={() => onChooseBranch(b.value)}>{b.label}</Button>)}
             <Button variant="link" onClick={() => setStep("family")}>Back</Button>
           </div>
         </>}
       </DialogContent>
+  );
+}
+
+/** Settings-driven chooser: re-opens the tradition/church menus on demand; "Neither" clears the profile branch. */
+export function TraditionChoiceDialog({ open, initialStep, onClose }: {
+  open: boolean;
+  initialStep: "family" | "oriental" | "eastern";
+  onClose: () => void;
+}) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+  const [step, setStep] = useState(initialStep);
+
+  useEffect(() => { if (open) setStep(initialStep); }, [open, initialStep]);
+
+  const clearBranch = async () => {
+    if (!user) return;
+    const { error } = await supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch: null }, { onConflict: "user_id" });
+    if (error) {
+      toast({ title: "Couldn't update your profile", description: "Please try again.", variant: "destructive" });
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
+  };
+
+  const chooseBranch = async (branch: string) => {
+    if (!user || saving) return;
+    setSaving(true);
+    const { error } = await supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch }, { onConflict: "user_id" });
+    setSaving(false);
+    if (error) {
+      toast({ title: "Couldn't save your church", description: "Please try again.", variant: "destructive" });
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
+    applyBranchPreferences(branch);
+    toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
+    onClose();
+  };
+
+  const chooseNeither = async () => {
+    setOrientation("undecided");
+    await clearBranch();
+    toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={o => { if (!o) onClose(); }}>
+      <OrientationSteps step={step} setStep={setStep} saving={saving} onChooseBranch={chooseBranch} onNeither={() => void chooseNeither()} />
     </Dialog>
   );
 }
