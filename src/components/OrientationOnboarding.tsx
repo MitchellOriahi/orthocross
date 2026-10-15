@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
 import { applyBranchPreferences, hasStoredOrientation, orientationForBranch, setOrientation, orientationChurchOptions, shouldShowOrientationOnboarding } from "@/lib/orthodoxOrientation";
 
 const doneKey = (id: string) => `orientation-onboarded:${id}`;
@@ -49,7 +50,7 @@ export function OrientationOnboarding() {
       return;
     }
     localStorage.setItem(doneKey(user.id), "1");
-    toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
+    toast(PROFILE_UPDATED_TOAST);
     setOpen(false);
   };
   const chooseBranch = async (branch: string) => {
@@ -151,14 +152,14 @@ export function TraditionChoiceDialog({ open, initialStep, onClose }: {
     }
     queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
     applyBranchPreferences(branch, { force: true });
-    toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
+    toast(PROFILE_UPDATED_TOAST);
     onClose();
   };
 
   const chooseNeither = async () => {
     setOrientation("undecided");
     await clearBranch();
-    toast({ title: "Profile updated!", description: "Your Orthodox tradition now shows on your profile in the Friends section." });
+    toast(PROFILE_UPDATED_TOAST);
     onClose();
   };
 
