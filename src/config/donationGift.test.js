@@ -20,4 +20,11 @@ describe("gift selection", () => {
       expect(getGiftPreview(tier.minCents / 100, true).sliderIndex).toBe(2);
     }
   });
+  test("flipping the one-time toggle starts the gift at $0", () => {
+    const next = giftAfterModeToggle();
+    expect(next.amount).toBe(0);
+    expect(next.customAmount).toBe("");
+    expect(next.useCustom).toBe(false);
+    expect(getGiftPreview(next.amount, next.useCustom).tier).toBe(null);
+  });
 });
