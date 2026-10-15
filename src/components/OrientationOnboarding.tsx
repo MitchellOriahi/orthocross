@@ -56,7 +56,13 @@ export function OrientationOnboarding() {
       <DialogContent className="max-w-sm rounded-3xl text-center">
         {step === "family" ? <>
           <DialogTitle className="text-2xl">Welcome to OrthoCross</DialogTitle>
-          <DialogDescription>Which Orthodox tradition do you belong to? We'll tailor the islands, saints and prayers to it.</DialogDescription>
+          <DialogDescription>
+            <span className="inline-block text-left align-top">
+              Which Orthodox tradition do you belong to?
+              <br />
+              We'll tailor the islands, saints and prayers to it.
+            </span>
+          </DialogDescription>
           <div className="flex flex-col gap-3 pt-2">
             <Button disabled={saving} className="profile-branch-eastern h-12 rounded-full" variant="ghost" onClick={() => void chooseBranch("Eastern Orthodox")}>Eastern</Button>
             <Button disabled={saving} className="profile-branch-oriental h-12 rounded-full" variant="ghost" onClick={() => setStep("oriental")}>Oriental</Button>
