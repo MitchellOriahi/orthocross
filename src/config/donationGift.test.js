@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview } from "./donationGift";
+import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle } from "./donationGift";
 import { DONOR_TIERS } from "../../supabase/functions/_shared/donorTiers";
 
 describe("gift selection", () => {
