@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { LANGUAGES, TRANSLATIONS, type LanguageCode, type TranslationKey } from "@/lib/i18n/translations";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
-import { applyDictionary, loadDictionary, translateString } from "@/lib/i18n/domTranslator";
+import { applyDictionary, loadDictionary, translateString, waitForTranslationSettled } from "@/lib/i18n/domTranslator";
 
 const KEY = "orthocross-language";
 export const hasChosenLanguage = () => !!localStorage.getItem(KEY);
@@ -16,28 +16,35 @@ function readStored(): LanguageCode {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLang] = useState<LanguageCode>(readStored);
-  const [dict, setDict] = useState<Record<string, string> | null>(null);
+  const [loaded, setLoaded] = useState<{ language: LanguageCode; dict: Record<string, string> | null } | null>(null);
   const [switching, setSwitching] = useState(false);
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = LANGUAGES.find(l => l.code === language)?.rtl ? "rtl" : "ltr";
     let alive = true;
-    const started = Date.now();
     loadDictionary(language).then(d => {
       if (!alive) return;
-      setDict(d); applyDictionary(d);
-      // Keep the splash briefly so the switch feels deliberate, then reveal the translated app.
-      setTimeout(() => { if (alive) setSwitching(false); }, Math.max(0, 600 - (Date.now() - started)));
+      setLoaded({ language, dict: d });
     }).catch(() => { if (alive) setSwitching(false); });
     return () => { alive = false; };
   }, [language]);
+  useEffect(() => {
+    if (!loaded || loaded.language !== language) return;
+    const controller = new AbortController();
+    // Consumers have now committed their new-language text.
+    applyDictionary(loaded.dict);
+    waitForTranslationSettled(controller.signal).then(() => {
+      if (!controller.signal.aborted) setSwitching(false);
+    });
+    return () => controller.abort();
+  }, [loaded, language]);
   const setLanguage = useCallback((l: LanguageCode) => {
     if (localStorage.getItem(KEY) !== l) localStorage.removeItem("preferredBibleTranslation");
-    if (localStorage.getItem(KEY) !== l || l !== language) setSwitching(true);
+    if (l !== language) setSwitching(true);
     localStorage.setItem(KEY, l); setLang(l);
   }, [language]);
   const t = useCallback((k: TranslationKey) => TRANSLATIONS[language]?.[k] ?? TRANSLATIONS.en[k] ?? k, [language]);
-  const tr = useCallback((s: string) => translateString(s, dict), [dict]);
+  const tr = useCallback((s: string) => translateString(s, loaded?.dict ?? null), [loaded]);
   return <LanguageContext.Provider value={{ language, setLanguage, t, tr }}>
     {children}
     {switching && (

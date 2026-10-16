@@ -36,7 +36,7 @@
 - Gate tradition onboarding by account/legacy completion, not branch or signup flags; include unseen accounts without cross-device repeats.
 - Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
-- LanguageContext resolves UI text with English fallback and document lang/dir for RTL.
+- LanguageContext sets lang/dir/fallback; reveal switches after React and DOM translation settle.
 - domTranslator applies public/i18n dictionaries; data-no-translate protects scripture. Fit header titles in fixed slots and scroll bounded dialogs to prevent localized clipping.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.
 - Resolve donor labels through angelic dictionary keys and DonorTierName, preventing secular translations without changing billing ranks.
