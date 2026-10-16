@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
 import { ChevronDown, Eye, EyeOff, Gift, HandCoins, Loader2, Sprout, User } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
+import { DonorTierName } from "./DonorTierName";
 import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
 import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
@@ -307,7 +308,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
           <div className="rounded-xl border">
             <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => toggleTiers(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
-              <span>Donator tiers{giftTier && <> · <span className={`donor-tier-${giftTier.key} text-[hsl(var(--donor-tier-tone))]`}>{giftTier.name}</span></>}</span>
+              <span>Donator tiers{giftTier && <> · <span className={`donor-tier-${giftTier.key} text-[hsl(var(--donor-tier-tone))]`}><DonorTierName tier={giftTier} /></span></>}</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
             </Button>
             {tiersOpen && (
@@ -322,7 +323,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                         setUseCustom(true);
                         toggleTiers(false);
                       }}>
-                        <span>{t.name}{current && " · this gift"}</span>
+                        <span><DonorTierName tier={t} />{current && " · this gift"}</span>
                         <span>${(t.minCents / 100).toLocaleString()}+</span>
                       </Button>
                     </li>

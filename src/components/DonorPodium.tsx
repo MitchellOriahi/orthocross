@@ -1,6 +1,7 @@
 import { Crown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DONOR_TIERS } from "@/config/donorTiers";
+import { DonorTierName } from "./DonorTierName";
 
 export interface DonorRow { rank: number; key: string; username: string; profile_picture_url: string | null; tierKey: string | null }
 export function DonorTierButton({ donor, onSelect }: { donor: DonorRow; onSelect: (key: string) => void }) {
@@ -13,7 +14,7 @@ export function DonorTierButton({ donor, onSelect }: { donor: DonorRow; onSelect
       aria-label={`View all donator tiers: ${tier.name}`}
       className={`donor-tier-button donor-tier-${tier.key} inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold leading-none transition-colors`}
     >
-      <span>{tier.name}</span>
+      <DonorTierName tier={tier} />
     </button>
   );
 }

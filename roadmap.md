@@ -1,4 +1,7 @@
 # Prayers category browser
+## Donation tier languages
+- [x] Verify and apply confirmed angelic choir names in all 16 non-English languages across donation lists, tier guide, donor tags and thank-you rank lines. All languages checked on a phone-sized screen; selecting Thrones still chooses $500; tests and build pass.
+- [ ] Native theological review for unresolved Hebrew, Amharic, Tigrinya and Malayalam terms. Blocked: no reliable equivalent verified; English is retained rather than guessing.
 ## Translated layouts
 - [x] Fix clipped stickers and resource tiles, preserve header/action control positions across languages, and protect OrthoCross. All 17 languages checked on Friends, Church and Settings; additional main-page checks, Russian cancellation/language stickers, phone and desktop screenshots, brand tests and preview build passed.
 ## Tradition sticker update
