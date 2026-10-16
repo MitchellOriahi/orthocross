@@ -31,6 +31,7 @@ const Settings = () => {
   const { theme } = useTheme();
   const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
   const { user, signOut } = useAuth();
+  const queryClient = useQueryClient();
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(true);
   const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(true);
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
