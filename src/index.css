@@ -60,6 +60,7 @@ All colors MUST be HSL.
     --radius: 0.75rem;
     --tradition-eastern: 217 91% 60%;
     --tradition-oriental: 25 95% 53%;
+    --language-hint: var(--tradition-oriental);
     --profile-branch-eastern: 217 85% 42%;
     --profile-branch-oriental: 25 90% 38%;
     --profile-branch-unaffiliated: 0 0% 40%;
@@ -93,6 +94,7 @@ All colors MUST be HSL.
   }
 
   .dark {
+    --language-hint: var(--tradition-eastern);
     --profile-branch-eastern: var(--tradition-eastern);
     --profile-branch-oriental: var(--tradition-oriental);
     --profile-branch-unaffiliated: 0 0% 70%;
@@ -766,19 +768,19 @@ All colors MUST be HSL.
   }
 }
 
-/* First-open golden glow for the language menu's scroll hint arrow; paired
+/* First-open theme-colored glow for the language menu's scroll hint arrow; paired
    with a bounce, so new users notice they can reveal more languages. */
 .language-hint-glow {
   animation: language-hint-glow 1.6s ease-in-out infinite;
 }
 @keyframes language-hint-glow {
   0%, 100% {
-    box-shadow: 0 0 6px 1px hsl(var(--saint-completion-gold) / 0.2);
-    border-color: hsl(var(--saint-completion-gold) / 0.4);
+    box-shadow: 0 0 6px 1px hsl(var(--language-hint) / 0.2);
+    border-color: hsl(var(--language-hint) / 0.4);
   }
   50% {
-    box-shadow: 0 0 16px 3px hsl(var(--saint-completion-gold) / 0.5), 0 0 0 4px hsl(var(--saint-completion-gold) / 0.15);
-    border-color: hsl(var(--saint-completion-gold) / 0.9);
+    box-shadow: 0 0 16px 3px hsl(var(--language-hint) / 0.5), 0 0 0 4px hsl(var(--language-hint) / 0.15);
+    border-color: hsl(var(--language-hint) / 0.9);
   }
 }
 
