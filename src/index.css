@@ -848,3 +848,5 @@ html:not([lang="en"]) .group-heading > h3 { font-size: 1rem; line-height: 1.3; }
 html:not([lang="en"]) [role="dialog"] :where(h1, h2, h3, p) { overflow-wrap: anywhere; max-width: 100%; }
 html:not([lang="en"]) [role="dialog"] .flex-col.items-center > div { max-width: 100%; }
 html:not([lang="en"]) [role="dialog"] .localized-text-button { flex-shrink: 0; }
+.language-list-fade > button { flex-shrink: 0; }
+html:not([lang="en"]) .language-list-fade > button { height: 3.5rem; min-height: 3.5rem; }
