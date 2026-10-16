@@ -112,3 +112,5 @@
 
 ## Personal calendar reminders
 - [x] Open every date with full church-event names and private editable reminders. Signed-in create/reload/edit/delete and empty-date flows verified; four date/notification-ID tests pass, no runtime errors, build clean. Web alerts require the app open; native scheduling wired but phone delivery not tested.
+
+ 
