@@ -27,7 +27,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (localStorage.getItem(KEY) !== l) localStorage.removeItem("preferredBibleTranslation");
     localStorage.setItem(KEY, l); setLang(l);
   }, []);
-  const t = useCallback((k: TranslationKey) => TRANSLATIONS[language]?.[k] ?? TRANSLATIONS.en[k], [language]);
+  const t = useCallback((k: TranslationKey) => TRANSLATIONS[language]?.[k] ?? TRANSLATIONS.en[k] ?? k, [language]);
   const tr = useCallback((s: string) => translateString(s, dict), [dict]);
   return <LanguageContext.Provider value={{ language, setLanguage, t, tr }}>{children}</LanguageContext.Provider>;
 }
