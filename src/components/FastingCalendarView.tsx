@@ -89,6 +89,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
   
   const weeklyFasts = getWeeklyFastDays(currentMonth, currentYear);
   const fastingEvents = getFixedFastingEvents(currentYear, calendarSystem);
+  const today = new Date();
 
   const getEventsForDay = (day: number) => {
     const checkDate = new Date(currentYear, currentMonth, day);
@@ -135,7 +136,17 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
           variant="ghost"
           key={day}
           aria-label={`Open ${new Date(currentYear, currentMonth, day).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`}
-          onClick={() => setSelectedDay(day)}
+          onClick={() => {
+            setSelectedDay(day);
+            if (introGlow) {
+              setIntroGlow(false);
+              try {
+                window.localStorage.setItem(INTRO_GLOW_KEY, "1");
+              } catch {
+                /* storage unavailable — glow simply repeats */
+              }
+            }
+          }}
           className={`calendar-day h-20 min-w-0 rounded-none border border-border/50 p-1 overflow-hidden flex-col items-start justify-start gap-0 whitespace-normal ${
             hasFeast 
               ? "calendar-feast" 
@@ -146,7 +157,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
                   : isWeeklyFast 
                     ? "calendar-weekly" 
                     : "bg-background"
-          }`}
+          }${introGlow && isToday ? " calendar-intro-glow" : ""}`}
         >
           <div className="flex w-full items-center justify-between font-semibold text-sm"><span>{day}</span>{reminders.some(r => r.event_date === calendarDateKey(new Date(currentYear, currentMonth, day))) && <Bell className="h-3 w-3" />}</div>
           <div className="space-y-0.5 mt-1 w-full min-w-0 text-left">
