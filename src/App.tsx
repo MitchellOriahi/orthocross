@@ -16,6 +16,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { TutorialIntro } from "@/components/TutorialIntro";
 import { OrientationOnboarding } from "@/components/OrientationOnboarding";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { NotificationManager } from "@/components/NotificationManager";
 import { DonationThankYouDialog } from "@/components/DonationThankYouDialog";
 import Auth from "./pages/Auth";
@@ -80,6 +81,7 @@ const RootRoute = () => {
 const AppContent = () => {
   return (
     <AppLoader onAuthReady={() => {}}>
+      <LanguageProvider>
       <AuthProvider>
         <NotificationManager />
         <TutorialIntro />
@@ -113,6 +115,7 @@ const AppContent = () => {
         </Routes>
         </PageTransition>
       </AuthProvider>
+      </LanguageProvider>
     </AppLoader>
   );
 };

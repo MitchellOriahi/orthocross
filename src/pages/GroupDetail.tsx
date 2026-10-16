@@ -16,6 +16,7 @@ import { toast } from "@/hooks/use-toast";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
+import { LanguageButton } from "@/components/LanguageButton";
 import { GroupMemberBadge } from "@/components/groups/GroupMemberBadge";
 import { GroupInviteDialog } from "@/components/groups/GroupInviteDialog";
 import { formatDistanceToNow } from "date-fns";
@@ -324,6 +325,7 @@ export default function GroupDetail() {
             </div>
             <nav className="flex items-center gap-1">
               <DonateButton />
+              <LanguageButton />
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

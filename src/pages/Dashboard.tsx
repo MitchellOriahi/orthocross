@@ -6,6 +6,7 @@ import { FastingCalendar } from "@/components/FastingCalendar";
 import { FastingCalendarView } from "@/components/FastingCalendarView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
+import { LanguageButton } from "@/components/LanguageButton";
 import { DonationPromptDialog } from "@/components/DonationPromptDialog";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDayCard } from "@/components/VerseOfTheDayCard";
@@ -354,6 +355,7 @@ const Dashboard = () => {
             </div>
             <nav className="flex items-center gap-1">
               <DonateButton />
+              <LanguageButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />

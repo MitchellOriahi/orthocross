@@ -20,6 +20,7 @@ import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
+import { LanguageButton } from "@/components/LanguageButton";
 import { MonthlyPodiumModal } from "@/components/MonthlyPodiumModal";
 import { StreakFlame } from "@/components/StreakFlame";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
@@ -814,6 +815,7 @@ export default function Friends() {
             </div>
             <nav className="flex items-center gap-1">
               <DonateButton />
+              <LanguageButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />

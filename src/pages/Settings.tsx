@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
+import { LanguageButton } from "@/components/LanguageButton";
 import { useMusic } from "@/contexts/MusicContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -214,6 +215,7 @@ const Settings = () => {
             </div>
             <nav className="flex items-center gap-1">
               <DonateButton />
+              <LanguageButton />
               <ThemeToggle />
             </nav>
           </div>
