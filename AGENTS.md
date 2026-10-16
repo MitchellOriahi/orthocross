@@ -36,3 +36,4 @@
 - Determine tradition onboarding eligibility from account completion metadata and legacy local completion, not a saved branch or signup marker; this includes unseen existing accounts while preventing repeats across devices after completion.
 - Define the auth context in a separate non-component module so provider refreshes preserve context identity for mounted consumers.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
+- Resolve UI text through LanguageContext t(key) with English fallback and set document lang/dir there, so untranslated strings never break and RTL languages flip layout.
