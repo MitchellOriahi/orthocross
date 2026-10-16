@@ -316,11 +316,11 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                   const current = giftTier?.key === t.key;
                   return (
                     <li key={t.key}>
-                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option ${t.key === "archangel" ? "donor-gift-tier-pulse" : ""} h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
+                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option ${t.key === "archangel" && tiersPulse ? "donor-gift-tier-pulse" : ""} h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
                         setCustomAmount(String(t.minCents / 100));
                         setSelectedAmount(t.minCents / 100);
                         setUseCustom(true);
-                        setTiersOpen(false);
+                        toggleTiers(false);
                       }}>
                         <span>{t.name}{current && " · this gift"}</span>
                         <span>${(t.minCents / 100).toLocaleString()}+</span>
