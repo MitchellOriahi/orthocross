@@ -1,4 +1,6 @@
 # Prayers category browser
+## History island width
+- [x] Widen islands and move alternating checkpoints outward. Russian, Arabic and English checked signed in at phone and desktop sizes without horizontal overflow; five journey tests pass and preview build is clean.
 ## Final sticker spacing
 - [x] Match the bottom-bar gap to the gap above Churches Near Me and Your Groups. Phone-size measurements: Church 24px above and below; Friends 16px above and below.
 ## Donation tier languages
