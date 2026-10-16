@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { ArrowLeft, Music, Volume2, Bell, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle, Globe, Cross } from "lucide-react";
 import { ORIENTATION_LABELS, setOrientation, useOrthodoxOrientation, type OrthodoxOrientation } from "@/lib/orthodoxOrientation";
@@ -22,6 +23,7 @@ import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { TraditionChoiceDialog } from "@/components/OrientationOnboarding";
+import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
 
 const Settings = () => {
   const orientation = useOrthodoxOrientation();
