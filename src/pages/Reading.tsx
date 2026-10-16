@@ -1,3 +1,4 @@
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useScriptureSpeech } from "@/hooks/useScriptureSpeech";
 import { SpeakableText, tokenize, type Token } from "@/components/reading/SpeakableText";
