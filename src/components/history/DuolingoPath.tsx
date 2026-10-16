@@ -153,11 +153,11 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
           return (
             <div 
               key={island.id} 
-              className={`flex items-center gap-8 ${isLeftSide ? 'flex-row' : 'flex-row-reverse'}`}
+              className={`flex items-center gap-4 sm:gap-6 ${isLeftSide ? 'flex-row' : 'flex-row-reverse'}`}
               style={{ minHeight: '240px' }}
             >
               {/* Island Card */}
-              <div className="flex-1 max-w-md">
+              <div className="min-w-0 flex-1 max-w-md">
                 <Card 
                   className={`relative overflow-hidden transition-all duration-300 hover:scale-105 cursor-pointer ${
                     status.isCompleted ? 'border-primary shadow-xl' : ''
@@ -166,12 +166,12 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${themeColors} opacity-30`} />
                   
-                  <div className="relative z-10 p-6">
+                  <div className="relative z-10 p-4 sm:p-6">
                     <div className="text-center mb-4">
                       <div className="text-xs sm:text-sm font-semibold text-muted-foreground mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
                         {extractTimeframe(island.title) || `Island ${index + 1}`}
                       </div>
-                      <h3 className="text-base sm:text-lg md:text-xl font-bold">{removeTimeframe(island.title)}</h3>
+                      <h3 className="text-base sm:text-lg md:text-xl font-bold [hyphens:none]">{removeTimeframe(island.title)}</h3>
                     </div>
 
                     <Button
@@ -180,7 +180,7 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
                         onIslandSelect(island.id);
                       }}
                       disabled={!status.isUnlocked}
-                      className="w-full"
+                      className="w-full min-h-10 h-auto whitespace-normal py-2 [hyphens:none]"
                       variant={status.canStart ? "default" : "outline"}
                     >
                       {status.isCompleted ? 'Review' : status.canStart ? 'Start Quest' : 'Locked'}
@@ -219,7 +219,7 @@ export const DuolingoPath = ({ campaign, progress, onIslandSelect }: DuolingoPat
               </div>
 
               {/* Spacer for other side */}
-              <div className="flex-1 max-w-md" />
+              <div className="hidden sm:block flex-[0.5] max-w-md" />
             </div>
           );
         })}
