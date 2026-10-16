@@ -114,7 +114,7 @@ export const GroupsList = ({
         <div className="group-heading">
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Your Groups
+            <span className="min-w-0">Your Groups</span>
             {unreadInvitationCount > 0 && (
               <Badge variant="destructive">{unreadInvitationCount}</Badge>
             )}
