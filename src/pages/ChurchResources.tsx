@@ -525,7 +525,7 @@ const ChurchResources = () => {
             <h2 className="text-3xl font-bold">Orthodox Church Guide</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 [&>*]:min-w-0">
             {/* Eastern Orthodox Etiquette Card */}
             <Card 
               className="shadow-elevated border-border/50 cursor-pointer hover:border-primary transition-all p-8"
