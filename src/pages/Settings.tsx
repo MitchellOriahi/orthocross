@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { ArrowLeft, Music, Volume2, Bell, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle, Globe, Cross } from "lucide-react";
 import { ORIENTATION_LABELS, setOrientation, useOrthodoxOrientation, type OrthodoxOrientation } from "@/lib/orthodoxOrientation";
@@ -22,6 +23,8 @@ import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { TraditionChoiceDialog } from "@/components/OrientationOnboarding";
+import { useToast } from "@/hooks/use-toast";
+import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
 
 const Settings = () => {
   const orientation = useOrthodoxOrientation();
@@ -29,6 +32,8 @@ const Settings = () => {
   const { theme } = useTheme();
   const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
   const { user, signOut } = useAuth();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(true);
   const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(true);
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
@@ -419,9 +424,11 @@ const Settings = () => {
                 if (value === "undecided") {
                   setOrientation("undecided");
                   if (user) {
-                    void supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch: null }, { onConflict: "user_id" });
+                    void supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch: null }, { onConflict: "user_id" }).then(() => {
+                      queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
+                    });
                   }
-                  setTraditionDialog("family");
+                  toast(PROFILE_UPDATED_TOAST);
                 } else {
                   setTraditionDialog(value);
                 }
