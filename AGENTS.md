@@ -26,7 +26,7 @@
 - Fetch public permission-based Athonite catalogs through an authenticated, fixed-collection cloud function with storage caching and a persistent blocked-feed stop flag; this operation cannot approve portraits or alter saint records.
 - Verify Stripe payments and compute totals server-side; queue friend alerts via a service-only donation-keyed function enforcing anonymity, friendship, blocks and preferences, with push UUID idempotency to prevent duplicate alerts.
 
-- Share donation interval validation between dialog and checkout to keep billing consistent.
+- Share donation interval validation between dialog and checkout.
 - Use a tested gift-preview selector for slider position, portrait tier and glow; shared thresholds align custom gifts.
 - Schedule donation and rating prompts through one pure, tested coordinator (src/lib/promptScheduler) mounted only on the Board, so prompts never collide or interrupt reading.
 
@@ -34,8 +34,8 @@
 - Derive tradition defaults (history, Saints/Prayers filters, icons) from one orientation store; branch edits and onboarding write through it for consistency.
 - Store the chosen category icon style per section (saints, prayers) so a manual pick in one never moves the other; a church choice writes both, and the older single-style key migrates into both on first read.
 - Determine tradition onboarding eligibility from account completion metadata and legacy local completion, not a saved branch or signup marker; this includes unseen existing accounts while preventing repeats across devices after completion.
-- Define the auth context in a separate non-component module so provider refreshes preserve context identity for mounted consumers.
+- Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
 - Resolve UI text through LanguageContext t(key) with English fallback and set document lang/dir there, so untranslated strings never break and RTL languages flip layout.
-- Translate UI at runtime via domTranslator with public/i18n dictionaries (built by scripts/i18n); data-no-translate keeps scripture untranslated.
+- domTranslator applies public/i18n dictionaries; data-no-translate protects scripture. Fit header titles in fixed slots and scroll bounded dialogs to prevent localized clipping.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.

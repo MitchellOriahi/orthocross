@@ -1,4 +1,6 @@
 # Prayers category browser
+## Translated layouts
+- [x] Fix clipped stickers and resource tiles, preserve header/action control positions across languages, and protect OrthoCross. All 17 languages checked on Friends, Church and Settings; additional main-page checks, Russian cancellation/language stickers, phone and desktop screenshots, brand tests and preview build passed.
 ## Tradition sticker update
 - [x] Allow unseen existing accounts to receive the sticker once. Fourteen rule tests pass, including completed-account suppression across devices; signed-in existing account opens the sticker and Eastern church list without runtime errors. Completion saving is unchanged; the account was left uncompleted so its owner can test.
 - [x] Alphabetize church lists, remove generic family entries, rename the neutral choice Neither, and mark eligibility only at signup with account-persisted completion. Rule tests pass; real signed-in returning account shows no sticker or runtime errors. Fresh signup and cross-device completion were not exercised end-to-end.

@@ -4,6 +4,7 @@
  * switching back to English restores them. Elements marked data-no-translate (Bible text,
  * user-written notes) and form fields are left untouched.
  */
+import { fitPageTitles } from "./layoutFitting";
 type Dict = Record<string, string>;
 
 const ATTRS = ["placeholder", "title", "aria-label"] as const;
@@ -68,11 +69,11 @@ function lookup(key: string, d: Dict, depth = 0): string | undefined {
 export function translateString(text: string, d: Dict | null): string {
   if (!d) return text;
   const key = norm(text);
-  if (!key) return text;
+  if (!key || key === "OrthoCross") return text;
   let hit = lookup(key, d);
   if (hit === undefined && /\n/.test(text.trim())) {
     const lines = text.split("\n");
-    const out = lines.map(l => { const k = norm(l); return k ? (lookup(k, d) ?? l) : l; });
+    const out = lines.map(l => translateString(l, d));
     if (out.some((l, i) => l !== lines[i])) return out.join("\n");
   }
   if (hit === undefined) {
@@ -84,8 +85,10 @@ export function translateString(text: string, d: Dict | null): string {
     }
   }
   if (hit === undefined) return text;
-  const lead = text.match(/^\s*/)![0];
-  const trail = text.match(/\s*$/)![0];
+  // The app name is never translated.
+  if (key.includes("OrthoCross") && !hit.includes("OrthoCross")) return text;
+  const lead = text.match(/^\s*/)?.[0] ?? "";
+  const trail = text.match(/\s*$/)?.[0] ?? "";
   return lead + hit + trail;
 }
 
@@ -133,6 +136,7 @@ export function applyDictionary(d: Dict | null) {
   dict = d;
   applying = true;
   walk(document.body);
+  fitPageTitles();
   applying = false;
   if (!observer) {
     observer = new MutationObserver(muts => {
@@ -144,6 +148,7 @@ export function applyDictionary(d: Dict | null) {
         else m.addedNodes.forEach(walk);
       }
       applying = false;
+      fitPageTitles();
     });
     observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: [...ATTRS] });
   }

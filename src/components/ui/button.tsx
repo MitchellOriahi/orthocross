@@ -38,9 +38,12 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+    const content = asChild ? children : React.Children.map(children, child =>
+      typeof child === "string" || typeof child === "number" ? <span className="control-label">{child}</span> : child
+    );
+    return <Comp data-control-size={size ?? "default"} className={cn(buttonVariants({ variant, size, className }), size !== "icon" && "localized-text-button")} ref={ref} {...props}>{content}</Comp>;
   },
 );
 Button.displayName = "Button";

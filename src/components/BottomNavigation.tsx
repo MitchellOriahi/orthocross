@@ -296,7 +296,7 @@ export const BottomNavigation = () => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border z-50" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.25rem)' }}>
       <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between py-2">
+        <div className="bottom-nav-items grid grid-cols-5 items-start py-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -330,7 +330,7 @@ export const BottomNavigation = () => {
                     prefetchProfileData();
                   }
                 }}
-                className={`flex flex-col items-center gap-1 h-auto py-2 px-3 ${
+                className={`flex min-w-0 w-full flex-col items-center gap-1 h-auto py-2 px-1 ${
                   isActive ? "text-primary" : "text-muted-foreground"
                 }`}
               >
