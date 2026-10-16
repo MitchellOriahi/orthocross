@@ -6,7 +6,7 @@ for f in files:
   if f in skip_files: continue
   src=open(f).read()
   data = f.startswith('src/data')
-  for m in re.finditer(r'>([^<>{}]*[A-Za-z][^<>{}]*)<',src):
+  for m in re.finditer(r'[>}]([^<>{}]*[A-Za-z][^<>{}]*)[<{]',src):
     t=' '.join(m.group(1).split())
     if t and not re.search(r'[=;]|=>|&&',t): S.add(t)
   for m in re.finditer(r'(?<![\w.])(["\'`])((?:(?!\1)[^\\\n]|\\.)*)\1',src):
