@@ -113,4 +113,5 @@
 ## Personal calendar reminders
 - [x] Open every date with full church-event names and private editable reminders. Signed-in create/reload/edit/delete and empty-date flows verified; four date/notification-ID tests pass, no runtime errors, build clean. Web alerts require the app open; native scheduling wired but phone delivery not tested.
 
- 
+ - [ ] Finish AI translation of all app wording (about 13% done; paused: out of AI credits). Resume with scripts/i18n/tr.py then merge.py.
+- [ ] Bibles for Amharic, Tigrinya, Georgian, Armenian, Bulgarian (no free online source found yet).
