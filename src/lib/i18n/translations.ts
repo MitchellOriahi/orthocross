@@ -29,6 +29,7 @@ const en = {
   history: "History", scripture: "Scripture", board: "Board", church: "Church", friends: "Friends",
   dashboard: "Dashboard", settings: "Settings", language: "Language",
   chooseLanguage: "Choose your language", languageNote: "You can change this anytime with the globe icon.",
+  swipeForMoreLanguages: "Swipe down for more languages",
   welcome: "Welcome to OrthoCross", traditionQ: "Which Orthodox tradition do you belong to?",
   traditionNote: "We'll tailor the islands, saints and prayers to it.",
   eastern: "Eastern", oriental: "Oriental", justExploring: "Just Exploring", neither: "Neither",
@@ -36,7 +37,7 @@ const en = {
   branchNote: "Your choice also sets your profile's Orthodox branch.", back: "Back",
 };
 export type TranslationKey = keyof typeof en;
-type Dict = Record<TranslationKey, string>;
+type Dict = Partial<Record<TranslationKey, string>>;
 
 export const TRANSLATIONS: Record<LanguageCode, Dict> = {
   en,
