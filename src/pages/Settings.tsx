@@ -33,7 +33,7 @@ const Settings = () => {
   const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
   const { user, signOut } = useAuth();
   const queryClient = useQueryClient();
-  const { toast } = useToast();
+  const { toast: legacyToast } = useToast();
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(true);
   const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(true);
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
@@ -428,7 +428,7 @@ const Settings = () => {
                       queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
                     });
                   }
-                  toast(PROFILE_UPDATED_TOAST);
+                  legacyToast(PROFILE_UPDATED_TOAST);
                 } else {
                   setTraditionDialog(value);
                 }
