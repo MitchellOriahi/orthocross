@@ -10,11 +10,11 @@ import { LANGUAGES, type LanguageCode } from "@/lib/i18n/translations";
 export function LanguageList({ onPick, onScroll, scrollContainerRef }: { onPick: (l: LanguageCode) => void; onScroll?: (e: UIEvent<HTMLDivElement>) => void; scrollContainerRef?: Ref<HTMLDivElement> }) {
   const { language } = useLanguage();
   return (
-    <div ref={scrollContainerRef} className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto pt-2" onScroll={onScroll}>
+    <div ref={scrollContainerRef} className="scrollbar-hidden flex max-h-[55vh] flex-col gap-3 overflow-y-auto pt-2" onScroll={onScroll}>
       {LANGUAGES.map(l => (
-        <Button key={l.code} variant={l.code === language ? "default" : "outline"} className="h-12 justify-between rounded-full px-5" onClick={() => onPick(l.code)}>
-          <span dir={l.rtl ? "rtl" : "ltr"} className="font-semibold">{l.native}</span>
-          <span className="text-xs opacity-70">{l.english}</span>
+        <Button key={l.code} variant={l.code === language ? "default" : "outline"} className="h-14 justify-between rounded-full px-6 text-base" onClick={() => onPick(l.code)}>
+          <span dir={l.rtl ? "rtl" : "ltr"} className="text-base font-semibold">{l.native}</span>
+          <span className="text-sm opacity-70">{l.english}</span>
         </Button>
       ))}
     </div>
