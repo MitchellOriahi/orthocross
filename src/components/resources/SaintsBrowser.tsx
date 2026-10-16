@@ -95,7 +95,7 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
           </>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className={style === "byzantine" ? "grid grid-cols-2 gap-3 gap-y-2 mb-4" : "grid grid-cols-2 gap-3 mb-4"}>
               {SAINT_CATEGORIES.map((item, index) => {
                 // An odd tile count centers the final box under both columns.
                 const centered = index === SAINT_CATEGORIES.length - 1 && SAINT_CATEGORIES.length % 2 === 1;
