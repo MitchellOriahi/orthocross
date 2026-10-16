@@ -2,6 +2,7 @@
 ## History island width
 - [x] Widen islands and move alternating checkpoints outward. Russian, Arabic and English checked signed in at phone and desktop sizes without horizontal overflow; five journey tests pass and preview build is clean.
 ## Final sticker spacing
+- [ ] Keep bottom sticker gaps equal in all languages on Church, Friends and Board; account for translated bottom-bar height.
 - [x] Match the bottom-bar gap to the gap above Churches Near Me and Your Groups. Phone-size measurements: Church 24px above and below; Friends 16px above and below.
 ## Donation tier languages
 - [x] Verify and apply confirmed angelic choir names in all 16 non-English languages across donation lists, tier guide, donor tags and thank-you rank lines. All languages checked on a phone-sized screen; selecting Thrones still chooses $500; tests and build pass.
