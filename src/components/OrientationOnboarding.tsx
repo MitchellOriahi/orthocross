@@ -71,15 +71,17 @@ export function OrientationOnboarding() {
 
   return (
     <Dialog open={open} onOpenChange={o => { if (!o) void finish(true); }}>
-      <OrientationSteps step={step} setStep={setStep} saving={saving} onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
+      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel="Inquiring" onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
     </Dialog>
   );
 }
 
-function OrientationSteps({ step, setStep, saving, onChooseBranch, onNeither }: {
+function OrientationSteps({ step, setStep, saving, unaffiliatedLabel, onChooseBranch, onNeither }: {
   step: "family" | "oriental" | "eastern";
   setStep: (s: "family" | "oriental" | "eastern") => void;
   saving: boolean;
+  /** Wording of the grey third choice: "Inquiring" in the first-open survey, "Neither" in Settings. */
+  unaffiliatedLabel: string;
   onChooseBranch: (branch: string) => void;
   onNeither: () => void;
 }) {
@@ -97,7 +99,7 @@ function OrientationSteps({ step, setStep, saving, onChooseBranch, onNeither }: 
           <div className="flex flex-col gap-3 pt-2">
             <Button disabled={saving} className="profile-branch-eastern h-12 rounded-full" variant="ghost" onClick={() => setStep("eastern")}>Eastern</Button>
             <Button disabled={saving} className="profile-branch-oriental h-12 rounded-full" variant="ghost" onClick={() => setStep("oriental")}>Oriental</Button>
-            <Button disabled={saving} className="profile-branch-unaffiliated h-12 rounded-full" variant="ghost" onClick={onNeither}>Neither</Button>
+            <Button disabled={saving} className="profile-branch-unaffiliated h-12 rounded-full" variant="ghost" onClick={onNeither}>{unaffiliatedLabel}</Button>
           </div>
         </> : step === "eastern" ? <>
           <DialogTitle className="text-2xl">Which Eastern church?</DialogTitle>
@@ -166,7 +168,7 @@ export function TraditionChoiceDialog({ open, initialStep, onClose }: {
 
   return (
     <Dialog open={open} onOpenChange={o => { if (!o) onClose(); }}>
-      <OrientationSteps step={step} setStep={setStep} saving={saving} onChooseBranch={chooseBranch} onNeither={() => void chooseNeither()} />
+      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel="Neither" onChooseBranch={chooseBranch} onNeither={() => void chooseNeither()} />
     </Dialog>
   );
 }
