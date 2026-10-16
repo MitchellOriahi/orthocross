@@ -1,6 +1,6 @@
 # Prayers category browser
 ## Final sticker spacing
-- [ ] Match the bottom-bar gap to the gap above Churches Near Me and Your Groups; verify at the end of both pages.
+- [x] Match the bottom-bar gap to the gap above Churches Near Me and Your Groups. Phone-size measurements: Church 24px above and below; Friends 16px above and below.
 ## Donation tier languages
 - [x] Verify and apply confirmed angelic choir names in all 16 non-English languages across donation lists, tier guide, donor tags and thank-you rank lines. All languages checked on a phone-sized screen; selecting Thrones still chooses $500; tests and build pass.
 - [ ] Native theological review for unresolved Hebrew, Amharic, Tigrinya and Malayalam terms. Blocked: no reliable equivalent verified; English is retained rather than guessing.
