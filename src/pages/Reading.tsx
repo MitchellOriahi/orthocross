@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMusic } from "@/contexts/MusicContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
+import { LanguageButton } from "@/components/LanguageButton";
 import { ChapterSelector } from "@/components/ChapterSelector";
 import { TranslationSelector } from "@/components/TranslationSelector";
 import { bibleContent, BIBLE_BOOKS } from "@/data/bibleContent";
@@ -860,6 +861,7 @@ const Reading = () => {
             </div>
             <nav className="flex items-center gap-1">
               <DonateButton />
+              <LanguageButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />

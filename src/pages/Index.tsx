@@ -19,6 +19,7 @@ import { ChapterMarkingDialog } from "@/components/ChapterMarkingDialog";
 import { BibleProgressTutorial } from "@/components/BibleProgressTutorial";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
+import { LanguageButton } from "@/components/LanguageButton";
 
 interface ReadingProgress {
   id: string;
@@ -307,6 +308,7 @@ const Index = () => {
           </div>
           <nav className="flex items-center gap-1">
             <DonateButton />
+            <LanguageButton />
             <ThemeToggle />
             <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
               <SettingsIcon className="w-5 h-5" />

@@ -3,6 +3,7 @@ import { Flame, Book, Church, ScrollText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 
 export const BottomNavigation = () => {
@@ -10,6 +11,7 @@ export const BottomNavigation = () => {
   const location = useLocation();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   const prefetchProfileData = async () => {
     if (!user) return;
@@ -267,27 +269,27 @@ export const BottomNavigation = () => {
     {
       icon: ScrollText,
       path: "/orthodox-history",
-      label: "History"
+      label: t("history")
     },
     {
       icon: Book,
       path: "/index",
-      label: "Scripture"
+      label: t("scripture")
     },
     {
       icon: Flame,
       path: "/dashboard",
-      label: "Board"
+      label: t("board")
     },
     {
       icon: Church,
       path: "/church-resources",
-      label: "Church"
+      label: t("church")
     },
     {
       icon: Users,
       path: "/friends",
-      label: "Friends"
+      label: t("friends")
     }
   ];
 

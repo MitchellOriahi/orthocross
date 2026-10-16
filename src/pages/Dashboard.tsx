@@ -6,6 +6,8 @@ import { FastingCalendar } from "@/components/FastingCalendar";
 import { FastingCalendarView } from "@/components/FastingCalendarView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
+import { LanguageButton } from "@/components/LanguageButton";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { DonationPromptDialog } from "@/components/DonationPromptDialog";
 import { Journal } from "@/components/Journal";
 import { VerseOfTheDayCard } from "@/components/VerseOfTheDayCard";
@@ -30,6 +32,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const { completionStatus, checkCompletion, resetAllProgress } = useCompletionTracking();
   const [streakDays, setStreakDays] = useState<number | null>(() => {
@@ -350,10 +353,11 @@ const Dashboard = () => {
               <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-2xl font-bold">Dashboard</h1>
+              <h1 className="text-2xl font-bold">{t("dashboard")}</h1>
             </div>
             <nav className="flex items-center gap-1">
               <DonateButton />
+              <LanguageButton />
               <ThemeToggle />
               <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
                 <SettingsIcon className="w-5 h-5" />

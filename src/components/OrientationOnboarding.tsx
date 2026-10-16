@@ -5,20 +5,24 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage, hasChosenLanguage } from "@/contexts/LanguageContext";
+import { LanguageList } from "@/components/LanguageButton";
 import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
 import { applyBranchPreferences, hasStoredOrientation, orientationForBranch, setOrientation, orientationChurchOptions, shouldShowOrientationOnboarding } from "@/lib/orthodoxOrientation";
 
+type Step = "language" | "family" | "oriental" | "eastern";
 const doneKey = (id: string) => `orientation-onboarded:${id}`;
 const ORIENTAL = orientationChurchOptions("oriental");
 const EASTERN = orientationChurchOptions("eastern");
 
 /** One-time sticker, including unseen existing accounts; completion follows the account. */
 export function OrientationOnboarding() {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<"family" | "oriental" | "eastern">("family");
+  const [step, setStep] = useState<Step>("family");
   const [saving, setSaving] = useState(false);
   const [tutorialDone, setTutorialDone] = useState(() => localStorage.getItem("hasSeenTutorial") === "true");
 
@@ -35,7 +39,7 @@ export function OrientationOnboarding() {
       if (cancelled || error) return;
       if (data?.branch && !hasStoredOrientation()) applyBranchPreferences(data.branch);
       // A saved branch is not evidence that this account has seen the sticker.
-      if (shouldShowOrientationOnboarding(user.user_metadata, false)) { setStep("family"); setOpen(true); }
+      if (shouldShowOrientationOnboarding(user.user_metadata, false)) { setStep(hasChosenLanguage() ? "family" : "language"); setOpen(true); }
     });
     return () => { cancelled = true; };
   }, [user, tutorialDone]);
@@ -71,49 +75,54 @@ export function OrientationOnboarding() {
 
   return (
     <Dialog open={open} onOpenChange={o => { if (!o) void finish(true); }}>
-      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel="Just Exploring" onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
+      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel={t("justExploring")} onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
     </Dialog>
   );
 }
 
 function OrientationSteps({ step, setStep, saving, unaffiliatedLabel, onChooseBranch, onNeither }: {
-  step: "family" | "oriental" | "eastern";
-  setStep: (s: "family" | "oriental" | "eastern") => void;
+  step: Step;
+  setStep: (s: Step) => void;
   saving: boolean;
   /** Wording of the grey third choice: "Just Exploring" in the first-open survey, "Neither" in Settings. */
   unaffiliatedLabel: string;
   onChooseBranch: (branch: string) => void;
   onNeither: () => void;
 }) {
+  const { t, setLanguage } = useLanguage();
   return (
       <DialogContent className="max-w-sm rounded-3xl text-center">
-        {step === "family" ? <>
-          <DialogTitle className="text-2xl">Welcome to OrthoCross</DialogTitle>
+        {step === "language" ? <>
+          <DialogTitle className="text-2xl">{t("chooseLanguage")}</DialogTitle>
+          <DialogDescription>{t("languageNote")}</DialogDescription>
+          <LanguageList onPick={l => { setLanguage(l); setStep("family"); }} />
+        </> : step === "family" ? <>
+          <DialogTitle className="text-2xl">{t("welcome")}</DialogTitle>
           <DialogDescription>
             <span className="inline-block text-left align-top">
-              Which Orthodox tradition do you belong to?
+              {t("traditionQ")}
               <br />
-              We'll tailor the islands, saints and prayers to it.
+              {t("traditionNote")}
             </span>
           </DialogDescription>
           <div className="flex flex-col gap-3 pt-2">
-            <Button disabled={saving} className="profile-branch-eastern h-12 rounded-full" variant="ghost" onClick={() => setStep("eastern")}>Eastern</Button>
-            <Button disabled={saving} className="profile-branch-oriental h-12 rounded-full" variant="ghost" onClick={() => setStep("oriental")}>Oriental</Button>
+            <Button disabled={saving} className="profile-branch-eastern h-12 rounded-full" variant="ghost" onClick={() => setStep("eastern")}>{t("eastern")}</Button>
+            <Button disabled={saving} className="profile-branch-oriental h-12 rounded-full" variant="ghost" onClick={() => setStep("oriental")}>{t("oriental")}</Button>
             <Button disabled={saving} className="profile-branch-unaffiliated h-12 rounded-full" variant="ghost" onClick={onNeither}>{unaffiliatedLabel}</Button>
           </div>
         </> : step === "eastern" ? <>
-          <DialogTitle className="text-2xl">Which Eastern church?</DialogTitle>
-          <DialogDescription>Your choice also sets your profile's Orthodox branch.</DialogDescription>
+          <DialogTitle className="text-2xl">{t("whichEastern")}</DialogTitle>
+          <DialogDescription>{t("branchNote")}</DialogDescription>
           <div className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto pt-2">
             {EASTERN.map(b => <Button key={b.value} disabled={saving} variant="ghost" className="profile-branch-eastern h-11 rounded-full" onClick={() => onChooseBranch(b.value)}>{b.label}</Button>)}
-            <Button variant="link" onClick={() => setStep("family")}>Back</Button>
+            <Button variant="link" onClick={() => setStep("family")}>{t("back")}</Button>
           </div>
         </> : <>
-          <DialogTitle className="text-2xl">Which Oriental church?</DialogTitle>
-          <DialogDescription>Your choice also sets your profile's Orthodox branch.</DialogDescription>
+          <DialogTitle className="text-2xl">{t("whichOriental")}</DialogTitle>
+          <DialogDescription>{t("branchNote")}</DialogDescription>
           <div className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto pt-2">
             {ORIENTAL.map(b => <Button key={b.value} disabled={saving} variant="ghost" className="profile-branch-oriental h-11 rounded-full" onClick={() => onChooseBranch(b.value)}>{b.label}</Button>)}
-            <Button variant="link" onClick={() => setStep("family")}>Back</Button>
+            <Button variant="link" onClick={() => setStep("family")}>{t("back")}</Button>
           </div>
         </>}
       </DialogContent>
@@ -123,13 +132,14 @@ function OrientationSteps({ step, setStep, saving, unaffiliatedLabel, onChooseBr
 /** Settings-driven chooser: re-opens the tradition/church menus on demand; "Neither" clears the profile branch. */
 export function TraditionChoiceDialog({ open, initialStep, onClose }: {
   open: boolean;
-  initialStep: "family" | "oriental" | "eastern";
+  initialStep: Step;
   onClose: () => void;
 }) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const { t } = useLanguage();
   const [step, setStep] = useState(initialStep);
 
   useEffect(() => { if (open) setStep(initialStep); }, [open, initialStep]);
@@ -168,7 +178,7 @@ export function TraditionChoiceDialog({ open, initialStep, onClose }: {
 
   return (
     <Dialog open={open} onOpenChange={o => { if (!o) onClose(); }}>
-      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel="Neither" onChooseBranch={chooseBranch} onNeither={() => void chooseNeither()} />
+      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel={t("neither")} onChooseBranch={chooseBranch} onNeither={() => void chooseNeither()} />
     </Dialog>
   );
 }
