@@ -12,7 +12,7 @@ export function LanguageList({ onPick, onScroll, scrollContainerRef }: { onPick:
   return (
     <div ref={scrollContainerRef} className="scrollbar-hidden flex max-h-[55vh] flex-col gap-3 overflow-y-auto pt-2" onScroll={onScroll}>
       {LANGUAGES.map(l => (
-        <Button key={l.code} variant={l.code === language ? "default" : "outline"} className="h-14 justify-between rounded-full px-6 text-base" onClick={() => onPick(l.code)}>
+        <Button key={l.code} variant={l.code === language ? "default" : "outline"} className="h-14 w-full justify-between rounded-full px-5 text-base" onClick={() => onPick(l.code)}>
           <span dir={l.rtl ? "rtl" : "ltr"} className="text-base font-semibold">{l.native}</span>
           <span className="text-sm opacity-70">{l.english}</span>
         </Button>
@@ -56,7 +56,7 @@ export const LanguageButton = () => {
         <Globe className="h-5 w-5" />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-sm rounded-3xl text-center">
+        <DialogContent className="w-[calc(100%-1.5rem)] max-w-md rounded-3xl px-4 py-6 text-center">
           <DialogTitle className="text-2xl">{t("chooseLanguage")}</DialogTitle>
           <DialogDescription>{t("swipeForMoreLanguages")}</DialogDescription>
           <div className="flex flex-col items-center gap-3">
