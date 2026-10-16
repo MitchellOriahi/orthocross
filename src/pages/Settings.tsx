@@ -426,7 +426,7 @@ const Settings = () => {
                       queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
                     });
                   }
-                  toast(PROFILE_UPDATED_TOAST);
+                  toast(PROFILE_UPDATED_TOAST.title, { description: PROFILE_UPDATED_TOAST.description, duration: PROFILE_UPDATED_TOAST.duration });
                 } else {
                   setTraditionDialog(value);
                 }
