@@ -12,6 +12,7 @@ const originals = new WeakMap<Text, string>();
 const attrOriginals = new WeakMap<Element, Record<string, string>>();
 const cache: Record<string, Dict> = {};
 let dict: Dict | null = null;
+let previousDict: Dict | null = null;
 let observer: MutationObserver | null = null;
 let applying = false;
 
@@ -97,7 +98,7 @@ function translateText(node: Text) {
   const current = node.nodeValue ?? "";
   let original = originals.get(node);
   // The app replaced the text itself: treat the new value as the original.
-  if (original === undefined || (current !== original && current !== translateString(original, dict))) {
+  if (original === undefined || (current !== original && current !== translateString(original, dict) && current !== translateString(original, previousDict))) {
     original = current;
     originals.set(node, original);
   }
@@ -112,7 +113,7 @@ function translateAttrs(el: Element) {
     const v = el.getAttribute(a);
     if (v == null) continue;
     if (!saved) { saved = {}; attrOriginals.set(el, saved); }
-    if (saved[a] === undefined || (v !== saved[a] && v !== translateString(saved[a], dict))) saved[a] = v;
+    if (saved[a] === undefined || (v !== saved[a] && v !== translateString(saved[a], dict) && v !== translateString(saved[a], previousDict))) saved[a] = v;
     const next = translateString(saved[a], dict);
     if (next !== v) el.setAttribute(a, next);
   }
@@ -133,11 +134,13 @@ function walk(root: Node) {
 }
 
 export function applyDictionary(d: Dict | null) {
+  previousDict = dict;
   dict = d;
   applying = true;
   walk(document.body);
   fitPageTitles();
   applying = false;
+  previousDict = null;
   if (!observer) {
     observer = new MutationObserver(muts => {
       if (applying) return;
@@ -152,4 +155,28 @@ export function applyDictionary(d: Dict | null) {
     });
     observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: [...ATTRS] });
   }
+}
+
+/** Wait for translated React updates and DOM translation to settle before revealing the app. */
+export function waitForTranslationSettled(signal: AbortSignal): Promise<void> {
+  return new Promise(resolve => {
+    let quietFrames = 0;
+    let frame = 0;
+    const mutations = new MutationObserver(() => { quietFrames = 0; });
+    const finish = () => {
+      mutations.disconnect();
+      cancelAnimationFrame(frame);
+      signal.removeEventListener("abort", finish);
+      resolve();
+    };
+    if (signal.aborted) return finish();
+    mutations.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: [...ATTRS] });
+    signal.addEventListener("abort", finish, { once: true });
+    const check = () => {
+      quietFrames += 1;
+      if (quietFrames >= 3) finish();
+      else frame = requestAnimationFrame(check);
+    };
+    frame = requestAnimationFrame(check);
+  });
 }
