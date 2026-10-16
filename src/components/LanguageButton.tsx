@@ -10,7 +10,7 @@ import { LANGUAGES, type LanguageCode } from "@/lib/i18n/translations";
 export function LanguageList({ onPick, onScroll, scrollContainerRef }: { onPick: (l: LanguageCode) => void; onScroll?: (e: UIEvent<HTMLDivElement>) => void; scrollContainerRef?: Ref<HTMLDivElement> }) {
   const { language } = useLanguage();
   return (
-    <div ref={scrollContainerRef} className="scrollbar-hidden flex w-full max-h-[55vh] flex-col gap-3 overflow-y-auto pt-2" onScroll={onScroll}>
+    <div ref={scrollContainerRef} className="scrollbar-hidden language-list-fade flex w-full max-h-[55vh] flex-col gap-3 overflow-y-auto pt-2 pb-8" onScroll={onScroll}>
       {LANGUAGES.map(l => (
         <Button key={l.code} variant={l.code === language ? "default" : "outline"} className="h-14 w-full justify-between rounded-full px-5 text-base" onClick={() => onPick(l.code)}>
           <span dir={l.rtl ? "rtl" : "ltr"} className="text-base font-semibold">{l.native}</span>
@@ -59,7 +59,7 @@ export const LanguageButton = () => {
         <DialogContent className="w-[calc(100%-1.5rem)] max-w-md rounded-3xl px-4 py-6 text-center">
           <DialogTitle className="text-2xl">{t("chooseLanguage")}</DialogTitle>
           <DialogDescription>{t("swipeForMoreLanguages")}</DialogDescription>
-          <div className="flex w-full flex-col items-center gap-3">
+          <div className="flex w-full flex-col items-center gap-5">
             <LanguageList onPick={l => { setLanguage(l); setOpen(false); }} onScroll={handleScroll} scrollContainerRef={listRef} />
             {!atBottom && (
               <button
