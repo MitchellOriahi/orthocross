@@ -1,4 +1,4 @@
-import eo_1 from "@/assets/history/authentic/eo_1.asset.json";
+import eo_1 from "@/assets/history/authentic/eo_1-trim.jpg.asset.json";
 import eo_2 from "@/assets/history/authentic/eo_2.asset.json";
 import eo_3 from "@/assets/history/authentic/eo_3.asset.json";
 import eo_4 from "@/assets/history/authentic/eo_4.asset.json";
