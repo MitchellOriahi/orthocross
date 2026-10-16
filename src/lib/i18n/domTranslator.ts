@@ -37,7 +37,7 @@ function skip(el: Element | null): boolean {
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-const DATE_WORD = new RegExp(`\\b(${[...MONTHS, ...DAYS].join("|")})\\b`, "g");
+const DATE_WORD = new RegExp(`\\b(${[...MONTHS, ...DAYS, "Present Day", "AD", "BC"].join("|")})\\b`, "g");
 
 /** Find a translation for an already-normalised key, trying a few safe fallbacks. */
 function lookup(key: string, d: Dict, depth = 0): string | undefined {
@@ -56,7 +56,7 @@ function lookup(key: string, d: Dict, depth = 0): string | undefined {
   const trail = key.match(/^(.+?)\s+([\d.,:/–-]+)$/);
   if (trail) { const r = lookup(trail[1], d, depth + 1); if (r !== undefined) return `${r} ${trail[2]}`; }
   // Dates built from month/day names and numbers, e.g. "October 18".
-  if (DATE_WORD.test(key) && /^[A-Za-z\d\s,]+$/.test(key)) {
+  if (DATE_WORD.test(key) && /^[A-Za-z\d\s,–-]+$/.test(key)) {
     DATE_WORD.lastIndex = 0;
     return key.replace(DATE_WORD, w => d[w] ?? w);
   }
