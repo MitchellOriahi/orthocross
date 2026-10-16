@@ -419,9 +419,11 @@ const Settings = () => {
                 if (value === "undecided") {
                   setOrientation("undecided");
                   if (user) {
-                    void supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch: null }, { onConflict: "user_id" });
+                    void supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch: null }, { onConflict: "user_id" }).then(() => {
+                      queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
+                    });
                   }
-                  setTraditionDialog("family");
+                  toast(PROFILE_UPDATED_TOAST);
                 } else {
                   setTraditionDialog(value);
                 }
