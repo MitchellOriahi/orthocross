@@ -1,3 +1,4 @@
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useScriptureSpeech } from "@/hooks/useScriptureSpeech";
 import { SpeakableText, tokenize, type Token } from "@/components/reading/SpeakableText";
@@ -74,6 +75,8 @@ const Reading = () => {
   const [currentTranslation, setCurrentTranslation] = useState<BibleTranslation>(() => 
     getUserPreferredTranslation()
   );
+  const { language: appLanguage } = useLanguage();
+  useEffect(() => { setCurrentTranslation(getUserPreferredTranslation()); }, [appLanguage]);
   const [highlights, setHighlights] = useState<VerseHighlight[]>([]);
   const [bookmarks, setBookmarks] = useState<VerseBookmark[]>([]);
   const [selectedVerse, setSelectedVerse] = useState<number | null>(null);
@@ -982,7 +985,7 @@ const Reading = () => {
                         >
                           <span className="font-bold text-primary mr-2">{verse.number}</span>
                           {bookmarked && <Bookmark className="w-3 h-3 inline-block mr-1 fill-primary text-primary" />}
-                          <span><SpeakableText tokens={speechData.verseTokens[verseIdx] ?? []} spokenUpTo={spokenUpToFor(verseIdx)} currentIndex={speech.current} interactive={wordsInteractive} onWordTap={handleWordTap} /></span>
+                          <span data-no-translate><SpeakableText tokens={speechData.verseTokens[verseIdx] ?? []} spokenUpTo={spokenUpToFor(verseIdx)} currentIndex={speech.current} interactive={wordsInteractive} onWordTap={handleWordTap} /></span>
                           
                           {selectedVerse === verse.number && (
                             <div className="absolute right-2 top-2 flex gap-2">
@@ -1099,7 +1102,7 @@ const Reading = () => {
                               <Bookmark className="w-4 h-4 inline-block mr-2 fill-primary text-primary" />
                             )}
                           </div>
-                          <p className="leading-relaxed"><SpeakableText tokens={speechData.verseTokens[currentVerseIndex] ?? []} spokenUpTo={spokenUpToFor(currentVerseIndex)} currentIndex={speech.current} interactive={wordsInteractive} onWordTap={handleWordTap} /></p>
+                          <p data-no-translate className="leading-relaxed"><SpeakableText tokens={speechData.verseTokens[currentVerseIndex] ?? []} spokenUpTo={spokenUpToFor(currentVerseIndex)} currentIndex={speech.current} interactive={wordsInteractive} onWordTap={handleWordTap} /></p>
                           
                           {selectedVerse === verses[currentVerseIndex].number && (
                             <div className="flex justify-center gap-2 mt-4">

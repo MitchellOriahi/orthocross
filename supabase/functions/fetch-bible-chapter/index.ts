@@ -14,6 +14,25 @@ const translationFallback: Record<string, string> = {
   'osb': 'kjv',
 };
 
+
+// Other-language Bibles: id -> source for Old and New Testament (books numbered 1-66).
+type Src = { provider: 'bolls' | 'getbible'; code: string };
+const b = (code: string): Src => ({ provider: 'bolls', code });
+const externalSources: Record<string, { ot: Src; nt: Src }> = {
+  'ru-synod': { ot: b('SYNOD'), nt: b('SYNOD') },
+  'el-lxx': { ot: b('LXX'), nt: b('TR') },
+  'ar-svd': { ot: b('SVD'), nt: b('SVD') },
+  'ro-vdcl': { ot: b('VDCL'), nt: b('VDCL') },
+  'es-rv1960': { ot: b('RV1960'), nt: b('RV1960') },
+  'fr-lsg': { ot: b('FRLSG'), nt: b('FRLSG') },
+  'uk-ubio': { ot: b('UBIO'), nt: b('UBIO') },
+  'pt-arc': { ot: b('ARC09'), nt: b('ARC09') },
+  'he-wlc': { ot: b('WLC'), nt: b('DHNT') },
+  'ml-mov': { ot: b('MOV'), nt: b('MOV') },
+  'sr-dk': { ot: { provider: 'getbible', code: 'srkdekavski' }, nt: { provider: 'getbible', code: 'srkdekavski' } },
+};
+
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -70,26 +89,35 @@ serve(async (req) => {
       );
     }
 
-    // Get the API translation code
     const requested = (translation || 'kjv').toLowerCase();
-    const apiTranslation = supportedTranslations.has(requested)
-      ? requested
-      : (translationFallback[requested] || 'kjv');
+    const bookNumber = Object.keys(bookMap).indexOf(book) + 1;
+    const isOT = bookNumber <= 39;
+    const external = externalSources[requested];
+    let verses: { number: number; text: string }[];
+    let apiTranslation = requested;
 
-    // Fetch from bible-api.com (free, no auth required)
-    const response = await fetch(`https://bible-api.com/${apiBookName}${chapter}?translation=${apiTranslation}`);
-    
-    if (!response.ok) {
-      throw new Error(`Bible API error: ${response.status}`);
+    if (external) {
+      const src = isOT ? external.ot : external.nt;
+      const url = src.provider === 'bolls'
+        ? `https://bolls.life/get-text/${src.code}/${bookNumber}/${chapter}/`
+        : `https://api.getbible.net/v2/${src.code}/${bookNumber}/${chapter}.json`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`Bible source error: ${r.status}`);
+      const j = await r.json();
+      const raw = src.provider === 'bolls' ? j : j.verses;
+      verses = (raw || []).map((v: any) => ({
+        number: v.verse,
+        text: String(v.text).replace(/<S>\d+<\/S>/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(),
+      }));
+    } else {
+      apiTranslation = supportedTranslations.has(requested)
+        ? requested
+        : (translationFallback[requested] || 'kjv');
+      const response = await fetch(`https://bible-api.com/${apiBookName}${chapter}?translation=${apiTranslation}`);
+      if (!response.ok) throw new Error(`Bible API error: ${response.status}`);
+      const data = await response.json();
+      verses = data.verses.map((v: any) => ({ number: v.verse, text: v.text.trim() }));
     }
-
-    const data = await response.json();
-    
-    // Transform API response to our format
-    const verses = data.verses.map((v: any) => ({
-      number: v.verse,
-      text: v.text.trim()
-    }));
 
     return new Response(
       JSON.stringify({ verses, translation: apiTranslation }),

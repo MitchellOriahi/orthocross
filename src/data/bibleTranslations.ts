@@ -12,6 +12,8 @@ export interface BibleTranslation {
   license: 'public_domain' | 'licensed';
   isDefault: boolean;
   apiSupported: boolean;
+  /** App language this Bible is written in. */
+  language: string;
 }
 
 export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
@@ -26,6 +28,7 @@ export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
     license: 'licensed',
     isDefault: true,
     apiSupported: false,
+    language: 'en',
   },
   {
     id: 'kjv',
@@ -38,6 +41,7 @@ export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
     license: 'public_domain',
     isDefault: false,
     apiSupported: true,
+    language: 'en',
   },
   {
     id: 'web',
@@ -50,6 +54,7 @@ export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
     license: 'public_domain',
     isDefault: false,
     apiSupported: true,
+    language: 'en',
   },
   {
     id: 'asv',
@@ -62,6 +67,7 @@ export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
     license: 'public_domain',
     isDefault: false,
     apiSupported: true,
+    language: 'en',
   },
   {
     id: 'dra',
@@ -74,6 +80,7 @@ export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
     license: 'public_domain',
     isDefault: false,
     apiSupported: true,
+    language: 'en',
   },
   {
     id: 'bbe',
@@ -86,6 +93,7 @@ export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
     license: 'public_domain',
     isDefault: false,
     apiSupported: true,
+    language: 'en',
   },
   {
     id: 'ylt',
@@ -98,6 +106,7 @@ export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
     license: 'public_domain',
     isDefault: false,
     apiSupported: true,
+    language: 'en',
   },
   {
     id: 'darby',
@@ -110,6 +119,7 @@ export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
     license: 'public_domain',
     isDefault: false,
     apiSupported: true,
+    language: 'en',
   },
   {
     id: 'webbe',
@@ -122,11 +132,48 @@ export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
     license: 'public_domain',
     isDefault: false,
     apiSupported: true,
+    language: 'en',
   },
 ];
 
+
+const other = (id: string, language: string, abbreviation: string, fullName: string, description: string, tradition: string, year: number): BibleTranslation => ({
+  id, language, abbreviation, fullName, description, tradition, year,
+  translationPhilosophy: 'Formal equivalence', license: 'public_domain', isDefault: false, apiSupported: true,
+});
+
+/** Bibles in other languages, chosen for their standing in the Orthodox churches of that language. */
+export const OTHER_LANGUAGE_BIBLES: BibleTranslation[] = [
+  other('ru-synod', 'ru', 'СП', 'Синодальный перевод', 'The Synodal translation, the standard Bible of the Russian Orthodox Church.', 'Russian Orthodox', 1876),
+  other('el-lxx', 'el', 'ΟΕΚ', 'Μετάφραση των Ο΄ & Κείμενο Καινής Διαθήκης', 'Septuagint Old Testament with the traditional Byzantine-text New Testament, as read in the Greek Orthodox Church.', 'Greek Orthodox', 1624),
+  other('ar-svd', 'ar', 'SVD', 'ترجمة فاندايك', 'The Smith–Van Dyck Bible, used across the Antiochian and Coptic Orthodox churches.', 'Antiochian & Coptic Orthodox', 1865),
+  other('ro-vdcl', 'ro', 'VDC', 'Traducerea Cornilescu', 'The classic Romanian Bible translation by Dumitru Cornilescu.', 'Romanian', 1931),
+  other('es-rv1960', 'es', 'RV60', 'Reina-Valera 1960', 'The most widely read Spanish Bible, used in many Spanish-speaking Orthodox parishes.', 'Spanish', 1960),
+  other('fr-lsg', 'fr', 'LSG', 'Bible Segond 1910', 'The classic French Louis Segond Bible.', 'French', 1910),
+  other('uk-ubio', 'uk', 'УБО', 'Біблія Огієнка', 'Translation by Metropolitan Ilarion (Ohienko), widely used by Ukrainian Orthodox faithful.', 'Ukrainian Orthodox', 1962),
+  other('pt-arc', 'pt', 'ARC', 'Almeida Revista e Corrigida', 'The classic Almeida Bible in Portuguese.', 'Portuguese', 2009),
+  other('he-wlc', 'he', 'WLC', 'כתבי הקודש – נוסח המסורה ודליטש', 'Hebrew Old Testament (Westminster Leningrad Codex) with Delitzsch\'s Hebrew New Testament.', 'Hebrew', 1877),
+  other('ml-mov', 'ml', 'MOV', 'സത്യവേദപുസ്തകം', 'The Malayalam Bible read by the Malankara Orthodox Syrian Church.', 'Malankara Orthodox', 1910),
+  other('sr-dk', 'sr', 'ДК', 'Библија (Даничић–Караџић)', 'The Daničić–Karadžić Bible, traditionally used by the Serbian Orthodox Church.', 'Serbian Orthodox', 1868),
+];
+
+export const ALL_BIBLE_TRANSLATIONS: BibleTranslation[] = [...BIBLE_TRANSLATIONS, ...OTHER_LANGUAGE_BIBLES];
+
+/** Bibles offered in a given app language: the OSB always, plus that language's own Bibles.
+ *  English also shows the other English Bibles; other languages never show English-only Bibles. */
+export const getTranslationsForLanguage = (language: string): BibleTranslation[] => {
+  const own = ALL_BIBLE_TRANSLATIONS.filter(t => t.language === language && t.id !== 'osb');
+  return [ALL_BIBLE_TRANSLATIONS.find(t => t.id === 'osb')!, ...own];
+};
+
+/** Main Bible for a language: its own Bible when one exists, otherwise the OSB. */
+export const getMainTranslationForLanguage = (language: string): BibleTranslation =>
+  getTranslationsForLanguage(language)[1] ?? getDefaultTranslation();
+
+const currentLanguage = () => localStorage.getItem('orthocross-language') || 'en';
+
 export const getTranslationById = (id: string): BibleTranslation | undefined => {
-  return BIBLE_TRANSLATIONS.find(t => t.id === id);
+  return ALL_BIBLE_TRANSLATIONS.find(t => t.id === id);
 };
 
 export const getTranslationByAbbreviation = (abbr: string): BibleTranslation | undefined => {
@@ -139,12 +186,12 @@ export const getDefaultTranslation = (): BibleTranslation => {
 
 // Get user's preferred translation from localStorage
 export const getUserPreferredTranslation = (): BibleTranslation => {
+  const language = currentLanguage();
+  const offered = getTranslationsForLanguage(language);
   const saved = localStorage.getItem('preferredBibleTranslation');
-  if (saved) {
-    const translation = getTranslationById(saved);
-    if (translation) return translation;
-  }
-  return getDefaultTranslation();
+  const match = saved ? offered.find(t => t.id === saved) : undefined;
+  if (match) return match;
+  return language === 'en' ? getDefaultTranslation() : getMainTranslationForLanguage(language);
 };
 
 // Save user's preferred translation to localStorage
