@@ -16,10 +16,11 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import {
-  BIBLE_TRANSLATIONS,
+  getTranslationsForLanguage,
   BibleTranslation,
   setUserPreferredTranslation,
 } from "@/data/bibleTranslations";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface TranslationSelectorProps {
   currentTranslation: BibleTranslation;
@@ -30,6 +31,8 @@ export const TranslationSelector = ({
   currentTranslation,
   onTranslationChange,
 }: TranslationSelectorProps) => {
+  const { language } = useLanguage();
+  const offered = getTranslationsForLanguage(language);
   const [open, setOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedForDetails, setSelectedForDetails] = useState<BibleTranslation | null>(null);
@@ -68,7 +71,7 @@ export const TranslationSelector = ({
           </div>
           <ScrollArea className="h-[320px]">
             <div className="p-2 space-y-1">
-              {BIBLE_TRANSLATIONS.map((translation) => (
+              {offered.map((translation) => (
                 <div
                   key={translation.id}
                   className={`
@@ -97,6 +100,9 @@ export const TranslationSelector = ({
                         <span className="font-semibold text-sm">
                           {translation.abbreviation}
                         </span>
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 uppercase">
+                          {translation.language}
+                        </Badge>
                         {translation.isDefault && (
                           <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
                             Default
