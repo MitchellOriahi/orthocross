@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { TraditionChoiceDialog } from "@/components/OrientationOnboarding";
+import { useToast } from "@/hooks/use-toast";
 import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
 
 const Settings = () => {
