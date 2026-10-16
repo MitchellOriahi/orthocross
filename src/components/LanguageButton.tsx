@@ -9,12 +9,13 @@ import { LANGUAGES, type LanguageCode } from "@/lib/i18n/translations";
 /** Localized bold names paired with preserved native-language names. */
 export function LanguageList({ onPick, onScroll, scrollContainerRef }: { onPick: (l: LanguageCode) => void; onScroll?: (e: UIEvent<HTMLDivElement>) => void; scrollContainerRef?: Ref<HTMLDivElement> }) {
   const { language, tr } = useLanguage();
+  const displayNames = new Intl.DisplayNames([language], { type: "language" });
   return (
     <div ref={scrollContainerRef} className="scrollbar-hidden language-list-fade flex w-full max-h-[55vh] flex-col gap-3 overflow-y-auto pt-2 pb-8" onScroll={onScroll}>
       {LANGUAGES.map(l => (
         <Button key={l.code} dir="ltr" data-no-translate variant={l.code === language ? "default" : "outline"} className="h-14 w-full justify-between rounded-full px-5 text-base" onClick={() => onPick(l.code)}>
-          <span dir={LANGUAGES.find(option => option.code === language)?.rtl ? "rtl" : "ltr"} className="min-w-0 whitespace-normal text-left text-base font-semibold">{tr(l.english)}</span>
-          <span dir={l.rtl ? "rtl" : "ltr"} className="text-sm opacity-70">{l.native}</span>
+          <span dir={LANGUAGES.find(option => option.code === language)?.rtl ? "rtl" : "ltr"} className="min-w-0 whitespace-normal text-left text-base font-semibold">{displayNames.of(l.code) ?? tr(l.english)}</span>
+          <span dir={l.rtl ? "rtl" : "ltr"} className="shrink-0 text-sm opacity-70">{l.native}</span>
         </Button>
       ))}
     </div>
