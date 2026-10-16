@@ -4,7 +4,7 @@
 - Estimate read-aloud word starts from WAV speech regions and follow the playing media clock; Gemini supplies no exact timestamps.
 <!-- LOVABLE:END -->
 - Cache avatars by source in bounded CacheStorage; AvatarImage uses local blobs, bounded retries and online resets to survive failures.
-- Embed optimized Church Guide cross variants as data URLs in the page bundle so rendering does not wait for separate image requests.
+- Embed Church Guide cross variants as data URLs so rendering never waits on image requests.
 - Track lifetime saint-story completion by exact roster ID in private reading records and shared query cache; award all-stories completion by unique IDs to avoid namesake and membership inflation.
 
 - Pause Saints via a visibility selector; keep the saved catalog and presentation intact.
