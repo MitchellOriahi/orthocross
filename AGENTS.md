@@ -21,7 +21,7 @@
 - Keep the legacy server-side verse artwork function isolated from photo-based sharing, so the current dialog never invokes a billed image-generation request.
 - Keep style-specific verse typography in a dedicated canvas renderer with measured text fitting and global artwork palette tokens, so all styles preserve the complete verse without clipping.
 - Resolve every island lesson image through a provenance registry of stored assets, retain source/license credits, and use cover framing with upper alignment for face-focused artwork so frames stay filled without cropping out faces.
-- Reset island detail scroll before paint on each island selection, because same-page selection does not trigger route scroll restoration.
+- Reset island detail scroll before paint on each selection; same-page selection skips route scroll restoration.
 - Resolve saint card icons through a bundled roster-keyed registry with focus/zoom crop values, overridden by admin-saved rows from the hidden icon tuner; derive detail images and credits from the same registry so new portraits keep attribution without touching the saved catalog or card layout.
 - Fetch public permission-based Athonite catalogs through an authenticated, fixed-collection cloud function with storage caching and a persistent blocked-feed stop flag; this operation cannot approve portraits or alter saint records.
 - Verify Stripe payments and compute totals server-side; queue friend alerts via a service-only donation-keyed function enforcing anonymity, friendship, blocks and preferences, with push UUID idempotency to prevent duplicate alerts.
