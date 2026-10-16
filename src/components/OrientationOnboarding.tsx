@@ -139,6 +139,7 @@ export function TraditionChoiceDialog({ open, initialStep, onClose }: {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const { t } = useLanguage();
   const [step, setStep] = useState(initialStep);
 
   useEffect(() => { if (open) setStep(initialStep); }, [open, initialStep]);
