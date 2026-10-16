@@ -842,7 +842,7 @@ export default function Friends() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 pt-4 pb-8 space-y-4">
+      <main className="container mx-auto px-4 pt-4 pb-[21px] space-y-4">
       
       <Tabs defaultValue="friends" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
