@@ -59,17 +59,19 @@ export const LanguageButton = () => {
         <DialogContent className="max-w-sm rounded-3xl text-center">
           <DialogTitle className="text-2xl">{t("chooseLanguage")}</DialogTitle>
           <DialogDescription>{t("swipeForMoreLanguages")}</DialogDescription>
-          <div className="relative">
+          <div className="flex flex-col items-center gap-3">
             <LanguageList onPick={l => { setLanguage(l); setOpen(false); }} onScroll={handleScroll} scrollContainerRef={listRef} />
             {!atBottom && (
               <button
                 type="button"
                 onClick={scrollDown}
                 aria-label={t("swipeForMoreLanguages")}
-                className="absolute inset-x-0 bottom-1 z-10 flex justify-center"
+                className={`flex justify-center ${bounce ? "animate-bounce" : ""}`}
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-full border bg-background shadow-lg">
-                  <ChevronDown className={`h-4 w-4 ${bounce ? "animate-bounce" : ""}`} />
+                <span
+                  className={`flex h-8 w-8 items-center justify-center rounded-full border bg-background shadow-lg ${bounce ? "language-hint-glow" : ""}`}
+                >
+                  <ChevronDown className="h-4 w-4" />
                 </span>
               </button>
             )}
