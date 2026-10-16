@@ -1,4 +1,6 @@
 # Prayers category browser
+## Donation tier languages
+- [ ] Verify angelic choir terminology for all languages and translate donation tier names throughout the donation lists and donor tags.
 ## Translated layouts
 - [x] Fix clipped stickers and resource tiles, preserve header/action control positions across languages, and protect OrthoCross. All 17 languages checked on Friends, Church and Settings; additional main-page checks, Russian cancellation/language stickers, phone and desktop screenshots, brand tests and preview build passed.
 ## Tradition sticker update
