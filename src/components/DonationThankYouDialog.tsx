@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { DONOR_TEXT, DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
+import { DonorTierAnnouncement } from "./DonorTierName";
 
 export const DONATION_COMPLETED_EVENT = "orthocross:donation-completed";
 const STARTED_KEY = "orthocross:donation-started";
@@ -156,9 +157,9 @@ export const DonationThankYouDialog = () => {
               <span className="block">{DONOR_TEXT.thankYouBody}</span>
               <span className="mt-1 block">{DONOR_TEXT.thankYouBlessing}</span>
             </p>
-            {tier && <p className="text-lg font-semibold text-foreground">{DONOR_TEXT.youAreNow(tier)}</p>}
+            {tier && <p className="text-lg font-semibold text-foreground"><DonorTierAnnouncement tier={tier} /></p>}
             {rose && tier ? (
-              <p className="text-xl font-semibold text-primary">{DONOR_TEXT.risen(prev, tier)}</p>
+              <p className="text-xl font-semibold text-primary"><DonorTierAnnouncement tier={tier} previous={prev} /></p>
             ) : !next ? (
               <p className="text-sm text-muted-foreground">{DONOR_TEXT.topTier}</p>
             ) : null}

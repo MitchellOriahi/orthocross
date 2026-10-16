@@ -33,9 +33,10 @@
 - Resolve category artwork and silhouette framing through the shared provenance registry; preserve originals and identities. Transparent panels render without borders or backgrounds at stable dimensions.
 - Derive tradition defaults (history, Saints/Prayers filters, icons) from one orientation store; branch edits and onboarding write through it for consistency.
 - Store the chosen category icon style per section (saints, prayers) so a manual pick in one never moves the other; a church choice writes both, and the older single-style key migrates into both on first read.
-- Determine tradition onboarding eligibility from account completion metadata and legacy local completion, not a saved branch or signup marker; this includes unseen existing accounts while preventing repeats across devices after completion.
+- Gate tradition onboarding by account/legacy completion, not branch or signup flags; include unseen accounts without cross-device repeats.
 - Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
-- Resolve UI text through LanguageContext t(key) with English fallback and set document lang/dir there, so untranslated strings never break and RTL languages flip layout.
+- LanguageContext resolves UI text with English fallback and document lang/dir for RTL.
 - domTranslator applies public/i18n dictionaries; data-no-translate protects scripture. Fit header titles in fixed slots and scroll bounded dialogs to prevent localized clipping.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.
+- Resolve donor labels through angelic dictionary keys and DonorTierName, preventing secular translations without changing billing ranks.
