@@ -32,6 +32,10 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const interval: DonationInterval = DEFAULT_DONATION_INTERVAL;
   const [openReason, setOpenReason] = useState<number | null>(null);
   const [tiersOpen, setTiersOpen] = useState(false);
+  // Archangel pulses only the very first time the tiers list is opened.
+  const [tiersPulse, setTiersPulse] = useState(() => {
+    try { return !localStorage.getItem("donor-tiers-intro-seen"); } catch { return true; }
+  });
   const [anonymous, setAnonymous] = useState(false);
   const [oneTime, setOneTime] = useState(false);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
@@ -69,6 +73,15 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const updateAnonymous = async (value: boolean) => {
     setAnonymous(value);
     if (user) await supabase.from("profiles").update({ donor_anonymous: value }).eq("id", user.id);
+  };
+
+  // Opening/closing the tiers list; the first open ever shows the Archangel pulse.
+  const toggleTiers = (next: boolean) => {
+    setTiersOpen(next);
+    if (!next) {
+      try { localStorage.setItem("donor-tiers-intro-seen", "1"); } catch { /* private mode */ }
+      setTiersPulse(false);
+    }
   };
 
   // Flipping between a monthly gift and a one-time gift starts the amount over at $0.
@@ -293,7 +306,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           )}
 
           <div className="rounded-xl border">
-            <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => setTiersOpen(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
+            <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => toggleTiers(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
               <span>Donator tiers{giftTier && <> · <span className={`donor-tier-${giftTier.key} text-[hsl(var(--donor-tier-tone))]`}>{giftTier.name}</span></>}</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
             </Button>
@@ -303,11 +316,11 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                   const current = giftTier?.key === t.key;
                   return (
                     <li key={t.key}>
-                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option ${t.key === "archangel" ? "donor-gift-tier-pulse" : ""} h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
+                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option ${t.key === "archangel" && tiersPulse ? "donor-gift-tier-pulse" : ""} h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
                         setCustomAmount(String(t.minCents / 100));
                         setSelectedAmount(t.minCents / 100);
                         setUseCustom(true);
-                        setTiersOpen(false);
+                        toggleTiers(false);
                       }}>
                         <span>{t.name}{current && " · this gift"}</span>
                         <span>${(t.minCents / 100).toLocaleString()}+</span>
