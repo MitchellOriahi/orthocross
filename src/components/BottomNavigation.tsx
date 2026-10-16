@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Flame, Book, Church, ScrollText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,19 @@ export const BottomNavigation = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { t } = useLanguage();
+  const navRef = useRef<HTMLElement>(null);
+
+  // Publish the real bar height so pages clear it exactly in every language.
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const root = document.documentElement;
+    const update = () => root.style.setProperty("--bottom-nav-height", `${el.getBoundingClientRect().height}px`);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => { ro.disconnect(); root.style.removeProperty("--bottom-nav-height"); };
+  }, []);
 
   const prefetchProfileData = async () => {
     if (!user) return;
