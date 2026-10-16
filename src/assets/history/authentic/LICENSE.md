@@ -2,10 +2,11 @@
 
 All 19 lesson images are real artworks, artifacts, archival images, or photographs. Downloaded from Wikimedia Commons on 2026-10-06; resized to a maximum of 960px and JPEG-compressed without altering the subject. Stored copies are served by the app. CC BY-SA derivatives remain licensed under the original share-alike license. Credits and links are accessible below each lesson image.
 
-## eo_1: The Good Shepherd — Catacomb of Priscilla, Rome
-- Creator / photographer: Unknown / historical work
-- Source: https://commons.wikimedia.org/wiki/File:Good_shepherd_01.jpg
+## eo_1: The Trinity — Andrei Rublev, 15th century
+- Creator / photographer: Andrei Rublev
+- Source: https://commons.wikimedia.org/wiki/File:Andrej_Rubl%C3%ABv_001.jpg
 - License: Public domain — https://commons.wikimedia.org/wiki/Commons:Copyright_rules_by_subject_matter#2D_art_(paintings,_etc.)
+- Note: the thin bright-yellow strips along the photo's edges were trimmed away (about 14 px on the left and right, 10 px on top and 22 px on the bottom); the aged panel itself is untouched and the untrimmed copy stays stored.
 
 ## eo_2: First Council of Nicaea — Michael Damaskinos, 1591
 - Creator / photographer: Michael Damaskinos
