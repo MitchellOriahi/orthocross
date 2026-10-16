@@ -71,7 +71,7 @@ export function OrientationOnboarding() {
 
   return (
     <Dialog open={open} onOpenChange={o => { if (!o) void finish(true); }}>
-      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel="Inquiring" onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
+      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel="Just Exploring" onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
     </Dialog>
   );
 }
@@ -80,7 +80,7 @@ function OrientationSteps({ step, setStep, saving, unaffiliatedLabel, onChooseBr
   step: "family" | "oriental" | "eastern";
   setStep: (s: "family" | "oriental" | "eastern") => void;
   saving: boolean;
-  /** Wording of the grey third choice: "Inquiring" in the first-open survey, "Neither" in Settings. */
+  /** Wording of the grey third choice: "Just Exploring" in the first-open survey, "Neither" in Settings. */
   unaffiliatedLabel: string;
   onChooseBranch: (branch: string) => void;
   onNeither: () => void;
