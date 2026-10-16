@@ -111,7 +111,7 @@ export const GroupsList = ({
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="group-heading">
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
             Your Groups
@@ -119,7 +119,7 @@ export const GroupsList = ({
               <Badge variant="destructive">{unreadInvitationCount}</Badge>
             )}
           </CardTitle>
-          <div className="flex gap-2">
+          <div className="group-actions">
             <Button 
               variant="outline" 
               size="sm"

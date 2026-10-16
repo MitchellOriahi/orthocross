@@ -532,7 +532,7 @@ const ChurchResources = () => {
               onClick={() => setSelectedSection("eastern")}
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-3">
+                <CardTitle className="resource-tile-title flex items-center gap-3">
                   <Church className="w-20 h-20 text-primary" />
                   <div className="text-center">
                     <div className="text-3xl">Eastern Orthodox</div>
@@ -548,7 +548,7 @@ const ChurchResources = () => {
               onClick={() => setSelectedSection("oriental")}
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-3">
+                <CardTitle className="resource-tile-title flex items-center gap-3">
                   <Church className="w-20 h-20 text-primary" />
                   <div className="text-center">
                     <div className="text-3xl">Oriental Orthodox</div>
@@ -564,7 +564,7 @@ const ChurchResources = () => {
               onClick={() => setSelectedSection("prayers")}
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-3">
+                <CardTitle className="resource-tile-title flex items-center gap-3">
                   <BookOpen className="w-16 h-16 text-primary" />
                   <div>
                     <div className="text-3xl">Prayers</div>
@@ -580,7 +580,7 @@ const ChurchResources = () => {
               onClick={() => setSelectedSection("saints")}
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-3">
+                <CardTitle className="resource-tile-title flex items-center gap-3">
                   <UserRound className="w-16 h-16 text-primary" />
                   <div>
                     <div className="text-3xl">Saints</div>
@@ -596,7 +596,7 @@ const ChurchResources = () => {
               onClick={() => !locatingChurches && handleFindChurchesNearMe()}
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-3">
+                <CardTitle className="resource-tile-title flex items-center gap-3">
                   {locatingChurches ? (
                     <Loader2 className="w-20 h-20 text-primary animate-spin" />
                   ) : (
