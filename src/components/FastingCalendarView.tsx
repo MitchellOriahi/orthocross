@@ -15,6 +15,8 @@ interface FastingEvent {
   type: "fast" | "feast" | "holiday";
 }
 
+const INTRO_GLOW_KEY = "calendar-intro-glow-dismissed";
+
 // Convert shared data to calendar format
 const getFixedFastingEvents = (year: number, calendarSystem: CalendarSystem): FastingEvent[] => {
   const events = getAllFastingEvents(year, calendarSystem);
@@ -66,6 +68,13 @@ interface FastingCalendarViewProps {
 
 export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, calendarSystem = "Gregorian" }: FastingCalendarViewProps) => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [introGlow, setIntroGlow] = useState(() => {
+    try {
+      return !window.localStorage.getItem(INTRO_GLOW_KEY);
+    } catch {
+      return true;
+    }
+  });
   const { reminders, error, save, remove } = useCalendarReminders();
   const currentMonth = selectedMonth;
   const currentYear = selectedYear;
@@ -113,6 +122,10 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
     for (let day = 1; day <= daysInMonth; day++) {
       const events = getEventsForDay(day);
       const isWeeklyFast = weeklyFasts.includes(day);
+      const isToday =
+        today.getFullYear() === currentYear &&
+        today.getMonth() === currentMonth &&
+        today.getDate() === day;
       const hasFeast = events.some(e => e.type === "feast");
       const hasFast = events.some(e => e.type === "fast");
       const hasHoliday = events.some(e => e.type === "holiday");
