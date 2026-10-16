@@ -95,14 +95,14 @@ export function SaintsBrowser({ onSelect, onClose, returnToSaint }: { onSelect: 
           </>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className={style === "byzantine" ? "grid grid-cols-2 gap-3 gap-y-2 mb-4" : "grid grid-cols-2 gap-3 mb-4"}>
               {SAINT_CATEGORIES.map((item, index) => {
                 // An odd tile count centers the final box under both columns.
                 const centered = index === SAINT_CATEGORIES.length - 1 && SAINT_CATEGORIES.length % 2 === 1;
                 const artwork = categoryArtwork("saints", style, item.id);
                 const tile = <Button key={item.id} variant="ghost" onClick={() => { setCategory(item.id); setTag(null); setSubcategory(null); setTradition(defaultTradition); }} className="w-full h-auto min-w-0 p-0 gap-0 flex-col items-center whitespace-normal text-center hover:bg-transparent">
                   {artwork ? <CategoryArtwork key={artwork.image_url} artwork={artwork} label={item.label} /> : <SaintPortrait saintId={SAINT_CATEGORY_DISPLAY_ICON[item.id]} className="w-full" />}
-                  <span className="mt-2 h-10 w-full text-sm font-medium leading-5 line-clamp-2">{item.label}</span>
+                  <span className={artwork?.image_shape === "silhouette" ? "mt-1.5 w-full text-sm font-medium leading-5 line-clamp-2" : "mt-2 h-10 w-full text-sm font-medium leading-5 line-clamp-2"}>{item.label}</span>
                 </Button>;
                 return centered
                   ? <div key={item.id} className="col-span-2 flex justify-center"><div className="w-[calc(50%-6px)]">{tile}</div></div>
