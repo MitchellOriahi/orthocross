@@ -75,6 +75,15 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     if (user) await supabase.from("profiles").update({ donor_anonymous: value }).eq("id", user.id);
   };
 
+  // Opening/closing the tiers list; the first open ever shows the Archangel pulse.
+  const toggleTiers = (next: boolean) => {
+    setTiersOpen(next);
+    if (!next) {
+      try { localStorage.setItem("donor-tiers-intro-seen", "1"); } catch { /* private mode */ }
+      setTiersPulse(false);
+    }
+  };
+
   // Flipping between a monthly gift and a one-time gift starts the amount over at $0.
   const toggleOneTime = () => {
     setOneTime(!oneTime);
