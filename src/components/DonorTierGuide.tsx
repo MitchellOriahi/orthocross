@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
+import { DonorTierName } from "./DonorTierName";
 
 export function DonorTierGuide({ tierKey, onClose, onDonateTier }: {
   tierKey: string | null;
@@ -23,7 +24,7 @@ export function DonorTierGuide({ tierKey, onClose, onDonateTier }: {
                 aria-label={`Donate to become a ${tier.name} ($${tier.minCents / 100} or more)`}
               >
                 <img src={TIER_ICONS[tier.key]} alt="" className="donor-guide-tier-icon shrink-0 rounded-full object-cover" />
-                <span className="flex-1 text-sm font-semibold">{tier.name}</span>
+                <span className="min-w-0 flex-1 text-sm font-semibold"><DonorTierName tier={tier} /></span>
                 <span className="text-sm tabular-nums">${(tier.minCents / 100).toLocaleString("en-US")}+</span>
               </button>
             </li>
