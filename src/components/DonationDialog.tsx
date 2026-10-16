@@ -32,6 +32,10 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const interval: DonationInterval = DEFAULT_DONATION_INTERVAL;
   const [openReason, setOpenReason] = useState<number | null>(null);
   const [tiersOpen, setTiersOpen] = useState(false);
+  // Archangel pulses only the very first time the tiers list is opened.
+  const [tiersPulse, setTiersPulse] = useState(() => {
+    try { return !localStorage.getItem("donor-tiers-intro-seen"); } catch { return true; }
+  });
   const [anonymous, setAnonymous] = useState(false);
   const [oneTime, setOneTime] = useState(false);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
