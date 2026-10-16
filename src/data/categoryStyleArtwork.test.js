@@ -199,7 +199,7 @@ test("Russian Saints top row shows the supplied Annunciation and Theotokos icons
     expect(art.image_source).toBe("");
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
-    expect(art.image_modification).toContain("Square-cropped");
+    expect(art.image_modification).toContain("Complete icon fitted");
   }
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "byzantine", category.id);
@@ -218,7 +218,7 @@ test("Russian Saints middle row shows the supplied Pechersk Mother of God and mi
     expect(art.image_source).toBe("");
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
-    expect(art.image_modification).toContain("Square-cropped");
+    expect(art.image_modification).toContain("Complete icon fitted");
   }
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "byzantine", category.id);
@@ -277,7 +277,7 @@ test("Russian Saints bottom row shows the supplied crowned-saint and hierarch ic
     expect(art.image_source).toBe("");
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
-    expect(art.image_modification).toContain("Square-cropped");
+    expect(art.image_modification).toContain("Complete icon fitted");
   }
   for (const category of PRAYER_CATEGORIES) {
     const art = categoryArtwork("prayers", "byzantine", category.id);
