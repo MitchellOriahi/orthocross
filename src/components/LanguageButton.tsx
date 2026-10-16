@@ -6,15 +6,15 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LANGUAGES, type LanguageCode } from "@/lib/i18n/translations";
 
-/** Scrollable list of every supported language, native name first. */
+/** Scrollable list with fixed English and native-language names. */
 export function LanguageList({ onPick, onScroll, scrollContainerRef }: { onPick: (l: LanguageCode) => void; onScroll?: (e: UIEvent<HTMLDivElement>) => void; scrollContainerRef?: Ref<HTMLDivElement> }) {
   const { language } = useLanguage();
   return (
     <div ref={scrollContainerRef} className="scrollbar-hidden language-list-fade flex w-full max-h-[55vh] flex-col gap-3 overflow-y-auto pt-2 pb-8" onScroll={onScroll}>
       {LANGUAGES.map(l => (
-        <Button key={l.code} variant={l.code === language ? "default" : "outline"} className="h-14 w-full justify-between rounded-full px-5 text-base" onClick={() => onPick(l.code)}>
-          <span dir={l.rtl ? "rtl" : "ltr"} className="text-base font-semibold">{l.native}</span>
-          <span className="text-sm opacity-70">{l.english}</span>
+        <Button key={l.code} dir="ltr" data-no-translate variant={l.code === language ? "default" : "outline"} className="h-14 w-full justify-between rounded-full px-5 text-base" onClick={() => onPick(l.code)}>
+          <span className="text-base font-semibold">{l.english}</span>
+          <span dir={l.rtl ? "rtl" : "ltr"} className="text-sm opacity-70">{l.native}</span>
         </Button>
       ))}
     </div>
