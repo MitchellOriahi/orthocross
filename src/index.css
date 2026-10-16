@@ -781,3 +781,13 @@ All colors MUST be HSL.
     border-color: hsl(var(--saint-completion-gold) / 0.9);
   }
 }
+
+/* Hide the scrollbar so it never overlays the language option buttons;
+   the list still scrolls with touch, wheel and the v button. */
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
