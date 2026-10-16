@@ -10,6 +10,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PrayerDetailViewProps {
   name: string;
@@ -26,7 +27,11 @@ const HIGHLIGHT_COLORS = [
   { name: "Pink", class: "bg-pink-200 dark:bg-pink-900/50", value: "pink" },
 ];
 
-export const PrayerDetailView = ({ name, title, content, onClose, prayerId }: PrayerDetailViewProps) => {
+export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawContent, onClose, prayerId }: PrayerDetailViewProps) => {
+  const { tr } = useLanguage();
+  const name = tr(rawName);
+  const title = tr(rawTitle);
+  const content = rawContent.map(c => tr(c));
   const [isExplanationOpen, setIsExplanationOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'paginated' | 'scroll'>(() => {
     // Load saved preference from localStorage

@@ -35,12 +35,54 @@ function skip(el: Element | null): boolean {
   return false;
 }
 
-/** Translate one string: exact match, or keep surrounding whitespace/punctuation. */
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const DATE_WORD = new RegExp(`\\b(${[...MONTHS, ...DAYS].join("|")})\\b`, "g");
+
+/** Find a translation for an already-normalised key, trying a few safe fallbacks. */
+function lookup(key: string, d: Dict, depth = 0): string | undefined {
+  const hit = d[key];
+  if (hit !== undefined) return hit;
+  if (depth > 1) return undefined;
+  // Trailing parenthetical such as "(33–313 AD)" or "(Thrice)".
+  const paren = key.match(/^(.+?)\s*(\([^()]*\))$/);
+  if (paren) {
+    const base = lookup(paren[1], d, depth + 1);
+    if (base !== undefined) return `${base} ${paren[2]}`;
+  }
+  // Leading or trailing number, e.g. "5 day streak", "Page 3".
+  const lead = key.match(/^([\d.,:/–-]+)\s+(.+)$/);
+  if (lead) { const r = lookup(lead[2], d, depth + 1); if (r !== undefined) return `${lead[1]} ${r}`; }
+  const trail = key.match(/^(.+?)\s+([\d.,:/–-]+)$/);
+  if (trail) { const r = lookup(trail[1], d, depth + 1); if (r !== undefined) return `${r} ${trail[2]}`; }
+  // Dates built from month/day names and numbers, e.g. "October 18".
+  if (DATE_WORD.test(key) && /^[A-Za-z\d\s,]+$/.test(key)) {
+    DATE_WORD.lastIndex = 0;
+    return key.replace(DATE_WORD, w => d[w] ?? w);
+  }
+  DATE_WORD.lastIndex = 0;
+  return undefined;
+}
+
+/** Translate one string: exact match (with fallbacks), line-by-line for multi-line text. */
 export function translateString(text: string, d: Dict | null): string {
   if (!d) return text;
   const key = norm(text);
   if (!key) return text;
-  const hit = d[key];
+  let hit = lookup(key, d);
+  if (hit === undefined && /\n/.test(text.trim())) {
+    const lines = text.split("\n");
+    const out = lines.map(l => { const k = norm(l); return k ? (lookup(k, d) ?? l) : l; });
+    if (out.some((l, i) => l !== lines[i])) return out.join("\n");
+  }
+  if (hit === undefined) {
+    // Sentence-by-sentence for long paragraphs.
+    const parts = key.split(/(?<=[.!?])\s+/);
+    if (parts.length > 1) {
+      const out = parts.map(p => lookup(p, d));
+      if (out.some(Boolean)) hit = out.map((p, i) => p ?? parts[i]).join(" ");
+    }
+  }
   if (hit === undefined) return text;
   const lead = text.match(/^\s*/)![0];
   const trail = text.match(/\s*$/)![0];
