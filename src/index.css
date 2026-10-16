@@ -750,3 +750,18 @@ All colors MUST be HSL.
 .calendar-fast { background: hsl(var(--calendar-fast)); }
 .calendar-weekly { background: hsl(var(--calendar-weekly)); }
 .calendar-day:hover { filter: brightness(1.15); }
+
+/* First-open cue: today's calendar tile breathes with the journey glow
+   until the user taps a day, so new users know the tiles are tappable. */
+.calendar-intro-glow {
+  border-color: hsl(var(--journey-glow) / 0.6);
+  box-shadow: var(--journey-glow-rest);
+  animation: journey-next-glow 4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  z-index: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .calendar-intro-glow {
+    /* Keep the breathing cue without expanding or moving the tile. */
+    animation: journey-next-glow-soft 5s ease-in-out infinite;
+  }
+}
