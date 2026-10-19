@@ -1,6 +1,6 @@
 # Prayers category browser
 ## Island and Saints translation coverage
-- [ ] Fill missing island reading/quiz text, Oriental titles, and every Saints name, subtitle and story in all supported languages; verify signed-in reading without changing Bible text.
+- [x] Fill missing island reading/quiz text, Oriental titles, and every Saints name, subtitle and story in all supported languages. Coverage checks pass for all 16 non-English dictionaries; signed-in French/Serbian Eastern and Oriental lessons and Saint cards/stories verified, no runtime errors. Bible text unchanged; native-speaker review of machine-translated biographies remains advisable.
 ## History island width
 - [x] Widen islands and move alternating checkpoints outward. Russian, Arabic and English checked signed in at phone and desktop sizes without horizontal overflow; five journey tests pass and preview build is clean.
 ## Final sticker spacing
