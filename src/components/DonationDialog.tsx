@@ -243,11 +243,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const SLIDER_STEPS: readonly number[] = isNative ? NATIVE_PRESETS : interval === "year" ? YEARLY_SLIDER_AMOUNTS : GIFT_SLIDER_AMOUNTS;
   const stepIndex = isNative ? Math.max(0, NATIVE_PRESETS.findIndex(v => v >= effectiveAmount)) : interval === "year" ? (useCustom ? SLIDER_STEPS.length - 1 : Math.max(0, SLIDER_STEPS.findIndex(v => v >= effectiveAmount))) : giftPreview.sliderIndex;
   const shownAmount = effectiveAmount >= 1 ? (Number.isInteger(effectiveAmount) ? effectiveAmount : effectiveAmount.toFixed(2)) : 0;
-  const reasons = [
-    { icon: Gift, title: "Free for everyone", body: "Your donation keeps this app and all of its features free for everyone. No paywalls, no ads.", more: "Every feature in OrthoCross is open to every believer. Donations cover servers, cloud voices and storage so nobody is ever asked to pay to pray or read." },
-    { icon: User, title: "Support one developer", body: "OrthoCross is built by an Orthodox Christian with a small team, not a big corporation.", more: "Your gift supports the people writing, fixing and improving the app with care for our community." },
-    { icon: Sprout, title: "Help us keep growing", body: "Donations fund new saint stories, prayers, voices, and features.", more: "Each month of support makes room for more stories, more verified prayers and better tools for the whole community." },
-  ];
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -265,21 +260,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone.</p>
         </div>}
 
-        <div className="space-y-2 pt-1">
-          {reasons.map((r, i) => (
-            <div key={r.title} className="flex gap-4">
-              <r.icon className="h-8 w-8 shrink-0 text-foreground" strokeWidth={1.5} />
-              <div className="space-y-1">
-                <p className="text-base font-medium">{r.title}</p>
-                <p className="text-sm text-muted-foreground">{r.body}</p>
-                {openReason === i && <p className="text-sm text-muted-foreground">{r.more}</p>}
-                <Button type="button" variant="link" onClick={() => setOpenReason(openReason === i ? null : i)} className="h-auto p-0 text-xs font-semibold">
-                  {openReason === i ? "Show less" : "Learn more"}
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
 
         <div className="pt-2 space-y-2">
           <div>
