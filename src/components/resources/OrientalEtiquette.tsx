@@ -76,7 +76,7 @@ export const OrientalEtiquette = ({ selected, onSelect }: Props) => {
     return (
       <div className="space-y-3">
         <div className="text-center">
-          <div className="text-xl font-semibold text-foreground">{church.name} Orthodox</div>
+          <div className="text-xl font-semibold text-foreground">{`${church.name} Orthodox`}</div>
           <div className="text-xs text-muted-foreground">{church.language}</div>
         </div>
         <List sections={church.sections} prefix={church.id} />
