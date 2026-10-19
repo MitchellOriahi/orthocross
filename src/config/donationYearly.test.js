@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { YEARLY_SLIDER_AMOUNTS, minimumGift } from "./donationGift";
+import { YEARLY_SLIDER_AMOUNTS, minimumGift, getGiftPreview } from "./donationGift";
 
 describe("yearly gifts", () => {
   test("start at $12", () => {
@@ -9,5 +9,8 @@ describe("yearly gifts", () => {
   test("monthly and one-time minimum stays $1", () => {
     expect(minimumGift("month")).toBe(1);
     expect(minimumGift("once")).toBe(1);
+  });
+  test("glow brightens step by step across the yearly slider", () => {
+    expect(YEARLY_SLIDER_AMOUNTS.map(amount => getGiftPreview(amount, false, YEARLY_SLIDER_AMOUNTS).glowLevel)).toEqual([0, 1, 2]);
   });
 });

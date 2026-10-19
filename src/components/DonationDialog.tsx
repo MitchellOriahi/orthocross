@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
-import { X, ChevronDown, Eye, EyeOff, HandCoins, Loader2 } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, HandCoins, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
 import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
@@ -36,13 +36,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const [tiersPulse, setTiersPulse] = useState(() => {
     try { return !localStorage.getItem("donor-tiers-intro-seen"); } catch { return true; }
   });
-  const [noteHidden, setNoteHidden] = useState(() => {
-    try { return localStorage.getItem("donation-maker-note-hidden") === "1"; } catch { return false; }
-  });
-  const hideNote = () => {
-    setNoteHidden(true);
-    try { localStorage.setItem("donation-maker-note-hidden", "1"); } catch { /* private mode */ }
-  };
   const [anonymous, setAnonymous] = useState(false);
   const [oneTime, setOneTime] = useState(false);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
@@ -121,9 +114,11 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     return selectedAmount;
   };
 
+  const SLIDER_STEPS: readonly number[] = isNative ? NATIVE_PRESETS : interval === "year" ? YEARLY_SLIDER_AMOUNTS : GIFT_SLIDER_AMOUNTS;
+
   // Tier this gift alone would qualify for (lifetime total can only be higher).
   const effectiveAmount = getEffectiveAmount();
-  const giftPreview = getGiftPreview(effectiveAmount, useCustom);
+  const giftPreview = getGiftPreview(effectiveAmount, useCustom, SLIDER_STEPS);
   const giftTier = giftPreview.tier;
 
   // Native path: RevenueCat in-app purchase (required by App Store / Play Store)
@@ -239,8 +234,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     }
   };
 
-  const SLIDER_STEPS: readonly number[] = isNative ? NATIVE_PRESETS : interval === "year" ? YEARLY_SLIDER_AMOUNTS : GIFT_SLIDER_AMOUNTS;
-  const stepIndex = isNative ? Math.max(0, NATIVE_PRESETS.findIndex(v => v >= effectiveAmount)) : interval === "year" ? (useCustom ? SLIDER_STEPS.length - 1 : Math.max(0, SLIDER_STEPS.findIndex(v => v >= effectiveAmount))) : giftPreview.sliderIndex;
+  const stepIndex = giftPreview.sliderIndex;
   const shownAmount = effectiveAmount >= 1 ? (Number.isInteger(effectiveAmount) ? effectiveAmount : effectiveAmount.toFixed(2)) : 0;
 
   return (
@@ -251,13 +245,10 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
 
-        {!noteHidden && <div className="relative rounded-xl border bg-muted/40 p-4 pr-10 text-sm leading-relaxed">
-          <Button type="button" variant="ghost" size="icon" aria-label="Close note" onClick={hideNote} className="absolute right-1 top-1 h-8 w-8 text-muted-foreground">
-            <X className="h-4 w-4" />
-          </Button>
+        <div className="rounded-xl border bg-muted/40 p-4 text-sm leading-relaxed">
           <p className="font-medium">A note from the maker of OrthoCross</p>
-          <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone.</p>
-        </div>}
+          <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read, and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone.</p>
+        </div>
 
 
         <div className="pt-2 space-y-2">
