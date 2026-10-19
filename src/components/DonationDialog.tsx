@@ -10,7 +10,7 @@ import { ChevronDown, Eye, EyeOff, Gift, HandCoins, Loader2, Sprout, User } from
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
 import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
-import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle } from "@/config/donationGift";
+import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle, giftImpact, minimumGift } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
@@ -30,7 +30,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
   const [loading, setLoading] = useState(false);
-  const interval: DonationInterval = DEFAULT_DONATION_INTERVAL;
+  const [interval, setInterval_] = useState<DonationInterval>(DEFAULT_DONATION_INTERVAL);
   const [openReason, setOpenReason] = useState<number | null>(null);
   const [tiersOpen, setTiersOpen] = useState(false);
   // Archangel pulses only the very first time the tiers list is opened.
@@ -93,6 +93,14 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     setCustomAmount(next.customAmount);
     setUseCustom(next.useCustom);
   };
+
+  const chooseInterval = (next: DonationInterval) => {
+    setInterval_(next);
+    setUseCustom(false); setCustomAmount("");
+    setSelectedAmount(next === "year" ? DEFAULT_YEARLY_AMOUNT : DEFAULT_GIFT_AMOUNT);
+  };
+  const mode = oneTime ? "once" : interval;
+  const minAmount = isNative ? 1 : minimumGift(mode);
 
   // On native, check if IAP products are available when dialog opens
   useEffect(() => {
@@ -185,8 +193,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   // Web path: Stripe Checkout (monthly subscription)
   const handleWebDonate = async () => {
     const amount = getEffectiveAmount();
-    if (isNaN(amount) || amount < 1) {
-      toast({ title: "Invalid amount", description: "Minimum donation is $1.00", variant: "destructive" });
+    if (isNaN(amount) || amount < minAmount) {
+      toast({ title: "Invalid amount", description: `Minimum gift is $${minAmount}.00`, variant: "destructive" });
       return;
     }
 
@@ -225,8 +233,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     }
   };
 
-  const SLIDER_STEPS = isNative ? NATIVE_PRESETS : GIFT_SLIDER_AMOUNTS;
-  const stepIndex = isNative ? Math.max(0, NATIVE_PRESETS.findIndex(v => v >= effectiveAmount)) : giftPreview.sliderIndex;
+  const SLIDER_STEPS: readonly number[] = isNative ? NATIVE_PRESETS : interval === "year" ? YEARLY_SLIDER_AMOUNTS : GIFT_SLIDER_AMOUNTS;
+  const stepIndex = isNative ? Math.max(0, NATIVE_PRESETS.findIndex(v => v >= effectiveAmount)) : interval === "year" ? (useCustom ? SLIDER_STEPS.length - 1 : Math.max(0, SLIDER_STEPS.findIndex(v => v >= effectiveAmount))) : giftPreview.sliderIndex;
   const shownAmount = effectiveAmount >= 1 ? (Number.isInteger(effectiveAmount) ? effectiveAmount : effectiveAmount.toFixed(2)) : 0;
   const reasons = [
     { icon: Gift, title: "Free for everyone", body: "Your donation keeps this app and all of its features free for everyone. No paywalls, no ads.", more: "Every feature in OrthoCross is open to every believer. Donations cover servers, cloud voices and storage so nobody is ever asked to pay to pray or read." },
@@ -241,6 +249,11 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <DialogTitle className="text-3xl font-bold leading-tight">Become a donator,<br />support OrthoCross</DialogTitle>
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
+
+        <div className="rounded-xl border bg-muted/40 p-4 text-sm leading-relaxed">
+          <p className="font-medium">A note from the maker of OrthoCross</p>
+          <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone.</p>
+        </div>
 
         <div className="space-y-2 pt-1">
           {reasons.map((r, i) => (
@@ -264,12 +277,25 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>
           </div>
 
+          {!isNative && !oneTime && (
+            <div role="radiogroup" aria-label="Billing" className="mx-auto grid w-full max-w-xs grid-cols-2 rounded-full border p-1">
+              {(["month", "year"] as const).map(v => (
+                <Button key={v} type="button" role="radio" aria-checked={interval === v} variant={interval === v ? "sacred" : "ghost"} onClick={() => chooseInterval(v)} className="h-8 rounded-full text-xs">
+                  {v === "month" ? "Monthly" : "Yearly"}
+                </Button>
+              ))}
+            </div>
+          )}
+
           <div className="flex flex-col items-center gap-3">
             <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               {giftTier && <img src={TIER_ICONS[giftTier.key]} alt={giftTier.name} className="h-full w-full object-cover" />}
             </div>
-            <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && !oneTime && "/month"}</p>
-            <p className="text-sm text-muted-foreground text-center">Your gift keeps OrthoCross free for everyone.</p>
+            <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && !oneTime && (interval === "year" ? "/year" : "/month")}</p>
+            {!isNative && !oneTime && interval === "year" && effectiveAmount >= 12 && (
+              <p className="text-xs text-muted-foreground">About ${(effectiveAmount / 12).toFixed(2)} a month</p>
+            )}
+            <p className="text-sm text-muted-foreground text-center">{effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone."}</p>
           </div>
 
           {(isNative || !oneTime) && (
@@ -296,12 +322,12 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               <Input
                 id="custom-amount"
                 aria-label="Custom amount"
-                type="number" step="0.01" min="1"
+                type="number" step="0.01" min={minAmount}
                 value={customAmount}
                 onChange={(e) => { setCustomAmount(e.target.value); setUseCustom(true); }}
                 onFocus={() => setUseCustom(true)}
                 className="pl-7"
-                placeholder="Custom amount"
+                placeholder={interval === "year" && !oneTime ? "Custom amount ($12 minimum)" : "Custom amount"}
               />
             </div>
           )}
@@ -374,7 +400,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               ? "One-time donation processed securely through the app store."
               : oneTime
                 ? "A single gift, processed securely by Stripe."
-                : "Your gift renews monthly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings."}
+                : interval === "year" ? "Your gift renews yearly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings." : "Your gift renews monthly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings."}
           </p>
         </div>
       </DialogContent>
