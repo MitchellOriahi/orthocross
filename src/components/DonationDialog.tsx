@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
-import { ChevronDown, Eye, EyeOff, Gift, HandCoins, Loader2, Sprout, User } from "lucide-react";
+import { X, ChevronDown, Eye, EyeOff, Gift, HandCoins, Loader2, Sprout, User } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
 import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
@@ -37,6 +37,13 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const [tiersPulse, setTiersPulse] = useState(() => {
     try { return !localStorage.getItem("donor-tiers-intro-seen"); } catch { return true; }
   });
+  const [noteHidden, setNoteHidden] = useState(() => {
+    try { return localStorage.getItem("donation-maker-note-hidden") === "1"; } catch { return false; }
+  });
+  const hideNote = () => {
+    setNoteHidden(true);
+    try { localStorage.setItem("donation-maker-note-hidden", "1"); } catch { /* private mode */ }
+  };
   const [anonymous, setAnonymous] = useState(false);
   const [oneTime, setOneTime] = useState(false);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
@@ -250,10 +257,13 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
 
-        <div className="rounded-xl border bg-muted/40 p-4 text-sm leading-relaxed">
+        {!noteHidden && <div className="relative rounded-xl border bg-muted/40 p-4 pr-10 text-sm leading-relaxed">
+          <Button type="button" variant="ghost" size="icon" aria-label="Close note" onClick={hideNote} className="absolute right-1 top-1 h-8 w-8 text-muted-foreground">
+            <X className="h-4 w-4" />
+          </Button>
           <p className="font-medium">A note from the maker of OrthoCross</p>
           <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone.</p>
-        </div>
+        </div>}
 
         <div className="space-y-2 pt-1">
           {reasons.map((r, i) => (
