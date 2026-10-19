@@ -38,8 +38,9 @@ serve(async (req) => {
     const interval = donationInterval(requestedInterval);
     const billingLabel = interval === "year" ? "Yearly" : "Monthly";
     
-    if (!Number.isSafeInteger(amount) || amount < 100) {
-      throw new Error("Minimum donation amount is $1.00");
+    const minCents = interval === "year" ? 1200 : 100;
+    if (!Number.isSafeInteger(amount) || amount < minCents) {
+      throw new Error(`Minimum donation amount is $${minCents / 100}.00`);
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {

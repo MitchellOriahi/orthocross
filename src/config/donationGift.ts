@@ -22,3 +22,23 @@ export interface GiftAmount {
 export const EMPTY_GIFT: GiftAmount = { amount: 0, customAmount: "", useCustom: false };
 
 export const giftAfterModeToggle = (): GiftAmount => ({ ...EMPTY_GIFT });
+export type GiftMode = "month" | "year" | "once";
+
+/** Yearly gifts start at $12 (about $1/month) and stay modest for everyday readers. */
+export const YEARLY_SLIDER_AMOUNTS = [12, 30, 60] as const;
+export const DEFAULT_YEARLY_AMOUNT = 30;
+
+export const minimumGift = (mode: GiftMode) => (mode === "year" ? 12 : 1);
+
+/** Plain-language picture of what a gift sustains. */
+export function giftImpact(amount: number, mode: GiftMode): string {
+  const monthly = mode === "year" ? amount / 12 : mode === "month" ? amount : 0;
+  if (mode === "once") {
+    if (amount >= 25) return "Helps fund new saint stories and prayers.";
+    if (amount >= 5) return "Keeps the read-aloud voices speaking for many chapters.";
+    return "Every gift helps keep OrthoCross free.";
+  }
+  if (monthly >= 5) return "Helps fund new saint stories, prayers and features.";
+  if (monthly >= 2) return "Keeps the read-aloud voices speaking for everyone.";
+  return "Helps keep Scripture and prayers free and ad-free.";
+}
