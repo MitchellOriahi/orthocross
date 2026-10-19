@@ -1,4 +1,8 @@
 export * from "../../supabase/functions/_shared/donorTiers.ts";
+import giftCross from "@/assets/tiers/cross.jpg.asset.json";
+
+/** Orthodox cross shown in the gift circle before any tier is reached. */
+export const GIFT_CROSS_ICON = giftCross.url;
 import angel from "@/assets/tiers/angel.jpg.asset.json";
 import archangel from "@/assets/tiers/archangel.jpg.asset.json";
 import principality from "@/assets/tiers/principality.jpg.asset.json";
