@@ -46,6 +46,12 @@ function lookup(key: string, d: Dict, depth = 0): string | undefined {
   const hit = d[key];
   if (hit !== undefined) return hit;
   if (depth > 1) return undefined;
+  // Category/subgroup paths are assembled by the Saints search view.
+  if (key.includes(" → ")) {
+    const parts = key.split(" → ");
+    const translated = parts.map(part => lookup(part, d, depth + 1));
+    if (translated.every(part => part !== undefined)) return translated.join(" → ");
+  }
   // Trailing parenthetical such as "(33–313 AD)" or "(Thrice)".
   const paren = key.match(/^(.+?)\s*(\([^()]*\))$/);
   if (paren) {
