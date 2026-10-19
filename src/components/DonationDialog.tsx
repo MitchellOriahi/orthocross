@@ -246,8 +246,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
         </DialogHeader>
 
         <div className="rounded-xl border bg-muted/40 p-4 text-sm leading-relaxed">
-          <p className="font-medium">A note from the maker of OrthoCross</p>
-          <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read, and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone.</p>
+          <p className="font-medium">A note from the creator of OrthoCross</p>
+          <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read, and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone. God bless.</p>
         </div>
 
 
