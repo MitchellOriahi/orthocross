@@ -9,7 +9,7 @@ import { Capacitor } from "@capacitor/core";
 import { ChevronDown, Eye, EyeOff, HandCoins, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
-import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
+import { DONOR_TIERS, TIER_ICONS, GIFT_CROSS_ICON } from "@/config/donorTiers";
 import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle, giftImpact, minimumGift } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
@@ -239,7 +239,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md max-h-[92vh] overflow-y-auto overscroll-contain p-6">
+      <DialogContent className="sm:max-w-md max-h-[72vh] overflow-y-auto overscroll-contain p-6">
         <DialogHeader className="text-left space-y-2">
           <DialogTitle className="text-3xl font-bold leading-tight">Become a donator,<br />support OrthoCross</DialogTitle>
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
@@ -269,7 +269,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
           <div className="flex flex-col items-center gap-3">
             <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
-              {giftTier && <img src={TIER_ICONS[giftTier.key]} alt={giftTier.name} className="h-full w-full object-cover" />}
+              <img src={giftTier ? TIER_ICONS[giftTier.key] : GIFT_CROSS_ICON} alt={giftTier ? giftTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
             </div>
             <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && !oneTime && (interval === "year" ? "/year" : "/month")}</p>
             {!isNative && !oneTime && interval === "year" && effectiveAmount >= 12 && (
