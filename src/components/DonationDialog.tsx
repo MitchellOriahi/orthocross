@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
-import { X, ChevronDown, Eye, EyeOff, Gift, HandCoins, Loader2, Sprout, User } from "lucide-react";
+import { X, ChevronDown, Eye, EyeOff, HandCoins, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
 import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
@@ -31,7 +31,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const [useCustom, setUseCustom] = useState(false);
   const [loading, setLoading] = useState(false);
   const [interval, setInterval_] = useState<DonationInterval>(DEFAULT_DONATION_INTERVAL);
-  const [openReason, setOpenReason] = useState<number | null>(null);
   const [tiersOpen, setTiersOpen] = useState(false);
   // Archangel pulses only the very first time the tiers list is opened.
   const [tiersPulse, setTiersPulse] = useState(() => {
