@@ -37,6 +37,6 @@
 - Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
 - LanguageContext sets lang/dir/fallback; reveal switches after React and DOM translation settle.
-- domTranslator applies public/i18n dictionaries; data-no-translate protects scripture. Fit header titles in fixed slots and scroll bounded dialogs to prevent localized clipping.
+- domTranslator uses public/i18n; data-no-translate protects scripture. layoutFitting fits whole words in fixed text slots; dialogs scroll to avoid clipping.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.
 - Resolve donor labels through angelic dictionary keys and DonorTierName, preventing secular translations without changing billing ranks.

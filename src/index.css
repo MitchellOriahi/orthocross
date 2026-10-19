@@ -800,10 +800,11 @@ All colors MUST be HSL.
   mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%);
 }
 
-/* Translated languages: long words must never push icons/buttons or overflow stickers. */
-html:not([lang="en"]) :where(h1, h2, h3, h4, p, span, div, label, a, li) {
-  overflow-wrap: break-word;
-  hyphens: auto;
+/* Fit whole translated words; protected scripture keeps its own rules. */
+html:not([lang="en"]) body :where(*):not([data-no-translate], [data-no-translate] *, input, textarea, [contenteditable="true"], [contenteditable="true"] *) {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
 }
 html:not([lang="en"]) .flex > :where(div, span, p, h1, h2, h3, h4, a, label) { min-width: 0; }
 html:not([lang="en"]) .flex > :where(svg, img) { flex-shrink: 0; }
