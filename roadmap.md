@@ -1,4 +1,6 @@
 # Prayers category browser
+## Donation controls and currency estimates
+- [ ] Translate all donation controls and impact messages; add optional dated local-currency estimates while preserving USD checkout, then verify language and currency selection.
 ## Island and Saints translation coverage
 - [x] Fill missing island reading/quiz text, Oriental titles, and every Saints name, subtitle and story in all supported languages. Coverage checks pass for all 16 non-English dictionaries; signed-in French/Serbian Eastern and Oriental lessons and Saint cards/stories verified, no runtime errors. Bible text unchanged; native-speaker review of machine-translated biographies remains advisable.
 ## History island width
