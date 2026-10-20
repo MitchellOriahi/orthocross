@@ -21,3 +21,8 @@ test("reject exchange rates older than 48 hours", () => {
   expect(parseDonationRates(response, now + 49 * 60 * 60 * 1000)).toBeNull();
   expect(parseDonationRates(response, now + 47 * 60 * 60 * 1000)?.rates.EUR).toBe(0.92);
 });
+test("gifts show the currency symbol, never the three-letter code", () => {
+  expect(formatDonationMoney(2, "en")).toBe("$2");
+  expect(formatDonationMoney(2.5, "en")).toBe("$2.50");
+  expect(formatDonationMoney(2, "en")).not.toContain("USD");
+});
