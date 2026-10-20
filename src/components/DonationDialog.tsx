@@ -14,6 +14,10 @@ import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
+import { useLanguage } from "@/contexts/LanguageContext";
+import { formatDonationMoney } from "@/lib/donationCurrency";
+import { DonationCurrencyEstimate } from "./DonationCurrencyEstimate";
+
 interface DonationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -41,6 +45,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { language, tr } = useLanguage();
+  const money = (amount: number) => formatDonationMoney(amount, language);
   const isNative = Capacitor.isNativePlatform();
 
   useEffect(() => {
@@ -195,7 +201,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const handleWebDonate = async () => {
     const amount = getEffectiveAmount();
     if (isNaN(amount) || amount < minAmount) {
-      toast({ title: "Invalid amount", description: `Minimum gift is $${minAmount}.00`, variant: "destructive" });
+      toast({ title: "Invalid amount", description: tr("Minimum gift is {amount}").replace("{amount}", money(minAmount)), variant: "destructive" });
       return;
     }
 
@@ -261,7 +267,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             <div role="radiogroup" aria-label="Billing" className="mx-auto grid w-full max-w-xs grid-cols-2 rounded-full border p-1">
               {(["month", "year"] as const).map(v => (
                 <Button key={v} type="button" role="radio" aria-checked={interval === v} variant={interval === v ? "sacred" : "ghost"} onClick={() => chooseInterval(v)} className="h-8 rounded-full text-xs">
-                  {v === "month" ? "Monthly" : "Yearly"}
+                  {tr(v === "month" ? "Monthly" : "Yearly")}
                 </Button>
               ))}
             </div>
@@ -271,11 +277,11 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               <img src={giftTier ? TIER_ICONS[giftTier.key] : GIFT_CROSS_ICON} alt={giftTier ? giftTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
             </div>
-            <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && !oneTime && (interval === "year" ? "/year" : "/month")}</p>
+            <p className="text-4xl font-bold text-primary text-center" data-no-translate>{money(Number(shownAmount))}{!isNative && !oneTime && tr(interval === "year" ? "/year" : "/month")}</p>
             {!isNative && !oneTime && interval === "year" && effectiveAmount >= 12 && (
-              <p className="text-xs text-muted-foreground">About ${(effectiveAmount / 12).toFixed(2)} a month</p>
+              <p className="text-xs text-muted-foreground" data-no-translate>{tr("About {amount} a month").replace("{amount}", money(effectiveAmount / 12))}</p>
             )}
-            <p className="text-sm text-muted-foreground text-center">{effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone."}</p>
+            <p className="text-sm text-muted-foreground text-center">{tr(effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone.")}</p>
           </div>
 
           {(isNative || !oneTime) && (
@@ -291,10 +297,12 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 className="w-full accent-[hsl(var(--primary))]"
               />
               <div className="flex justify-between text-sm font-medium text-muted-foreground">
-                {SLIDER_STEPS.map((amount, i) => <span key={amount}>${amount}{!isNative && i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
+                {SLIDER_STEPS.map((amount, i) => <span key={amount} data-no-translate>{money(amount)}{!isNative && i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
               </div>
             </>
           )}
+
+          {!isNative && <DonationCurrencyEstimate amount={effectiveAmount} />}
 
           {!isNative && (
             <div className="relative">
@@ -329,8 +337,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                         setUseCustom(true);
                         toggleTiers(false);
                       }}>
-                        <span><DonorTierName tier={t} />{current && " · this gift"}</span>
-                        <span>${(t.minCents / 100).toLocaleString()}+</span>
+                        <span><DonorTierName tier={t} />{current && tr(" · this gift")}</span>
+                        <span data-no-translate>{money(t.minCents / 100)}+</span>
                       </Button>
                     </li>
                   );
@@ -348,7 +356,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${oneTime ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
               >
                 <HandCoins className="h-3.5 w-3.5" />
-                <span>{DONOR_TEXT.oneTime}</span>
+                <span>{tr(DONOR_TEXT.oneTime)}</span>
                 <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${oneTime ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
                   <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${oneTime ? "translate-x-3" : "translate-x-0"}`} />
                 </span>
@@ -360,7 +368,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${anonymous ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
             >
               {anonymous ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-              <span>{DONOR_TEXT.donateAnonymouslyShort}</span>
+              <span>{tr(DONOR_TEXT.donateAnonymouslyShort)}</span>
               <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${anonymous ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
                 <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${anonymous ? "translate-x-3" : "translate-x-0"}`} />
               </span>

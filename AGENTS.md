@@ -26,7 +26,7 @@
 - Fetch public permission-based Athonite catalogs through an authenticated, fixed-collection cloud function with storage caching and a persistent blocked-feed stop flag; this operation cannot approve portraits or alter saint records.
 - Verify Stripe payments and compute totals server-side; queue friend alerts via a service-only donation-keyed function enforcing anonymity, friendship, blocks and preferences, with push UUID idempotency to prevent duplicate alerts.
 
-- Share donation interval validation between dialog and checkout.
+- Share donation interval validation. Currency estimates use dated public USD rates; checkout amounts and tiers stay unchanged.
 - Use a tested gift-preview selector for slider position, portrait tier and glow; shared thresholds align custom gifts.
 - Schedule donation and rating prompts through one pure, tested coordinator (src/lib/promptScheduler) mounted only on the Board, so prompts never collide or interrupt reading.
 
@@ -39,4 +39,4 @@
 - LanguageContext sets lang/dir/fallback; reveal switches after React and DOM translation settle.
 - public/i18n drives DOM translation; protect scripture, fit whole words, scroll dialogs. content_keys.py extracts rendered History and JSON Saints to prevent omissions.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.
-- Resolve donor labels through angelic dictionary keys and DonorTierName, preventing secular translations without changing billing ranks.
+- DonorTierName uses angelic dictionary keys; billing ranks stay unchanged.
