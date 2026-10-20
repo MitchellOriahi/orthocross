@@ -6,7 +6,7 @@ import { SAINT_DISPLAY_ICONS, SAINT_CATEGORY_DISPLAY_ICON } from "./saintDisplay
 
 // Photographs and icons the app owner supplied. The Coptic ones are George
 // Makary's work and credit his page; the rest carry no online source link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "tewahedo-monastic-staff", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
+const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
 const MAKARY = "https://www.copticicon.com/";
 
 test("Russian prayer top and middle rows use supplied panels in upload order and preserve Saints", () => {
@@ -82,10 +82,10 @@ test("Tewahedo Saints top row shows the supplied Archangel Michael host and Theo
   }
 });
 
-test("Tewahedo Saints middle row shows the supplied monastic-saint and Trinity panel photographs", () => {
+test("Tewahedo Saints middle row shows the supplied rainbow-winged archangel and Trinity panel photographs", () => {
   const monastics = categoryArtwork("saints", "tewahedo", "monastics");
   const fathers = categoryArtwork("saints", "tewahedo", "fathers-hierarchs");
-  expect(monastics.image_url).toContain("tewahedo-monastic-staff");
+  expect(monastics.image_url).toContain("tewahedo-archangel-wings");
   expect(fathers.image_url).toContain("tewahedo-selassie-panel");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
