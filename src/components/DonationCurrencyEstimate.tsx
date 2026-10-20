@@ -46,7 +46,7 @@ export function DonationCurrencyEstimate({ amount }: { amount: number }) {
           {estimate !== null ? <>
             <p>{tr("Estimated equivalent")} ≈ {formatDonationMoney(estimate, language, currency)}</p>
             {rates && <p>{tr("Rate date: {date}").replace("{date}", new Intl.DateTimeFormat(language).format(rates.updatedAt))}</p>}
-          </> : unavailable ? <p>{tr("Exchange rate unavailable")}</p> : null}
+          </> : unavailable || rates ? <p>{tr("Exchange rate unavailable")}</p> : null}
           <p>{tr("Charged in US dollars. Your bank’s rate and fees may differ.")}</p>
           <p><a className="underline" href="https://www.exchangerate-api.com" target="_blank" rel="noreferrer">ExchangeRate-API</a></p>
         </div>
