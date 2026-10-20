@@ -37,7 +37,7 @@ export function DonationCurrencyEstimate({ amount }: { amount: number }) {
         <SelectTrigger aria-label={tr("Currency estimate")} className="mx-auto h-auto min-h-10 w-full max-w-xs gap-2 text-xs">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="z-[150]">
           {DONATION_CURRENCIES.map(code => <SelectItem key={code} value={code}><span data-no-translate>{code} · {names.of(code) ?? code}</span></SelectItem>)}
         </SelectContent>
       </Select>
