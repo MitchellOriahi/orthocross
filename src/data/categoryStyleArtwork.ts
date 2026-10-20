@@ -177,7 +177,7 @@ const byzantineAnna = saved("anna");
 type AlternateStyle = Exclude<CategoryIconStyle, "original">;
 
 export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<SaintCategoryId, "rulers">, SaintDisplayIcon>> = {
-  tewahedo: { angels: art["tewahedo-selassie-panel"], biblical: art["tewahedo-archangel-wings"], monastics: art["tewahedo-theotokos"], "fathers-hierarchs": art["tewahedo-george"], martyrs: art["tewahedo-angels-michael"], "apostles-missionaries": art["tewahedo-selassie-manuscript"], laypeople: art["tewahedo-laypeople"] },
+  tewahedo: { angels: art["tewahedo-angels-michael"], biblical: art["tewahedo-theotokos"], monastics: art["tewahedo-archangel-wings"], "fathers-hierarchs": art["tewahedo-selassie-panel"], martyrs: art["tewahedo-george"], "apostles-missionaries": art["tewahedo-selassie-manuscript"], laypeople: art["tewahedo-laypeople"] },
   coptic: { angels: art["coptic-angel-three-saints"], biblical: art["coptic-family-christ"], monastics: art["coptic-church-bridegroom"], "fathers-hierarchs": art["coptic-john-olympia"], martyrs: art["coptic-photini"], "apostles-missionaries": art["coptic-katherine"], laypeople: art["coptic-martyr-angel"] },
   byzantine: { angels: art["russian-saint-annunciation"], biblical: art["russian-saint-theotokos"], monastics: art["russian-saint-pechersk-monastics"], "fathers-hierarchs": art["russian-saint-mitre-fathers"], martyrs: art["russian-saint-crowned-martyrs"], "apostles-missionaries": art["russian-saint-nicholas-missionaries"], laypeople: art["russian-saint-laypeople-triptych"] },
 };
