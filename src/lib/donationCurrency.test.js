@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { estimateDonation, parseDonationRates } from "./donationCurrency";
+import { estimateDonation, formatDonationMoney, parseDonationRates } from "./donationCurrency";
 const now = Date.UTC(2026, 9, 20);
 const response = { result: "success", base_code: "USD", time_last_update_unix: now / 1000, rates: { USD: 1, EUR: 0.92, INR: 84 } };
 test("currency estimates leave the selected US-dollar gift unchanged", () => {

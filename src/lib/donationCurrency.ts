@@ -32,5 +32,5 @@ export function estimateDonation(usd: number, currency: string, rates: DonationR
   return rate && Number.isFinite(rate) && rate > 0 ? usd * rate : null;
 }
 export function formatDonationMoney(amount: number, language: string, currency = "USD"): string {
-  return new Intl.NumberFormat(language, { style: "currency", currency, currencyDisplay: "code", minimumFractionDigits: Number.isInteger(amount) ? 0 : 2, maximumFractionDigits: 2 }).format(amount);
+  return new Intl.NumberFormat(language, { style: "currency", currency, currencyDisplay: "narrowSymbol", minimumFractionDigits: Number.isInteger(amount) ? 0 : 2, maximumFractionDigits: 2 }).format(amount);
 }
