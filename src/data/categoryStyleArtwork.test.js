@@ -98,8 +98,8 @@ test("Tewahedo Saints middle row shows the supplied rainbow-winged archangel and
 test("Tewahedo Saints row below the middle shows the supplied Saint George and Trinity manuscript photographs", () => {
   const martyrs = categoryArtwork("saints", "tewahedo", "martyrs");
   const missionaries = categoryArtwork("saints", "tewahedo", "apostles-missionaries");
-  expect(martyrs.image_url).toContain("tewahedo-george");
-  expect(missionaries.image_url).toContain("tewahedo-selassie-manuscript");
+  expect(martyrs.image_url).toContain("tewahedo-george-martyr");
+  expect(missionaries.image_url).toContain("tewahedo-raven-saint");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
