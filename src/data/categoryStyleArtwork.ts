@@ -22,6 +22,7 @@ import tewahedo_theotokos_sq from "@/assets/category-styles/tewahedo-theotokos-s
 import tewahedo_george_sq from "@/assets/category-styles/tewahedo-george-sq.jpg.asset.json";
 import tewahedo_angels_michael_sq from "@/assets/category-styles/tewahedo-angels-michael-sq.jpg.asset.json";
 import tewahedo_archangel_wings_sq from "@/assets/category-styles/tewahedo-archangel-wings-sq.jpg.asset.json";
+import tewahedo_monastic_staff_sq from "@/assets/category-styles/tewahedo-monastic-staff-sq.jpg.asset.json";
 import tewahedo_laypeople from "@/assets/category-styles/tewahedo-laypeople.jpg.asset.json";
 import coptic_trinity_sq from "@/assets/category-styles/coptic-trinity-sq.jpg.asset.json";
 import coptic_fathers_sq from "@/assets/category-styles/coptic-fathers-sq.jpg.asset.json";
@@ -161,6 +162,7 @@ const art: Record<string, CategoryStyleArtwork> = {
   "tewahedo-selassie-manuscript": { image_url: tewahedo_selassie_manuscript_sq.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox manuscript miniature of the Holy Trinity (Selassie) with the four living creatures; photograph supplied by the app owner", "image_modification": "Square-cropped from the supplied photograph so the tile fills without background bands; original colors retained." },
   "tewahedo-george": { image_url: tewahedo_george_sq.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox icon of Saint George on horseback slaying the dragon, with the rescued maiden in the tree; photograph supplied by the app owner", "image_modification": "Square-cropped from the supplied photograph so the tile fills without background bands; original colors retained." },
   "tewahedo-archangel-wings": { image_url: tewahedo_archangel_wings_sq.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox icon of an archangel with rainbow-coloured wings above the fiery pit, flanked by two angels; photograph supplied by the app owner", "image_modification": "Square-cropped from the supplied photograph so the tile fills without background bands; original colors retained." },
+  "tewahedo-monastic-staff": { image_url: tewahedo_monastic_staff_sq.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox icon of a bearded monastic saint in a blue hood holding a T-topped prayer staff; photograph supplied by the app owner", "image_modification": "Square-cropped from the supplied photograph so the tile fills without background bands; the whole halo and face kept inside the frame; original colors retained." },
   "tewahedo-laypeople": { image_url: tewahedo_laypeople.url, "image_source": "", "image_license": "Supplied by the app owner", "image_license_url": "", "image_author": "Ethiopian Orthodox illumination panel of winged cherubim faces in a red-and-orange grid; photograph supplied by the app owner", "image_modification": "Square-cropped from the supplied photograph so the tile fills without background bands; original colors retained." },
 };
 
@@ -177,7 +179,7 @@ const byzantineAnna = saved("anna");
 type AlternateStyle = Exclude<CategoryIconStyle, "original">;
 
 export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<SaintCategoryId, "rulers">, SaintDisplayIcon>> = {
-  tewahedo: { angels: art["tewahedo-angels-michael"], biblical: art["tewahedo-theotokos"], monastics: art["tewahedo-archangel-wings"], "fathers-hierarchs": art["tewahedo-selassie-panel"], martyrs: art["tewahedo-george"], "apostles-missionaries": art["tewahedo-selassie-manuscript"], laypeople: art["tewahedo-laypeople"] },
+  tewahedo: { angels: art["tewahedo-angels-michael"], biblical: art["tewahedo-theotokos"], monastics: art["tewahedo-monastic-staff"], "fathers-hierarchs": art["tewahedo-selassie-panel"], martyrs: art["tewahedo-george"], "apostles-missionaries": art["tewahedo-selassie-manuscript"], laypeople: art["tewahedo-laypeople"] },
   coptic: { angels: art["coptic-angel-three-saints"], biblical: art["coptic-family-christ"], monastics: art["coptic-church-bridegroom"], "fathers-hierarchs": art["coptic-john-olympia"], martyrs: art["coptic-photini"], "apostles-missionaries": art["coptic-katherine"], laypeople: art["coptic-martyr-angel"] },
   byzantine: { angels: art["russian-saint-annunciation"], biblical: art["russian-saint-theotokos"], monastics: art["russian-saint-pechersk-monastics"], "fathers-hierarchs": art["russian-saint-mitre-fathers"], martyrs: art["russian-saint-crowned-martyrs"], "apostles-missionaries": art["russian-saint-nicholas-missionaries"], laypeople: art["russian-saint-laypeople-triptych"] },
 };
