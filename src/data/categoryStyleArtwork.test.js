@@ -71,22 +71,22 @@ test("each tradition covers all seven saint and six prayer categories with store
   }
 });
 
-test("Tewahedo Saints top row shows the supplied Trinity panel and the rainbow-winged archangel", () => {
+test("Tewahedo Saints top row shows the supplied Archangel Michael host and Theotokos photographs", () => {
   const angels = categoryArtwork("saints", "tewahedo", "angels");
   const biblical = categoryArtwork("saints", "tewahedo", "biblical");
-  expect(angels.image_url).toContain(SUPPLIED[0]);
-  expect(biblical.image_url).toContain("tewahedo-archangel-wings");
+  expect(angels.image_url).toContain("tewahedo-angels-michael");
+  expect(biblical.image_url).toContain("tewahedo-theotokos");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
   }
 });
 
-test("Tewahedo Saints middle row shows the supplied Theotokos and Saint George photographs", () => {
+test("Tewahedo Saints middle row shows the supplied rainbow-winged archangel and Trinity panel photographs", () => {
   const monastics = categoryArtwork("saints", "tewahedo", "monastics");
   const fathers = categoryArtwork("saints", "tewahedo", "fathers-hierarchs");
-  expect(monastics.image_url).toContain("tewahedo-theotokos");
-  expect(fathers.image_url).toContain("tewahedo-george");
+  expect(monastics.image_url).toContain("tewahedo-archangel-wings");
+  expect(fathers.image_url).toContain("tewahedo-selassie-panel");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -95,10 +95,10 @@ test("Tewahedo Saints middle row shows the supplied Theotokos and Saint George p
   }
 });
 
-test("Tewahedo Saints row below the middle shows the supplied archangel and Trinity manuscript photographs", () => {
+test("Tewahedo Saints row below the middle shows the supplied Saint George and Trinity manuscript photographs", () => {
   const martyrs = categoryArtwork("saints", "tewahedo", "martyrs");
   const missionaries = categoryArtwork("saints", "tewahedo", "apostles-missionaries");
-  expect(martyrs.image_url).toContain("tewahedo-angels-michael");
+  expect(martyrs.image_url).toContain("tewahedo-george");
   expect(missionaries.image_url).toContain("tewahedo-selassie-manuscript");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
