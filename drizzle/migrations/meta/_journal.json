@@ -92,6 +92,13 @@
       "when": 1792559097602,
       "tag": "0012_notification_fixes",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792575813447,
+      "tag": "0013_journal_nested_folder_order",
+      "breakpoints": true
     }
   ]
 }

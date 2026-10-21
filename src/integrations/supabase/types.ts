@@ -873,6 +873,8 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          parent_id: string | null
+          sort_order: number
           updated_at: string
           user_id: string
         }
@@ -880,6 +882,8 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
+          parent_id?: string | null
+          sort_order?: number
           updated_at?: string
           user_id: string
         }
@@ -887,10 +891,20 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          parent_id?: string | null
+          sort_order?: number
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "journal_folders_parent_owner_fk"
+            columns: ["user_id", "parent_id"]
+            isOneToOne: false
+            referencedRelation: "journal_folders"
+            referencedColumns: ["user_id", "id"]
+          },
+        ]
       }
       leaderboard_notifications: {
         Row: {
@@ -1831,6 +1845,10 @@ export type Database = {
           longest_streak: number
           was_incremented: boolean
         }[]
+      }
+      reorder_journal_folders: {
+        Args: { p_ids: string[]; p_parent_id: string }
+        Returns: undefined
       }
       search_user_for_friend_request: {
         Args: { search_term: string }
