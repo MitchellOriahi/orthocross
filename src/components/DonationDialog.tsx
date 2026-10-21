@@ -59,10 +59,11 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     let settled = false;
     const apply = () => {
       const slider = el.querySelector('input[type="range"]');
-      if (!(slider instanceof HTMLInputElement)) { el.style.maxHeight = ""; return; }
+      if (!(slider instanceof HTMLInputElement)) { console.log("PEEKDBG no slider"); el.style.maxHeight = ""; return; }
       const box = el.getBoundingClientRect();
       const thumb = slider.getBoundingClientRect();
       const delta = thumb.bottom - thumb.height / 2 - box.bottom;
+      console.log("PEEKDBG apply delta", delta, "boxH", box.height);
       if (Math.abs(delta) < 1) return;
       el.style.maxHeight = `${Math.min(Math.max(box.height + delta, 240), window.innerHeight - 32)}px`;
     };
