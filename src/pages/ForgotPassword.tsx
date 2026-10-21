@@ -6,17 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import orthodoxCrossBlack from '@/assets/orthodox-cross-black-new.png';
-import orthodoxCrossWhite from '@/assets/orthodox-cross-white-new.png';
-import { useTheme } from 'next-themes';
+import orthodoxCross from '@/assets/orthodox-cross.jpg';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const { toast } = useToast();
-  const { theme } = useTheme();
-  const crossLogo = theme === 'dark' ? orthodoxCrossWhite : orthodoxCrossBlack;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +40,9 @@ const ForgotPassword = () => {
           @orthocross on Instagram
         </div>
         <CardHeader className="text-center pt-8 sm:pt-6">
-          <img src={crossLogo} alt="OrthoCross" className="mx-auto mb-4 block h-16 w-auto object-contain" />
+          <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-foreground p-2 shadow-lg dark:bg-card">
+            <img src={orthodoxCross} alt="OrthoCross" className="h-full w-full object-contain" />
+          </div>
           <CardTitle className="text-2xl">Forgot Password</CardTitle>
           <CardDescription>
             {sent
