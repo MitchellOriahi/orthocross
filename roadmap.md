@@ -1,4 +1,6 @@
 # Prayers category browser
+## Journal folder organization
+- [x] Separate general notes from named folders; retain All Notes, folder counts, in-folder creation and moving notes. Eleven tests pass; signed-in create/move/reload/delete flow verified at 393×681 with no runtime errors; deleting folders preserves their notes; temporary records removed; preview build clean.
 ## Translation accuracy audit
 - [x] Correct ambiguous Orthodox tradition names in French, Spanish, Portuguese and Armenian; signed-in language selection and distinct, fitting tradition choices verified across all 17 languages with no runtime errors.
 - [x] Audit 148,096 dictionary entries for integrity, review meaning and numeric discrepancies, correct confirmed errors and document linguistic-review limits. Fifty JS and four Python tests pass; preview build clean. Full native-speaker certification remains outside this audit.
