@@ -14,6 +14,7 @@ import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
 import { ALL_NOTES, notesInFolder, newNoteFolder } from './journal/folderScope';
 import { MoveNoteMenu } from './journal/MoveNoteMenu';
+import { isJournalViewMode, journalViewKey, resolveJournalView } from './journal/viewPreference';
 
 // Extended types that match the actual database schema
 interface JournalNote {
@@ -57,12 +58,19 @@ export const Journal = () => {
   const [currentTitle, setCurrentTitle] = useState("");
   const [currentContent, setCurrentContent] = useState("");
   const [viewMode, setViewMode] = useState<'list' | 'gallery'>('list');
+  const viewRevisionRef = useRef(0);
+  const viewSaveRef = useRef<Promise<unknown>>(Promise.resolve());
   const draftRef = useRef<{ id: string; userId: string; modified: boolean } | null>(null);
   const [playingMediaId, setPlayingMediaId] = useState<string | null>(null);
 
   // Load view preference
   useEffect(() => {
     if (!user) return;
+    let active = true;
+    const revision = viewRevisionRef.current;
+    let cached: string | null = null;
+    try { cached = localStorage.getItem(journalViewKey(user.id)); } catch { /* Storage may be unavailable. */ }
+    setViewMode(isJournalViewMode(cached) ? cached : 'list');
 
     const loadViewPreference = async () => {
       const { data } = await (supabase as any)
@@ -71,13 +79,13 @@ export const Journal = () => {
         .eq('id', user.id)
         .single();
       
-      if (data?.journal_view_mode) {
-        setViewMode(data.journal_view_mode);
-      }
+      if (!active) return;
+      setViewMode(current => resolveJournalView(data?.journal_view_mode, cached, current, revision !== viewRevisionRef.current));
     };
 
     loadViewPreference();
-  }, [user]);
+    return () => { active = false; };
+  }, [user?.id]);
 
   const discardUntouchedDraft = () => {
     const draft = draftRef.current;
@@ -213,6 +221,27 @@ export const Journal = () => {
     setSelectedNoteId(null);
     setSelectedFolderId(folderId);
     setSearchQuery('');
+    setShowNotesList(true);
+    setShowSidebar(false);
+    setIsNoteExpanded(false);
+  };
+
+  const handleBackToFolders = async () => {
+    if (!await saveCurrentNote()) return;
+    discardUntouchedDraft();
+    setSelectedNoteId(null);
+    setIsNoteExpanded(false);
+    setShowNotesList(true);
+    setShowSidebar(true);
+  };
+
+  const handleJournalHome = async () => {
+    if (!await saveCurrentNote()) return;
+    discardUntouchedDraft();
+    setSelectedNoteId(null);
+    setSelectedFolderId(null);
+    setSearchQuery('');
+    setIsNoteExpanded(false);
     setShowNotesList(true);
     setShowSidebar(false);
   };
@@ -407,13 +436,17 @@ export const Journal = () => {
   };
 
   const handleViewModeChange = async (newMode: 'list' | 'gallery') => {
+    viewRevisionRef.current += 1;
     setViewMode(newMode);
     if (!user) return;
-    
-    await (supabase as any)
-      .from('profiles')
-      .update({ journal_view_mode: newMode })
-      .eq('id', user.id);
+    try { localStorage.setItem(journalViewKey(user.id), newMode); } catch { /* Keep the in-memory preference. */ }
+    const userId = user.id;
+    viewSaveRef.current = viewSaveRef.current.catch(() => undefined).then(async () => {
+      const { error } = await (supabase as any).from('profiles')
+        .update({ journal_view_mode: newMode }).eq('id', userId);
+      if (error) toast({ title: 'Could not save note view', variant: 'destructive' });
+    });
+    await viewSaveRef.current;
   };
 
   const filteredNotes = notesInFolder(notes, selectedFolderId).filter(note => {
@@ -639,15 +672,20 @@ export const Journal = () => {
                   <ChevronLeft className="h-5 w-5" />
                 </Button>
               )}
+              {!isMobile && selectedFolderId && !isNoteExpanded && (
+                <Button variant="ghost" size="icon" onClick={handleBackToFolders} aria-label="Back to folders" title="Back to folders" className="mr-2 shrink-0">
+                  <ChevronLeft className="h-5 w-5" />
+                </Button>
+              )}
               {isMobile && !showSidebar && showNotesList && (
                 selectedFolderId ? (
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => handleFolderSelect(null)}
+                    onClick={handleBackToFolders}
                     className="mr-2"
-                    aria-label="Back to notes"
-                    title="Back to notes"
+                    aria-label="Back to folders"
+                    title="Back to folders"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </Button>
@@ -673,7 +711,7 @@ export const Journal = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={handleClose}
+                onClick={selectedFolderId || selectedNoteId || showSidebar ? handleJournalHome : handleClose}
                 aria-label="Close"
               >
                 <X className="h-5 w-5" />
@@ -690,7 +728,7 @@ export const Journal = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setShowSidebar(false)}
+                        onClick={handleJournalHome}
                         aria-label="Back to notes"
                         title="Back to notes"
                       >

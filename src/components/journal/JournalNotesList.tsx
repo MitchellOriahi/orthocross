@@ -272,6 +272,9 @@ export const JournalNotesList = ({
               size="icon"
               className={cn("h-7 w-7", viewMode === 'list' && "bg-accent")}
               onClick={() => onViewModeChange('list')}
+              aria-label="List view"
+              title="List view"
+              aria-pressed={viewMode === 'list'}
             >
               <List className="h-4 w-4" />
             </Button>
@@ -280,6 +283,9 @@ export const JournalNotesList = ({
               size="icon"
               className={cn("h-7 w-7", viewMode === 'gallery' && "bg-accent")}
               onClick={() => onViewModeChange('gallery')}
+              aria-label="Gallery view"
+              title="Gallery view"
+              aria-pressed={viewMode === 'gallery'}
             >
               <LayoutGrid className="h-4 w-4" />
             </Button>
