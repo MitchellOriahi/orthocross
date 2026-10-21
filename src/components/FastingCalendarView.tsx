@@ -192,9 +192,9 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
     <Card className="shadow-elevated border-border/50">
       <CardHeader>
         <CardTitle className="text-xl flex items-center justify-between gap-2">
-          <span className="min-w-0 break-words">
-            {monthNames[currentMonth]} {currentYear}{" "}
-            <span className="whitespace-nowrap">{traditionIcon} - {selectedTradition}</span>
+          <span className="flex min-w-0 flex-col">
+            <span className="whitespace-nowrap text-sm font-medium text-muted-foreground">{traditionIcon} {selectedTradition}</span>
+            <span className="break-words">{monthNames[currentMonth]} {currentYear}</span>
           </span>
           <div className="flex shrink-0 items-center gap-1">
             <Button variant="ghost" size="icon" aria-label="Previous month" onClick={() => { setSelectedDay(null); onPreviousMonth(); }}>
