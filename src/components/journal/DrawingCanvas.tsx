@@ -5,6 +5,7 @@ import { Eraser, Pencil, Trash2, Palette, MousePointer2, Undo2 } from "lucide-re
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { hasDrawingToSave, shouldAutoSaveDrawing } from "./drawingAutoSave";
+import { splitInkIntoPieces } from "./splitInk";
 
 export interface DrawingCanvasHandle {
   /** The drawing as a PNG data URL, or null when nothing was drawn. */
@@ -257,35 +258,32 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
         ctx.translate(-left, -top);
         obj.render(ctx);
         eraser.render(ctx);
-        // Trim to what is still visible.
+        // Split the remaining ink into disconnected pieces: erasing through
+        // a stroke divides it, and each piece becomes its own object so the
+        // grabber can pick up just one piece.
         const data = ctx.getImageData(0, 0, off.width, off.height).data;
-        let minX = off.width, minY = off.height, maxX = -1, maxY = -1;
-        for (let y = 0; y < off.height; y++) {
-          for (let x = 0; x < off.width; x++) {
-            if (data[(y * off.width + x) * 4 + 3] > 8) {
-              if (x < minX) minX = x; if (x > maxX) maxX = x;
-              if (y < minY) minY = y; if (y > maxY) maxY = y;
-            }
-          }
-        }
+        const pieces = splitInkIntoPieces(data, off.width, off.height);
         const index = fabricCanvas.getObjects().indexOf(obj);
         fabricCanvas.remove(obj);
-        if (maxX < 0) return;
-        const tw = maxX - minX + 1;
-        const th = maxY - minY + 1;
-        const trimmed = document.createElement('canvas');
-        trimmed.width = tw;
-        trimmed.height = th;
-        trimmed.getContext('2d')?.drawImage(off, minX, minY, tw, th, 0, 0, tw, th);
-        const img = new FabricImage(trimmed, {
-          left: left + minX / m,
-          top: top + minY / m,
-          originX: 'left',
-          originY: 'top',
-          scaleX: 1 / m,
-          scaleY: 1 / m,
+        pieces.forEach((piece) => {
+          const tw = piece.maxX - piece.minX + 1;
+          const th = piece.maxY - piece.minY + 1;
+          const trimmed = document.createElement('canvas');
+          trimmed.width = tw;
+          trimmed.height = th;
+          const pctx = trimmed.getContext('2d');
+          if (!pctx) return;
+          pctx.putImageData(new ImageData(piece.pixels, tw, th), 0, 0);
+          const img = new FabricImage(trimmed, {
+            left: left + piece.minX / m,
+            top: top + piece.minY / m,
+            originX: 'left',
+            originY: 'top',
+            scaleX: 1 / m,
+            scaleY: 1 / m,
+          });
+          fabricCanvas.insertAt(Math.max(0, index), img);
         });
-        fabricCanvas.insertAt(Math.max(0, index), img);
       });
       dirtyRef.current = true;
       fabricCanvas.requestRenderAll();
