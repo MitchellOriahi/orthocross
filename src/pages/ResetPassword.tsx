@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import orthodoxCross from '@/assets/orthodox-cross.jpg';
+import orthodoxCrossBlack from '@/assets/orthodox-cross-black-new.png';
+import orthodoxCrossWhite from '@/assets/orthodox-cross-white-new.png';
+import { useTheme } from 'next-themes';
 
 const passwordSchema = (password: string) => password.length >= 8;
 
@@ -15,6 +17,8 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { theme } = useTheme();
+  const crossLogo = theme === 'dark' ? orthodoxCrossWhite : orthodoxCrossBlack;
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,9 +73,7 @@ const ResetPassword = () => {
           @orthocross on Instagram
         </div>
         <CardHeader className="text-center pt-8 sm:pt-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-background rounded-2xl shadow-sacred mb-4 p-2 mx-auto">
-            <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
-          </div>
+          <img src={crossLogo} alt="OrthoCross" className="mx-auto mb-4 block h-16 w-auto object-contain" />
           <CardTitle className="text-2xl">Choose a New Password</CardTitle>
           <CardDescription>Pick a new password of at least 8 characters.</CardDescription>
         </CardHeader>
