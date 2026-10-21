@@ -9,7 +9,7 @@ import { JournalEditor } from "./journal/JournalEditor";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Menu, Play, Pause, Volume2, X } from "lucide-react";
+import { ChevronLeft, Play, Pause, Volume2, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
 import { ALL_NOTES, notesInFolder, newNoteFolder, selectionAfterExit } from './journal/folderScope';
@@ -52,7 +52,7 @@ export const Journal = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isNoteExpanded, setIsNoteExpanded] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
   const [showNotesList, setShowNotesList] = useState(true);
   
   const [currentTitle, setCurrentTitle] = useState("");
@@ -253,16 +253,14 @@ export const Journal = () => {
     setShowSidebar(false);
   };
 
-  // Rightward swipe goes back one level: open note -> notes list, folder view ->
-  // folders list, folders list -> notes. Null on the Journal home (the X exits).
+  // Rightward swipe goes back one level, exiting Journal from its folder browser.
   const getSwipeBack = (): (() => void) | null => {
     if (!isMobile) return null;
     if (selectedNoteId && !showNotesList) {
       return () => { void (async () => { if (await saveCurrentNote()) { discardUntouchedDraft(); clearExitedSelection('notes'); setShowNotesList(true); } })(); };
     }
-    if (showSidebar) return () => { void handleJournalHome(); };
-    if (selectedFolderId) return () => { void handleBackToFolders(); };
-    return null;
+    if (showSidebar) return () => { void handleClose(); };
+    return () => { void handleBackToFolders(); };
   };
 
   const handleNoteMove = async (noteId: string, folderId: string | null) => {
@@ -482,7 +480,7 @@ export const Journal = () => {
     setSearchQuery('');
     setIsFullScreen(false);
     setIsNoteExpanded(false);
-    setShowSidebar(false);
+    setShowSidebar(true);
     setShowNotesList(true);
   };
 
@@ -691,13 +689,12 @@ export const Journal = () => {
                   <ChevronLeft className="h-5 w-5" />
                 </Button>
               )}
-              {!isMobile && selectedFolderId && !isNoteExpanded && (
+              {!isMobile && !showSidebar && selectedFolderId && !isNoteExpanded && (
                 <Button variant="ghost" size="icon" onClick={handleBackToFolders} aria-label="Back to folders" title="Back to folders" className="mr-2 shrink-0">
                   <ChevronLeft className="h-5 w-5" />
                 </Button>
               )}
               {isMobile && !showSidebar && showNotesList && (
-                selectedFolderId ? (
                   <Button
                     variant="ghost"
                     size="icon"
@@ -708,27 +705,15 @@ export const Journal = () => {
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </Button>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setShowSidebar(true)}
-                    className="mr-2"
-                    aria-label="Open folders"
-                    title="Folders"
-                  >
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                )
               )}
               <h3 className="flex-1 min-w-0 truncate font-semibold" translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
-                {selectedFolderId === ALL_NOTES ? 'All Notes' : folders.find(folder => folder.id === selectedFolderId)?.name ?? 'Notes'}
+                {showSidebar ? 'Folders' : selectedFolderId === ALL_NOTES ? 'All Notes' : folders.find(folder => folder.id === selectedFolderId)?.name ?? 'Notes'}
               </h3>
-              {(!isMobile || (!selectedFolderId && !selectedNoteId)) && (
+              {showSidebar && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={selectedFolderId || selectedNoteId || showSidebar ? handleJournalHome : handleClose}
+                  onClick={handleClose}
                   aria-label="Close"
                 >
                   <X className="h-5 w-5" />
@@ -752,27 +737,11 @@ export const Journal = () => {
                 }
               }}
             >
-              {/* Desktop: Always show sidebar */}
-              {/* Mobile: Show sidebar only when toggled */}
-              {(!isMobile || showSidebar) && (
-                <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background flex flex-col' : 'w-48 shrink-0 min-w-0'} ${!isMobile && isNoteExpanded ? 'hidden' : ''}`}>
-                  {isMobile && (
-                    <div className="border-b border-border pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 px-2 min-h-16 flex items-center bg-card">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleJournalHome}
-                        aria-label="Back to notes"
-                        title="Back to notes"
-                      >
-                        <ChevronLeft className="h-5 w-5" />
-                      </Button>
-                      <h3 className="text-lg font-semibold ml-2 flex-1">Folders</h3>
-                    </div>
-                  )}
+              {showSidebar && (
+                <div className="flex-1 min-w-0 flex flex-col">
                   <JournalSidebar
                     folders={folders.map(folder => ({ ...folder, noteCount: notesInFolder(notes, folder.id).length }))}
-                    totalNoteCount={notes.length}
+                    totalNoteCount={notesInFolder(notes, ALL_NOTES).length}
                     selectedFolderId={selectedFolderId}
                     onFolderSelect={handleFolderSelect}
                     onFolderCreate={handleFolderCreate}
@@ -784,7 +753,7 @@ export const Journal = () => {
               
               {/* Desktop: Always show notes list */}
               {/* Mobile: Show notes list only when no note is selected or when navigating back */}
-              {(!isMobile || showNotesList) && (
+              {!showSidebar && (!isMobile || showNotesList) && (
                 <div className={`${isMobile ? 'flex-1 min-w-0' : 'w-64 shrink-0 min-w-0'} ${!isMobile && isNoteExpanded ? 'hidden' : ''}`}>
                   <JournalNotesList
                     key={selectedFolderId ?? 'general'}
@@ -811,7 +780,7 @@ export const Journal = () => {
               
               {/* Desktop: Always show editor area */}
               {/* Mobile: Show editor only when a note is selected and notes list is hidden */}
-              {(!isMobile || (selectedNoteId && !showNotesList)) && (
+              {!showSidebar && (!isMobile || (selectedNoteId && !showNotesList)) && (
                 <div className="flex-1 min-w-0">
                   {selectedNoteId ? (
                     <JournalEditor
