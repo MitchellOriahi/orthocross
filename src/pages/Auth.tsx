@@ -12,7 +12,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import { z } from 'zod';
-import { Eye, EyeOff, Megaphone, MegaphoneOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+import { MusicSoundIcon } from '@/components/MusicSoundIcon';
 import { useMusic } from '@/contexts/MusicContext';
 
 const emailSchema = z.string().email('Invalid email address');
@@ -224,7 +225,7 @@ const Auth = () => {
           onClick={toggleMusic}
           className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
         >
-          {isPlaying ? <Megaphone className="h-4 w-4" /> : <MegaphoneOff className="h-4 w-4" />}
+          <MusicSoundIcon playing={isPlaying} className="h-4 w-4" />
         </button>
         <CardHeader className="text-center pt-8 sm:pt-6">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-background rounded-2xl shadow-sacred mb-4 p-2 mx-auto">
