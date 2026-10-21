@@ -906,6 +906,10 @@ html:not([lang="en"]) [role="dialog"] .localized-text-button { flex-shrink: 0; }
 .language-list-fade > button { flex-shrink: 0; }
 html:not([lang="en"]) .language-list-fade > button { height: 3.5rem; min-height: 3.5rem; }
 
+/* Mark Complete fills its row and keeps a generous height in every language. */
+.reading-complete-button { min-height: 3rem; padding-block: 0.625rem; }
+html:not([lang="en"]) .reading-complete-button { min-height: 3rem; padding-top: 0.625rem; padding-bottom: 0.625rem; }
+
 .drawing-swatch-black { background-color: hsl(var(--drawing-black)); }
 .drawing-swatch-red { background-color: hsl(var(--drawing-red)); }
 .drawing-swatch-blue { background-color: hsl(var(--drawing-blue)); }
