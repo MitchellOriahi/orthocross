@@ -720,7 +720,7 @@ export const Journal = () => {
                     <ChevronLeft className="h-5 w-5" />
                   </Button>
               )}
-              <h3 className={`flex-1 min-w-0 truncate font-semibold${showSidebar ? ' text-2xl' : ''}`} translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
+              <h3 className={`flex-1 min-w-0 truncate font-semibold${showSidebar ? ' text-2xl ps-3' : ''}`} translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
                 {showSidebar ? 'Folders' : selectedFolderId === ALL_NOTES ? 'All Notes' : folders.find(folder => folder.id === selectedFolderId)?.name ?? 'Notes'}
               </h3>
               {showSidebar && <div className="flex items-center gap-2 shrink-0">
