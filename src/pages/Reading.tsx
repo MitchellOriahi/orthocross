@@ -441,10 +441,22 @@ const Reading = () => {
     });
   };
 
+  // Page flips always land at the top of the new page.
+  const scrollToPageTop = () => {
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+      document.scrollingElement?.scrollTo({ top: 0, behavior: "auto" });
+      document.querySelectorAll<HTMLElement>("[data-radix-scroll-area-viewport]").forEach((el) => {
+        el.scrollTop = 0;
+      });
+    });
+  };
+
   const handleNextVerse = () => {
     if (currentVerseIndex < verses.length - 1) {
       setCurrentVerseIndex(currentVerseIndex + 1);
       setSelectedVerse(null);
+      scrollToPageTop();
     } else if (chapter < totalChapters) {
       handleNextChapter();
     }
@@ -454,6 +466,7 @@ const Reading = () => {
     if (currentVerseIndex > 0) {
       setCurrentVerseIndex(currentVerseIndex - 1);
       setSelectedVerse(null);
+      scrollToPageTop();
     } else if (chapter > 1) {
       handlePrevChapter();
     }
@@ -462,12 +475,14 @@ const Reading = () => {
   const handleNextChapter = () => {
     if (chapter < totalChapters) {
       handleChapterChange(chapter + 1);
+      scrollToPageTop();
     }
   };
 
   const handlePrevChapter = () => {
     if (chapter > 1) {
       handleChapterChange(chapter - 1);
+      scrollToPageTop();
     }
   };
 
