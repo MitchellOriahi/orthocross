@@ -1,4 +1,7 @@
 # Prayers category browser
+## Translation accuracy audit
+- [ ] Correct ambiguous Orthodox tradition names across all languages and verify the real language-switching flow.
+- [ ] Audit dictionary integrity and high-confidence meaning errors; document remaining human-review limits without claiming flawless translations.
 - [x] Replace the bottom two Tewahedo prayer images with the supplied transparent cross photographs; reduce the middle pair to balance their long stems, without cropping or squeezing.
 ## Donation controls and currency estimates
 - [x] Translate donation controls, periods and impact messages in all 16 non-English languages; add optional dated local-currency estimates while preserving USD checkout. Signed-in checks passed across all 17 language choices; live EUR estimates, yearly changes, saved selection and unavailable-rate fallback verified. Eighteen tests and content coverage pass; preview build clean. No payment was made.
