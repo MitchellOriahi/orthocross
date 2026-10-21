@@ -311,9 +311,6 @@ export const JournalNotesList = ({
                   </div>
                 </button>
               )}
-              <div className={cn("text-center py-8 text-sm text-muted-foreground", viewMode === 'gallery' && "col-span-2")}>
-                Click above to create your first note
-              </div>
             </>
           ) : (
             <>
