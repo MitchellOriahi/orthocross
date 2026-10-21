@@ -17,7 +17,7 @@ import coptic_simon from "@/assets/category-styles/coptic-simon.jpg.asset.json";
 import coptic_christ from "@/assets/category-styles/coptic-christ.jpg.asset.json";
 import tewahedo_angels from "@/assets/category-styles/tewahedo-angels.jpg.asset.json";
 import tewahedo_selassie_manuscript_sq from "@/assets/category-styles/tewahedo-selassie-manuscript-sq.jpg.asset.json";
-import tewahedo_theotokos_sq2 from "@/assets/category-styles/tewahedo-theotokos-sq3.jpg.asset.json";
+import tewahedo_theotokos_sq2 from "@/assets/category-styles/tewahedo-theotokos-sq4.jpg.asset.json";
 import tewahedo_george_sq from "@/assets/category-styles/tewahedo-george-sq2.jpg.asset.json";
 import tewahedo_annunciation_sq from "@/assets/category-styles/tewahedo-annunciation-sq.jpg.asset.json";
 import tewahedo_monastics_sq from "@/assets/category-styles/tewahedo-monastics-sq.jpg.asset.json";
