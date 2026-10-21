@@ -23,8 +23,13 @@ describe('Journal folder separation', () => {
     expect(newNoteFolder(null)).toBe(null);
     expect(newNoteFolder(ALL_NOTES)).toBe(null);
   });
-  it('All Notes includes general and filed notes', () => {
-    expect(notesInFolder(notes, ALL_NOTES).map(n => n.id)).toEqual(['general', 'prayer', 'study']);
+  it('All Notes contains only unfiled notes', () => {
+    expect(notesInFolder(notes, ALL_NOTES).map(n => n.id)).toEqual(['general']);
+  });
+  it('moving from All Notes removes the note and includes it in the chosen folder', () => {
+    const moved = notes.map(n => n.id === 'general' ? { ...n, folder_id: 'prayers' } : n);
+    expect(notesInFolder(moved, ALL_NOTES)).toEqual([]);
+    expect(notesInFolder(moved, 'prayers').map(n => n.id)).toEqual(['general', 'prayer']);
   });
   it('moving a note removes it from general notes and adds it to its destination', () => {
     const moved = notes.map(n => n.id === 'general' ? { ...n, folder_id: 'prayers' } : n);

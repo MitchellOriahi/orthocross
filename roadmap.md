@@ -1,5 +1,6 @@
 # Prayers category browser
 ## Journal folder organization
+- [x] Open Journal on Folders without a hamburger; All Notes contains only unfiled notes. Signed-in phone checks confirm moving stays on All Notes with confirmation, destination readback, reopening on Folders, and saved untouched-note deletion. Temporary records removed; 45 tests pass, no runtime errors, preview clean.
 - [x] Fix drawing toolbar clipping with a full-screen drawing sheet and additive safe-area spacing. Signed-in 393×763 check confirms full viewport bounds and all seven controls below the top edge; red/blue strokes and save/reload verified; temporary data removed; 19 tests pass, no runtime errors, build clean.
 - [x] Keep drawing controls within the page and switch to the pen when selecting colors. Signed-in red/blue strokes verified after erase/select; all controls fit 393×763; saved drawing persisted after reload; temporary note and attachment removed; 19 regression tests pass, no runtime errors, preview build clean.
 - [x] Remove redundant Notes folder and clear folder/note selection on exit. Nineteen tests pass; signed-in folder Back, note Back and X verified with no retained highlights or runtime errors; temporary records removed; preview build clean.
