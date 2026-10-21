@@ -44,6 +44,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   });
   const [anonymous, setAnonymous] = useState(false);
   const [oneTime, setOneTime] = useState(false);
+  // Angel shown the instant a tier row is tapped, before the amount settles.
+  const [pickedTierKey, setPickedTierKey] = useState<string | null>(null);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -66,6 +68,10 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     supabase.from("profiles").select("donor_anonymous").eq("id", user.id).maybeSingle()
       .then(({ data }) => { setAnonymous(!!data?.donor_anonymous); });
   }, [open, user]);
+
+  // A fresh opening starts with no manually chosen angel.
+  useEffect(() => { setPickedTierKey(null); }, [open]);
+
 
   // Preselect the amount chosen from the tier guide (e.g. $1 for Angel) in the custom field
   useEffect(() => {
@@ -109,12 +115,14 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     setSelectedAmount(next.amount);
     setCustomAmount(next.customAmount);
     setUseCustom(next.useCustom);
+    setPickedTierKey(null);
   };
 
   const chooseInterval = (next: DonationInterval) => {
     setInterval_(next);
     setUseCustom(false); setCustomAmount("");
     setSelectedAmount(next === "year" ? DEFAULT_YEARLY_AMOUNT : DEFAULT_GIFT_AMOUNT);
+    setPickedTierKey(null);
   };
   const mode = oneTime ? "once" : interval;
   const minAmount = isNative ? 1 : minimumGift(mode);
