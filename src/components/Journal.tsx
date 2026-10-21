@@ -230,6 +230,8 @@ export const Journal = () => {
     if (!await saveCurrentNote()) return;
     discardUntouchedDraft();
     setSelectedNoteId(null);
+    setSelectedFolderId(null);
+    setSearchQuery('');
     setIsNoteExpanded(false);
     setShowNotesList(true);
     setShowSidebar(true);
@@ -461,6 +463,9 @@ export const Journal = () => {
   const handleClose = async () => {
     if (!await saveCurrentNote()) return;
     discardUntouchedDraft();
+    setSelectedNoteId(null);
+    setSelectedFolderId(null);
+    setSearchQuery('');
     setIsFullScreen(false);
     setIsNoteExpanded(false);
     setShowSidebar(false);
@@ -665,7 +670,7 @@ export const Journal = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={async () => { if (!await saveCurrentNote()) return; discardUntouchedDraft(); setShowNotesList(true); }}
+                  onClick={async () => { if (!await saveCurrentNote()) return; discardUntouchedDraft(); setSelectedNoteId(null); setShowNotesList(true); }}
                   className="mr-2"
                   aria-label="Back to notes"
                 >
@@ -739,7 +744,6 @@ export const Journal = () => {
                   )}
                   <JournalSidebar
                     folders={folders.map(folder => ({ ...folder, noteCount: notesInFolder(notes, folder.id).length }))}
-                    generalNoteCount={notesInFolder(notes, null).length}
                     totalNoteCount={notes.length}
                     selectedFolderId={selectedFolderId}
                     onFolderSelect={handleFolderSelect}
