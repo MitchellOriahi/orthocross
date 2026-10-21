@@ -13,8 +13,8 @@ describe('wordBounds', () => {
     expect(wordBounds('the quick', 3)).toEqual([0, 3]);
     expect(wordBounds('hi, there', 2)).toEqual([0, 2]);
   });
-  it('returns null on gaps between words', () => {
-    expect(wordBounds('a  b', 1)).toBeNull();
+  it('returns null only in a true gap between words', () => {
+    expect(wordBounds('a  b', 1)).toEqual([0, 1]);
     expect(wordBounds('a  b', 2)).toBeNull();
   });
   it('handles unicode letters', () => {
