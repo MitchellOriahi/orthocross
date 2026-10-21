@@ -39,4 +39,4 @@
 - public/i18n drives DOM translation; protect scripture, fit whole words, scroll dialogs. content_keys.py extracts rendered History and JSON Saints to prevent omissions.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.
 - DonorTierName uses angelic dictionary keys; billing ranks stay unchanged.
-- Scheduled reminders authenticate with a private scheduler_secrets row (no client grants) read by both the database scheduler and the function; leaderboard surpass pushes are sent server-side by that run so the passed user is notified even with the app closed.
+- Reminder runs auth via a grant-less scheduler_secrets row and send leaderboard pushes server-side, so closed apps still get them.
