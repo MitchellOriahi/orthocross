@@ -9,9 +9,13 @@ describe('wordBounds', () => {
     expect(wordBounds("it's well-known", 2)).toEqual([0, 4]);
     expect(wordBounds("it's well-known", 9)).toEqual([5, 15]);
   });
-  it('returns null on spaces and punctuation', () => {
-    expect(wordBounds('the quick', 3)).toBeNull();
-    expect(wordBounds('hi, there', 2)).toBeNull();
+  it('a tap just after a word still highlights that word', () => {
+    expect(wordBounds('the quick', 3)).toEqual([0, 3]);
+    expect(wordBounds('hi, there', 2)).toEqual([0, 2]);
+  });
+  it('returns null on gaps between words', () => {
+    expect(wordBounds('a  b', 1)).toBeNull();
+    expect(wordBounds('a  b', 2)).toBeNull();
   });
   it('handles unicode letters', () => {
     expect(wordBounds('καὶ λόγος', 2)).toEqual([0, 3]);
