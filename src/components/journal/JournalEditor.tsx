@@ -565,7 +565,7 @@ export const JournalEditor = ({
           setEditingDrawingElement(null);
         }
       }}>
-        <SheetContent side="bottom" className="inset-0 h-[100dvh] w-full max-w-none border-0 p-0 overflow-hidden">
+        <SheetContent side="bottom" className="inset-0 h-[100dvh] w-full max-w-none border-0 p-0 overflow-hidden" closeButtonClassName="grid h-11 w-11 place-items-center rounded-xl border border-border bg-secondary opacity-100 [&_svg]:h-6 [&_svg]:w-6">
           <SheetTitle className="sr-only">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</SheetTitle>
           <div className="h-full min-h-0 min-w-0 px-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-[calc(env(safe-area-inset-bottom)+1rem)]">
             <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />

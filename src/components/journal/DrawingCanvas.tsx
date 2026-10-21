@@ -139,7 +139,7 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
   return (
     <div ref={containerRef} className="flex flex-col gap-3 h-full min-h-0 min-w-0">
       <div className="flex flex-col gap-2 shrink-0 min-w-0">
-        <div className="grid grid-cols-3 gap-2 pr-10">
+        <div className="grid grid-cols-3 gap-2 pr-14">
         <Button
           variant={tool === 'draw' ? "default" : "outline"}
           className="h-11 min-w-0 px-2"
