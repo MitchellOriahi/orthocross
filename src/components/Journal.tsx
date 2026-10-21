@@ -14,6 +14,7 @@ import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
 import { ALL_NOTES, notesInFolder, newNoteFolder, selectionAfterExit } from './journal/folderScope';
 import { isJournalViewMode, journalViewKey, resolveJournalView } from './journal/viewPreference';
+import { shouldSwipeBack } from './journal/swipeBack';
 
 // Extended types that match the actual database schema
 interface JournalNote {
@@ -60,6 +61,7 @@ export const Journal = () => {
   const viewRevisionRef = useRef(0);
   const viewSaveRef = useRef<Promise<unknown>>(Promise.resolve());
   const draftRef = useRef<{ id: string; userId: string; modified: boolean } | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const [playingMediaId, setPlayingMediaId] = useState<string | null>(null);
 
   // Load view preference
