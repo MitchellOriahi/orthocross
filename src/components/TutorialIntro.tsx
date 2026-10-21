@@ -98,7 +98,7 @@ export const TutorialIntro = () => {
 
           {/* Content */}
           <div className="space-y-3 flex flex-col items-center">
-            <h2 className="text-2xl font-bold">{slide.title}</h2>
+            <h2 className="text-2xl font-bold"><span>{slide.title}</span>{currentSlide === slides.length - 1 ? "?" : null}</h2>
             <p className="text-muted-foreground max-w-[16rem] mx-auto min-h-[4.5rem]">
               {slide.description}
             </p>
@@ -131,7 +131,7 @@ export const TutorialIntro = () => {
             )}
             <Button
               onClick={handleNext}
-              className="min-w-32"
+              className={`min-w-32 ${currentSlide === slides.length - 1 ? "tutorial-start-glow" : ""}`}
             >
               {currentSlide === slides.length - 1 ? "Get Started" : "Next"}
             </Button>

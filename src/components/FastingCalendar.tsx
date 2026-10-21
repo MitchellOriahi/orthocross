@@ -1,4 +1,9 @@
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { orientationForBranch, useOrthodoxOrientation } from "@/lib/orthodoxOrientation";
+import { calendarTraditionForOrientation, readCalendarTradition, saveCalendarTradition, type CalendarTradition } from "@/lib/calendarTradition";
 import { Calendar, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,11 +23,41 @@ interface FastingEvent {
 }
 
 export const FastingCalendar = () => {
+  const { user } = useAuth();
+  const orientation = useOrthodoxOrientation();
+  const { data: identity, isSuccess: identityLoaded } = useQuery({
+    queryKey: ["profileIdentityTags", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data, error } = await supabase.from("profile_identity_tags")
+        .select("branch, patron_saint_id, country_code, age").eq("user_id", user.id).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 30000,
+  });
+  const defaultOrientation = user ? (identityLoaded ? orientationForBranch(identity?.branch) : "undecided") : orientation;
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [showCalendarView, setShowCalendarView] = useState(false);
-  const [selectedTradition, setSelectedTradition] = useState<"Eastern Orthodox" | "Oriental Orthodox">("Eastern Orthodox");
+  const [selectedTradition, setSelectedTradition] = useState<CalendarTradition>(() =>
+    calendarTraditionForOrientation(defaultOrientation, readCalendarTradition(user?.id)));
   const [calendarSystem, setCalendarSystem] = useState<CalendarSystem>("Gregorian");
+
+  // Only a change in family/account applies a default; month/language changes never overwrite a manual pick.
+  useLayoutEffect(() => {
+    if (user && !identityLoaded) return;
+    const next = calendarTraditionForOrientation(defaultOrientation, readCalendarTradition(user?.id));
+    setSelectedTradition(next);
+    saveCalendarTradition(user?.id, next);
+  }, [user?.id, identityLoaded, defaultOrientation]);
+
+  const chooseCalendarTradition = (value: string) => {
+    if (value !== "Eastern Orthodox" && value !== "Oriental Orthodox") return;
+    setSelectedTradition(value);
+    saveCalendarTradition(user?.id, value);
+  };
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -114,7 +149,7 @@ export const FastingCalendar = () => {
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,15rem),1fr))] items-start gap-4 p-6">
           <RadioGroup
             value={selectedTradition}
-            onValueChange={(value) => setSelectedTradition(value as "Eastern Orthodox" | "Oriental Orthodox")}
+            onValueChange={chooseCalendarTradition}
             className="flex min-w-0 flex-col gap-3 items-start"
           >
             <div className="flex items-center space-x-2">
