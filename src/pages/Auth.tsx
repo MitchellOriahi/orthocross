@@ -39,6 +39,7 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
+  const { isPlaying, toggleMusic } = useMusic();
   
   const navigate = useNavigate();
 
