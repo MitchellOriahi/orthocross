@@ -872,6 +872,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_default: boolean
           name: string
           parent_id: string | null
           sort_order: number
@@ -881,6 +882,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_default?: boolean
           name: string
           parent_id?: string | null
           sort_order?: number
@@ -890,6 +892,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_default?: boolean
           name?: string
           parent_id?: string | null
           sort_order?: number
