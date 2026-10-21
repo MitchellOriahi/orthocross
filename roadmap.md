@@ -1,4 +1,6 @@
 # Prayers category browser
+## Journal folder organization
+- [ ] Separate general notes from named folders; retain an All Notes view, folder counts, in-folder creation and moving notes; verify saved organization.
 ## Translation accuracy audit
 - [x] Correct ambiguous Orthodox tradition names in French, Spanish, Portuguese and Armenian; signed-in language selection and distinct, fitting tradition choices verified across all 17 languages with no runtime errors.
 - [x] Audit 148,096 dictionary entries for integrity, review meaning and numeric discrepancies, correct confirmed errors and document linguistic-review limits. Fifty JS and four Python tests pass; preview build clean. Full native-speaker certification remains outside this audit.
