@@ -369,7 +369,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               </span>
             </Button>
           </div>
-          {anonymous && <p className="text-center text-xs text-muted-foreground">Hides your name on the Donators list.</p>}
+          {anonymous && <p className="text-center text-xs text-muted-foreground">Hides your name and photo on the Donators list; your tier still shows.</p>}
 
           {isNative && productsAvailable === false && (
             <p className="text-xs text-destructive text-center">In-app purchases are not available right now. Please try again later.</p>
