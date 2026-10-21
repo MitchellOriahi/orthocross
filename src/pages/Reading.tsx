@@ -635,13 +635,24 @@ const Reading = () => {
 
   // Refs so the window-level swipe listener always calls the latest
   // navigation handlers without re-registering on every render.
-  const swipeNavRef = useRef<{ next: () => void; prev: () => void }>({ next: () => {}, prev: () => {} });
+  const swipeNavRef = useRef<{ next: () => void; prev: () => void; canNext: boolean; canPrev: boolean }>({ next: () => {}, prev: () => {}, canNext: false, canPrev: false });
+  // Live horizontal drag distance; drives the incoming chapter/verse number badge.
+  const [swipeDx, setSwipeDx] = useState(0);
   const swipeHandledAtRef = useRef(0);
   // Keep the swipe listener's handlers current: page mode flips verses,
   // scroll mode flips chapters.
   swipeNavRef.current = readingMode === "page"
-    ? { next: handleNextVerse, prev: handlePrevVerse }
-    : { next: handleNextChapter, prev: handlePrevChapter };
+    ? { next: handleNextVerse, prev: handlePrevVerse,
+        canNext: !(currentVerseIndex === verses.length - 1 && chapter === totalChapters),
+        canPrev: !(currentVerseIndex === 0 && chapter === 1) }
+    : { next: handleNextChapter, prev: handlePrevChapter,
+        canNext: chapter < totalChapters, canPrev: chapter > 1 };
+  const nextSwipeLabel = readingMode === "page"
+    ? (currentVerseIndex < verses.length - 1 ? `${verses[currentVerseIndex + 1]?.number ?? ""}` : `${chapter + 1}`)
+    : `${chapter + 1}`;
+  const prevSwipeLabel = readingMode === "page"
+    ? (currentVerseIndex > 0 ? `${verses[currentVerseIndex - 1]?.number ?? ""}` : `${chapter - 1}`)
+    : `${chapter - 1}`;
 
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!contentRef.current) return;
@@ -713,6 +724,16 @@ const Reading = () => {
       if (maxX !== null && x > maxX) maxX = x;
       const downExcursion = extremeY - startY; // > 0 when the finger moved down
       const upExcursion = startY - y; // > 0 when the finger moved up
+      if (startX !== null) {
+        const dx = x - startX;
+        const dy = Math.abs(y - startY);
+        const nav = swipeNavRef.current;
+        if (Math.abs(dx) > 12 && Math.abs(dx) > dy * 1.5 && (dx < 0 ? nav.canNext : nav.canPrev)) {
+          setSwipeDx(dx);
+          return;
+        }
+        setSwipeDx(0);
+      }
       if (downExcursion >= 4) {
         setShowBottomNav(true);
       } else if (upExcursion >= 6) {
@@ -727,8 +748,8 @@ const Reading = () => {
         // during this gesture, ending the touch must not bring it back.
         if (extremeY - startY >= 4 && !hidDuringGesture) setShowBottomNav(true);
       }
-      // Horizontal swipe page flipping is paused for now; flip SWIPE_PAGE_FLIP to restore it.
-      const SWIPE_PAGE_FLIP = false;
+      setSwipeDx(0);
+      const SWIPE_PAGE_FLIP = true;
       if (SWIPE_PAGE_FLIP && !ignoring && startX !== null && minX !== null && maxX !== null && startY !== null && extremeY !== null) {
         const leftTravel = startX - minX;
         const rightTravel = maxX - startX;
@@ -737,9 +758,9 @@ const Reading = () => {
         if (horizontal >= 60 && horizontal > vertical * 1.5) {
           swipeHandledAtRef.current = Date.now();
           if (leftTravel >= rightTravel) {
-            swipeNavRef.current.next();
+            if (swipeNavRef.current.canNext) swipeNavRef.current.next();
           } else {
-            swipeNavRef.current.prev();
+            if (swipeNavRef.current.canPrev) swipeNavRef.current.prev();
           }
         }
       }
@@ -1183,80 +1204,22 @@ const Reading = () => {
 
               {/* Navigation */}
               <div className="flex items-center justify-between pt-6 border-t gap-2 flex-wrap sm:flex-nowrap">
-                {readingMode === "page" ? (
-                  <>
-                    <Button
-                      variant="outline"
-                      onClick={handlePrevVerse}
-                      disabled={currentVerseIndex === 0 && chapter === 1}
-                      className="flex-shrink-0"
-                      size="sm"
-                    >
-                      <ChevronLeft className="w-4 h-4 sm:mr-2" />
-                      <span className="hidden sm:inline">Previous</span>
-                    </Button>
-
-                    {verses.length > 0 && (
-                      <div
-                        className="h-1.5 flex-1 min-w-[3rem] rounded-full bg-muted overflow-hidden"
-                        aria-label="Chapter progress"
-                      >
-                        <div
-                          className="h-full rounded-full bg-primary transition-all duration-300"
-                          style={{ width: `${((currentVerseIndex + 1) / verses.length) * 100}%` }}
-                        />
-                      </div>
-                    )}
-
-                    {verses.length > 0 && currentVerseIndex === verses.length - 1 && (
-                      <Button variant="sacred" onClick={markChapterComplete} size="sm" className="text-xs sm:text-sm">
-                        <BookMarked className="w-4 h-4 sm:mr-2" />
-                        <span className="hidden xs:inline">Mark </span>Complete
-                      </Button>
-                    )}
-
-                    <Button
-                      variant="outline"
-                      onClick={handleNextVerse}
-                      disabled={currentVerseIndex === verses.length - 1 && chapter === totalChapters}
-                      className="flex-shrink-0"
-                      size="sm"
-                    >
-                      <span className="hidden sm:inline">Next</span>
-                      <ChevronRight className="w-4 h-4 sm:ml-2" />
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="outline"
-                      onClick={handlePrevChapter}
-                      disabled={chapter === 1}
-                      className="flex-shrink-0"
-                      size="sm"
-                    >
-                      <ChevronLeft className="w-4 h-4 sm:mr-2" />
-                      <span className="hidden sm:inline">Previous</span>
-                    </Button>
-
-                    {verses.length > 0 && (
-                      <Button variant="sacred" onClick={markChapterComplete} size="sm" className="text-xs sm:text-sm">
-                        <BookMarked className="w-4 h-4 sm:mr-2" />
-                        <span className="hidden xs:inline">Mark </span>Complete
-                      </Button>
-                    )}
-
-                    <Button
-                      variant="outline"
-                      onClick={handleNextChapter}
-                      disabled={chapter === totalChapters}
-                      className="flex-shrink-0"
-                      size="sm"
-                    >
-                      <span className="hidden sm:inline">Next</span>
-                      <ChevronRight className="w-4 h-4 sm:ml-2" />
-                    </Button>
-                  </>
+                {readingMode === "page" && verses.length > 0 && (
+                  <div
+                    className="h-1.5 flex-1 min-w-[3rem] rounded-full bg-muted overflow-hidden"
+                    aria-label="Chapter progress"
+                  >
+                    <div
+                      className="h-full rounded-full bg-primary transition-all duration-300"
+                      style={{ width: `${((currentVerseIndex + 1) / verses.length) * 100}%` }}
+                    />
+                  </div>
+                )}
+                {verses.length > 0 && (readingMode === "scroll" || currentVerseIndex === verses.length - 1) && (
+                  <Button variant="sacred" onClick={markChapterComplete} size="sm" className="text-xs sm:text-sm mx-auto">
+                    <BookMarked className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden xs:inline">Mark </span>Complete
+                  </Button>
                 )}
               </div>
             </div>
@@ -1305,6 +1268,47 @@ const Reading = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Incoming chapter/verse number slides in from the side being swiped toward. */}
+      {swipeDx !== 0 && (
+        <div
+          aria-hidden
+          className={`fixed top-1/2 z-40 -translate-y-1/2 rounded-lg bg-muted px-3 py-2 text-xl font-semibold text-foreground shadow-md pointer-events-none ${swipeDx < 0 ? "right-3" : "left-3"}`}
+          style={{
+            opacity: Math.min(1, Math.abs(swipeDx) / 60),
+            transform: `translateY(-50%) translateX(${swipeDx < 0 ? Math.max(0, 40 - Math.abs(swipeDx) / 1.5) : -Math.max(0, 40 - Math.abs(swipeDx) / 1.5)}px)`,
+          }}
+        >
+          {swipeDx < 0 ? nextSwipeLabel : prevSwipeLabel}
+        </div>
+      )}
+
+      {/* Floating page arrows ride with the bottom bar. */}
+      <div
+        className={`fixed left-0 right-0 z-40 flex justify-between px-4 pointer-events-none transition-all duration-150 ${showBottomNav ? "opacity-100" : "opacity-0 translate-y-6"}`}
+        style={{ bottom: showBottomNav ? "calc(var(--bottom-nav-height, 72px) + 0.75rem)" : "calc(env(safe-area-inset-bottom) + 0.75rem)" }}
+      >
+        <Button
+          variant="secondary"
+          size="icon"
+          aria-label="Previous"
+          onClick={readingMode === "page" ? handlePrevVerse : handlePrevChapter}
+          disabled={!swipeNavRef.current.canPrev}
+          className={`h-12 w-12 rounded-full shadow-lg ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canPrev ? "" : "invisible"}`}
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </Button>
+        <Button
+          variant="secondary"
+          size="icon"
+          aria-label="Next"
+          onClick={readingMode === "page" ? handleNextVerse : handleNextChapter}
+          disabled={!swipeNavRef.current.canNext}
+          className={`h-12 w-12 rounded-full shadow-lg ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canNext ? "" : "invisible"}`}
+        >
+          <ChevronRight className="h-6 w-6" />
+        </Button>
+      </div>
 
       {/* Transform applies to the fixed nav itself; a transformed wrapper would become its containing block and keep it on screen. */}
       <div
