@@ -720,12 +720,12 @@ export const Journal = () => {
                     <ChevronLeft className="h-5 w-5" />
                   </Button>
               )}
-              <h3 className="flex-1 min-w-0 truncate font-semibold" translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
+              <h3 className={`flex-1 min-w-0 truncate font-semibold${showSidebar ? ' text-2xl' : ''}`} translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
                 {showSidebar ? 'Folders' : selectedFolderId === ALL_NOTES ? 'All Notes' : folders.find(folder => folder.id === selectedFolderId)?.name ?? 'Notes'}
               </h3>
-              {showSidebar && <div className="flex items-center gap-1 shrink-0">
-                <Button variant="ghost" className="h-9 px-2 text-sm" onClick={() => setEditingFolders(value => !value)}>{editingFolders ? 'Done' : 'Edit'}</Button>
-                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => handleFolderCreate()} aria-label="New folder" title="New folder"><FolderPlus className="h-4 w-4" /></Button>
+              {showSidebar && <div className="flex items-center gap-2 shrink-0">
+                <Button variant="ghost" className="h-11 min-w-[4.5rem] px-4 text-base font-medium rounded-xl border border-border/60 bg-muted/70 hover:bg-muted" onClick={() => setEditingFolders(value => !value)}>{editingFolders ? 'Done' : 'Edit'}</Button>
+                <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl border border-border/60 bg-muted/70 hover:bg-muted" onClick={() => handleFolderCreate()} aria-label="New folder" title="New folder"><FolderPlus className="h-5 w-5" /></Button>
               </div>}
               {showSidebar && (
                 <Button
@@ -733,8 +733,9 @@ export const Journal = () => {
                   size="icon"
                   onClick={handleClose}
                   aria-label="Close"
+                  className="h-11 w-11 shrink-0 ms-2"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-6 w-6" />
                 </Button>
               )}
             </div>

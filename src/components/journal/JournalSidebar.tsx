@@ -45,7 +45,7 @@ export const JournalSidebar = ({ folders, selectedFolderId, totalNoteCount, edit
           </div> : <DropdownMenu>
             <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label={`Folder options: ${folder.name}`}><MoreVertical className="h-3 w-3" /></Button></DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => { setExpanded(previous => new Set(previous).add(folder.id)); onFolderCreate(folder.id); }}><FolderPlus className="h-3 w-3 mr-2" />New folder</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => { setExpanded(previous => new Set(previous).add(folder.id)); onFolderCreate(folder.id); }}><FolderPlus className="h-3 w-3 mr-2" />Subfolder</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onFolderRename(folder.id)}><Edit2 className="h-3 w-3 mr-2" />Rename</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onFolderDelete(folder.id)} className="text-destructive"><Trash2 className="h-3 w-3 mr-2" />Delete</DropdownMenuItem>
             </DropdownMenuContent>
