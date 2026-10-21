@@ -29,18 +29,14 @@ test("Original leaves all existing category art untouched", () => {
   for (const category of PRAYER_CATEGORIES) expect(categoryArtwork("prayers", "original", category.id)).toBeNull();
 });
 
-test("Tewahedo prayers show all six supplied panels in the arranged order without replacing Saints art", () => {
-  // Tiles sit in a two-column grid: foundational/daily on top, christ-saints/communion in
-  // the middle, occasions/psalms at the bottom. The middle-left tile was swapped with the
-  // bottom-right one, then with the middle-right one; the bottom-left was then swapped
-  // with the top-left one.
-  const placed = { foundational: "occasions", daily: "daily", "christ-saints": "communion", communion: "psalms", occasions: "foundational", psalms: "christ-saints" };
+test("Tewahedo prayers use supplied crosses in upload order above the preserved panels", () => {
+  const placed = { foundational: "gold-cross-cut.png", daily: "copper-cross-cut.png", "christ-saints": "communion-sq.jpg", communion: "psalms-sq.jpg", occasions: "foundational-sq.jpg", psalms: "christ-saints-sq.jpg" };
   const categories = ["foundational", "daily", "christ-saints", "communion", "occasions", "psalms"];
   const urls = categories.map(category => {
     const artwork = categoryArtwork("prayers", "tewahedo", category);
-    expect(artwork.image_url).toContain(`tewahedo-prayer-${placed[category]}-sq.jpg`);
+    expect(artwork.image_url).toContain(`tewahedo-prayer-${placed[category]}`);
     expect(artwork.image_license).toBe("Supplied by the app owner");
-    expect(artwork.image_source).toBe("https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cmthYmV0Zjcw");
+    expect(artwork.image_source).toBe(["foundational", "daily"].includes(category) ? "" : "https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cmthYmV0Zjcw");
     expect(artwork.image_license_url).toBe("");
     return artwork.image_url;
   });
@@ -379,8 +375,13 @@ test("prayer tiles credit the artists of the supplied artwork", () => {
     expect(coptic.image_source).toBe(MAKARY_PAGE);
     // The Tewahedo panels are Abba Yahudah's PROTECTION, oil on canvas, linked to its post.
     const tewahedo = categoryArtwork("prayers", "tewahedo", category.id);
-    expect(tewahedo.image_author).toContain(YAHUDAH);
-    expect(tewahedo.image_source).toBe(YAHUDAH_POST);
+    if (["foundational", "daily"].includes(category.id)) {
+      expect(tewahedo.image_author).toContain("processional cross");
+      expect(tewahedo.image_source).toBe("");
+    } else {
+      expect(tewahedo.image_author).toContain(YAHUDAH);
+      expect(tewahedo.image_source).toBe(YAHUDAH_POST);
+    }
   }
   // Russian saint tiles keep their own credits, and the Tewahedo saint tiles
   // credit the Taamra Maryam page; the prayer artists' links stay out of them.

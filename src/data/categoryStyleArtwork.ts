@@ -61,6 +61,8 @@ import tewahedo_prayer_christ_saints from "@/assets/category-styles/tewahedo-pra
 import tewahedo_prayer_communion from "@/assets/category-styles/tewahedo-prayer-communion-sq.jpg.asset.json";
 import tewahedo_prayer_occasions from "@/assets/category-styles/tewahedo-prayer-occasions-sq.jpg.asset.json";
 import tewahedo_prayer_psalms from "@/assets/category-styles/tewahedo-prayer-psalms-sq.jpg.asset.json";
+import tewahedo_prayer_gold_cross from "@/assets/category-styles/tewahedo-prayer-gold-cross-cut.png.asset.json";
+import tewahedo_prayer_copper_cross from "@/assets/category-styles/tewahedo-prayer-copper-cross-cut.png.asset.json";
 import russian_prayer_foundational from "@/assets/category-styles/russian-prayer-foundational.png.asset.json";
 import russian_prayer_daily from "@/assets/category-styles/russian-prayer-daily.png.asset.json";
 import russian_prayer_christ_saints from "@/assets/category-styles/russian-prayer-christ-saints.png.asset.json";
@@ -91,6 +93,8 @@ const YAHUDAH_PROTECTION = "https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cm
 const TAAMRA_MARYAM = "https://www.rct.uk/collection/1005083/taamra-maryam-taamera-maareyaame-the-miracles-of-the-virgin-mary";
 
 const art: Record<string, CategoryStyleArtwork> = {
+  "tewahedo-prayer-gold-cross": { image_url: tewahedo_prayer_gold_cross.url, image_shape: "silhouette", image_box_aspect: "1 / 1", image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Ethiopian Orthodox gold-colored processional cross; photograph supplied by the app owner", image_modification: "Black exterior background and openings inside the pierced cross made transparent; complete cross fitted at natural proportions." },
+  "tewahedo-prayer-copper-cross": { image_url: tewahedo_prayer_copper_cross.url, image_shape: "silhouette", image_box_aspect: "1 / 1", image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Ethiopian Orthodox copper-colored processional cross; photograph supplied by the app owner", image_modification: "Black exterior background and openings inside the pierced cross made transparent; complete cross fitted at natural proportions." },
   "russian-prayer-foundational": { image_url: russian_prayer_foundational.url, image_shape: "silhouette", image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Andrei Rublev, Holy Gates — curved historical icon panel depicting an angel", image_modification: "Exterior white background made transparent; complete curved panel and original artwork retained without repainting." },
   "russian-prayer-daily": { image_url: russian_prayer_daily.url, image_shape: "silhouette", image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Andrei Rublev, Holy Gates — curved historical icon panel depicting seated figures and architecture", image_modification: "Exterior white background made transparent; complete curved panel and original artwork retained without repainting." },
   "russian-prayer-christ-saints": { image_url: russian_prayer_christ_saints.url, image_shape: "silhouette", image_source: "", image_license: "Supplied by the app owner", image_license_url: "", image_author: "Andrei Rublev, Holy Gates — historical icon panel of an elderly saint with a young scribe writing beside him", image_modification: "Photograph kept whole; the aged panel fills the frame without repainting." },
@@ -189,7 +193,7 @@ export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<Sai
 };
 
 export const PRAYER_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<PrayerCategoryId, CategoryStyleArtwork>> = {
-  tewahedo: { foundational: art["tewahedo-prayer-occasions"], daily: art["tewahedo-prayer-daily"], "christ-saints": art["tewahedo-prayer-communion"], communion: art["tewahedo-prayer-psalms"], occasions: art["tewahedo-prayer-foundational"], psalms: art["tewahedo-prayer-christ-saints"] },
+  tewahedo: { foundational: art["tewahedo-prayer-gold-cross"], daily: art["tewahedo-prayer-copper-cross"], "christ-saints": art["tewahedo-prayer-communion"], communion: art["tewahedo-prayer-psalms"], occasions: art["tewahedo-prayer-foundational"], psalms: art["tewahedo-prayer-christ-saints"] },
   coptic: { foundational: art["coptic-prayer-foundational"], daily: art["coptic-prayer-daily"], "christ-saints": art["coptic-prayer-christ-saints"], psalms: art["coptic-prayer-psalms"], communion: art["coptic-prayer-communion"], occasions: art["coptic-prayer-occasions"] },
   byzantine: { foundational: art["russian-prayer-foundational"], daily: art["russian-prayer-daily"], "christ-saints": art["russian-prayer-christ-saints"], psalms: art["russian-prayer-psalms"], communion: art["russian-prayer-communion"], occasions: art["russian-prayer-occasions"] },
 };
