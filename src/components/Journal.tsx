@@ -13,7 +13,6 @@ import { ChevronLeft, Menu, Play, Pause, Volume2, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
 import { ALL_NOTES, notesInFolder, newNoteFolder, selectionAfterExit } from './journal/folderScope';
-import { MoveNoteMenu } from './journal/MoveNoteMenu';
 import { isJournalViewMode, journalViewKey, resolveJournalView } from './journal/viewPreference';
 
 // Extended types that match the actual database schema
@@ -713,9 +712,6 @@ export const Journal = () => {
               <h3 className="flex-1 min-w-0 truncate font-semibold" translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
                 {selectedFolderId === ALL_NOTES ? 'All Notes' : folders.find(folder => folder.id === selectedFolderId)?.name ?? 'Notes'}
               </h3>
-              {selectedNoteId && (!isMobile || !showNotesList) && (
-                <MoveNoteMenu folders={folders} folderId={notes.find(note => note.id === selectedNoteId)?.folder_id ?? null} onMove={folderId => handleNoteMove(selectedNoteId, folderId)} />
-              )}
               <Button
                 variant="ghost"
                 size="icon"
