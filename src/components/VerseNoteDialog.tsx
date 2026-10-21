@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { VoiceRecorder } from "./journal/VoiceRecorder";
-import { DrawingCanvas } from "./journal/DrawingCanvas";
+import { DrawingCanvas, type DrawingCanvasHandle } from "./journal/DrawingCanvas";
 
 interface VerseNoteDialogProps {
   open: boolean;
@@ -40,13 +40,28 @@ export const VerseNoteDialog = ({
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [drawingDataUrl, setDrawingDataUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const drawingCanvasRef = useRef<DrawingCanvasHandle>(null);
+  // A drawing flushed as the dialog tears down must not leak into the next note.
+  const discardDrawing = useRef(false);
+
+  useEffect(() => {
+    if (open) discardDrawing.current = false;
+  }, [open]);
+
+  const captureDrawing = (dataUrl: string) => {
+    if (discardDrawing.current) return;
+    setDrawingDataUrl(dataUrl);
+  };
+
 
   const reset = () => {
+    discardDrawing.current = true;
     setNoteText("");
     setAudioBlob(null);
     setDrawingDataUrl(null);
     setTab("text");
   };
+
 
   const handleClose = (next: boolean) => {
     if (!next) reset();
@@ -91,7 +106,11 @@ export const VerseNoteDialog = ({
       toast.error("Please sign in to save notes");
       return;
     }
-    const hasAny = noteText.trim() || audioBlob || drawingDataUrl;
+    // Read the drawing straight off the canvas: it is still live when the
+    // visitor saves without leaving the Draw tab.
+    const drawing = drawingCanvasRef.current?.capture() ?? drawingDataUrl;
+    const hasAny = noteText.trim() || audioBlob || drawing;
+
     if (!hasAny) {
       toast.error("Add a note, recording, or drawing first");
       return;
@@ -126,8 +145,9 @@ export const VerseNoteDialog = ({
         extra += `<blockquote class="border-l-4 border-destructive pl-3 my-3 text-base">${escapeHtml(noteText).replace(/\n/g, "<br/>")}</blockquote>`;
       }
 
-      if (drawingDataUrl) {
-        const res = await fetch(drawingDataUrl);
+      if (drawing) {
+        const res = await fetch(drawing);
+
         const blob = await res.blob();
         const url = await uploadBlob(blob, note.id, "png", "drawing");
         if (url) {
@@ -194,7 +214,7 @@ export const VerseNoteDialog = ({
 
           <TabsContent value="drawing" className="mt-4">
             <div className="h-[450px]">
-              <DrawingCanvas onSave={(dataUrl) => { setDrawingDataUrl(dataUrl); toast.success("Drawing captured"); }} />
+              <DrawingCanvas ref={drawingCanvasRef} onSave={captureDrawing} autoSaveOnUnmount />
             </div>
             {drawingDataUrl && (
               <p className="text-xs text-muted-foreground mt-2">Drawing ready to save.</p>

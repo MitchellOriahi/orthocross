@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Highlighter, Pencil, Image as ImageIcon, Mic, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { DrawingCanvas } from "./DrawingCanvas";
+import { DrawingCanvas, type DrawingCanvasHandle } from "./DrawingCanvas";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -64,6 +64,8 @@ export const JournalEditor = ({
   const [pinnedMediaUrl, setPinnedMediaUrl] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const isUpdatingContent = useRef(false);
+  const drawingCanvasRef = useRef<DrawingCanvasHandle>(null);
+
 
   // Save cursor position
   const saveCursorPosition = () => {
@@ -559,16 +561,19 @@ export const JournalEditor = ({
 
       {/* Full-screen Drawing Interface */}
       <Sheet open={showDrawing} onOpenChange={(open) => {
-        setShowDrawing(open);
         if (!open) {
+          // Exiting inserts the drawing — there is no save button to press.
+          drawingCanvasRef.current?.save();
           setEditingDrawingUrl(null);
           setEditingDrawingElement(null);
         }
+        setShowDrawing(open);
       }}>
+
         <SheetContent side="bottom" className="inset-0 h-[100dvh] w-full max-w-none border-0 p-0 overflow-hidden" closeButtonClassName="grid h-11 w-11 place-items-center rounded-xl border border-border bg-secondary opacity-100 [&_svg]:h-6 [&_svg]:w-6">
           <SheetTitle className="sr-only">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</SheetTitle>
           <div className="h-full min-h-0 min-w-0 px-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-[calc(env(safe-area-inset-bottom)+1rem)]">
-            <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
+            <DrawingCanvas ref={drawingCanvasRef} onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
           </div>
         </SheetContent>
       </Sheet>

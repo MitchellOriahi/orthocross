@@ -1,14 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
 import { Canvas as FabricCanvas, PencilBrush, FabricImage } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Eraser, Pencil, Trash2, Palette, MousePointer2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { hasDrawingToSave, shouldAutoSaveDrawing } from "./drawingAutoSave";
+
+export interface DrawingCanvasHandle {
+  /** The drawing as a PNG data URL, or null when nothing was drawn. */
+  capture: () => string | null;
+  /** Hands the drawing to onSave. No-op when nothing was drawn. */
+  save: () => void;
+}
 
 interface DrawingCanvasProps {
+
   onSave?: (dataUrl: string) => void;
   initialImageUrl?: string | null;
+  /** Flushes the drawing when the canvas is torn down (no save button). */
+  autoSaveOnUnmount?: boolean;
+  forwardedRef?: Ref<DrawingCanvasHandle>;
 }
+
 
 const BRUSH_COLORS = [
   { name: "Black", value: "#000000" },
@@ -21,7 +34,7 @@ const BRUSH_COLORS = [
   { name: "Pink", value: "#ec4899" },
 ];
 
-export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) => {
+const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forwardedRef }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasWrapRef = useRef<HTMLDivElement>(null);
@@ -30,6 +43,12 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
   const [selectedColor, setSelectedColor] = useState(BRUSH_COLORS[0].value);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const isMobile = useIsMobile();
+  // The drawing is flushed when the panel is exited, so remember whether
+  // anything was actually changed: an untouched or cleared panel saves nothing.
+  const dirtyRef = useRef(false);
+  const onSaveRef = useRef(onSave);
+  onSaveRef.current = onSave;
+
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -62,6 +81,16 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
       brush.width = 2;
       canvas.freeDrawingBrush = brush;
 
+      // A freshly built canvas starts clean; only real edits count as work.
+      dirtyRef.current = false;
+      const markDirty = () => {
+        dirtyRef.current = true;
+      };
+      canvas.on("path:created", markDirty);
+      canvas.on("object:modified", markDirty);
+      canvas.on("object:removed", markDirty);
+
+
       // Load initial image if provided
       if (initialImageUrl) {
         FabricImage.fromURL(initialImageUrl, { crossOrigin: 'anonymous' })
@@ -86,9 +115,26 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
     return () => {
       cancelAnimationFrame(raf1);
       cancelAnimationFrame(raf2);
+      // Panels without a save button hand their drawing over as they close.
+      const leaving = canvas;
+      if (
+        autoSaveOnUnmount &&
+        leaving &&
+        shouldAutoSaveDrawing({
+          canvas: leaving,
+          onSave: onSaveRef.current,
+          dirty: dirtyRef.current,
+        })
+      ) {
+        dirtyRef.current = false;
+        onSaveRef.current?.(
+          leaving.toDataURL({ format: "png", quality: 1, multiplier: 1 }),
+        );
+      }
       canvas?.dispose();
     };
-  }, [isMobile, initialImageUrl]);
+  }, [isMobile, initialImageUrl, autoSaveOnUnmount]);
+
 
   useEffect(() => {
     if (!fabricCanvas) return;
@@ -124,17 +170,30 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
     fabricCanvas.clear();
     fabricCanvas.backgroundColor = "#ffffff";
     fabricCanvas.renderAll();
+    dirtyRef.current = true;
   };
 
-  const handleSave = () => {
-    if (!fabricCanvas || !onSave) return;
-    const dataUrl = fabricCanvas.toDataURL({
-      format: "png",
-      quality: 1,
-      multiplier: 1,
-    });
-    onSave(dataUrl);
-  };
+  // There is no save button: whoever hosts the panel pulls the drawing out as
+  // the visitor exits, or the canvas hands it over when it is torn down.
+  useImperativeHandle(
+    forwardedRef,
+    () => ({
+      capture: () => {
+        const canvas = fabricCanvas;
+        if (!hasDrawingToSave({ canvas, dirty: dirtyRef.current })) return null;
+        dirtyRef.current = false;
+        return canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 });
+      },
+      save: () => {
+        const canvas = fabricCanvas;
+        if (!shouldAutoSaveDrawing({ canvas, onSave, dirty: dirtyRef.current })) return;
+        dirtyRef.current = false;
+        onSave?.(canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 }));
+      },
+    }),
+    [fabricCanvas, onSave],
+  );
+
 
   return (
     <div ref={containerRef} className="flex flex-col gap-3 h-full min-h-0 min-w-0">
@@ -168,7 +227,7 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
           <span className="sr-only">Select</span>
         </Button>
         </div>
-        <div className="grid grid-cols-[auto_auto_minmax(0,1fr)] items-center gap-2 min-w-0">
+        <div className="grid grid-cols-[auto_auto] items-center gap-2 min-w-0">
         <Popover open={showColorPicker} onOpenChange={setShowColorPicker}>
           <PopoverTrigger asChild>
             <Button variant="outline" className="h-11 shrink-0 px-3" aria-label="Pen colors" title="Pen colors">
@@ -202,11 +261,6 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
         <Button variant="outline" size="icon" className="h-11 w-11 shrink-0" onClick={handleClear} aria-label="Clear" title="Clear">
           <Trash2 className="h-5 w-5" />
         </Button>
-        {onSave && (
-          <Button variant="default" className="h-11 min-w-0 flex-1 whitespace-normal" onClick={handleSave}>
-            Save Drawing
-          </Button>
-        )}
         </div>
       </div>
       <div ref={canvasWrapRef} className="border border-border rounded-lg overflow-hidden flex-1 min-h-0 min-w-0 flex items-center justify-center bg-muted/20">
@@ -215,3 +269,9 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
     </div>
   );
 };
+
+export const DrawingCanvas = forwardRef<
+  DrawingCanvasHandle,
+  Omit<DrawingCanvasProps, "forwardedRef">
+>((props, ref) => <DrawingCanvasView {...props} forwardedRef={ref} />);
+
