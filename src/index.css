@@ -480,6 +480,21 @@ All colors MUST be HSL.
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
+  /* Keep the buttons fully inside the media frame, clear of rounded corners */
+  top: 0.75rem !important;
+  right: 0.75rem !important;
+}
+
+/* Media frames wrap their content exactly — no line-box strut pushing the
+   image down and the buttons above its top edge (covers notes saved before
+   the template fix, where the img is still inline). */
+.media-container {
+  line-height: 0;
+}
+
+.media-container img,
+.media-container video {
+  display: block;
 }
 
 .media-action-btns button {
