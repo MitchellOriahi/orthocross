@@ -140,3 +140,5 @@
 
  - [ ] Finish AI translation of all app wording (about 13% done; paused: out of AI credits). Resume with scripts/i18n/tr.py then merge.py.
 - [ ] Bibles for Amharic, Tigrinya, Georgian, Armenian, Bulgarian (no free online source found yet).
+## Folders panel top bar
+- [x] Match the Folders panel top bar to the Journal's bar height and keep one exit control. Both bars measured 65px on a phone-sized screen; the panel closes with its back arrow only; preview build clean.
