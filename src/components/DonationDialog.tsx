@@ -9,7 +9,8 @@ import { Capacitor } from "@capacitor/core";
 import { ChevronDown, Eye, EyeOff, HandCoins, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
-import { DONOR_TIERS, TIER_ICONS, GIFT_CROSS_ICON } from "@/config/donorTiers";
+import { DONOR_TIERS } from "@/config/donorTiers";
+import { TierPortrait } from "./TierPortrait";
 import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle, giftImpact, minimumGift } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
@@ -281,7 +282,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
           <div className="relative flex flex-col items-center gap-3">
             <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
-              <img src={giftTier ? TIER_ICONS[giftTier.key] : GIFT_CROSS_ICON} alt={giftTier ? giftTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
+              <TierPortrait tierKey={giftTier?.key ?? null} alt={giftTier ? giftTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
             </div>
             <p className="text-4xl font-bold text-primary text-center" data-no-translate>{money(Number(shownAmount))}{!isNative && !oneTime && tr(interval === "year" ? "/year" : "/month")}</p>
             {!isNative && !oneTime && interval === "year" && effectiveAmount >= 12 && (
