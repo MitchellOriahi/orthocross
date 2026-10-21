@@ -12,7 +12,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import { z } from 'zod';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Megaphone, MegaphoneOff } from 'lucide-react';
+import { useMusic } from '@/contexts/MusicContext';
 
 const emailSchema = z.string().email('Invalid email address');
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
