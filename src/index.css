@@ -735,11 +735,11 @@ All colors MUST be HSL.
 }
 
 
-/* Read-aloud word glow: a steady blue in both themes. */
+/* Read-aloud word glow: warm orange on light paper, steady blue in the dark. */
 @layer base {
   :root {
-    --tts-glow: 217 91% 60%;
-    --tts-glow-bright: 214 100% 52%;
+    --tts-glow: var(--tradition-oriental);
+    --tts-glow-bright: 22 95% 41%;
   }
   .dark {
     --tts-glow: 217 91% 60%;
