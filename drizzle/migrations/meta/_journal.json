@@ -99,6 +99,13 @@
       "when": 1792575813447,
       "tag": "0013_journal_nested_folder_order",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792580439987,
+      "tag": "0014_journal_folders_default_notes",
+      "breakpoints": true
     }
   ]
 }

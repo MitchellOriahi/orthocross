@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { ALL_NOTES, notesInFolder, newNoteFolder, selectionAfterExit } from './folderScope';
+import { ALL_NOTES, DEFAULT_NOTES_FOLDER_NAME, defaultNotesFolder, foldersExcludingDefault, isDefaultNotesFolder, needsDefaultNotesFolder, notesInFolder, newNoteFolder, selectionAfterExit } from './folderScope';
 
 const notes = [{ id: 'general', folder_id: null }, { id: 'prayer', folder_id: 'prayers' }, { id: 'study', folder_id: 'study' }];
 describe('Journal folder separation', () => {
@@ -35,5 +35,26 @@ describe('Journal folder separation', () => {
     const moved = notes.map(n => n.id === 'general' ? { ...n, folder_id: 'prayers' } : n);
     expect(notesInFolder(moved, null)).toEqual([]);
     expect(notesInFolder(moved, 'prayers').map(n => n.id)).toEqual(['general', 'prayer']);
+  });
+});
+
+describe('Default Notes folder', () => {
+  it('is seeded until the account has one', () => {
+    expect(needsDefaultNotesFolder([])).toBe(true);
+    expect(needsDefaultNotesFolder([{ id: 'a', is_default: false }, { id: 'b', is_default: null }])).toBe(true);
+    expect(needsDefaultNotesFolder([{ id: 'a', is_default: true }])).toBe(false);
+  });
+  it('is the flagged folder and never a plain one', () => {
+    const folders = [{ id: 'plain', is_default: false }, { id: 'primary', is_default: true }];
+    expect(defaultNotesFolder(folders)?.id).toBe('primary');
+    expect(isDefaultNotesFolder({})).toBe(false);
+    expect(isDefaultNotesFolder({ is_default: true })).toBe(true);
+  });
+  it('is kept out of the folder tree so it only appears under All Notes', () => {
+    const folders = [{ id: 'primary', is_default: true }, { id: 'plain', is_default: false }];
+    expect(foldersExcludingDefault(folders).map(f => f.id)).toEqual(['plain']);
+  });
+  it('is named Notes so the language dictionary translates the label', () => {
+    expect(DEFAULT_NOTES_FOLDER_NAME).toBe('Notes');
   });
 });
