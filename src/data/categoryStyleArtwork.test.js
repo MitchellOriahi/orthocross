@@ -29,14 +29,14 @@ test("Original leaves all existing category art untouched", () => {
   for (const category of PRAYER_CATEGORIES) expect(categoryArtwork("prayers", "original", category.id)).toBeNull();
 });
 
-test("Tewahedo prayers use supplied crosses in upload order above the preserved panels", () => {
-  const placed = { foundational: "gold-cross-cut.png", daily: "copper-cross-cut.png", "christ-saints": "silver-cross-cut.png", communion: "brass-cross-cut.png", occasions: "foundational-sq.jpg", psalms: "christ-saints-sq.jpg" };
+test("Tewahedo prayers use all six supplied crosses in upload order", () => {
+  const placed = { foundational: "gold-cross-cut.png", daily: "copper-cross-cut.png", "christ-saints": "silver-cross-cut.png", communion: "brass-cross-cut.png", occasions: "lattice-cross-cut.png", psalms: "loop-cross-cut.png" };
   const categories = ["foundational", "daily", "christ-saints", "communion", "occasions", "psalms"];
   const urls = categories.map(category => {
     const artwork = categoryArtwork("prayers", "tewahedo", category);
     expect(artwork.image_url).toContain(`tewahedo-prayer-${placed[category]}`);
     expect(artwork.image_license).toBe("Supplied by the app owner");
-    expect(artwork.image_source).toBe(["foundational", "daily", "christ-saints", "communion"].includes(category) ? "" : "https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cmthYmV0Zjcw");
+    expect(artwork.image_source).toBe("");
     expect(artwork.image_license_url).toBe("");
     return artwork.image_url;
   });
@@ -361,9 +361,7 @@ test("Coptic prayers left column shows the supplied blessing-hands and jar panel
 test("prayer tiles credit the artists of the supplied artwork", () => {
   const RUBLEV = "Andrei Rublev, Holy Gates";
   const MAKARY = "George Makary";
-  const YAHUDAH = "Abba Yahudah's PROTECTION, Oil on Canvas";
   const MAKARY_PAGE = "https://www.copticicon.com/";
-  const YAHUDAH_POST = "https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cmthYmV0Zjcw";
   for (const category of PRAYER_CATEGORIES) {
     // The Russian panels are Rublev's Holy Gates; no online page was supplied for them.
     const russian = categoryArtwork("prayers", "byzantine", category.id);
@@ -373,15 +371,10 @@ test("prayer tiles credit the artists of the supplied artwork", () => {
     const coptic = categoryArtwork("prayers", "coptic", category.id);
     expect(coptic.image_author).toContain(MAKARY);
     expect(coptic.image_source).toBe(MAKARY_PAGE);
-    // The Tewahedo panels are Abba Yahudah's PROTECTION, oil on canvas, linked to its post.
+    // The Tewahedo crosses are owner-supplied photographs without a source link.
     const tewahedo = categoryArtwork("prayers", "tewahedo", category.id);
-    if (["foundational", "daily", "christ-saints", "communion"].includes(category.id)) {
-      expect(tewahedo.image_author).toContain("cross");
-      expect(tewahedo.image_source).toBe("");
-    } else {
-      expect(tewahedo.image_author).toContain(YAHUDAH);
-      expect(tewahedo.image_source).toBe(YAHUDAH_POST);
-    }
+    expect(tewahedo.image_author).toContain("cross");
+    expect(tewahedo.image_source).toBe("");
   }
   // Russian saint tiles keep their own credits, and the Tewahedo saint tiles
   // credit the Taamra Maryam page; the prayer artists' links stay out of them.
