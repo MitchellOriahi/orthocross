@@ -1,9 +1,10 @@
 import { FolderInput, Folder, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { folderPath } from './folderTree';
 
 interface MoveNoteMenuProps {
-  folders: { id: string; name: string }[];
+  folders: { id: string; name: string; parent_id?: string | null }[];
   folderId: string | null;
   onMove: (folderId: string | null) => void;
 }
@@ -20,7 +21,7 @@ export function MoveNoteMenu({ folders, folderId, onMove }: MoveNoteMenuProps) {
         {[{ id: null, name: 'Notes' }, ...folders].map(folder => (
           <DropdownMenuItem key={folder.id ?? 'general'} disabled={folder.id === folderId} onClick={() => onMove(folder.id)}>
             <Folder className="h-4 w-4 mr-2 shrink-0" />
-            <span className="flex-1" translate={folder.id ? 'no' : undefined}>{folder.name}</span>
+            <span className="flex-1" translate={folder.id ? 'no' : undefined}>{folder.id ? folderPath(folders, folder.id) : folder.name}</span>
             {folder.id === folderId && <Check className="h-4 w-4 ml-2 shrink-0" />}
           </DropdownMenuItem>
         ))}
