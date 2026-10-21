@@ -6,6 +6,7 @@ import { Highlighter, Pencil, Image as ImageIcon, Mic, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DrawingCanvas, type DrawingCanvasHandle } from "./DrawingCanvas";
+import { wordBounds, highlightTapAction } from "./highlightWord";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -55,6 +56,7 @@ export const JournalEditor = ({
   const contentDivRef = useRef<HTMLDivElement>(null);
   const [showHighlighter, setShowHighlighter] = useState(false);
   const [selectedColor, setSelectedColor] = useState(HIGHLIGHT_COLORS[0]);
+  const [highlightArmed, setHighlightArmed] = useState(false);
   const [showDrawing, setShowDrawing] = useState(false);
   const [showAttachments, setShowAttachments] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
@@ -91,6 +93,8 @@ export const JournalEditor = ({
       // Sanitize content when loading to prevent XSS
       contentDivRef.current.innerHTML = DOMPurify.sanitize(content, SANITIZE_CONFIG);
     }
+    setHighlightArmed(false);
+    setShowHighlighter(false);
   }, [noteId]);
 
   const handleContentInput = (e: React.FormEvent<HTMLDivElement>) => {
@@ -103,28 +107,104 @@ export const JournalEditor = ({
     }, 0);
   };
 
+  const commitContent = () => {
+    const root = contentDivRef.current;
+    if (!root) return;
+    isUpdatingContent.current = true;
+    onContentChange(DOMPurify.sanitize(root.innerHTML, SANITIZE_CONFIG));
+    setTimeout(() => {
+      isUpdatingContent.current = false;
+    }, 0);
+  };
+
   const handleHighlight = () => {
     if (!contentDivRef.current) return;
-    
+
+    // Tapping the marker again stops tap-to-highlight mode.
+    if (highlightArmed) {
+      setHighlightArmed(false);
+      setShowHighlighter(false);
+      return;
+    }
+
     const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) {
-      setShowHighlighter(!showHighlighter);
-      return;
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      if (!range.collapsed && contentDivRef.current.contains(range.commonAncestorContainer)) {
+        // A selected passage is highlighted directly with the chosen color.
+        const mark = document.createElement('mark');
+        mark.className = selectedColor.class;
+        try {
+          range.surroundContents(mark);
+          commitContent();
+          selection.removeAllRanges();
+          return;
+        } catch {
+          // Selection crosses element boundaries; fall through to the palette.
+        }
+      }
     }
 
-    const range = selection.getRangeAt(0);
-    if (range.collapsed) {
-      setShowHighlighter(!showHighlighter);
-      return;
-    }
+    setShowHighlighter(!showHighlighter);
+  };
 
-    const mark = document.createElement('mark');
-    mark.className = selectedColor.class;
-    range.surroundContents(mark);
-    
-    onContentChange(contentDivRef.current.innerHTML);
+  const pickHighlightColor = (color: (typeof HIGHLIGHT_COLORS)[number]) => {
+    setSelectedColor(color);
     setShowHighlighter(false);
-    selection.removeAllRanges();
+    setHighlightArmed(true);
+  };
+
+  // While armed, tapping a word paints it with the chosen color; tapping a
+  // highlighted word with the same color clears it, another color repaints it.
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!highlightArmed) return;
+    e.preventDefault();
+    const root = contentDivRef.current;
+    if (!root) return;
+
+    let node: Node | null = null;
+    let offset = 0;
+    const doc = document as Document & {
+      caretRangeFromPoint?: (x: number, y: number) => Range | null;
+      caretPositionFromPoint?: (x: number, y: number) => { offsetNode: Node; offset: number } | null;
+    };
+    if (doc.caretRangeFromPoint) {
+      const r = doc.caretRangeFromPoint(e.clientX, e.clientY);
+      if (r) {
+        node = r.startContainer;
+        offset = r.startOffset;
+      }
+    } else if (doc.caretPositionFromPoint) {
+      const pos = doc.caretPositionFromPoint(e.clientX, e.clientY);
+      if (pos) {
+        node = pos.offsetNode;
+        offset = pos.offset;
+      }
+    }
+    if (!node || node.nodeType !== Node.TEXT_NODE || !root.contains(node)) return;
+
+    const text = node.textContent || '';
+    const bounds = wordBounds(text, offset);
+    if (!bounds) return;
+
+    const parentMark = (node as Text).parentElement?.closest('mark');
+    if (parentMark && root.contains(parentMark)) {
+      const action = highlightTapAction(parentMark.className, selectedColor.class);
+      if (action === 'remove') {
+        parentMark.replaceWith(...Array.from(parentMark.childNodes));
+      } else {
+        parentMark.className = selectedColor.class;
+      }
+    } else {
+      const range = document.createRange();
+      range.setStart(node, bounds[0]);
+      range.setEnd(node, bounds[1]);
+      const mark = document.createElement('mark');
+      mark.className = selectedColor.class;
+      range.surroundContents(mark);
+    }
+    root.normalize();
+    commitContent();
   };
 
   const insertIntoContent = (html: string) => {
@@ -487,17 +567,22 @@ export const JournalEditor = ({
                 {HIGHLIGHT_COLORS.map((color) => (
                   <button
                     key={color.name}
-                    onClick={() => {
-                      setSelectedColor(color);
-                      setShowHighlighter(false);
-                    }}
+                    onClick={() => pickHighlightColor(color)}
                     className={cn(
                       "w-8 h-8 rounded border border-border",
                       color.class
                     )}
                     title={color.name}
+                    aria-label={`Highlight ${color.name}`}
                   />
                 ))}
+              </div>
+            )}
+
+            {highlightArmed && (
+              <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex items-center gap-2 text-xs text-muted-foreground">
+                <span className={cn("w-4 h-4 rounded border border-border shrink-0", selectedColor.class)} />
+                <span>Tap a word to highlight it. Tap the marker again to stop.</span>
               </div>
             )}
 
@@ -506,8 +591,12 @@ export const JournalEditor = ({
               contentEditable
               suppressContentEditableWarning
               onInput={handleContentInput}
+              onClick={handleContentClick}
               dir="ltr"
-              className="resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none text-base"
+              className={cn(
+                "resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none text-base",
+                highlightArmed && "cursor-pointer"
+              )}
               style={{ minHeight: 'calc(100vh - 400px)' }}
               data-placeholder="Start writing..."
             />
@@ -526,7 +615,10 @@ export const JournalEditor = ({
             variant="ghost"
             size="icon"
             onClick={handleHighlight}
-            className="h-10 w-10"
+            aria-label="Highlight"
+            aria-pressed={highlightArmed}
+            title="Highlight"
+            className={cn("h-10 w-10", highlightArmed && "bg-secondary text-secondary-foreground")}
           >
             <Highlighter className="h-5 w-5" />
           </Button>
