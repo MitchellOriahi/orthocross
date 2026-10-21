@@ -40,3 +40,4 @@
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.
 - DonorTierName uses angelic dictionary keys; billing ranks stay unchanged.
 - Reminder runs auth via a grant-less scheduler_secrets row and send leaderboard pushes server-side, so closed apps still get them.
+- Open the Scripture reader at the top of its chapter on mount: an in-app route change keeps the window's old scroll position, so the reader resets scroll before paint.
