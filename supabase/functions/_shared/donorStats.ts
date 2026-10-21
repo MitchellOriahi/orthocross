@@ -2,13 +2,69 @@ import { DONOR_TEXT, getTier } from "./donorTiers.ts";
 
 export const APP_URL = "https://orthocross.lovable.app";
 
-// Personal thank-you from the app's creator, included in every donation thank-you email.
-export const CREATOR_NOTE_HTML = `<div style="text-align:left;border-top:1px solid #c9a24a55;margin-top:28px;padding-top:20px">
-  <p style="color:#c9a24a;font-size:15px;margin:0 0 10px">A personal note from the creator of OrthoCross</p>
-  <p style="font-size:15px;line-height:1.7">I want to thank you personally. I built OrthoCross on my own, and keeping it running costs real money every month. Your gift is not just a number to me. It helps carry this work forward and lets me keep the app free for everyone who is seeking Christ.</p>
-  <p style="font-size:15px;line-height:1.7">Thank you for believing in this, and in me. I will keep you in my prayers.</p>
+// Personal thank-yous from the app's creator, included in every donation thank-you email.
+// A donor's first gift shows the first note; each further gift shows the next one, cycling around.
+export interface CreatorNote {
+  title: string;
+  paragraphs: string[];
+}
+
+export const CREATOR_NOTES: CreatorNote[] = [
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "I want to thank you personally. I built OrthoCross on my own, and keeping it running costs real money every month. Your gift is not just a number to me. It helps carry this work forward and lets me keep the app free for everyone who is seeking Christ.",
+      "Thank you for believing in this, and in me. I will keep you in my prayers.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "Thank you again for standing with me. OrthoCross has no investors and no ads — it is one person's labor of love, carried entirely by readers like you. Gifts like yours are what keep the lights on and every prayer and saint story free for all.",
+      "You have my deepest gratitude, and a place in my prayers. God bless.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "Your continued generosity humbles me. Every month this app costs real money to keep alive, and it is friends like you who make that possible. Because of your kindness, someone searching for the ancient faith will find it here — free, and open to all.",
+      "From my heart to yours: thank you, and God bless.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "I am deeply grateful that you have chosen to give again. What your generosity sustains is more than an app — it is a small chapel where anyone can pray, read, and grow. Your gift keeps its doors open and its lamps lit.",
+      "May Christ reward your kindness. You remain in my prayers. God bless.",
+    ],
+  },
+];
+
+/** Which note the Nth gift shows: each donation moves to the next note, cycling around. */
+export const pickCreatorNoteIndex = (ordinal: number): number =>
+  ((Math.max(0, ordinal) % CREATOR_NOTES.length) + CREATOR_NOTES.length) % CREATOR_NOTES.length;
+
+/** Renders one creator note as HTML for a dark (webhook) or light (checkout) thank-you email. */
+export function renderCreatorNote(ordinal: number, theme: "dark" | "light" = "dark"): string {
+  const note = CREATOR_NOTES[pickCreatorNoteIndex(ordinal)];
+  const titleStyle = theme === "light" ? "color:#8b4513;font-weight:bold" : "color:#c9a24a";
+  const borderColor = theme === "light" ? "#e5d9cc" : "#c9a24a55";
+  return `<div style="text-align:left;border-top:1px solid ${borderColor};margin-top:28px;padding-top:20px">
+  <p style="${titleStyle};font-size:15px;margin:0 0 10px">${note.title}</p>
+  ${note.paragraphs.map((p) => `<p style="font-size:15px;line-height:1.7">${p}</p>`).join("\n  ")}
   <p style="font-size:15px;line-height:1.7">With heartfelt gratitude in Christ,<br/>The creator of OrthoCross</p>
 </div>`;
+}
+
+/** Zero-based ordinal of this donor's gift: 0 for a first gift, 1 for a second, and so on. */
+export async function donationOrdinal(client: Admin, userId: string): Promise<number> {
+  const { count, error } = await client
+    .from("donations")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId);
+  if (error || !count) return 0;
+  return Math.max(0, count - 1);
+}
 
 // deno-lint-ignore no-explicit-any
 type Admin = any;
@@ -55,7 +111,7 @@ export async function sendThankYouOnce(admin: Admin, donationId: string) {
   <p style="font-size:16px;line-height:1.6">${DONOR_TEXT.thankYouBody}</p>
   <p style="font-size:16px;line-height:1.6">${DONOR_TEXT.thankYouBlessing}</p>
   ${tier ? `<p style="color:#c9a24a;font-size:18px">${DONOR_TEXT.youAreNow(tier)}</p>` : ""}
-  ${CREATOR_NOTE_HTML}
+  ${renderCreatorNote(pickCreatorNoteIndex(ordinal), "dark")}
   <p style="margin-top:28px"><a href="${APP_URL}" style="background:#c9a24a;color:#111;padding:12px 24px;border-radius:8px;text-decoration:none">Return to OrthoCross</a></p>
   <p style="color:#777;font-size:12px;margin-top:24px">"It is more blessed to give than to receive." — Acts 20:35</p>
   </div></div>`;
