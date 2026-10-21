@@ -378,10 +378,10 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
           <span className="sr-only">Select</span>
         </Button>
         </div>
-        <div className="grid grid-cols-[auto_auto_auto] items-center gap-2 min-w-0">
+        <div className="grid grid-cols-3 gap-2 pr-14 min-w-0">
         <Popover open={showColorPicker} onOpenChange={setShowColorPicker}>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="h-11 shrink-0 px-3" aria-label="Pen colors" title="Pen colors">
+            <Button variant="outline" className="h-11 w-full min-w-0 px-2" aria-label="Pen colors" title="Pen colors">
               <Palette className="h-4 w-4 mr-2" />
               <span className={`w-4 h-4 rounded border border-border drawing-swatch-${BRUSH_COLORS.find(color => color.value === selectedColor)?.name.toLowerCase()}`} />
             </Button>
@@ -409,10 +409,10 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
             ))}
           </PopoverContent>
         </Popover>
-        <Button variant="outline" size="icon" className="h-11 w-11 shrink-0" onClick={handleUndo} disabled={!canUndo} aria-label="Undo" title="Undo">
+        <Button variant="outline" className="h-11 w-full min-w-0 px-2" onClick={handleUndo} disabled={!canUndo} aria-label="Undo" title="Undo">
           <Undo2 className="h-5 w-5" />
         </Button>
-        <Button variant="outline" size="icon" className="h-11 w-11 shrink-0" onClick={handleClear} aria-label="Clear" title="Clear">
+        <Button variant="outline" className="h-11 w-full min-w-0 px-2" onClick={handleClear} aria-label="Clear" title="Clear">
           <Trash2 className="h-5 w-5" />
         </Button>
         </div>
