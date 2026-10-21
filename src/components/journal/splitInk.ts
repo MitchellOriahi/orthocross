@@ -12,7 +12,7 @@ export interface InkPiece {
   maxX: number;
   maxY: number;
   /** RGBA pixels for the bounding box; pixels of other pieces are transparent. */
-  pixels: Uint8ClampedArray;
+  pixels: Uint8ClampedArray<ArrayBuffer>;
 }
 
 const ALPHA_THRESHOLD = 8;
