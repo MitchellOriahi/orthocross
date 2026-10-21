@@ -10,3 +10,4 @@
 - CalendarDayDialog exposes full dated events and account-private calendar reminders; date keys use local calendar components to avoid timezone shifts. Native reminder IDs derive from saved IDs so edits and deletions target the original notification; web reminders notify only while the app is open.
 - The Journal's default folder is an account-flagged row (is_default) seeded on first open and pinned under All Notes, exempt from deletion with a translatable label; the move menu names the unfiled scope All Notes so only one entry reads Notes.
 - The drawing eraser splits cut strokes into separate objects via splitInk.ts connected-component labeling, so the grabber selects each erased-apart piece independently.
+- DonationDialog resolves its circle angel through shownTier(pickedTierKey, amountTier) so a tapped tier row wins immediately over the amount-derived tier; pickedTierKey clears on open and on every other amount change.
