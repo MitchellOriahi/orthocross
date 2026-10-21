@@ -564,17 +564,22 @@ export const JournalEditor = ({
                 {HIGHLIGHT_COLORS.map((color) => (
                   <button
                     key={color.name}
-                    onClick={() => {
-                      setSelectedColor(color);
-                      setShowHighlighter(false);
-                    }}
+                    onClick={() => pickHighlightColor(color)}
                     className={cn(
                       "w-8 h-8 rounded border border-border",
                       color.class
                     )}
                     title={color.name}
+                    aria-label={`Highlight ${color.name}`}
                   />
                 ))}
+              </div>
+            )}
+
+            {highlightArmed && (
+              <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex items-center gap-2 text-xs text-muted-foreground">
+                <span className={cn("w-4 h-4 rounded border border-border shrink-0", selectedColor.class)} />
+                <span>Tap a word to highlight it. Tap the marker again to stop.</span>
               </div>
             )}
 
@@ -583,8 +588,12 @@ export const JournalEditor = ({
               contentEditable
               suppressContentEditableWarning
               onInput={handleContentInput}
+              onClick={handleContentClick}
               dir="ltr"
-              className="resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none text-base"
+              className={cn(
+                "resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none text-base",
+                highlightArmed && "cursor-pointer"
+              )}
               style={{ minHeight: 'calc(100vh - 400px)' }}
               data-placeholder="Start writing..."
             />
@@ -603,7 +612,10 @@ export const JournalEditor = ({
             variant="ghost"
             size="icon"
             onClick={handleHighlight}
-            className="h-10 w-10"
+            aria-label="Highlight"
+            aria-pressed={highlightArmed}
+            title="Highlight"
+            className={cn("h-10 w-10", highlightArmed && "bg-secondary text-secondary-foreground")}
           >
             <Highlighter className="h-5 w-5" />
           </Button>
