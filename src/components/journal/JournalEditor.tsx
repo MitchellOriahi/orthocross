@@ -6,6 +6,7 @@ import { Highlighter, Pencil, Image as ImageIcon, Mic, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DrawingCanvas, type DrawingCanvasHandle } from "./DrawingCanvas";
+import { wordBounds, highlightTapAction } from "./highlightWord";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -92,6 +93,8 @@ export const JournalEditor = ({
       // Sanitize content when loading to prevent XSS
       contentDivRef.current.innerHTML = DOMPurify.sanitize(content, SANITIZE_CONFIG);
     }
+    setHighlightArmed(false);
+    setShowHighlighter(false);
   }, [noteId]);
 
   const handleContentInput = (e: React.FormEvent<HTMLDivElement>) => {
