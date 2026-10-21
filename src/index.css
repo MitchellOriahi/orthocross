@@ -841,7 +841,7 @@ html:not([lang="en"]) .localized-text-button {
 html:not([lang="en"]) [role="tab"] { white-space: normal; min-width: 0; line-height: 1.2; }
 html:not([lang="en"]) [role="tablist"] { height: auto; min-height: 2.5rem; }
 html:not([lang="en"]) [role="tab"] svg { flex-shrink: 0; }
-[role="dialog"]:not(.inset-0), [role="alertdialog"] { max-width: calc(100vw - 1.5rem); overflow-wrap: anywhere; }
+[role="dialog"]:not(.inset-0):not(.inset-x-0), [role="alertdialog"] { max-width: calc(100vw - 1.5rem); overflow-wrap: anywhere; }
 [role="dialog"] > *, [role="alertdialog"] > * { min-width: 0; }
 .resource-tile-title { min-width: 0; overflow-wrap: anywhere; }
 .resource-tile-title > svg { flex-shrink: 0; }
