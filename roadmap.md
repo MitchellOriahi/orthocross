@@ -108,6 +108,7 @@
 
 
 ## Read aloud
+- [ ] Improve speech/glow synchronization without replacing voices: immediate current-word glow, speed changes without replay, and stalled-playback checks; verify and disclose estimated timestamp limits.
 - [x] Contain insufficient-credit failures and stop repeated speech requests; 11 tests pass, browser retains Scripture with no uncaught errors and only one failed request across reload. Voice generation remains blocked until the owner tops up AI credits.
 - [x] Improve word-highlight timing using measured speech regions and the playing audio clock; nine tests pass for onset, silence, pauses, seeking and speed. Exact word alignment remains unavailable from the current voice service.
 - [x] Continuous listening option: mark finished chapter complete, auto-play next chapter, keep playing with screen off.
