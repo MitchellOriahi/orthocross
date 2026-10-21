@@ -18,7 +18,7 @@ export function MoveNoteMenu({ folders, folderId, onMove }: MoveNoteMenuProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="max-h-72 overflow-y-auto">
-        {[{ id: null, name: 'Notes' }, ...folders].map(folder => (
+        {[{ id: null, name: 'All Notes' }, ...folders].map(folder => (
           <DropdownMenuItem key={folder.id ?? 'general'} disabled={folder.id === folderId} onClick={() => onMove(folder.id)}>
             <Folder className="h-4 w-4 mr-2 shrink-0" />
             <span className="flex-1" translate={folder.id ? 'no' : undefined}>{folder.id ? folderPath(folders, folder.id) : folder.name}</span>

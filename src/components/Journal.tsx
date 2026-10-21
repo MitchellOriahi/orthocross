@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, Play, Pause, Volume2, X, FolderPlus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
-import { ALL_NOTES, notesInFolder, newNoteFolder, selectionAfterExit } from './journal/folderScope';
+import { ALL_NOTES, DEFAULT_NOTES_FOLDER_NAME, isDefaultNotesFolder, needsDefaultNotesFolder, notesInFolder, newNoteFolder, selectionAfterExit } from './journal/folderScope';
 import { isJournalViewMode, journalViewKey, resolveJournalView } from './journal/viewPreference';
 import { shouldSwipeBack } from './journal/swipeBack';
 import { TreeFolder, folderSiblings, reorderedSiblings } from './journal/folderTree';
@@ -141,8 +141,19 @@ export const Journal = () => {
         .select('*')
         .eq('user_id', user.id)
         .order('sort_order').order('name');
-      
-      if (data) setFolders(data);
+      if (!data) return;
+
+      // Every account gets one default "Notes" folder, shown under All Notes.
+      if (needsDefaultNotesFolder(data)) {
+        const { data: created } = await (supabase as any)
+          .from('journal_folders')
+          .insert({ user_id: user.id, name: DEFAULT_NOTES_FOLDER_NAME, parent_id: null, sort_order: -1, is_default: true })
+          .select()
+          .single();
+        setFolders(created ? [created, ...data] : data);
+        return;
+      }
+      setFolders(data);
     };
 
     const loadNotes = async () => {
@@ -266,7 +277,7 @@ export const Journal = () => {
     }
     setNotes(prev => prev.map(note => note.id === noteId ? { ...note, folder_id: folderId } : note));
     const folderName = folderId ? folders.find(folder => folder.id === folderId)?.name : null;
-    toast({ title: 'Note moved', description: folderName ?? 'Notes' });
+    toast({ title: 'Note moved', description: folderName ?? 'All Notes' });
   };
 
   const handleNoteCreate = async () => {
@@ -365,7 +376,9 @@ export const Journal = () => {
   };
 
   const handleFolderDelete = async (folderId: string) => {
-    if (!user || !confirm("Delete this folder? Its notes will be moved to Notes.")) return;
+    const target = folders.find(folder => folder.id === folderId);
+    if (!user || isDefaultNotesFolder(target ?? {})) return;
+    if (!confirm("Delete this folder? Its notes will be moved to All Notes.")) return;
     if (!await saveCurrentNote()) return;
     const { error: moveError } = await (supabase as any).from('journal_entries')
       .update({ folder_id: null }).eq('folder_id', folderId).eq('user_id', user.id);
