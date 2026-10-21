@@ -36,12 +36,15 @@ const BRUSH_COLORS = [
 
 /** Flattens the transparent drawing onto white paper as a PNG. */
 const exportDrawing = (canvas: FabricCanvas) => {
-  const src = canvas.toCanvasElement(1);
+  // Export at the screen's pixel density so the saved drawing is as sharp
+  // outside the drawing board as it was inside it.
+  const m = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+  const src = canvas.toCanvasElement(m);
   const out = document.createElement("canvas");
   out.width = src.width;
   out.height = src.height;
   const ctx = out.getContext("2d");
-  if (!ctx) return canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 });
+  if (!ctx) return canvas.toDataURL({ format: "png", quality: 1, multiplier: m });
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, out.width, out.height);
   ctx.drawImage(src, 0, 0);
