@@ -146,6 +146,9 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const effectiveAmount = getEffectiveAmount();
   const giftPreview = getGiftPreview(effectiveAmount, useCustom, SLIDER_STEPS);
   const giftTier = giftPreview.tier;
+  // Angel shown in the circle: the tier just tapped wins at once, otherwise what this gift qualifies for.
+  const activeTier = shownTier(pickedTierKey, giftTier);
+  const activeTierKey = activeTier?.key ?? null;
 
   // Native path: RevenueCat in-app purchase (required by App Store / Play Store)
   const handleNativeDonate = async () => {
@@ -289,8 +292,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <p className="text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>
 
           <div className="relative flex flex-col items-center gap-3">
-            <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
-              <TierPortrait tierKey={giftTier?.key ?? null} alt={giftTier ? giftTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
+            <div className={`donor-tier-${activeTierKey ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
+              <TierPortrait tierKey={activeTierKey} alt={activeTier ? activeTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
             </div>
             <p className="text-4xl font-bold text-primary text-center" data-no-translate>{money(Number(shownAmount))}{!isNative && !oneTime && tr(interval === "year" ? "/year" : "/month")}</p>
             {!isNative && !oneTime && interval === "year" && effectiveAmount >= 12 && (
@@ -309,7 +312,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 max={SLIDER_STEPS.length - 1}
                 step={1}
                 value={stepIndex}
-                onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); }}
+                onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); setPickedTierKey(null); }}
                 className="w-full accent-[hsl(var(--primary))]"
               />
               <div className="flex justify-between text-sm font-medium text-muted-foreground">
@@ -326,7 +329,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 aria-label="Custom amount"
                 type="number" step="0.01" min={minAmount}
                 value={customAmount}
-                onChange={(e) => { setCustomAmount(e.target.value); setUseCustom(true); }}
+                onChange={(e) => { setCustomAmount(e.target.value); setUseCustom(true); setPickedTierKey(null); }}
                 onFocus={() => setUseCustom(true)}
                 className="pl-7"
                 placeholder={interval === "year" && !oneTime ? "Custom amount ($12 minimum)" : "Custom amount"}
@@ -336,19 +339,20 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
           <div className="rounded-xl border">
             <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => toggleTiers(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
-              <span>Donator tiers{giftTier && <> · <span className={`donor-tier-${giftTier.key} text-[hsl(var(--donor-tier-tone))]`}><DonorTierName tier={giftTier} /></span></>}</span>
+              <span>Donator tiers{activeTier && <> · <span className={`donor-tier-${activeTier.key} text-[hsl(var(--donor-tier-tone))]`}><DonorTierName tier={activeTier} /></span></>}</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
             </Button>
             {tiersOpen && (
               <ul className="space-y-1 px-3 pb-3">
                 {DONOR_TIERS.map((t) => {
-                  const current = giftTier?.key === t.key;
+                  const current = activeTierKey === t.key;
                   return (
                     <li key={t.key}>
                       <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option ${t.key === "archangel" && tiersPulse ? "donor-gift-tier-pulse" : ""} h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
                         setCustomAmount(String(t.minCents / 100));
                         setSelectedAmount(t.minCents / 100);
                         setUseCustom(true);
+                        setPickedTierKey(t.key);
                         toggleTiers(false);
                       }}>
                         <span><DonorTierName tier={t} />{current && tr(" · this gift")}</span>
