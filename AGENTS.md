@@ -36,7 +36,7 @@
 - Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
 - LanguageContext sets lang/dir/fallback; reveal switches after React and DOM translation settle.
-- public/i18n drives DOM translation; protect scripture, fit whole words, scroll dialogs. content_keys.py extracts rendered History and JSON Saints to prevent omissions.
+- public/i18n drives DOM translation; protect scripture/whole words. content_keys.py checks History/Saints; audit typed and DOM church-family labels for meaning.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.
 - DonorTierName uses angelic dictionary keys; billing ranks stay unchanged.
 - Reminder runs auth via a grant-less scheduler_secrets row and send leaderboard pushes server-side, so closed apps still get them.

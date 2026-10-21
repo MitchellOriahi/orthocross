@@ -1,4 +1,7 @@
 # Prayers category browser
+## Translation accuracy audit
+- [x] Correct ambiguous Orthodox tradition names in French, Spanish, Portuguese and Armenian; signed-in language selection and distinct, fitting tradition choices verified across all 17 languages with no runtime errors.
+- [x] Audit 148,096 dictionary entries for integrity, review meaning and numeric discrepancies, correct confirmed errors and document linguistic-review limits. Fifty JS and four Python tests pass; preview build clean. Full native-speaker certification remains outside this audit.
 - [x] Replace the bottom two Tewahedo prayer images with the supplied transparent cross photographs; reduce the middle pair to balance their long stems, without cropping or squeezing.
 ## Donation controls and currency estimates
 - [x] Translate donation controls, periods and impact messages in all 16 non-English languages; add optional dated local-currency estimates while preserving USD checkout. Signed-in checks passed across all 17 language choices; live EUR estimates, yearly changes, saved selection and unavailable-rate fallback verified. Eighteen tests and content coverage pass; preview build clean. No payment was made.
