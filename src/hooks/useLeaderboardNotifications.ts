@@ -27,27 +27,9 @@ export const useLeaderboardNotifications = () => {
         async (payload) => {
           const notification = payload.new as any;
           
-          // Fetch the username of the person who passed us
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('username, display_name')
-            .eq('id', notification.passed_by_user_id)
-            .single();
-
-          const passedByName = profile?.display_name || profile?.username || 'Someone';
-          
-          // Call edge function to send push notification via FCM
-          try {
-            await supabase.functions.invoke('send-leaderboard-notification', {
-              body: {
-                passed_user_ids: [user.id],
-                current_user_name: passedByName,
-                group_name: null, // Global leaderboard
-              },
-            });
-          } catch (error) {
-            console.log('Error triggering leaderboard notification:', error);
-          }
+          // The push itself is sent by the scheduled reminders function
+          // (server-side, naming the user who passed us); the client only
+          // marks the in-app row as read.
 
           // Mark notification as read
           try {

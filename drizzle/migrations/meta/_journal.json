@@ -78,6 +78,20 @@
       "when": 1792107523757,
       "tag": "0010_personal_calendar_reminders",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792559075411,
+      "tag": "0011_daily_verses_and_cron_cleanup",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792559097602,
+      "tag": "0012_notification_fixes",
+      "breakpoints": true
     }
   ]
 }
