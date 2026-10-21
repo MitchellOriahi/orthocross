@@ -14,6 +14,7 @@ import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
 import { ALL_NOTES, notesInFolder, newNoteFolder, selectionAfterExit } from './journal/folderScope';
 import { isJournalViewMode, journalViewKey, resolveJournalView } from './journal/viewPreference';
+import { shouldSwipeBack } from './journal/swipeBack';
 
 // Extended types that match the actual database schema
 interface JournalNote {
@@ -60,6 +61,7 @@ export const Journal = () => {
   const viewRevisionRef = useRef(0);
   const viewSaveRef = useRef<Promise<unknown>>(Promise.resolve());
   const draftRef = useRef<{ id: string; userId: string; modified: boolean } | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const [playingMediaId, setPlayingMediaId] = useState<string | null>(null);
 
   // Load view preference
@@ -249,6 +251,18 @@ export const Journal = () => {
     setIsNoteExpanded(false);
     setShowNotesList(true);
     setShowSidebar(false);
+  };
+
+  // Rightward swipe goes back one level: open note -> notes list, folder view ->
+  // folders list, folders list -> notes. Null on the Journal home (the X exits).
+  const getSwipeBack = (): (() => void) | null => {
+    if (!isMobile) return null;
+    if (selectedNoteId && !showNotesList) {
+      return () => { void (async () => { if (await saveCurrentNote()) { discardUntouchedDraft(); clearExitedSelection('notes'); setShowNotesList(true); } })(); };
+    }
+    if (showSidebar) return () => { void handleJournalHome(); };
+    if (selectedFolderId) return () => { void handleBackToFolders(); };
+    return null;
   };
 
   const handleNoteMove = async (noteId: string, folderId: string | null) => {
@@ -710,17 +724,34 @@ export const Journal = () => {
               <h3 className="flex-1 min-w-0 truncate font-semibold" translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
                 {selectedFolderId === ALL_NOTES ? 'All Notes' : folders.find(folder => folder.id === selectedFolderId)?.name ?? 'Notes'}
               </h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={selectedFolderId || selectedNoteId || showSidebar ? handleJournalHome : handleClose}
-                aria-label="Close"
-              >
-                <X className="h-5 w-5" />
-              </Button>
+              {(!isMobile || (!selectedFolderId && !selectedNoteId)) && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={selectedFolderId || selectedNoteId || showSidebar ? handleJournalHome : handleClose}
+                  aria-label="Close"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              )}
             </div>
-            
-            <div className="flex-1 min-h-0 min-w-0 flex overflow-hidden">
+
+            <div
+              className="flex-1 min-h-0 min-w-0 flex overflow-hidden"
+              onTouchStart={(e) => {
+                const t = e.touches[0];
+                touchStartRef.current = { x: t.clientX, y: t.clientY };
+              }}
+              onTouchEnd={(e) => {
+                const start = touchStartRef.current;
+                touchStartRef.current = null;
+                if (!start) return;
+                const t = e.changedTouches[0];
+                if (shouldSwipeBack(start, { x: t.clientX, y: t.clientY })) {
+                  getSwipeBack()?.();
+                }
+              }}
+            >
               {/* Desktop: Always show sidebar */}
               {/* Mobile: Show sidebar only when toggled */}
               {(!isMobile || showSidebar) && (
