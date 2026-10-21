@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, test } from "bun:test";
-import { applyLanguageIconDefaults, iconStyleForLanguage } from "./orthodoxOrientation";
+import { applyBranchPreferences, applyLanguageIconDefaults, iconStyleForLanguage } from "./orthodoxOrientation";
 import { getCategoryIconStyle, setCategoryIconStyle } from "../hooks/useCategoryIconStyle";
 
 let oldStorage;
@@ -22,14 +22,30 @@ afterEach(() => {
 
 for (const [language, style] of [
   ["am", "tewahedo"], ["ti", "tewahedo"],
-  ["ar", "coptic"], ["hy", "coptic"], ["ml", "coptic"],
-  ["ru", "byzantine"], ["uk", "byzantine"], ["bg", "byzantine"], ["sr", "byzantine"],
+  ["ar", "coptic"], ["cop", "coptic"], ["hy", "original"], ["ml", "original"],
+  ["ru", "byzantine"], ["uk", "original"], ["bg", "original"], ["sr", "original"],
   ["el", "original"], ["ka", "original"], ["ro", "original"],
   ["en", "original"], ["es", "original"], ["pt", "original"], ["fr", "original"], ["he", "original"],
 ]) {
   test(`${language} uses ${style} in both sections without a branch`, () => {
     expect(iconStyleForLanguage(language)).toBe(style);
     applyLanguageIconDefaults(language, null);
+    expect(getCategoryIconStyle("saints")).toBe(style);
+    expect(getCategoryIconStyle("prayers")).toBe(style);
+  });
+}
+for (const [branch, style] of [
+  ["Coptic", "coptic"], ["Greek Orthodox", "original"],
+  ["Russian Orthodox", "byzantine"], ["Ethiopian Tewahedo", "tewahedo"],
+  ["Eritrean Tewahedo", "tewahedo"], ["Armenian Apostolic", "original"],
+  ["Syriac Orthodox", "original"], ["Malankara Orthodox", "original"],
+  ["Serbian Orthodox", "original"], ["Ukrainian Orthodox", "original"],
+  ["Bulgarian Orthodox", "original"],
+]) {
+  test(`${branch} defaults both sections to ${style} regardless of language`, () => {
+    applyLanguageIconDefaults("am", null);
+    applyBranchPreferences(branch, { force: true });
+    applyLanguageIconDefaults("ru", branch);
     expect(getCategoryIconStyle("saints")).toBe(style);
     expect(getCategoryIconStyle("prayers")).toBe(style);
   });

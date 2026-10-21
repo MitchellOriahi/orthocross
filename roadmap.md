@@ -24,6 +24,7 @@
 - [x] Alphabetize church lists, remove generic family entries, rename the neutral choice Neither, and mark eligibility only at signup with account-persisted completion. Rule tests pass; real signed-in returning account shows no sticker or runtime errors. Fresh signup and cross-device completion were not exercised end-to-end.
 - [x] Make the "Profile updated!" sticker dismiss itself after 3 seconds (one second shorter than before).
 ## Category icon styles
+- [x] Narrow language defaults to their specific communities; 64 tests pass for both sections, branch priority and manual choices. Signed-in Russian, Armenian, Bulgarian, Malayalam, Arabic, Amharic and Greek language selections read back the correct defaults; no runtime errors, preview build clean. Artwork not inspected.
 - [x] Apply language-matched icons without a branch, Greek fallback and independent manual picks. All 52 tests pass; signed-in language-menu changes verified Russian in both sections and English returning both to Greek, no runtime errors.
 - [x] Rearrange Coptic Saints top and middle rows with the four supplied images; replace Righteous Laypeople. All seven delivered tiles verified signed in, previous artwork preserved, 15 tests pass, build clean.
 - [x] Add a far-right Icons dropdown to Saints and Prayers with shared persistent Original, Tewahedo, Coptic and Byzantine choices.
