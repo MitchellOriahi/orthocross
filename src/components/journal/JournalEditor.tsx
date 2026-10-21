@@ -117,13 +117,65 @@ export const JournalEditor = ({
     }, 0);
   };
 
+  const stopHighlighting = () => {
+    setHighlightArmed(false);
+    setShowHighlighter(false);
+    contentDivRef.current?.focus({ preventScroll: true });
+  };
+
+  // Native contenteditable typing inherits the surrounding mark. Insert plain
+  // text outside it instead, preserving the highlighted text on either side.
+  const handleBeforeInput = (e: Event) => {
+    if (highlightArmed) return;
+    const input = e as InputEvent;
+    if (input.inputType !== 'insertText' || !input.data || input.isComposing) return;
+    const root = contentDivRef.current;
+    const selection = window.getSelection();
+    if (!root || !selection || !selection.rangeCount || !selection.isCollapsed) return;
+    const range = selection.getRangeAt(0);
+    const element = range.startContainer.nodeType === Node.ELEMENT_NODE
+      ? range.startContainer as Element
+      : range.startContainer.parentElement;
+    const mark = element?.closest('mark');
+    if (!mark || !root.contains(mark)) return;
+
+    e.preventDefault();
+    const remainderRange = range.cloneRange();
+    remainderRange.setEnd(mark, mark.childNodes.length);
+    const remainder = remainderRange.extractContents();
+    const plainText = document.createTextNode(input.data);
+    const plainSpan = document.createElement('span');
+    plainSpan.className = 'whitespace-pre-wrap';
+    plainSpan.appendChild(plainText);
+    mark.after(plainSpan);
+    if (remainder.textContent) {
+      const trailingMark = mark.cloneNode(false);
+      trailingMark.appendChild(remainder);
+      plainSpan.after(trailingMark);
+    }
+    if (!mark.textContent) mark.remove();
+    range.setStart(plainText, plainText.length);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    commitContent();
+  };
+
+  // React 18 synthesizes beforeInput from keypress, losing inputType; use the
+  // native cancelable event for keyboard and mobile text insertion instead.
+  useEffect(() => {
+    const root = contentDivRef.current;
+    if (!root) return;
+    root.addEventListener('beforeinput', handleBeforeInput);
+    return () => root.removeEventListener('beforeinput', handleBeforeInput);
+  }, [highlightArmed, onContentChange]);
+
   const handleHighlight = () => {
     if (!contentDivRef.current) return;
 
     // Tapping the marker again stops tap-to-highlight mode.
-    if (highlightArmed) {
-      setHighlightArmed(false);
-      setShowHighlighter(false);
+    if (showHighlighter || highlightArmed) {
+      stopHighlighting();
       return;
     }
 
@@ -137,6 +189,8 @@ export const JournalEditor = ({
         try {
           range.surroundContents(mark);
           commitContent();
+          setShowHighlighter(true);
+          setHighlightArmed(true);
           selection.removeAllRanges();
           return;
         } catch {
@@ -145,12 +199,13 @@ export const JournalEditor = ({
       }
     }
 
-    setShowHighlighter(!showHighlighter);
+    setShowHighlighter(true);
+    setHighlightArmed(true);
   };
 
   const pickHighlightColor = (color: (typeof HIGHLIGHT_COLORS)[number]) => {
     setSelectedColor(color);
-    setShowHighlighter(false);
+    setShowHighlighter(true);
     setHighlightArmed(true);
   };
 
@@ -571,26 +626,35 @@ export const JournalEditor = ({
         <div className="flex-1 overflow-auto">
           <div className="p-4 min-h-full">
             {showHighlighter && (
-              <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex gap-1">
+              <div className="mb-2 p-2 w-fit max-w-full bg-popover border border-border rounded-lg flex items-center gap-1" role="toolbar" aria-label="Highlight colors">
                 {HIGHLIGHT_COLORS.map((color) => (
-                  <button
+                  <Button
                     key={color.name}
+                    variant="ghost"
+                    size="icon"
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => pickHighlightColor(color)}
                     className={cn(
-                      "w-8 h-8 rounded border border-border",
-                      color.class
+                      "w-8 h-8 shrink-0 rounded border border-border",
+                      color.class,
+                      selectedColor.name === color.name && "ring-2 ring-ring ring-offset-1 ring-offset-popover"
                     )}
                     title={color.name}
                     aria-label={`Highlight ${color.name}`}
+                    aria-pressed={selectedColor.name === color.name}
                   />
                 ))}
-              </div>
-            )}
-
-            {highlightArmed && (
-              <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex items-center gap-2 text-xs text-muted-foreground">
-                <span className={cn("w-4 h-4 rounded border border-border shrink-0", selectedColor.class)} />
-                <span>Tap a word to highlight it. Tap the marker again to stop.</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-8 h-8 shrink-0"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={stopHighlighting}
+                  aria-label="Stop highlighting"
+                  title="Stop highlighting"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
             )}
 
@@ -622,6 +686,7 @@ export const JournalEditor = ({
           <Button
             variant="ghost"
             size="icon"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={handleHighlight}
             aria-label="Highlight"
             aria-pressed={highlightArmed}
