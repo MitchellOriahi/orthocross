@@ -37,7 +37,7 @@ export const FastingCalendar = () => {
     enabled: !!user,
     staleTime: 30000,
   });
-  const defaultOrientation = user && identityLoaded ? orientationForBranch(identity?.branch) : orientation;
+  const defaultOrientation = user ? (identityLoaded ? orientationForBranch(identity?.branch) : "undecided") : orientation;
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [showCalendarView, setShowCalendarView] = useState(false);
@@ -47,10 +47,11 @@ export const FastingCalendar = () => {
 
   // Only a change in family/account applies a default; month/language changes never overwrite a manual pick.
   useLayoutEffect(() => {
+    if (user && !identityLoaded) return;
     const next = calendarTraditionForOrientation(defaultOrientation, readCalendarTradition(user?.id));
     setSelectedTradition(next);
     saveCalendarTradition(user?.id, next);
-  }, [user?.id, defaultOrientation]);
+  }, [user?.id, identityLoaded, defaultOrientation]);
 
   const chooseCalendarTradition = (value: string) => {
     if (value !== "Eastern Orthodox" && value !== "Oriental Orthodox") return;
