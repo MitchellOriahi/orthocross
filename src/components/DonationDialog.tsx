@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,7 +53,9 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   // The window opens with the price slider half-cut by its bottom edge, so the
   // other gift amounts read as a peek worth pulling down, not a hidden list.
   const [contentEl, setContentEl] = useState<HTMLDivElement | null>(null);
-  useEffect(() => {
+  // Layout effect: the peek height is applied before the dialog's first paint,
+  // so the window never re-centers (shifts) after opening.
+  useLayoutEffect(() => {
     if (!open || !contentEl) return;
     return observeDonationPeek(contentEl);
   }, [open, contentEl, isNative, language]);
