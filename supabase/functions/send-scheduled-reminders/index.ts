@@ -80,6 +80,26 @@ function getLocalTime(timezone: string): { hour: number; minute: number; dateStr
   }
 }
 
+export function getLocalDayBoundsUTC(timezone: string, dateStr: string): { start: string; end: string } {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const offsetAt = (ms: number) => {
+    try {
+      const p = new Intl.DateTimeFormat("en-US", {
+        timeZone: timezone, hour12: false, year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+      }).formatToParts(new Date(ms));
+      const g = (t: string) => Number(p.find((x) => x.type === t)?.value);
+      const wall = Date.UTC(g("year"), g("month") - 1, g("day"), g("hour") % 24, g("minute"), g("second"));
+      return wall - ms;
+    } catch { return 0; }
+  };
+  const utcMidnight = Date.UTC(y, m - 1, d);
+  const startMs = utcMidnight - offsetAt(utcMidnight);
+  const nextMidnight = Date.UTC(y, m - 1, d + 1);
+  const endMs = nextMidnight - offsetAt(nextMidnight);
+  return { start: new Date(startMs).toISOString(), end: new Date(endMs).toISOString() };
+}
+
 function getTomorrowDate(timezone: string): string {
   try {
     const tomorrow = new Date();
@@ -196,8 +216,9 @@ const handler = async (req: Request): Promise<Response> => {
         if (existingLog) {
           counters.skippedDup++;
         } else {
-          const todayStart = `${localTime.dateStr}T00:00:00.000Z`;
-          const todayEnd = `${localTime.dateStr}T23:59:59.999Z`;
+          // The user's local day expressed as UTC instants (was UTC midnight,
+          // which miscounted evening readings in the Americas).
+          const { start: todayStart, end: todayEnd } = getLocalDayBoundsUTC(timezone, localTime.dateStr);
 
           const [chaptersResult, saintsResult, historyResult] = await Promise.all([
             supabase.from("completed_chapters").select("id").eq("user_id", profile.id)
@@ -333,6 +354,32 @@ const handler = async (req: Request): Promise<Response> => {
         counters.skippedPrefsOff++;
       }
     }
+
+    // ========== LEADERBOARD SURPASS PUSHES (server-side) ==========
+    // Rows are inserted by the leaderboard trigger; the passed user is
+    // notified even when their app is closed.
+    let sentLeaderboard = 0;
+    const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+    const { data: pending } = await supabase.from("leaderboard_notifications")
+      .select("id, user_id, passed_by_user_id")
+      .is("push_sent_at", null).gte("created_at", since).limit(500);
+    if (pending?.length) {
+      const ids = [...new Set(pending.flatMap((r) => [r.user_id, r.passed_by_user_id]))];
+      const { data: people } = await supabase.from("profiles")
+        .select("id, username, display_name, leaderboard_notifications_enabled").in("id", ids);
+      const byId = new Map((people ?? []).map((p) => [p.id, p]));
+      for (const row of pending) {
+        const recipient = byId.get(row.user_id);
+        const passer = byId.get(row.passed_by_user_id);
+        if (recipient && recipient.leaderboard_notifications_enabled !== false) {
+          const name = passer?.display_name || passer?.username || "Someone";
+          if (await sendOneSignalNotification(row.user_id, "Leaderboard Update 📊",
+            `${name} just surpassed you on the leaderboard! Keep going!`, { path: "/friends" })) sentLeaderboard++;
+        }
+        await supabase.from("leaderboard_notifications").update({ push_sent_at: new Date().toISOString() }).eq("id", row.id);
+      }
+    }
+    counters.sentLeaderboard = sentLeaderboard;
 
     const duration = Date.now() - startTime;
     console.log(`[send-scheduled-reminders] Completed in ${duration}ms`, counters);
