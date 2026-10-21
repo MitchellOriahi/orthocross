@@ -146,6 +146,13 @@ serve(async (req) => {
               
               <p>With deepest gratitude and love in Christ,<br>
               <strong>The OrthoCross Team</strong></p>
+
+              <div style="border-top:1px solid #e5d9cc;margin-top:24px;padding-top:18px">
+                <p style="color:#8b4513;font-weight:bold">A personal note from the creator of OrthoCross</p>
+                <p>I want to thank you personally. I built OrthoCross on my own, and keeping it running costs real money every month. Your gift is not just a number to me. It helps carry this work forward and lets me keep the app free for everyone who is seeking Christ.</p>
+                <p>Thank you for believing in this, and in me. I will keep you in my prayers.</p>
+                <p>With heartfelt gratitude in Christ,<br>The creator of OrthoCross</p>
+              </div>
               
               <p class="heart">❤️ ☦ ❤️</p>
             </div>
