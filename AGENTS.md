@@ -20,7 +20,6 @@
 - Validate the image function's bearer token with getUser(token) on a stateless auth client; global headers do not create an SDK session.
 - Keep the legacy verse artwork function isolated so sharing never triggers billed image generation.
 - Keep style-specific verse typography in a dedicated canvas renderer with measured text fitting and global artwork palette tokens, so all styles preserve the complete verse without clipping.
-- Resolve island lesson images via a provenance registry with credits; cover framing, upper-aligned for faces.
 - Reset island detail scroll before paint on each selection; same-page selection skips route scroll restoration.
 - Resolve saint card icons through a bundled roster-keyed registry with focus/zoom crop values, overridden by admin-saved rows from the hidden icon tuner; derive detail images and credits from the same registry so new portraits keep attribution without touching the saved catalog or card layout.
 - Fetch public permission-based Athonite catalogs through an authenticated, fixed-collection cloud function with storage caching and a persistent blocked-feed stop flag; this operation cannot approve portraits or alter saint records.
