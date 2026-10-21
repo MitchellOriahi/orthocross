@@ -1,6 +1,7 @@
 # Prayers category browser
 ## Journal folder organization
 - [x] Name the nested-folder option "Subfolder", enlarge the Folders title and exit X, and make Edit and New Folder larger and clearly separated. Signed-in checks confirm the menu reads Subfolder, the title is 24px with all 16 languages fitting its slot, and Edit/New Folder/exit are 44px targets with 8px gaps and no edge overflow; 51 tests pass, build clean.
+- [x] Indent the Folders title so it is no longer flush with the screen edge; it now starts at the same 20px as the folder rows' icons, on both left-to-right and right-to-left screens; 51 tests pass, build clean.
 - [x] Merge the Folders bars; Edit saves sibling ordering. Expandable nested folders persist across reload; deleting a parent preserves child folders/notes. Signed-in phone flow verified, temporary records removed, 51 tests pass, no runtime errors, preview clean.
 - [x] Open Journal on Folders without a hamburger; All Notes contains only unfiled notes. Signed-in phone checks confirm moving stays on All Notes with confirmation, destination readback, reopening on Folders, and saved untouched-note deletion. Temporary records removed; 45 tests pass, no runtime errors, preview clean.
 - [x] Fix drawing toolbar clipping with a full-screen drawing sheet and additive safe-area spacing. Signed-in 393×763 check confirms full viewport bounds and all seven controls below the top edge; red/blue strokes and save/reload verified; temporary data removed; 19 tests pass, no runtime errors, build clean.
