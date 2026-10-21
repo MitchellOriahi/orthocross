@@ -1,30 +1,31 @@
 import { describe, expect, test } from "bun:test";
-import { DEFAULT_GIFT_AMOUNT, GIFT_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle } from "./donationGift";
-import { DONOR_TIERS } from "../../supabase/functions/_shared/donorTiers";
+import { shownTier } from "./donationGift";
+import { getTier } from "../../supabase/functions/_shared/donorTiers";
 
-describe("gift selection", () => {
-  test("slider offers $1, $2 and $5", () => {
-    expect([...GIFT_SLIDER_AMOUNTS]).toEqual([1, 2, 5]);
+describe("gift circle angel", () => {
+  test("the tier row just tapped is shown at once", () => {
+    // $1 alone only qualifies as Angel, yet tapping Seraph must show Seraph.
+    const t = shownTier("seraph", getTier(100));
+    expect(t?.key).toBe("seraph");
+    expect(t?.name).toBe("Seraph");
   });
-  test("slider opens on $2", () => {
-    expect(DEFAULT_GIFT_AMOUNT).toBe(2);
-    expect(getGiftPreview(DEFAULT_GIFT_AMOUNT, false).sliderIndex).toBe(1);
+
+  test("with nothing tapped, the angel this gift qualifies for is shown", () => {
+    const t = shownTier(null, getTier(1000));
+    expect(t?.key).toBe("archangel");
   });
-  test("slider gifts remain Angel with increasing glow", () => {
-    expect(GIFT_SLIDER_AMOUNTS.map(amount => getGiftPreview(amount, false).tier?.key)).toEqual(["angel", "angel", "angel"]);
-    expect(GIFT_SLIDER_AMOUNTS.map(amount => getGiftPreview(amount, false).glowLevel)).toEqual([0, 1, 2]);
-  });
-  test("tier minimums select their portrait and maximum slider position", () => {
-    for (const tier of DONOR_TIERS) {
-      expect(getGiftPreview(tier.minCents / 100, true).tier?.key).toBe(tier.key);
-      expect(getGiftPreview(tier.minCents / 100, true).sliderIndex).toBe(2);
+
+  test("tapping each tier shows that tier's own angel", () => {
+    for (const key of ["angel", "archangel", "principality", "power", "virtue", "dominion", "throne", "cherub", "seraph"]) {
+      expect(shownTier(key, getTier(100))?.key).toBe(key);
     }
   });
-  test("flipping the one-time toggle starts the gift at $0", () => {
-    const next = giftAfterModeToggle();
-    expect(next.amount).toBe(0);
-    expect(next.customAmount).toBe("");
-    expect(next.useCustom).toBe(false);
-    expect(getGiftPreview(next.amount, next.useCustom).tier).toBe(null);
+
+  test("an unknown tapped key falls back to the amount's angel", () => {
+    expect(shownTier("no-such-tier", getTier(2500))?.key).toBe("principality");
+  });
+
+  test("nothing chosen and nothing qualified shows the cross", () => {
+    expect(shownTier(null, null)).toBeNull();
   });
 });
