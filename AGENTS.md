@@ -15,15 +15,15 @@
 - Use shared donor tiers and server-resolved anonymous names; portrait, crown and tag colors follow tier, not rank. Header glow uses account-keyed donor-status refreshed on donors-changed to avoid cross-account glow.
 - History: a pure ordered-progress selector advances the glow; rows prioritize island width and fixed checkpoints over optional spacers, keeping translations readable.
 - Render the Board daily verse via a dedicated card reusing the deterministic local selector and share dialog; notifications unchanged.
-- Preload licensed photos and compose locally; pick each day's three photos by date index from a bundled per-category library (no repeats within the cycle) and cache compositions, so daily rotation never waits on AI or sign-in.
+- Compose verse images locally from bundled licensed photos picked by date index (no repeats per cycle) and cached, so rotation never waits on AI or sign-in.
 - Share composed verse images as file-only payloads through native attachment sharing or browser file sharing, downloading when unsupported; text-only email/SMS links cannot carry image attachments.
 - Validate the image function's bearer token with getUser(token) on a stateless auth client; global headers do not create an SDK session.
 - Keep the legacy verse artwork function isolated so sharing never triggers billed image generation.
 - Keep style-specific verse typography in a dedicated canvas renderer with measured text fitting and global artwork palette tokens, so all styles preserve the complete verse without clipping.
 - Reset island detail scroll before paint on each selection; same-page selection skips route scroll restoration.
 - Resolve saint card icons through a bundled roster-keyed registry with focus/zoom crop values, overridden by admin-saved rows from the hidden icon tuner; derive detail images and credits from the same registry so new portraits keep attribution without touching the saved catalog or card layout.
-- Fetch public permission-based Athonite catalogs through an authenticated, fixed-collection cloud function with storage caching and a persistent blocked-feed stop flag; this operation cannot approve portraits or alter saint records.
-- Verify Stripe payments and compute totals server-side; queue friend alerts via a service-only donation-keyed function enforcing anonymity, friendship, blocks and preferences, with push UUID idempotency to prevent duplicate alerts.
+- Fetch Athonite catalogs via an authenticated fixed-collection function with storage caching and a blocked-feed stop flag; it cannot approve portraits or alter saints.
+- Verify Stripe payments and totals server-side; friend donation alerts come from a service-only queue enforcing anonymity, friendship, blocks and preferences, idempotent per push.
 
 - Share donation interval validation. Currency estimates use dated public USD rates; checkout amounts and tiers stay unchanged.
 - Use a tested gift-preview selector for slider position, portrait tier and glow; shared thresholds align custom gifts.
