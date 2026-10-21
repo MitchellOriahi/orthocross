@@ -38,6 +38,62 @@ export const CREATOR_NOTES: CreatorNote[] = [
       "May Christ reward your kindness. You remain in my prayers. God bless.",
     ],
   },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "Once more, thank you. When I began building OrthoCross, I prayed that God would send people who believed in this work as much as I do. Your continued giving is an answer to that prayer.",
+      "Every prayer, every saint's story, every verse stays free because of friends like you. May the Lord bless you and keep you. God bless.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "Your gift arrived like a lamp lit in a dark room. There are nights when the work is long and the costs weigh heavy, and then a gift like yours comes — and I remember why I started.",
+      "Thank you for carrying this with me. You and your loved ones are in my prayers. God bless.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "Thank you for giving again. I think often of the widow's two mites — it is not the size of the gift but the heart behind it that the Lord sees. Your heart is generous, and I am honored by it.",
+      "May God multiply your kindness back to you a hundredfold. You remain in my prayers. God bless.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "Another gift from you — thank you, truly. Somewhere tonight, a stranger is opening this app for the first time, searching for something they cannot name. Your generosity is part of why they will find it.",
+      "That is no small thing. Thank you for making it possible. God bless.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "I want you to know that your faithfulness does not go unnoticed. Month after month, gift after gift, you have stood beside this work. I built OrthoCross alone, but because of you, I do not carry it alone.",
+      "May the peace of Christ rest on you and your household. God bless.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "Thank you for your continued kindness. Through fasts and feasts, through ordinary days and holy ones, your giving has kept this little chapel in the cloud open to all who knock.",
+      "I ask God to reward you in the ways only He can. You are remembered in my prayers. God bless.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "Your generosity humbles me anew. Every server bill paid, every new translation added, every improvement made — gifts like yours are what turn those hopes into reality.",
+      "Thank you for believing in this mission. May the Lord bless you abundantly. God bless.",
+    ],
+  },
+  {
+    title: "A personal note from the creator of OrthoCross",
+    paragraphs: [
+      "A full year of your kindness. Twelve months of gifts, each one a quiet act of faith in this work. I do not have words big enough, so I will simply say: thank you, from the bottom of my heart.",
+      "You have helped carry OrthoCross through an entire year of ministry. May Christ Himself be your reward. You are always in my prayers. God bless.",
+    ],
+  },
 ];
 
 /** Which note the Nth gift shows: each donation moves to the next note, cycling around. */
