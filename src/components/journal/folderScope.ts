@@ -7,3 +7,7 @@ export function notesInFolder<T extends { folder_id: string | null }>(notes: T[]
 export function newNoteFolder(folderId: string | null): string | null {
   return folderId === ALL_NOTES ? null : folderId;
 }
+
+export function selectionAfterExit(destination: 'notes' | 'folders' | 'home', folderId: string | null) {
+  return { noteId: null, folderId: destination === 'notes' ? folderId : null };
+}
