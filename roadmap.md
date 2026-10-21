@@ -108,7 +108,7 @@
 
 
 ## Read aloud
-- [ ] Improve speech/glow synchronization without replacing voices: immediate current-word glow, speed changes without replay, and stalled-playback checks; verify and disclose estimated timestamp limits.
+- [x] Remove current-word glow fade-in, change speed in place without replay and freeze highlighting during stalls. Thirteen regression tests pass; signed-in John 1 read-aloud returns audio successfully and shows the active blue word with no runtime errors. Exact per-word synchronization cannot be guaranteed because the current voices provide audio without word timestamps.
 - [x] Contain insufficient-credit failures and stop repeated speech requests; 11 tests pass, browser retains Scripture with no uncaught errors and only one failed request across reload. Voice generation remains blocked until the owner tops up AI credits.
 - [x] Improve word-highlight timing using measured speech regions and the playing audio clock; nine tests pass for onset, silence, pauses, seeking and speed. Exact word alignment remains unavailable from the current voice service.
 - [x] Continuous listening option: mark finished chapter complete, auto-play next chapter, keep playing with screen off.
