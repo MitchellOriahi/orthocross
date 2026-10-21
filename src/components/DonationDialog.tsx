@@ -298,8 +298,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             </>
           )}
 
-          {!isNative && <DonationCurrencyEstimate amount={effectiveAmount} />}
-
           {!isNative && (
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
