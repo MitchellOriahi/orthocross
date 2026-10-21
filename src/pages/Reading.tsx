@@ -101,6 +101,19 @@ const Reading = () => {
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const longPressTriggeredRef = useRef(false);
 
+  // Opening a chapter always begins at its top. An in-app route change keeps
+  // the window's previous scroll position, which would otherwise drop the
+  // reader partway down the chapter they tapped "Continue Reading" for.
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+    document.scrollingElement?.scrollTo(0, 0);
+    document.querySelectorAll<HTMLElement>("[data-radix-scroll-area-viewport]").forEach((el) => {
+      el.scrollTop = 0;
+    });
+  }, []);
+
+
+
   useEffect(() => {
     if (localStorage.getItem('seenLongPressHint_v2')) return;
     setShowLongPressHint(true);
