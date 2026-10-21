@@ -16,9 +16,10 @@
 - [x] Prevent translated words from splitting across lines and fit overlong labels in their existing slots, excluding protected Bible text. Friends buttons checked in all 16 translated languages; Church, Settings and History word-boundary checks passed in Serbian, Arabic and Malayalam. Three translation tests pass; preview build clean.
 - [x] Fix clipped stickers and resource tiles, preserve header/action control positions across languages, and protect OrthoCross. All 17 languages checked on Friends, Church and Settings; additional main-page checks, Russian cancellation/language stickers, phone and desktop screenshots, brand tests and preview build passed.
 ## Tradition sticker update
+- [ ] Verify account-first language selection precedes tradition on devices with a saved language, and shorten the profile confirmation to 3 seconds.
 - [x] Allow unseen existing accounts to receive the sticker once. Fourteen rule tests pass, including completed-account suppression across devices; signed-in existing account opens the sticker and Eastern church list without runtime errors. Completion saving is unchanged; the account was left uncompleted so its owner can test.
 - [x] Alphabetize church lists, remove generic family entries, rename the neutral choice Neither, and mark eligibility only at signup with account-persisted completion. Rule tests pass; real signed-in returning account shows no sticker or runtime errors. Fresh signup and cross-device completion were not exercised end-to-end.
-- [x] Make the "Profile updated!" sticker dismiss itself after 4 seconds. One duration test passes; signed-in timing check shows it closing at ~4s against the ~5s default sticker, build clean.
+- [x] Make the "Profile updated!" sticker dismiss itself after 3 seconds (one second shorter than before).
 ## Category icon styles
 - [x] Rearrange Coptic Saints top and middle rows with the four supplied images; replace Righteous Laypeople. All seven delivered tiles verified signed in, previous artwork preserved, 15 tests pass, build clean.
 - [x] Add a far-right Icons dropdown to Saints and Prayers with shared persistent Original, Tewahedo, Coptic and Byzantine choices.

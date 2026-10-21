@@ -8,6 +8,10 @@ export const ORIENTATION_SIGNUP_METADATA = { orientation_onboarding_status: "pen
 export function shouldShowOrientationOnboarding(metadata: Record<string, unknown> | undefined, locallyCompleted: boolean) {
   return !locallyCompleted && metadata?.orientation_onboarding_status !== "completed";
 }
+/** Device-wide language preferences cannot stand in for this account's first choice. */
+export function initialOrientationOnboardingStep(metadata: Record<string, unknown> | undefined, locallyCompleted: boolean): "language" | null {
+  return shouldShowOrientationOnboarding(metadata, locallyCompleted) ? "language" : null;
+}
 export function orientationChurchOptions(tradition: "eastern" | "oriental") {
   return ORTHODOX_BRANCHES
     .filter(branch => branch.tradition === tradition && branch.value !== "Eastern Orthodox" && branch.value !== "Oriental Orthodox")
