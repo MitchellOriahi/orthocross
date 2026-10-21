@@ -724,17 +724,34 @@ export const Journal = () => {
               <h3 className="flex-1 min-w-0 truncate font-semibold" translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
                 {selectedFolderId === ALL_NOTES ? 'All Notes' : folders.find(folder => folder.id === selectedFolderId)?.name ?? 'Notes'}
               </h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={selectedFolderId || selectedNoteId || showSidebar ? handleJournalHome : handleClose}
-                aria-label="Close"
-              >
-                <X className="h-5 w-5" />
-              </Button>
+              {(!isMobile || (!selectedFolderId && !selectedNoteId)) && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={selectedFolderId || selectedNoteId || showSidebar ? handleJournalHome : handleClose}
+                  aria-label="Close"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              )}
             </div>
-            
-            <div className="flex-1 min-h-0 min-w-0 flex overflow-hidden">
+
+            <div
+              className="flex-1 min-h-0 min-w-0 flex overflow-hidden"
+              onTouchStart={(e) => {
+                const t = e.touches[0];
+                touchStartRef.current = { x: t.clientX, y: t.clientY };
+              }}
+              onTouchEnd={(e) => {
+                const start = touchStartRef.current;
+                touchStartRef.current = null;
+                if (!start) return;
+                const t = e.changedTouches[0];
+                if (shouldSwipeBack(start, { x: t.clientX, y: t.clientY })) {
+                  getSwipeBack()?.();
+                }
+              }}
+            >
               {/* Desktop: Always show sidebar */}
               {/* Mobile: Show sidebar only when toggled */}
               {(!isMobile || showSidebar) && (
