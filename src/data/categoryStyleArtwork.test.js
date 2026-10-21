@@ -75,7 +75,7 @@ test("Tewahedo Saints top row shows the supplied Annunciation and Theotokos phot
   const angels = categoryArtwork("saints", "tewahedo", "angels");
   const biblical = categoryArtwork("saints", "tewahedo", "biblical");
   expect(angels.image_url).toContain("tewahedo-annunciation");
-  expect(biblical.image_url).toContain("tewahedo-theotokos-sq3");
+  expect(biblical.image_url).toContain("tewahedo-theotokos-sq4");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
