@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useLanguage, hasChosenLanguage } from "@/contexts/LanguageContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageList } from "@/components/LanguageButton";
 import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
-import { applyBranchPreferences, hasStoredOrientation, orientationForBranch, setOrientation, orientationChurchOptions, shouldShowOrientationOnboarding } from "@/lib/orthodoxOrientation";
+import { applyBranchPreferences, hasStoredOrientation, orientationForBranch, setOrientation, orientationChurchOptions, initialOrientationOnboardingStep } from "@/lib/orthodoxOrientation";
 
 type Step = "language" | "family" | "oriental" | "eastern";
 const doneKey = (id: string) => `orientation-onboarded:${id}`;
@@ -39,7 +39,8 @@ export function OrientationOnboarding() {
       if (cancelled || error) return;
       if (data?.branch && !hasStoredOrientation()) applyBranchPreferences(data.branch);
       // A saved branch is not evidence that this account has seen the sticker.
-      if (shouldShowOrientationOnboarding(user.user_metadata, false)) { setStep(hasChosenLanguage() ? "family" : "language"); setOpen(true); }
+      const initialStep = initialOrientationOnboardingStep(user.user_metadata, false);
+      if (initialStep) { setStep(initialStep); setOpen(true); }
     });
     return () => { cancelled = true; };
   }, [user, tutorialDone]);

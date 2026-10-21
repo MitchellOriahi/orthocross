@@ -32,7 +32,7 @@
 - Resolve island lesson and category artwork via the shared provenance registry with credits; preserve originals; transparent panels render borderless at stable dimensions. A panel too tall for its square tile is fitted whole with a slight vertical compression, never cropped away or padded with flat bands.
 - Derive tradition defaults (history, Saints/Prayers filters, icons) from one orientation store; branch edits and onboarding write through it for consistency.
 - Store the chosen category icon style per section (saints, prayers) so a manual pick in one never moves the other; a church choice writes both, and the older single-style key migrates into both on first read.
-- Gate tradition onboarding by account/legacy completion, not branch or signup flags; include unseen accounts without cross-device repeats.
+- Gate onboarding by account completion, not device language or branch; eligible accounts choose language before tradition, without cross-device repeats.
 - Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
 - LanguageContext sets lang/dir/fallback; reveal switches after React and DOM translation settle.
