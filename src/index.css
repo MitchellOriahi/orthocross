@@ -501,6 +501,23 @@ All colors MUST be HSL.
   margin: 0;
 }
 
+/* A finished drawing is shown small enough that the whole board fits on one
+   screen, so it can be seen without scrolling. Tapping it still opens the
+   full-size editor. Written as a rule (not just markup) so drawings saved
+   before this change are displayed the same way. */
+.media-container:has(> img[alt="Drawing"]) {
+  display: block;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.media-container img[alt="Drawing"] {
+  max-height: 45vh;
+  width: auto;
+}
+
 .media-action-btns button {
   display: flex !important;
   align-items: center;
