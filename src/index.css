@@ -873,3 +873,12 @@ html:not([lang="en"]) .language-list-fade > button { height: 3.5rem; min-height:
 .drawing-swatch-purple { background-color: hsl(var(--drawing-purple)); }
 .drawing-swatch-orange { background-color: hsl(var(--drawing-orange)); }
 .drawing-swatch-pink { background-color: hsl(var(--drawing-pink)); }
+
+/* Top-bar icon row: every icon's highlight tile stays clear of the page title on its
+   left and of the profile circle on its right, at phone width and in every language. */
+.header-icon-nav { gap: 0.25rem; flex-shrink: 0; }
+.header-icon-nav > button:not([data-profile-trigger]) { width: 2.25rem; height: 2.25rem; }
+/* The title shortens if it must; it never pushes the icons out of their positions. */
+.header-title-group { min-width: 0; }
+.header-title-group > div:first-of-type { flex-shrink: 0; }
+.header-title-group h1 { min-width: 0; padding-inline-end: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

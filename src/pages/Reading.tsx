@@ -856,13 +856,13 @@ const Reading = () => {
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="header-title-group flex items-center gap-3">
               <Button variant="ghost" onClick={() => navigate('/index')}>
                 <ArrowLeft className="w-5 h-5 mr-2" />
                 Back
               </Button>
             </div>
-            <nav className="flex items-center gap-1">
+            <nav className="header-icon-nav flex items-center">
               <DonateButton />
               <LanguageButton />
               <ThemeToggle />

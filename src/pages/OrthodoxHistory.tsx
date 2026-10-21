@@ -184,13 +184,13 @@ const OrthodoxHistory = () => {
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="header-title-group flex items-center gap-3">
               <div className={`w-12 h-12 flex items-center justify-center p-1.5 ${theme === 'light' ? 'bg-black rounded-2xl' : 'bg-background rounded-lg'}`}>
                 <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
               </div>
               <h1 className="text-2xl font-bold">History</h1>
             </div>
-            <nav className="flex items-center gap-1">
+            <nav className="header-icon-nav flex items-center">
               <DonateButton />
               <LanguageButton />
               <ThemeToggle />
