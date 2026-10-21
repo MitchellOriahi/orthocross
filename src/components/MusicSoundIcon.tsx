@@ -1,19 +1,42 @@
-import { MegaphoneOff } from "lucide-react";
+import { useId } from "react";
 
 /**
- * Music state glyph.
+ * Music state glyph, drawn to match the supplied "max volume" megaphone:
+ * a solid horn (rounded base, flared cone, flat vertical mouth, sharp tips)
+ * with three thick concentric sound bands cutting it square.
  *
- * Playing: the standard megaphone with sound lines coming out of its mouth.
- * Muted: the megaphone with a line through it.
+ * Playing: horn + three sound bands.
+ * Muted:   the same horn and bands with a line through them. The line is cut
+ *          out of the shapes with a mask rather than painted over them, so the
+ *          gap stays clean on any card colour or theme.
  *
- * The megaphone body and its handle are Lucide's own paths, scaled and nudged so
- * the mouth sits where Lucide's speaker cone ends. That lets the two sound lines
- * be Lucide's Volume2 arcs unchanged, so both parts share one stroke weight and
- * one visual language.
+ * The reference is wider than it is tall, so the drawing keeps its own
+ * proportions inside the square box instead of being stretched to fill it.
  */
-const MEGAPHONE_SCALE = 0.68;
-const MEGAPHONE_SHIFT_X = -0.78;
-const MEGAPHONE_SHIFT_Y = 3.84;
+const HORN =
+  "M2.5 11 A2 2 0 0 1 4.5 9 H6 L11 4.5 V19.5 L6 15 H4.5 A2 2 0 0 1 2.5 13 V11 Z";
+
+// Sound bands: concentric about the mouth centre (11, 12), shortest innermost.
+const SOUND_BANDS = [
+  "M14.04 8.96 A4.3 4.3 0 0 1 14.04 15.04",
+  "M15.59 6.72 A7 7 0 0 1 15.59 17.28",
+  "M16.97 4.36 A9.7 9.7 0 0 1 16.97 19.64",
+];
+
+const SLASH = "M4 4 L20 20";
+const BAND_WEIGHT = 1.9;
+const CUT_WEIGHT = 3.6;
+
+function Megaphone({ color }: { color: string }) {
+  return (
+    <g fill={color} stroke={color} strokeWidth={BAND_WEIGHT}>
+      <path d={HORN} stroke="none" />
+      {SOUND_BANDS.map((band) => (
+        <path key={band} d={band} fill="none" />
+      ))}
+    </g>
+  );
+}
 
 export function MusicSoundIcon({
   playing,
@@ -22,33 +45,33 @@ export function MusicSoundIcon({
   playing: boolean;
   className?: string;
 }) {
-  if (!playing) {
-    return <MegaphoneOff className={className} />;
-  }
+  const cutId = `megaphone-cut-${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
 
   return (
     <svg
       viewBox="0 0 24 24"
       width="1em"
       height="1em"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
       className={className}
+      fill="none"
       aria-hidden="true"
       focusable="false"
     >
-      <g
-        transform={`translate(${MEGAPHONE_SHIFT_X} ${MEGAPHONE_SHIFT_Y}) scale(${MEGAPHONE_SCALE})`}
-        strokeWidth={2 / MEGAPHONE_SCALE}
-      >
-        <path d="m3 11 18-5v12L3 14v-3z" />
-        <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
-      </g>
-      <path d="M16 9a5 5 0 0 1 0 6" />
-      <path d="M19.364 18.364a9 9 0 0 0 0-12.728" />
+      {playing ? (
+        <Megaphone color="currentColor" />
+      ) : (
+        <>
+          <mask id={cutId}>
+            <rect width="24" height="24" fill="black" />
+            <Megaphone color="white" />
+            <path d={SLASH} stroke="black" strokeWidth={CUT_WEIGHT} fill="none" />
+          </mask>
+          <g mask={`url(#${cutId})`}>
+            <Megaphone color="currentColor" />
+          </g>
+          <path d={SLASH} stroke="currentColor" strokeWidth={BAND_WEIGHT} fill="none" />
+        </>
+      )}
     </svg>
   );
 }
