@@ -10,9 +10,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFoo
 import { useToast } from '@/hooks/use-toast';
 
 import { supabase } from '@/integrations/supabase/client';
-import orthodoxCrossBlack from '@/assets/orthodox-cross-black-new.png';
-import orthodoxCrossWhite from '@/assets/orthodox-cross-white-new.png';
-import { useTheme } from 'next-themes';
+import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import { z } from 'zod';
 import { Eye, EyeOff } from 'lucide-react';
 import { MusicSoundIcon } from '@/components/MusicSoundIcon';
@@ -43,8 +41,6 @@ const Auth = () => {
   const { signIn, signUp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const { isPlaying, toggleMusic } = useMusic();
-  const { theme } = useTheme();
-  const crossLogo = theme === 'dark' ? orthodoxCrossWhite : orthodoxCrossBlack;
   
   const navigate = useNavigate();
 
@@ -232,7 +228,9 @@ const Auth = () => {
           <MusicSoundIcon playing={isPlaying} className="h-4 w-4" />
         </button>
         <CardHeader className="text-center pt-8 sm:pt-6">
-          <img src={crossLogo} alt="OrthoCross" className="mx-auto mb-4 block h-16 w-auto object-contain" />
+          <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-foreground p-2 shadow-lg dark:bg-card">
+            <img src={orthodoxCross} alt="OrthoCross" className="h-full w-full object-contain" />
+          </div>
           <CardTitle className="text-2xl">Welcome to OrthoCross</CardTitle>
           <CardDescription>Sign in or create an account to continue</CardDescription>
         </CardHeader>
