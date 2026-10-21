@@ -250,6 +250,8 @@ export const FastingCalendar = () => {
           selectedTradition={selectedTradition}
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
+          onPreviousMonth={handlePreviousMonth}
+          onNextMonth={handleNextMonth}
           calendarSystem={calendarSystem}
         />
       )}
