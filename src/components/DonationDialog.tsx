@@ -268,7 +268,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           )}
           <p className="text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>
 
-          <div className="flex flex-col items-center gap-3">
+          <div className="relative flex flex-col items-center gap-3">
             <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               <img src={giftTier ? TIER_ICONS[giftTier.key] : GIFT_CROSS_ICON} alt={giftTier ? giftTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
             </div>
@@ -277,6 +277,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               <p className="text-xs text-muted-foreground" data-no-translate>{tr("About {amount} a month").replace("{amount}", money(effectiveAmount / 12))}</p>
             )}
             <p className="text-sm text-muted-foreground text-center">{tr(effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone.")}</p>
+            {!isNative && <DonationCurrencyEstimate amount={effectiveAmount} />}
           </div>
 
           {(isNative || !oneTime) && (
