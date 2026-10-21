@@ -90,7 +90,8 @@ export async function sendThankYouOnce(admin: Admin, donationId: string) {
     .select("id, user_id, amount")
     .maybeSingle();
   if (!claimed) return;
-
+  // The gift being thanked is already in the table, so its ordinal counts prior gifts
+  const ordinal = await donationOrdinal(admin, claimed.user_id);
   const apiKey = Deno.env.get("RESEND_API_KEY");
   if (!apiKey) return;
   const { data: u } = await admin.auth.admin.getUserById(claimed.user_id);
