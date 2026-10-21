@@ -881,4 +881,4 @@ html:not([lang="en"]) .language-list-fade > button { height: 3.5rem; min-height:
 /* The title shortens if it must; it never pushes the icons out of their positions. */
 .header-title-group { min-width: 0; }
 .header-title-group > div:first-of-type { flex-shrink: 0; }
-.header-title-group h1 { min-width: 0; padding-right: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.header-title-group h1 { min-width: 0; padding-inline-end: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

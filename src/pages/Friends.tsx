@@ -822,7 +822,7 @@ export default function Friends() {
               </Button>
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon" data-profile-trigger aria-label="Edit profile" className="ml-2 rounded-full p-0 h-12 w-12">
+                  <Button variant="ghost" size="icon" data-profile-trigger aria-label="Edit profile" className="ms-2 rounded-full p-0 h-12 w-12">
                     <Avatar className={`h-12 w-12 cursor-pointer${profileDonorTier ? ` donor-avatar-ring donor-tier-${profileDonorTier}` : ""}`}>
                       <AvatarImage src={profile?.profile_picture_url || undefined} />
                       <AvatarFallback>{getUserInitials()}</AvatarFallback>
