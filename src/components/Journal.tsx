@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, Menu, Play, Pause, Volume2, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
-import { ALL_NOTES, notesInFolder, newNoteFolder } from './journal/folderScope';
+import { ALL_NOTES, notesInFolder, newNoteFolder, selectionAfterExit } from './journal/folderScope';
 import { MoveNoteMenu } from './journal/MoveNoteMenu';
 import { isJournalViewMode, journalViewKey, resolveJournalView } from './journal/viewPreference';
 
@@ -226,10 +226,17 @@ export const Journal = () => {
     setIsNoteExpanded(false);
   };
 
+  const clearExitedSelection = (destination: 'notes' | 'folders' | 'home') => {
+    const selection = selectionAfterExit(destination, selectedFolderId);
+    setSelectedNoteId(selection.noteId);
+    setSelectedFolderId(selection.folderId);
+  };
+
   const handleBackToFolders = async () => {
     if (!await saveCurrentNote()) return;
     discardUntouchedDraft();
-    setSelectedNoteId(null);
+    clearExitedSelection('folders');
+    setSearchQuery('');
     setIsNoteExpanded(false);
     setShowNotesList(true);
     setShowSidebar(true);
@@ -238,8 +245,7 @@ export const Journal = () => {
   const handleJournalHome = async () => {
     if (!await saveCurrentNote()) return;
     discardUntouchedDraft();
-    setSelectedNoteId(null);
-    setSelectedFolderId(null);
+    clearExitedSelection('home');
     setSearchQuery('');
     setIsNoteExpanded(false);
     setShowNotesList(true);
@@ -461,6 +467,8 @@ export const Journal = () => {
   const handleClose = async () => {
     if (!await saveCurrentNote()) return;
     discardUntouchedDraft();
+    clearExitedSelection('home');
+    setSearchQuery('');
     setIsFullScreen(false);
     setIsNoteExpanded(false);
     setShowSidebar(false);
@@ -665,7 +673,7 @@ export const Journal = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={async () => { if (!await saveCurrentNote()) return; discardUntouchedDraft(); setShowNotesList(true); }}
+                  onClick={async () => { if (!await saveCurrentNote()) return; discardUntouchedDraft(); clearExitedSelection('notes'); setShowNotesList(true); }}
                   className="mr-2"
                   aria-label="Back to notes"
                 >
@@ -739,7 +747,6 @@ export const Journal = () => {
                   )}
                   <JournalSidebar
                     folders={folders.map(folder => ({ ...folder, noteCount: notesInFolder(notes, folder.id).length }))}
-                    generalNoteCount={notesInFolder(notes, null).length}
                     totalNoteCount={notes.length}
                     selectedFolderId={selectedFolderId}
                     onFolderSelect={handleFolderSelect}

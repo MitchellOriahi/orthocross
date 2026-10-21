@@ -1,5 +1,6 @@
 # Prayers category browser
 ## Journal folder organization
+- [x] Remove redundant Notes folder and clear folder/note selection on exit. Nineteen tests pass; signed-in folder Back, note Back and X verified with no retained highlights or runtime errors; temporary records removed; preview build clean.
 - [x] Folder Back returns to folders, X returns to general Journal notes, and manual list/gallery choices persist without late reads overwriting them. Sixteen tests pass; signed-in navigation and both views verified across folders and reload; temporary folder removed; no runtime errors; preview build clean.
 - [x] Separate general notes from named folders; retain All Notes, folder counts, in-folder creation and moving notes. Eleven tests pass; signed-in create/move/reload/delete flow verified at 393×681 with no runtime errors; deleting folders preserves their notes; temporary records removed; preview build clean.
 ## Translation accuracy audit

@@ -1,4 +1,4 @@
-import { Plus, Folder, FolderPlus, MoreVertical, Trash2, Edit2 } from "lucide-react";
+import { Folder, FolderPlus, MoreVertical, Trash2, Edit2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,7 +19,6 @@ interface JournalFolder {
 interface JournalSidebarProps {
   folders: JournalFolder[];
   selectedFolderId: string | null;
-  generalNoteCount: number;
   totalNoteCount: number;
   onFolderSelect: (folderId: string | null) => void;
   onFolderCreate: () => void;
@@ -30,7 +29,6 @@ interface JournalSidebarProps {
 export const JournalSidebar = ({
   folders,
   selectedFolderId,
-  generalNoteCount,
   totalNoteCount,
   onFolderSelect,
   onFolderCreate,
@@ -64,21 +62,6 @@ export const JournalSidebar = ({
             <span className="flex-1 text-start">All Notes</span>
             <span className="text-xs text-muted-foreground">{totalNoteCount}</span>
           </Button>
-          <Button
-            variant="ghost"
-            onClick={() => onFolderSelect(null)}
-            className={cn(
-              "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors",
-              selectedFolderId === null
-                ? "bg-accent text-accent-foreground"
-                : "hover:bg-accent/50"
-            )}
-          >
-            <Folder className="h-4 w-4 shrink-0" />
-            <span className="flex-1 text-start">Notes</span>
-            <span className="text-xs text-muted-foreground">{generalNoteCount}</span>
-          </Button>
-
           {/* Folders */}
           {folders.map((folder) => (
             <div

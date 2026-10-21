@@ -1,8 +1,17 @@
 import { describe, expect, it } from 'bun:test';
-import { ALL_NOTES, notesInFolder, newNoteFolder } from './folderScope';
+import { ALL_NOTES, notesInFolder, newNoteFolder, selectionAfterExit } from './folderScope';
 
 const notes = [{ id: 'general', folder_id: null }, { id: 'prayer', folder_id: 'prayers' }, { id: 'study', folder_id: 'study' }];
 describe('Journal folder separation', () => {
+  it('leaving a folder clears both selections', () => {
+    expect(selectionAfterExit('folders', 'prayers')).toEqual({ noteId: null, folderId: null });
+  });
+  it('leaving a note clears its selection while retaining its folder', () => {
+    expect(selectionAfterExit('notes', 'prayers')).toEqual({ noteId: null, folderId: 'prayers' });
+  });
+  it('returning home clears both selections', () => {
+    expect(selectionAfterExit('home', 'prayers')).toEqual({ noteId: null, folderId: null });
+  });
   it('general notes exclude notes in named folders', () => {
     expect(notesInFolder(notes, null).map(n => n.id)).toEqual(['general']);
   });
