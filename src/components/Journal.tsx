@@ -585,14 +585,29 @@ export const Journal = () => {
                 </Button>
               )}
               {isMobile && !showSidebar && showNotesList && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowSidebar(true)}
-                  className="mr-2"
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
+                selectedFolderId ? (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSelectedFolderId(null)}
+                    className="mr-2"
+                    aria-label="Back to all notes"
+                    title="Back to all notes"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowSidebar(true)}
+                    className="mr-2"
+                    aria-label="Open folders"
+                    title="Folders"
+                  >
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                )
               )}
               <div className="flex-1" />
               <Button
