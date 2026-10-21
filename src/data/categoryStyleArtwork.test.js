@@ -375,8 +375,8 @@ test("prayer tiles credit the artists of the supplied artwork", () => {
     expect(coptic.image_source).toBe(MAKARY_PAGE);
     // The Tewahedo panels are Abba Yahudah's PROTECTION, oil on canvas, linked to its post.
     const tewahedo = categoryArtwork("prayers", "tewahedo", category.id);
-    if (["foundational", "daily"].includes(category.id)) {
-      expect(tewahedo.image_author).toContain("processional cross");
+    if (["foundational", "daily", "christ-saints", "communion"].includes(category.id)) {
+      expect(tewahedo.image_author).toContain("cross");
       expect(tewahedo.image_source).toBe("");
     } else {
       expect(tewahedo.image_author).toContain(YAHUDAH);
