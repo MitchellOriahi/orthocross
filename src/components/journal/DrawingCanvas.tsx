@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
-import { Canvas as FabricCanvas, PencilBrush, FabricImage } from "fabric";
+import { Canvas as FabricCanvas, PencilBrush, FabricImage, type FabricObject } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Eraser, Pencil, Trash2, Palette, MousePointer2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -33,6 +33,20 @@ const BRUSH_COLORS = [
   { name: "Orange", value: "#f97316" },
   { name: "Pink", value: "#ec4899" },
 ];
+
+/** Flattens the transparent drawing onto white paper as a PNG. */
+const exportDrawing = (canvas: FabricCanvas) => {
+  const src = canvas.toCanvasElement(1);
+  const out = document.createElement("canvas");
+  out.width = src.width;
+  out.height = src.height;
+  const ctx = out.getContext("2d");
+  if (!ctx) return canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 });
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, out.width, out.height);
+  ctx.drawImage(src, 0, 0);
+  return out.toDataURL("image/png");
+};
 
 const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forwardedRef }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -130,7 +144,7 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
       ) {
         dirtyRef.current = false;
         onSaveRef.current?.(
-          leaving.toDataURL({ format: "png", quality: 1, multiplier: 1 }),
+          exportDrawing(leaving),
         );
       }
       canvas?.dispose();
@@ -205,13 +219,13 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
         const canvas = fabricCanvas;
         if (!hasDrawingToSave({ canvas, dirty: dirtyRef.current })) return null;
         dirtyRef.current = false;
-        return canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 });
+        return exportDrawing(canvas);
       },
       save: () => {
         const canvas = fabricCanvas;
         if (!shouldAutoSaveDrawing({ canvas, onSave, dirty: dirtyRef.current })) return;
         dirtyRef.current = false;
-        onSave?.(canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 }));
+        onSave?.(exportDrawing(canvas));
       },
     }),
     [fabricCanvas, onSave],
