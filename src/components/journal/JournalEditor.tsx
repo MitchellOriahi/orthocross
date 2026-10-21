@@ -580,7 +580,7 @@ export const JournalEditor = ({
 
       {/* Image/Video Upload Sheet */}
       <Sheet open={showAttachments} onOpenChange={setShowAttachments}>
-        <SheetContent side="bottom" className="h-[30vh] w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
+        <SheetContent side="bottom" className="h-[30dvh] w-full p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
           <SheetTitle className="sr-only">Insert Media</SheetTitle>
           <div className="h-full flex flex-col items-center justify-center p-4">
             <input
@@ -605,7 +605,7 @@ export const JournalEditor = ({
 
       {/* Voice Recorder Sheet */}
       <Sheet open={showVoiceRecorder} onOpenChange={setShowVoiceRecorder}>
-        <SheetContent side="bottom" className="h-[40vh] w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
+        <SheetContent side="bottom" className="h-[40dvh] w-full p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
           <SheetTitle className="sr-only">Voice Recorder</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="p-3 border-b border-border">
