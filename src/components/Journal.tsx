@@ -733,7 +733,7 @@ export const Journal = () => {
                   size="icon"
                   onClick={handleClose}
                   aria-label="Close"
-                  className="h-11 w-11 shrink-0 ms-2"
+                  className="h-11 w-11 shrink-0 ms-2 rounded-xl border border-border/60 bg-muted/70 hover:bg-muted"
                 >
                   <X className="h-6 w-6" />
                 </Button>
