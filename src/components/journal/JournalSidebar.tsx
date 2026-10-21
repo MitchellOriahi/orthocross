@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { ALL_NOTES } from './folderScope';
 
 interface JournalFolder {
   id: string;
@@ -18,6 +19,8 @@ interface JournalFolder {
 interface JournalSidebarProps {
   folders: JournalFolder[];
   selectedFolderId: string | null;
+  generalNoteCount: number;
+  totalNoteCount: number;
   onFolderSelect: (folderId: string | null) => void;
   onFolderCreate: () => void;
   onFolderDelete: (folderId: string) => void;
@@ -27,6 +30,8 @@ interface JournalSidebarProps {
 export const JournalSidebar = ({
   folders,
   selectedFolderId,
+  generalNoteCount,
+  totalNoteCount,
   onFolderSelect,
   onFolderCreate,
   onFolderDelete,
@@ -41,6 +46,8 @@ export const JournalSidebar = ({
           size="icon"
           className="h-7 w-7"
           onClick={onFolderCreate}
+          aria-label="New folder"
+          title="New folder"
         >
           <FolderPlus className="h-4 w-4" />
         </Button>
@@ -48,8 +55,17 @@ export const JournalSidebar = ({
       
       <ScrollArea className="flex-1">
         <div className="p-2 space-y-1">
-          {/* All Notes */}
-          <button
+          <Button
+            variant="ghost"
+            onClick={() => onFolderSelect(ALL_NOTES)}
+            className={cn("w-full justify-start gap-2 px-3", selectedFolderId === ALL_NOTES && "bg-accent text-accent-foreground")}
+          >
+            <Folder className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-start">All Notes</span>
+            <span className="text-xs text-muted-foreground">{totalNoteCount}</span>
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => onFolderSelect(null)}
             className={cn(
               "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors",
@@ -58,9 +74,10 @@ export const JournalSidebar = ({
                 : "hover:bg-accent/50"
             )}
           >
-            <Folder className="h-4 w-4" />
-            <span>All Notes</span>
-          </button>
+            <Folder className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-start">Notes</span>
+            <span className="text-xs text-muted-foreground">{generalNoteCount}</span>
+          </Button>
 
           {/* Folders */}
           {folders.map((folder) => (
@@ -73,25 +90,27 @@ export const JournalSidebar = ({
                   : "hover:bg-accent/50"
               )}
             >
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => onFolderSelect(folder.id)}
-                className="flex-1 flex items-center gap-2 px-3 py-2 text-sm"
+                className="flex-1 min-w-0 h-auto justify-start gap-2 px-3 py-2 text-sm"
               >
-                <Folder className="h-4 w-4" />
-                <span className="flex-1 text-left truncate">{folder.name}</span>
+                <Folder className="h-4 w-4 shrink-0" />
+                <span className="flex-1 text-start truncate" translate="no">{folder.name}</span>
                 {folder.noteCount !== undefined && (
                   <span className="text-xs text-muted-foreground">
                     {folder.noteCount}
                   </span>
                 )}
-              </button>
+              </Button>
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 opacity-0 group-hover:opacity-100 mr-1"
+                    className="h-7 w-7 shrink-0 mr-1"
+                    aria-label={`Folder options: ${folder.name}`}
                   >
                     <MoreVertical className="h-3 w-3" />
                   </Button>
