@@ -1,8 +1,8 @@
 # Prayers category browser
 ## Welcome and calendar tradition
-- [ ] Add the question mark and a subtle matching glow to Get Started.
-- [ ] Keep Eastern choices blue in every language.
-- [ ] Default the calendar to the chosen family and preserve undecided users' manual calendar choice.
+- [x] Add the question mark while preserving translated titles, and a subtle matching glow to Get Started.
+- [x] Keep Eastern choices blue, including hovered buttons after language selection; shared styles verified once in both themes.
+- [x] Default the calendar to the saved profile family and preserve account-keyed undecided choices. Twenty-eight focused tests passed; one signed-in calendar switch/grid check passed without runtime errors.
 ## Journal folder organization
 - [x] Name the nested-folder option "Subfolder", enlarge the Folders title and exit X, and make Edit and New Folder larger and clearly separated. Signed-in checks confirm the menu reads Subfolder, the title is 24px with all 16 languages fitting its slot, and Edit/New Folder/exit are 44px targets with 8px gaps and no edge overflow; 51 tests pass, build clean.
 - [x] Indent the Folders title so it is no longer flush with the screen edge; it now starts at the same 20px as the folder rows' icons, on both left-to-right and right-to-left screens; 51 tests pass, build clean.
