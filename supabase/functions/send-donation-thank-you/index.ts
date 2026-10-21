@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { donationOrdinal, pickCreatorNoteIndex, renderCreatorNote } from "../_shared/donorStats.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -82,6 +83,13 @@ serve(async (req) => {
 
     const userName = profile?.display_name || profile?.username || "Beloved Friend";
 
+    // Repeat donors see a different personal note each time (counted server-side)
+    const adminClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+    const ordinal = await donationOrdinal(adminClient, user.id);
+
     // Select a random Bible verse
     const randomVerse = BIBLE_VERSES[Math.floor(Math.random() * BIBLE_VERSES.length)];
 
@@ -147,12 +155,7 @@ serve(async (req) => {
               <p>With deepest gratitude and love in Christ,<br>
               <strong>The OrthoCross Team</strong></p>
 
-              <div style="border-top:1px solid #e5d9cc;margin-top:24px;padding-top:18px">
-                <p style="color:#8b4513;font-weight:bold">A personal note from the creator of OrthoCross</p>
-                <p>I want to thank you personally. I built OrthoCross on my own, and keeping it running costs real money every month. Your gift is not just a number to me. It helps carry this work forward and lets me keep the app free for everyone who is seeking Christ.</p>
-                <p>Thank you for believing in this, and in me. I will keep you in my prayers.</p>
-                <p>With heartfelt gratitude in Christ,<br>The creator of OrthoCross</p>
-              </div>
+              ${renderCreatorNote(pickCreatorNoteIndex(ordinal), "light")}
               
               <p class="heart">❤️ ☦ ❤️</p>
             </div>
