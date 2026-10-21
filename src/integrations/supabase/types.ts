@@ -898,6 +898,7 @@ export type Database = {
           id: string
           month_date: string
           passed_by_user_id: string
+          push_sent_at: string | null
           read: boolean
           user_id: string
         }
@@ -906,6 +907,7 @@ export type Database = {
           id?: string
           month_date: string
           passed_by_user_id: string
+          push_sent_at?: string | null
           read?: boolean
           user_id: string
         }
@@ -914,6 +916,7 @@ export type Database = {
           id?: string
           month_date?: string
           passed_by_user_id?: string
+          push_sent_at?: string | null
           read?: boolean
           user_id?: string
         }
@@ -1460,6 +1463,21 @@ export type Database = {
           read_at?: string
           saint_id?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      scheduler_secrets: {
+        Row: {
+          name: string
+          secret: string
+        }
+        Insert: {
+          name: string
+          secret?: string
+        }
+        Update: {
+          name?: string
+          secret?: string
         }
         Relationships: []
       }
