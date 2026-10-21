@@ -30,7 +30,7 @@ test("Original leaves all existing category art untouched", () => {
 });
 
 test("Tewahedo prayers use all six supplied crosses in upload order", () => {
-  const placed = { foundational: "gold-cross-cut.png", daily: "copper-cross-cut.png", "christ-saints": "silver-cross-cut.png", communion: "brass-cross-cut.png", occasions: "lattice-cross-cut.png", psalms: "loop-cross-cut.png" };
+  const placed = { foundational: "gold-cross-matched.png", daily: "copper-cross-matched.png", "christ-saints": "silver-cross-cut.png", communion: "brass-cross-cut.png", occasions: "lattice-cross-cut.png", psalms: "loop-cross-cut.png" };
   const categories = ["foundational", "daily", "christ-saints", "communion", "occasions", "psalms"];
   const urls = categories.map(category => {
     const artwork = categoryArtwork("prayers", "tewahedo", category);

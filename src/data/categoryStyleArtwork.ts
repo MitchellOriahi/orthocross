@@ -61,8 +61,8 @@ import tewahedo_prayer_christ_saints from "@/assets/category-styles/tewahedo-pra
 import tewahedo_prayer_communion from "@/assets/category-styles/tewahedo-prayer-communion-sq.jpg.asset.json";
 import tewahedo_prayer_occasions from "@/assets/category-styles/tewahedo-prayer-occasions-sq.jpg.asset.json";
 import tewahedo_prayer_psalms from "@/assets/category-styles/tewahedo-prayer-psalms-sq.jpg.asset.json";
-import tewahedo_prayer_gold_cross from "@/assets/category-styles/tewahedo-prayer-gold-cross-cut.png.asset.json";
-import tewahedo_prayer_copper_cross from "@/assets/category-styles/tewahedo-prayer-copper-cross-cut.png.asset.json";
+import tewahedo_prayer_gold_cross from "@/assets/category-styles/tewahedo-prayer-gold-cross-matched.png.asset.json";
+import tewahedo_prayer_copper_cross from "@/assets/category-styles/tewahedo-prayer-copper-cross-matched.png.asset.json";
 import tewahedo_prayer_silver_cross from "@/assets/category-styles/tewahedo-prayer-silver-cross-cut.png.asset.json";
 import tewahedo_prayer_brass_cross from "@/assets/category-styles/tewahedo-prayer-brass-cross-cut.png.asset.json";
 import tewahedo_prayer_lattice_cross from "@/assets/category-styles/tewahedo-prayer-lattice-cross-cut.png.asset.json";
