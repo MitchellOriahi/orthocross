@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { ALL_NOTES, defaultNotesFolder, isDefaultNotesFolder } from './folderScope';
+import { ALL_NOTES, defaultNotesFolder, foldersExcludingDefault, isDefaultNotesFolder } from './folderScope';
 import { folderSiblings, TreeFolder } from './folderTree';
 
 interface JournalFolder extends TreeFolder { noteCount?: number; is_default?: boolean | null; }
@@ -51,7 +51,7 @@ export const JournalSidebar = ({ folders, selectedFolderId, totalNoteCount, edit
     </div>;
   };
   const renderFolders = (parentId: string | null, ancestors: string[] = []): React.ReactNode => {
-    const siblings = folderSiblings(folders, parentId).filter(folder => !ancestors.includes(folder.id) && !isDefaultNotesFolder(folder));
+    const siblings = folderSiblings(foldersExcludingDefault(folders), parentId).filter(folder => !ancestors.includes(folder.id));
     return siblings.map((folder, index) => <div key={folder.id}>
       {row(folder, siblings, index)}
       {hasChildren(folder.id) && isOpen(folder.id) && <div className="ms-3 border-s border-border ps-1">{renderFolders(folder.id, [...ancestors, folder.id])}</div>}
