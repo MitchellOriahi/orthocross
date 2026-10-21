@@ -168,7 +168,7 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
           <span className="sr-only">Select</span>
         </Button>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-[auto_auto_minmax(0,1fr)] items-center gap-2 min-w-0">
         <Popover open={showColorPicker} onOpenChange={setShowColorPicker}>
           <PopoverTrigger asChild>
             <Button variant="outline" className="h-11 shrink-0 px-3" aria-label="Pen colors" title="Pen colors">
