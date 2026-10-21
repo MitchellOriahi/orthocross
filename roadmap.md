@@ -36,7 +36,7 @@
 ## Profile identity tags
 - [x] Added searchable branch, patron saint and country pills beneath the profile sticker username; signed-in save/reload/clear flow verified, orange/blue/grey colors checked, five tests passed and build clean.
 ## Donation gift screen
-- [ ] Fix donation tier tap glitches while preserving the opening half-slider peek; verify all tier selections without resize errors.
+- [x] Fix donation tier tap glitches with scroll-independent sizing and deferred resize writes. All nine tier buttons selected their correct amounts with stable window height and no runtime errors; opening half-slider peek retained. Sixteen tests pass; build clean.
 - [x] Updated Acts quote and mission wording; added $1/$2/$5 with increasing Angel glow and clickable custom-tier previews. Fourteen tests and live amount/slider/portrait-selection checks pass; build clean. Hosted tier image delivery could not be verified in the local browser (asset URL did not load).
 ## Profile portraits
 - [ ] Keep successful profile portraits available through temporary image-request failures and navigation; verify saved-image recovery and monthly leaderboard edge-to-edge framing.
