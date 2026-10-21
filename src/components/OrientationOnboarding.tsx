@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageList } from "@/components/LanguageButton";
 import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
-import { applyBranchPreferences, hasStoredOrientation, orientationForBranch, setOrientation, orientationChurchOptions, initialOrientationOnboardingStep } from "@/lib/orthodoxOrientation";
+import { applyBranchPreferences, applyLanguageIconDefaults, hasStoredOrientation, orientationForBranch, setOrientation, orientationChurchOptions, initialOrientationOnboardingStep } from "@/lib/orthodoxOrientation";
 
 type Step = "language" | "family" | "oriental" | "eastern";
 const doneKey = (id: string) => `orientation-onboarded:${id}`;
@@ -17,7 +17,7 @@ const EASTERN = orientationChurchOptions("eastern");
 
 /** One-time sticker, including unseen existing accounts; completion follows the account. */
 export function OrientationOnboarding() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -25,6 +25,23 @@ export function OrientationOnboarding() {
   const [step, setStep] = useState<Step>("family");
   const [saving, setSaving] = useState(false);
   const [tutorialDone, setTutorialDone] = useState(() => localStorage.getItem("hasSeenTutorial") === "true");
+
+  const { data: identity, isSuccess: identityLoaded } = useQuery({
+    queryKey: ["profileIdentityTags", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data, error } = await supabase.from("profile_identity_tags")
+        .select("branch, patron_saint_id, country_code, age").eq("user_id", user.id).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 30000,
+  });
+
+  useEffect(() => {
+    if (user && identityLoaded) applyLanguageIconDefaults(language, identity?.branch);
+  }, [user?.id, identityLoaded, identity?.branch, language]);
 
   useEffect(() => {
     const onDone = () => setTutorialDone(true);

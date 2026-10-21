@@ -42,6 +42,24 @@ export function iconStyleForBranch(branch: string | null | undefined): CategoryI
   }
 }
 
+/** Closest available artwork family; this never assigns a religious identity. */
+export function iconStyleForLanguage(language: string | null | undefined): CategoryIconStyle {
+  switch (language) {
+    case "am": case "ti": return "tewahedo";
+    case "ar": case "hy": case "ml": return "coptic";
+    case "ru": case "uk": case "bg": case "sr": return "byzantine";
+    default: return "original";
+  }
+}
+
+export function applyLanguageIconDefaults(language: string | null | undefined, branch: string | null | undefined) {
+  if (branch && orientationForBranch(branch) !== "undecided") return;
+  const style = iconStyleForLanguage(language);
+  for (const scope of CATEGORY_ICON_SCOPES) {
+    if (!hasManualCategoryIconStyle(scope)) setCategoryIconStyle(scope, style);
+  }
+}
+
 let current: OrthodoxOrientation = "undecided";
 try { current = parseOrientation(localStorage.getItem(KEY)); } catch { /* storage unavailable */ }
 export function hasStoredOrientation() {

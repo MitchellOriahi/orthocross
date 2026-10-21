@@ -30,7 +30,7 @@
 - Schedule donation and rating prompts through one pure, tested coordinator (src/lib/promptScheduler) mounted only on the Board, so prompts never collide or interrupt reading.
 
 - Resolve island lesson and category artwork via the shared provenance registry with credits; preserve originals; transparent panels render borderless at stable dimensions. A panel too tall for its square tile is fitted whole with a slight vertical compression, never cropped away or padded with flat bands.
-- Derive tradition defaults (history, Saints/Prayers filters, icons) from one orientation store; branch edits and onboarding write through it for consistency.
+- Resolve branch and branchless-language icon defaults in the orientation store; shared identity queries guard language defaults and manual section picks.
 - Store the chosen category icon style per section (saints, prayers) so a manual pick in one never moves the other; a church choice writes both, and the older single-style key migrates into both on first read.
 - Gate onboarding by account completion, not device language or branch; eligible accounts choose language before tradition, without cross-device repeats.
 - Define auth context outside components to preserve identity during refresh.
