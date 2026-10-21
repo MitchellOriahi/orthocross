@@ -125,9 +125,9 @@ export const JournalEditor = ({
 
   // Native contenteditable typing inherits the surrounding mark. Insert plain
   // text outside it instead, preserving the highlighted text on either side.
-  const handleBeforeInput = (e: React.FormEvent<HTMLDivElement>) => {
+  const handleBeforeInput = (e: Event) => {
     if (highlightArmed) return;
-    const input = e.nativeEvent as InputEvent;
+    const input = e as InputEvent;
     if (input.inputType !== 'insertText' || !input.data || input.isComposing) return;
     const root = contentDivRef.current;
     const selection = window.getSelection();
@@ -157,6 +157,15 @@ export const JournalEditor = ({
     selection.addRange(range);
     commitContent();
   };
+
+  // React 18 synthesizes beforeInput from keypress, losing inputType; use the
+  // native cancelable event for keyboard and mobile text insertion instead.
+  useEffect(() => {
+    const root = contentDivRef.current;
+    if (!root) return;
+    root.addEventListener('beforeinput', handleBeforeInput);
+    return () => root.removeEventListener('beforeinput', handleBeforeInput);
+  }, [highlightArmed, onContentChange]);
 
   const handleHighlight = () => {
     if (!contentDivRef.current) return;
@@ -651,7 +660,6 @@ export const JournalEditor = ({
               contentEditable
               suppressContentEditableWarning
               onInput={handleContentInput}
-              onBeforeInput={handleBeforeInput}
               onClick={handleContentClick}
               dir="ltr"
               className={cn(
