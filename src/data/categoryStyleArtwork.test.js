@@ -6,7 +6,7 @@ import { SAINT_DISPLAY_ICONS, SAINT_CATEGORY_DISPLAY_ICON } from "./saintDisplay
 
 // Photographs and icons the app owner supplied. The Coptic ones are George
 // Makary's work and credit his page; the rest carry no online source link.
-const SUPPLIED = ["tewahedo-fathers", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-monastics", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
+const SUPPLIED = ["tewahedo-fathers", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-annunciation", "tewahedo-monastics", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
 const MAKARY = "https://www.copticicon.com/";
 
 test("Russian prayer top and middle rows use supplied panels in upload order and preserve Saints", () => {
@@ -71,11 +71,11 @@ test("each tradition covers all seven saint and six prayer categories with store
   }
 });
 
-test("Tewahedo Saints top row shows the supplied Archangel Michael host and Theotokos photographs", () => {
+test("Tewahedo Saints top row shows the supplied Annunciation and Theotokos photographs", () => {
   const angels = categoryArtwork("saints", "tewahedo", "angels");
   const biblical = categoryArtwork("saints", "tewahedo", "biblical");
-  expect(angels.image_url).toContain("tewahedo-angels-michael");
-  expect(biblical.image_url).toContain("tewahedo-theotokos");
+  expect(angels.image_url).toContain("tewahedo-annunciation");
+  expect(biblical.image_url).toContain("tewahedo-theotokos-sq2");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
@@ -108,9 +108,9 @@ test("Tewahedo Saints row below the middle shows the supplied Saint George and T
   }
 });
 
-test("the laypeople tile shows the supplied cherubim-grid photograph, square-cropped", () => {
+test("the laypeople tile shows the supplied seated righteous layman photograph, square-cropped", () => {
   const art = categoryArtwork("saints", "tewahedo", "laypeople");
-  expect(art.image_url).toContain("tewahedo-laypeople");
+  expect(art.image_url).toContain("tewahedo-laypeople-sq");
   expect(art.image_license).toBe("Supplied by the app owner");
   expect(art.image_source).toBe("");
   expect(art.image_license_url).toBe("");
