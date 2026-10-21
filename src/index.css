@@ -97,6 +97,7 @@ All colors MUST be HSL.
     /* Shadows */
     --shadow-sacred: 0 4px 20px -2px hsl(0 0% 0% / 0.3);
     --shadow-elevated: 0 8px 30px -5px hsl(0 0% 0% / 0.2);
+    --tutorial-start-glow: 0 0 10px 1px hsl(var(--primary) / 0.18), 0 0 22px 3px hsl(var(--primary) / 0.1);
 
     /* Animation timing */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -186,12 +187,12 @@ All colors MUST be HSL.
   .profile-branch-eastern { --profile-branch-color: var(--profile-branch-eastern); }
   .profile-branch-oriental { --profile-branch-color: var(--profile-branch-oriental); }
   .profile-branch-unaffiliated { --profile-branch-color: var(--profile-branch-unaffiliated); }
-  .profile-branch-eastern, .profile-branch-oriental, .profile-branch-unaffiliated {
+  .profile-branch-eastern.profile-branch-eastern, .profile-branch-oriental.profile-branch-oriental, .profile-branch-unaffiliated.profile-branch-unaffiliated {
     color: hsl(var(--profile-branch-color));
     border-color: hsl(var(--profile-branch-color) / 0.5);
     background-color: hsl(var(--profile-branch-color) / 0.12);
   }
-  .profile-branch-eastern:hover, .profile-branch-oriental:hover, .profile-branch-unaffiliated:hover {
+  .profile-branch-eastern.profile-branch-eastern:hover, .profile-branch-oriental.profile-branch-oriental:hover, .profile-branch-unaffiliated.profile-branch-unaffiliated:hover {
     color: hsl(var(--profile-branch-color));
     background-color: hsl(var(--profile-branch-color) / 0.2);
   }
@@ -205,6 +206,10 @@ All colors MUST be HSL.
 
   .shadow-sacred {
     box-shadow: var(--shadow-sacred);
+  }
+
+  .tutorial-start-glow.tutorial-start-glow {
+    box-shadow: var(--shadow-sacred), var(--tutorial-start-glow);
   }
 
   .shadow-elevated {
