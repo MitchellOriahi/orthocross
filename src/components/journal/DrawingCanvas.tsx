@@ -158,11 +158,20 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
   }, [isMobile, initialImageUrl, autoSaveOnUnmount]);
 
 
+  const prevToolRef = useRef(tool);
+
   useEffect(() => {
     if (!fabricCanvas) return;
     const brush = fabricCanvas.freeDrawingBrush as PencilBrush;
     fabricCanvas.isDrawingMode = tool !== 'select';
     fabricCanvas.selection = tool === 'select';
+    if (prevToolRef.current !== tool) {
+      prevToolRef.current = tool;
+      // Switching tools must not leave the previous tool's selection outline
+      // (the grabber's blue bounding box) sitting on the board.
+      fabricCanvas.discardActiveObject();
+      fabricCanvas.requestRenderAll();
+    }
     if (brush) {
       // The live eraser preview is white; the finished stroke really cuts
       // away pixels (see the path:created handler below).
