@@ -142,3 +142,4 @@
 - [ ] Bibles for Amharic, Tigrinya, Georgian, Armenian, Bulgarian (no free online source found yet).
 ## Folders panel top bar
 - [x] Match the Folders panel top bar to the Journal's bar height and keep one exit control. Both bars measured 65px on a phone-sized screen; the panel closes with its back arrow only; preview build clean.
+- [x] Inside a folder, the Journal's top-left control becomes a back arrow to All Notes; the folder list button returns after leaving the folder. Verified signed in on a phone-sized screen; no runtime errors.
