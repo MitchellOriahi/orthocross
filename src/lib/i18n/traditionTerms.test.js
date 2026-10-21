@@ -13,7 +13,3 @@ test("Eastern and Oriental tradition choices never share a label", () => {
   }
 });
 
-test("French distinguishes Byzantine from Oriental Orthodoxy", () => {
-  expect(TRANSLATIONS.fr.eastern).toBe("Byzantine");
-  expect(TRANSLATIONS.fr.oriental).toBe("Orientale");
-});

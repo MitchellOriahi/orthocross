@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # Wording the donation dialog's exchange-rate help relies on.
 REQUIRED = [
+    "Hides your name and photo on the Donators list; your tier still shows.",
     "Exchange rates",
     "Currency estimate",
     "Estimated equivalent",
