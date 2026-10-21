@@ -9,12 +9,13 @@ import { JournalEditor } from "./journal/JournalEditor";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Play, Pause, Volume2, X } from "lucide-react";
+import { ChevronLeft, Play, Pause, Volume2, X, FolderPlus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
 import { ALL_NOTES, notesInFolder, newNoteFolder, selectionAfterExit } from './journal/folderScope';
 import { isJournalViewMode, journalViewKey, resolveJournalView } from './journal/viewPreference';
 import { shouldSwipeBack } from './journal/swipeBack';
+import { TreeFolder, folderSiblings, reorderedSiblings } from './journal/folderTree';
 
 // Extended types that match the actual database schema
 interface JournalNote {
@@ -31,7 +32,7 @@ interface JournalNote {
   attachments?: any[];
 }
 
-interface JournalFolder {
+interface JournalFolder extends TreeFolder {
   id: string;
   name: string;
   user_id: string;
@@ -53,6 +54,8 @@ export const Journal = () => {
   const [isNoteExpanded, setIsNoteExpanded] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
+  const [editingFolders, setEditingFolders] = useState(false);
+  const [reorderingFolders, setReorderingFolders] = useState(false);
   const [showNotesList, setShowNotesList] = useState(true);
   
   const [currentTitle, setCurrentTitle] = useState("");
@@ -137,7 +140,7 @@ export const Journal = () => {
         .from('journal_folders')
         .select('*')
         .eq('user_id', user.id)
-        .order('name');
+        .order('sort_order').order('name');
       
       if (data) setFolders(data);
     };
@@ -334,7 +337,7 @@ export const Journal = () => {
     }
   };
 
-  const handleFolderCreate = async () => {
+  const handleFolderCreate = async (parentId: string | null = null) => {
     if (!user) return;
     
     const folderName = prompt("Enter folder name:");
@@ -344,7 +347,9 @@ export const Journal = () => {
       .from('journal_folders')
       .insert({
         user_id: user.id,
-        name: folderName.trim()
+        name: folderName.trim(),
+        parent_id: parentId,
+        sort_order: Math.max(-1, ...folderSiblings(folders, parentId).map(f => f.sort_order)) + 1
       })
       .select()
       .single();
@@ -355,8 +360,7 @@ export const Journal = () => {
     }
     
     if (data) {
-      setFolders(prev => [...prev, data].sort((a, b) => a.name.localeCompare(b.name)));
-      await handleFolderSelect(data.id);
+      setFolders(prev => [...prev, data]);
     }
   };
 
@@ -375,7 +379,8 @@ export const Journal = () => {
       toast({ title: 'Error deleting folder', variant: 'destructive' });
       return;
     }
-    setFolders(folders.filter(f => f.id !== folderId));
+    const deleted = folders.find(f => f.id === folderId);
+    setFolders(prev => prev.filter(f => f.id !== folderId).map(f => f.parent_id === folderId ? { ...f, parent_id: deleted?.parent_id ?? null } : f));
     if (selectedFolderId === folderId) {
       await handleFolderSelect(null);
     }
@@ -397,7 +402,25 @@ export const Journal = () => {
       return;
     }
     
-    setFolders(folders.map(f => f.id === folderId ? { ...f, name: newName.trim() } : f).sort((a, b) => a.name.localeCompare(b.name)));
+    setFolders(folders.map(f => f.id === folderId ? { ...f, name: newName.trim() } : f));
+  };
+
+  const handleFolderReorder = async (folderId: string, direction: -1 | 1) => {
+    if (!user || reorderingFolders) return;
+    const folder = folders.find(f => f.id === folderId);
+    if (!folder) return;
+    const ordered = reorderedSiblings(folders, folderId, direction);
+    setReorderingFolders(true);
+    try {
+      const { error } = await supabase.rpc('reorder_journal_folders', { p_parent_id: folder.parent_id, p_ids: ordered.map(f => f.id) });
+      if (error) {
+        toast({ title: 'Could not save folder order', variant: 'destructive' });
+        const { data } = await supabase.from('journal_folders').select('*').eq('user_id', user.id);
+        if (data) setFolders(data);
+        return;
+      }
+      setFolders(previous => previous.map(f => ordered.find(updated => updated.id === f.id) ?? f));
+    } finally { setReorderingFolders(false); }
   };
 
   const handleNoteDelete = async (noteId: string) => {
@@ -472,6 +495,7 @@ export const Journal = () => {
     setIsNoteExpanded(false);
     setShowSidebar(true);
     setShowNotesList(true);
+    setEditingFolders(false);
   };
 
   const pinnedNote = notes.find(n => n.pinned);
@@ -699,6 +723,10 @@ export const Journal = () => {
               <h3 className="flex-1 min-w-0 truncate font-semibold" translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
                 {showSidebar ? 'Folders' : selectedFolderId === ALL_NOTES ? 'All Notes' : folders.find(folder => folder.id === selectedFolderId)?.name ?? 'Notes'}
               </h3>
+              {showSidebar && <div className="flex items-center gap-1 shrink-0">
+                <Button variant="ghost" className="h-9 px-2 text-sm" onClick={() => setEditingFolders(value => !value)}>{editingFolders ? 'Done' : 'Edit'}</Button>
+                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => handleFolderCreate()} aria-label="New folder" title="New folder"><FolderPlus className="h-4 w-4" /></Button>
+              </div>}
               {showSidebar && (
                 <Button
                   variant="ghost"
@@ -737,6 +765,9 @@ export const Journal = () => {
                     onFolderCreate={handleFolderCreate}
                     onFolderDelete={handleFolderDelete}
                     onFolderRename={handleFolderRename}
+                    editing={editingFolders}
+                    reordering={reorderingFolders}
+                    onFolderReorder={handleFolderReorder}
                   />
                 </div>
               )}
