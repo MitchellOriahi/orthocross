@@ -2,6 +2,14 @@ import { DONOR_TEXT, getTier } from "./donorTiers.ts";
 
 export const APP_URL = "https://orthocross.lovable.app";
 
+// Personal thank-you from the app's creator, included in every donation thank-you email.
+export const CREATOR_NOTE_HTML = `<div style="text-align:left;border-top:1px solid #c9a24a55;margin-top:28px;padding-top:20px">
+  <p style="color:#c9a24a;font-size:15px;margin:0 0 10px">A personal note from the creator of OrthoCross</p>
+  <p style="font-size:15px;line-height:1.7">I want to thank you personally. I built OrthoCross on my own, and keeping it running costs real money every month. Your gift is not just a number to me. It helps carry this work forward and lets me keep the app free for everyone who is seeking Christ.</p>
+  <p style="font-size:15px;line-height:1.7">Thank you for believing in this, and in me. I will keep you in my prayers.</p>
+  <p style="font-size:15px;line-height:1.7">With heartfelt gratitude in Christ,<br/>The creator of OrthoCross</p>
+</div>`;
+
 // deno-lint-ignore no-explicit-any
 type Admin = any;
 
@@ -47,6 +55,7 @@ export async function sendThankYouOnce(admin: Admin, donationId: string) {
   <p style="font-size:16px;line-height:1.6">${DONOR_TEXT.thankYouBody}</p>
   <p style="font-size:16px;line-height:1.6">${DONOR_TEXT.thankYouBlessing}</p>
   ${tier ? `<p style="color:#c9a24a;font-size:18px">${DONOR_TEXT.youAreNow(tier)}</p>` : ""}
+  ${CREATOR_NOTE_HTML}
   <p style="margin-top:28px"><a href="${APP_URL}" style="background:#c9a24a;color:#111;padding:12px 24px;border-radius:8px;text-decoration:none">Return to OrthoCross</a></p>
   <p style="color:#777;font-size:12px;margin-top:24px">"It is more blessed to give than to receive." — Acts 20:35</p>
   </div></div>`;
