@@ -882,3 +882,9 @@ html:not([lang="en"]) .language-list-fade > button { height: 3.5rem; min-height:
 .header-title-group { min-width: 0; }
 .header-title-group > div:first-of-type { flex-shrink: 0; }
 .header-title-group h1 { min-width: 0; padding-inline-end: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Journal notes list: the scroll handle stays slim and see-through so it never
+   crowds the New Note button or the Personal/Bible Notes tabs beside it. */
+.journal-notes-scroll [data-orientation="vertical"] { width: 0.375rem; }
+.journal-notes-scroll [data-orientation="vertical"] > div { background-color: hsl(var(--foreground) / 0.18); }
+.journal-notes-scroll [data-orientation="vertical"] > div:hover { background-color: hsl(var(--foreground) / 0.3); }
