@@ -42,12 +42,12 @@ export function iconStyleForBranch(branch: string | null | undefined): CategoryI
   }
 }
 
-/** Closest available artwork family; this never assigns a religious identity. */
+/** Community-specific defaults only; all other languages use Greek, without assigning religious identity. */
 export function iconStyleForLanguage(language: string | null | undefined): CategoryIconStyle {
   switch (language) {
     case "am": case "ti": return "tewahedo";
-    case "ar": case "hy": case "ml": return "coptic";
-    case "ru": case "uk": case "bg": case "sr": return "byzantine";
+    case "ar": case "cop": return "coptic";
+    case "ru": return "byzantine";
     default: return "original";
   }
 }
