@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, Menu, Play, Pause, Volume2, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { hasNoteAdditions, shouldDiscardDraft } from "./journal/emptyNote";
+import { ALL_NOTES, notesInFolder, newNoteFolder } from './journal/folderScope';
+import { MoveNoteMenu } from './journal/MoveNoteMenu';
 
 // Extended types that match the actual database schema
 interface JournalNote {
@@ -137,18 +139,13 @@ export const Journal = () => {
         .select('*')
         .eq('user_id', user.id);
       
-      if (selectedFolderId) {
-        const { data } = await query.eq('folder_id', selectedFolderId).order('updated_at', { ascending: false });
-        if (data) setNotes(data);
-      } else {
-        const { data } = await query.order('updated_at', { ascending: false });
-        if (data) setNotes(data);
-      }
+      const { data } = await query.order('updated_at', { ascending: false });
+      if (data) setNotes(data);
     };
 
     loadFolders();
     loadNotes();
-  }, [user, selectedFolderId]);
+  }, [user]);
 
   // Load selected note
   useEffect(() => {
@@ -197,15 +194,54 @@ export const Journal = () => {
     return () => clearTimeout(timeoutId);
   }, [currentTitle, currentContent, selectedNoteId, user]);
 
+  const saveCurrentNote = async () => {
+    if (!user || !selectedNoteId || draftRef.current?.modified === false) return true;
+    const updated = { title: currentTitle || null, content: currentContent || null, updated_at: new Date().toISOString() };
+    const { error } = await (supabase as any).from('journal_entries').update(updated)
+      .eq('id', selectedNoteId).eq('user_id', user.id);
+    if (error) {
+      toast({ title: 'Error saving note', variant: 'destructive' });
+      return false;
+    }
+    setNotes(prev => prev.map(note => note.id === selectedNoteId ? { ...note, ...updated } : note));
+    return true;
+  };
+
+  const handleFolderSelect = async (folderId: string | null) => {
+    if (!await saveCurrentNote()) return;
+    discardUntouchedDraft();
+    setSelectedNoteId(null);
+    setSelectedFolderId(folderId);
+    setSearchQuery('');
+    setShowNotesList(true);
+    setShowSidebar(false);
+  };
+
+  const handleNoteMove = async (noteId: string, folderId: string | null) => {
+    if (!user || (noteId === selectedNoteId && !await saveCurrentNote())) return;
+    const { error } = await (supabase as any).from('journal_entries').update({ folder_id: folderId })
+      .eq('id', noteId).eq('user_id', user.id);
+    if (error) {
+      toast({ title: 'Error moving note', variant: 'destructive' });
+      return;
+    }
+    setNotes(prev => prev.map(note => note.id === noteId ? { ...note, folder_id: folderId } : note));
+    if (selectedNoteId === noteId) {
+      setSelectedFolderId(folderId);
+      setSearchQuery('');
+    }
+  };
+
   const handleNoteCreate = async () => {
     if (!user) return;
+    if (!await saveCurrentNote()) return;
     discardUntouchedDraft();
     
     const { data, error } = await (supabase as any)
       .from('journal_entries')
       .insert({
         user_id: user.id,
-        folder_id: selectedFolderId,
+        folder_id: newNoteFolder(selectedFolderId),
         title: "",
         content: ""
       })
@@ -232,6 +268,7 @@ export const Journal = () => {
   };
 
   const handleNoteSelect = async (noteId: string) => {
+    if (selectedNoteId !== noteId && !await saveCurrentNote()) return;
     if (selectedNoteId !== noteId) discardUntouchedDraft();
 
     // Synchronously prime the editor with the selected note's content so it
@@ -267,13 +304,13 @@ export const Journal = () => {
     if (!user) return;
     
     const folderName = prompt("Enter folder name:");
-    if (!folderName) return;
+    if (!folderName?.trim()) return;
     
     const { data, error } = await (supabase as any)
       .from('journal_folders')
       .insert({
         user_id: user.id,
-        name: folderName
+        name: folderName.trim()
       })
       .select()
       .single();
@@ -284,17 +321,29 @@ export const Journal = () => {
     }
     
     if (data) {
-      setFolders([...folders, data]);
+      setFolders(prev => [...prev, data].sort((a, b) => a.name.localeCompare(b.name)));
+      await handleFolderSelect(data.id);
     }
   };
 
   const handleFolderDelete = async (folderId: string) => {
-    if (!confirm("Delete this folder and all its notes?")) return;
-    
-    await (supabase as any).from('journal_folders').delete().eq('id', folderId);
+    if (!user || !confirm("Delete this folder? Its notes will be moved to Notes.")) return;
+    if (!await saveCurrentNote()) return;
+    const { error: moveError } = await (supabase as any).from('journal_entries')
+      .update({ folder_id: null }).eq('folder_id', folderId).eq('user_id', user.id);
+    if (moveError) {
+      toast({ title: 'Error moving note', variant: 'destructive' });
+      return;
+    }
+    setNotes(prev => prev.map(note => note.folder_id === folderId ? { ...note, folder_id: null } : note));
+    const { error } = await (supabase as any).from('journal_folders').delete().eq('id', folderId).eq('user_id', user.id);
+    if (error) {
+      toast({ title: 'Error deleting folder', variant: 'destructive' });
+      return;
+    }
     setFolders(folders.filter(f => f.id !== folderId));
     if (selectedFolderId === folderId) {
-      setSelectedFolderId(null);
+      await handleFolderSelect(null);
     }
   };
 
@@ -303,14 +352,18 @@ export const Journal = () => {
     if (!folder) return;
     
     const newName = prompt("Enter new folder name:", folder.name);
-    if (!newName) return;
+    if (!newName?.trim()) return;
     
-    await (supabase as any)
+    const { error } = await (supabase as any)
       .from('journal_folders')
-      .update({ name: newName })
+      .update({ name: newName.trim() })
       .eq('id', folderId);
+    if (error) {
+      toast({ title: 'Error renaming folder', variant: 'destructive' });
+      return;
+    }
     
-    setFolders(folders.map(f => f.id === folderId ? { ...f, name: newName } : f));
+    setFolders(folders.map(f => f.id === folderId ? { ...f, name: newName.trim() } : f).sort((a, b) => a.name.localeCompare(b.name)));
   };
 
   const handleNoteDelete = async (noteId: string) => {
@@ -363,7 +416,7 @@ export const Journal = () => {
       .eq('id', user.id);
   };
 
-  const filteredNotes = notes.filter(note => {
+  const filteredNotes = notesInFolder(notes, selectedFolderId).filter(note => {
     if (!searchQuery) return true;
     const searchLower = searchQuery.toLowerCase();
     return (
@@ -372,7 +425,8 @@ export const Journal = () => {
     );
   });
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    if (!await saveCurrentNote()) return;
     discardUntouchedDraft();
     setIsFullScreen(false);
     setIsNoteExpanded(false);
@@ -578,8 +632,9 @@ export const Journal = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => { discardUntouchedDraft(); setShowNotesList(true); }}
+                  onClick={async () => { if (!await saveCurrentNote()) return; discardUntouchedDraft(); setShowNotesList(true); }}
                   className="mr-2"
+                  aria-label="Back to notes"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </Button>
@@ -589,10 +644,10 @@ export const Journal = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => setSelectedFolderId(null)}
+                    onClick={() => handleFolderSelect(null)}
                     className="mr-2"
-                    aria-label="Back to all notes"
-                    title="Back to all notes"
+                    aria-label="Back to notes"
+                    title="Back to notes"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </Button>
@@ -609,7 +664,12 @@ export const Journal = () => {
                   </Button>
                 )
               )}
-              <div className="flex-1" />
+              <h3 className="flex-1 min-w-0 truncate font-semibold" translate={selectedFolderId && selectedFolderId !== ALL_NOTES ? 'no' : undefined}>
+                {selectedFolderId === ALL_NOTES ? 'All Notes' : folders.find(folder => folder.id === selectedFolderId)?.name ?? 'Notes'}
+              </h3>
+              {selectedNoteId && (!isMobile || !showNotesList) && (
+                <MoveNoteMenu folders={folders} folderId={notes.find(note => note.id === selectedNoteId)?.folder_id ?? null} onMove={folderId => handleNoteMove(selectedNoteId, folderId)} />
+              )}
               <Button
                 variant="ghost"
                 size="icon"
@@ -624,7 +684,7 @@ export const Journal = () => {
               {/* Desktop: Always show sidebar */}
               {/* Mobile: Show sidebar only when toggled */}
               {(!isMobile || showSidebar) && (
-                <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background' : 'w-48 shrink-0 min-w-0'} ${!isMobile && isNoteExpanded ? 'hidden' : ''}`}>
+                <div className={`${isMobile ? 'absolute inset-0 z-50 bg-background flex flex-col' : 'w-48 shrink-0 min-w-0'} ${!isMobile && isNoteExpanded ? 'hidden' : ''}`}>
                   {isMobile && (
                     <div className="border-b border-border pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 px-2 min-h-16 flex items-center bg-card">
                       <Button
@@ -640,12 +700,11 @@ export const Journal = () => {
                     </div>
                   )}
                   <JournalSidebar
-                    folders={folders}
+                    folders={folders.map(folder => ({ ...folder, noteCount: notesInFolder(notes, folder.id).length }))}
+                    generalNoteCount={notesInFolder(notes, null).length}
+                    totalNoteCount={notes.length}
                     selectedFolderId={selectedFolderId}
-                    onFolderSelect={(folderId) => {
-                      setSelectedFolderId(folderId);
-                      if (isMobile) setShowSidebar(false);
-                    }}
+                    onFolderSelect={handleFolderSelect}
                     onFolderCreate={handleFolderCreate}
                     onFolderDelete={handleFolderDelete}
                     onFolderRename={handleFolderRename}
@@ -658,6 +717,10 @@ export const Journal = () => {
               {(!isMobile || showNotesList) && (
                 <div className={`${isMobile ? 'flex-1 min-w-0' : 'w-64 shrink-0 min-w-0'} ${!isMobile && isNoteExpanded ? 'hidden' : ''}`}>
                   <JournalNotesList
+                    key={selectedFolderId ?? 'general'}
+                    folders={folders}
+                    onNoteMove={handleNoteMove}
+                    isFolderView={selectedFolderId !== null && selectedFolderId !== ALL_NOTES}
                     notes={filteredNotes}
                     selectedNoteId={selectedNoteId}
                     onNoteSelect={handleNoteSelect}
