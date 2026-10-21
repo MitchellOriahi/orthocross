@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState, type Ref } from "react";
 import { Canvas as FabricCanvas, PencilBrush, FabricImage, type FabricObject } from "fabric";
 import { Button } from "@/components/ui/button";
-import { Eraser, Pencil, Trash2, Palette, MousePointer2 } from "lucide-react";
+import { Eraser, Pencil, Trash2, Palette, MousePointer2, Undo2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { hasDrawingToSave, shouldAutoSaveDrawing } from "./drawingAutoSave";
@@ -165,26 +165,138 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
     }
   }, [selectedColor, tool, fabricCanvas]);
 
-  // True eraser: erase strokes remove pixels from what is underneath instead
-  // of painting white, and can never be selected or moved like ink.
+  // Undo history: each entry is the list of objects plus their positions.
+  type Snapshot = { obj: FabricObject; props: Record<string, unknown> }[];
+  const historyRef = useRef<Snapshot[]>([]);
+  const [canUndo, setCanUndo] = useState(false);
+  const toolRef = useRef(tool);
+  toolRef.current = tool;
+
+  const snapshot = (canvas: FabricCanvas): Snapshot =>
+    canvas.getObjects().map((obj) => ({
+      obj,
+      props: {
+        left: obj.left, top: obj.top, scaleX: obj.scaleX, scaleY: obj.scaleY,
+        angle: obj.angle, flipX: obj.flipX, flipY: obj.flipY, skewX: obj.skewX, skewY: obj.skewY,
+      },
+    }));
+
+  const record = (canvas: FabricCanvas) => {
+    historyRef.current.push(snapshot(canvas));
+    if (historyRef.current.length > 60) historyRef.current.shift();
+    setCanUndo(historyRef.current.length > 1);
+  };
+
+  useEffect(() => {
+    if (!fabricCanvas) return;
+    historyRef.current = [snapshot(fabricCanvas)];
+    setCanUndo(false);
+    // The opened drawing becomes the starting point once it has loaded.
+    const onAdded = (e: { target: FabricObject }) => {
+      if (!(e.target instanceof FabricImage)) return;
+      if (historyRef.current.length === 1 && historyRef.current[0].length === 0) {
+        historyRef.current = [snapshot(fabricCanvas)];
+      }
+    };
+    fabricCanvas.on('object:added', onAdded as never);
+    const onModified = () => record(fabricCanvas);
+    fabricCanvas.on('object:modified', onModified);
+    return () => {
+      fabricCanvas.off('object:added', onAdded as never);
+      fabricCanvas.off('object:modified', onModified);
+    };
+  }, [fabricCanvas]);
+
+  // True eraser: each erase stroke is cut out of every mark it touches. The
+  // mark is redrawn without the erased pixels; fully erased marks are deleted,
+  // so nothing invisible is left behind to select.
   useEffect(() => {
     if (!fabricCanvas) return;
     const onPath = (e: { path: FabricObject }) => {
-      if (tool !== 'erase' || !e.path) return;
-      e.path.set({
-        globalCompositeOperation: 'destination-out',
-        stroke: '#000000',
-        selectable: false,
-        evented: false,
-        hoverCursor: 'default',
+      const eraser = e.path;
+      if (!eraser) return;
+      if (toolRef.current !== 'erase') {
+        record(fabricCanvas);
+        return;
+      }
+      fabricCanvas.remove(eraser);
+      eraser.set({ globalCompositeOperation: 'destination-out', stroke: '#000000' });
+      const er = eraser.getBoundingRect();
+      const m = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+      const objects = fabricCanvas.getObjects();
+      objects.forEach((obj) => {
+        const r = obj.getBoundingRect();
+        if (r.left > er.left + er.width || r.left + r.width < er.left ||
+            r.top > er.top + er.height || r.top + r.height < er.top) return;
+        const pad = 2;
+        const left = Math.floor(r.left) - pad;
+        const top = Math.floor(r.top) - pad;
+        const w = Math.ceil(r.width) + pad * 2;
+        const h = Math.ceil(r.height) + pad * 2;
+        const off = document.createElement('canvas');
+        off.width = Math.max(1, Math.ceil(w * m));
+        off.height = Math.max(1, Math.ceil(h * m));
+        const ctx = off.getContext('2d');
+        if (!ctx) return;
+        ctx.scale(m, m);
+        ctx.translate(-left, -top);
+        obj.render(ctx);
+        eraser.render(ctx);
+        // Trim to what is still visible.
+        const data = ctx.getImageData(0, 0, off.width, off.height).data;
+        let minX = off.width, minY = off.height, maxX = -1, maxY = -1;
+        for (let y = 0; y < off.height; y++) {
+          for (let x = 0; x < off.width; x++) {
+            if (data[(y * off.width + x) * 4 + 3] > 8) {
+              if (x < minX) minX = x; if (x > maxX) maxX = x;
+              if (y < minY) minY = y; if (y > maxY) maxY = y;
+            }
+          }
+        }
+        const index = fabricCanvas.getObjects().indexOf(obj);
+        fabricCanvas.remove(obj);
+        if (maxX < 0) return;
+        const tw = maxX - minX + 1;
+        const th = maxY - minY + 1;
+        const trimmed = document.createElement('canvas');
+        trimmed.width = tw;
+        trimmed.height = th;
+        trimmed.getContext('2d')?.drawImage(off, minX, minY, tw, th, 0, 0, tw, th);
+        const img = new FabricImage(trimmed, {
+          left: left + minX / m,
+          top: top + minY / m,
+          originX: 'left',
+          originY: 'top',
+          scaleX: 1 / m,
+          scaleY: 1 / m,
+        });
+        fabricCanvas.insertAt(Math.max(0, index), img);
       });
+      dirtyRef.current = true;
       fabricCanvas.requestRenderAll();
+      record(fabricCanvas);
     };
     fabricCanvas.on('path:created', onPath as never);
     return () => {
       fabricCanvas.off('path:created', onPath as never);
     };
-  }, [fabricCanvas, tool]);
+  }, [fabricCanvas]);
+
+  const handleUndo = () => {
+    if (!fabricCanvas || historyRef.current.length < 2) return;
+    historyRef.current.pop();
+    const prev = historyRef.current[historyRef.current.length - 1];
+    fabricCanvas.discardActiveObject();
+    fabricCanvas.remove(...fabricCanvas.getObjects());
+    prev.forEach(({ obj, props }) => {
+      obj.set(props);
+      obj.setCoords();
+    });
+    if (prev.length) fabricCanvas.add(...prev.map((s) => s.obj));
+    fabricCanvas.requestRenderAll();
+    dirtyRef.current = true;
+    setCanUndo(historyRef.current.length > 1);
+  };
 
   // In select mode, Delete/Backspace removes the picked strokes.
   useEffect(() => {
@@ -197,6 +309,7 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
       active.forEach((obj) => fabricCanvas.remove(obj));
       fabricCanvas.discardActiveObject();
       fabricCanvas.renderAll();
+      record(fabricCanvas);
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
@@ -208,6 +321,7 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
     fabricCanvas.backgroundColor = "";
     fabricCanvas.renderAll();
     dirtyRef.current = true;
+    record(fabricCanvas);
   };
 
   // There is no save button: whoever hosts the panel pulls the drawing out as
@@ -264,7 +378,7 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
           <span className="sr-only">Select</span>
         </Button>
         </div>
-        <div className="grid grid-cols-[auto_auto] items-center gap-2 min-w-0">
+        <div className="grid grid-cols-[auto_auto_auto] items-center gap-2 min-w-0">
         <Popover open={showColorPicker} onOpenChange={setShowColorPicker}>
           <PopoverTrigger asChild>
             <Button variant="outline" className="h-11 shrink-0 px-3" aria-label="Pen colors" title="Pen colors">
@@ -295,6 +409,9 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
             ))}
           </PopoverContent>
         </Popover>
+        <Button variant="outline" size="icon" className="h-11 w-11 shrink-0" onClick={handleUndo} disabled={!canUndo} aria-label="Undo" title="Undo">
+          <Undo2 className="h-5 w-5" />
+        </Button>
         <Button variant="outline" size="icon" className="h-11 w-11 shrink-0" onClick={handleClear} aria-label="Clear" title="Clear">
           <Trash2 className="h-5 w-5" />
         </Button>
