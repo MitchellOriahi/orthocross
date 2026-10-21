@@ -160,3 +160,5 @@
 - [x] Inside a folder, the Journal's top-left control becomes a back arrow to All Notes; the folder list button returns after leaving the folder. Verified signed in on a phone-sized screen; no runtime errors.
 ## Sign in/up page logo
 - [x] Show the app's regular black logo (black rounded tile with the white-outlined cross, as in dark mode) on the sign in/up, forgot-password and reset-password pages, with no white tile behind it.
+## Scripture page-turn controls
+- [x] Make the floating page arrows larger rounded squares in the bottom bar's style, lift them clear of the chapter-progress slider, and enlarge Mark Complete to fill its row. Signed-in phone measurements: arrows 48×48 with 12px corners and 49px clear of the slider; Mark Complete 295×48; build clean.

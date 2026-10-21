@@ -875,7 +875,7 @@ const Reading = () => {
   return (
     <div
       className="min-h-screen gradient-peaceful"
-      style={{ paddingBottom: showBottomNav ? "4.5rem" : undefined }}
+      style={{ paddingBottom: showBottomNav ? "calc(var(--bottom-nav-height, 4.5rem) + 2.5rem)" : undefined }}
     >
       {/* Header */}
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
@@ -1216,8 +1216,12 @@ const Reading = () => {
                   </div>
                 )}
                 {verses.length > 0 && (readingMode === "scroll" || currentVerseIndex === verses.length - 1) && (
-                  <Button variant="sacred" onClick={markChapterComplete} size="sm" className="text-xs sm:text-sm mx-auto">
-                    <BookMarked className="w-4 h-4 sm:mr-2" />
+                  <Button
+                    variant="sacred"
+                    onClick={markChapterComplete}
+                    className={`reading-complete-button mx-auto h-12 px-6 text-sm sm:text-base ${readingMode === "scroll" ? "w-full" : "min-w-[12rem]"}`}
+                  >
+                    <BookMarked className="!h-5 !w-5 sm:mr-2" />
                     <span className="hidden xs:inline">Mark </span>Complete
                   </Button>
                 )}
@@ -1285,7 +1289,7 @@ const Reading = () => {
 
       {/* Floating page arrows ride with the bottom bar. */}
       <div
-        className={`fixed left-0 right-0 z-40 flex justify-between px-2 pointer-events-none transition-all duration-150 ${showBottomNav ? "opacity-100" : "opacity-0 translate-y-6"}`}
+        className={`fixed left-0 right-0 z-40 flex justify-between px-3 pointer-events-none transition-all duration-150 ${showBottomNav ? "opacity-100" : "opacity-0 translate-y-6"}`}
         style={{ bottom: showBottomNav ? "calc(var(--bottom-nav-height, 72px) + 0.5rem)" : "calc(env(safe-area-inset-bottom) + 0.75rem)" }}
       >
         <Button
@@ -1294,9 +1298,9 @@ const Reading = () => {
           aria-label="Previous"
           onClick={readingMode === "page" ? handlePrevVerse : handlePrevChapter}
           disabled={!swipeNavRef.current.canPrev}
-          className={`h-10 w-10 rounded-full border border-border bg-card/95 text-muted-foreground backdrop-blur-sm shadow-md hover:bg-card hover:text-primary ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canPrev ? "" : "invisible"}`}
+          className={`h-12 w-12 rounded-xl border border-border bg-card/95 text-muted-foreground backdrop-blur-sm shadow-md hover:bg-card hover:text-primary active:scale-95 ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canPrev ? "" : "invisible"}`}
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="!h-6 !w-6" />
         </Button>
         <Button
           variant="ghost"
@@ -1304,9 +1308,9 @@ const Reading = () => {
           aria-label="Next"
           onClick={readingMode === "page" ? handleNextVerse : handleNextChapter}
           disabled={!swipeNavRef.current.canNext}
-          className={`h-10 w-10 rounded-full border border-border bg-card/95 text-muted-foreground backdrop-blur-sm shadow-md hover:bg-card hover:text-primary ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canNext ? "" : "invisible"}`}
+          className={`h-12 w-12 rounded-xl border border-border bg-card/95 text-muted-foreground backdrop-blur-sm shadow-md hover:bg-card hover:text-primary active:scale-95 ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canNext ? "" : "invisible"}`}
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="!h-6 !w-6" />
         </Button>
       </div>
 
