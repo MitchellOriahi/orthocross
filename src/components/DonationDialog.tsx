@@ -251,18 +251,12 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
 
-        <div className="rounded-xl border bg-muted/40 p-4 text-sm leading-relaxed">
+        <div className="rounded-xl border bg-muted/40 p-3 text-sm leading-relaxed">
           <p className="font-medium">A note from the creator of OrthoCross</p>
           <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read, and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone. God bless.</p>
         </div>
 
-
-        <div className="pt-2 space-y-2">
-          <div>
-            <h3 className="text-3xl font-bold">Gift what you want</h3>
-            <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>
-          </div>
-
+        <div className="space-y-2">
           {!isNative && !oneTime && (
             <div role="radiogroup" aria-label="Billing" className="mx-auto grid w-full max-w-xs grid-cols-2 rounded-full border p-1">
               {(["month", "year"] as const).map(v => (
@@ -272,6 +266,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               ))}
             </div>
           )}
+          <p className="text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>
 
           <div className="flex flex-col items-center gap-3">
             <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
@@ -374,6 +369,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               </span>
             </Button>
           </div>
+          {anonymous && <p className="text-center text-xs text-muted-foreground">Hides your name on the Donators list.</p>}
 
           {isNative && productsAvailable === false && (
             <p className="text-xs text-destructive text-center">In-app purchases are not available right now. Please try again later.</p>
