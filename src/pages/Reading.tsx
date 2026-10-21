@@ -691,6 +691,7 @@ const Reading = () => {
       target instanceof Element &&
       !!(target.closest("[data-radix-popper-content-wrapper]") || target.closest('[role="dialog"]'));
     let ignoring = false;
+    let hidDuringGesture = false;
     let startY: number | null = null;
     let extremeY: number | null = null; // furthest point reached during this gesture
     let startX: number | null = null;
@@ -700,6 +701,7 @@ const Reading = () => {
       ignoring = inOverlay(target);
       startY = y;
       extremeY = y;
+      hidDuringGesture = false;
       startX = x;
       minX = x;
       maxX = x;
@@ -714,13 +716,16 @@ const Reading = () => {
       if (downExcursion >= 4) {
         setShowBottomNav(true);
       } else if (upExcursion >= 6) {
+        hidDuringGesture = true;
         setShowBottomNav(false);
       }
     };
     const end = () => {
       if (!ignoring && startY !== null && extremeY !== null) {
         // A quick flick may deliver its whole travel between start and end.
-        if (extremeY - startY >= 4) setShowBottomNav(true);
+        // An upward pull later in the same stroke wins: once the bar was hidden
+        // during this gesture, ending the touch must not bring it back.
+        if (extremeY - startY >= 4 && !hidDuringGesture) setShowBottomNav(true);
       }
       // Horizontal swipe page flipping is paused for now; flip SWIPE_PAGE_FLIP to restore it.
       const SWIPE_PAGE_FLIP = false;
