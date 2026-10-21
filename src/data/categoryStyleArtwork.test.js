@@ -85,8 +85,8 @@ test("Tewahedo Saints top row shows the supplied Archangel Michael host and Theo
 test("Tewahedo Saints middle row shows the supplied rainbow-winged archangel and Trinity panel photographs", () => {
   const monastics = categoryArtwork("saints", "tewahedo", "monastics");
   const fathers = categoryArtwork("saints", "tewahedo", "fathers-hierarchs");
-  expect(monastics.image_url).toContain("tewahedo-archangel-wings");
-  expect(fathers.image_url).toContain("tewahedo-selassie-panel");
+  expect(monastics.image_url).toContain("tewahedo-monastics");
+  expect(fathers.image_url).toContain("tewahedo-fathers");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
     expect(art.image_source).toBe("");
