@@ -144,11 +144,14 @@ export const JournalEditor = ({
     remainderRange.setEnd(mark, mark.childNodes.length);
     const remainder = remainderRange.extractContents();
     const plainText = document.createTextNode(input.data);
-    mark.after(plainText);
+    const plainSpan = document.createElement('span');
+    plainSpan.className = 'whitespace-pre-wrap';
+    plainSpan.appendChild(plainText);
+    mark.after(plainSpan);
     if (remainder.textContent) {
       const trailingMark = mark.cloneNode(false);
       trailingMark.appendChild(remainder);
-      plainText.after(trailingMark);
+      plainSpan.after(trailingMark);
     }
     if (!mark.textContent) mark.remove();
     range.setStart(plainText, plainText.length);
