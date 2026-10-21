@@ -197,7 +197,7 @@ export const SAINT_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<Exclude<Sai
 };
 
 export const PRAYER_CATEGORY_STYLE_ART: Record<AlternateStyle, Record<PrayerCategoryId, CategoryStyleArtwork>> = {
-  tewahedo: { foundational: art["tewahedo-prayer-gold-cross"], daily: art["tewahedo-prayer-copper-cross"], "christ-saints": art["tewahedo-prayer-communion"], communion: art["tewahedo-prayer-psalms"], occasions: art["tewahedo-prayer-foundational"], psalms: art["tewahedo-prayer-christ-saints"] },
+  tewahedo: { foundational: art["tewahedo-prayer-gold-cross"], daily: art["tewahedo-prayer-copper-cross"], "christ-saints": art["tewahedo-prayer-silver-cross"], communion: art["tewahedo-prayer-brass-cross"], occasions: art["tewahedo-prayer-foundational"], psalms: art["tewahedo-prayer-christ-saints"] },
   coptic: { foundational: art["coptic-prayer-foundational"], daily: art["coptic-prayer-daily"], "christ-saints": art["coptic-prayer-christ-saints"], psalms: art["coptic-prayer-psalms"], communion: art["coptic-prayer-communion"], occasions: art["coptic-prayer-occasions"] },
   byzantine: { foundational: art["russian-prayer-foundational"], daily: art["russian-prayer-daily"], "christ-saints": art["russian-prayer-christ-saints"], psalms: art["russian-prayer-psalms"], communion: art["russian-prayer-communion"], occasions: art["russian-prayer-occasions"] },
 };
