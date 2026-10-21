@@ -101,9 +101,19 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Verify authorization — require a configured cron secret (fail closed)
-  const requestSecret = req.headers.get("x-cron-secret");
-  if (!cronSecret || requestSecret !== cronSecret) {
+  // Verify authorization (fail closed): the database scheduler sends the
+  // private secret stored in scheduler_secrets; an env secret or the
+  // service-role bearer are also accepted for manual runs.
+  const requestSecret = req.headers.get("x-cron-secret") ?? "";
+  const bearer = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
+  let authorized = !!cronSecret && requestSecret === cronSecret;
+  if (!authorized && bearer && bearer === supabaseServiceKey) authorized = true;
+  if (!authorized && requestSecret) {
+    const admin = createClient(supabaseUrl, supabaseServiceKey);
+    const { data } = await admin.from("scheduler_secrets").select("secret").eq("name", "reminders").maybeSingle();
+    authorized = !!data?.secret && data.secret === requestSecret;
+  }
+  if (!authorized) {
     console.log("[send-scheduled-reminders] Unauthorized");
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
