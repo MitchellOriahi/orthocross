@@ -9,35 +9,52 @@ export function donationPeekHeight(
   return Math.min(Math.max(sliderTop - dialogTop + scrollTop + sliderHeight / 2, 240), viewportHeight - 32);
 }
 
-/** Resize callbacks only queue work; never change layout during observer delivery. */
+/** Distance from `root`'s top border to `element`, via layout offsets.
+ * Offsets ignore transforms, so the opening zoom animation never skews the
+ * measurement the way getBoundingClientRect would. */
+function offsetWithin(element: HTMLElement, root: HTMLElement): number {
+  let top = 0;
+  let node: HTMLElement | null = element;
+  while (node && node !== root) {
+    top += node.offsetTop;
+    node = node.offsetParent as HTMLElement | null;
+  }
+  return node === root ? top : NaN;
+}
+
+/** Pin the dialog to show half of the price slider. Runs synchronously before
+ * the dialog's first paint (layout effect + requestAnimationFrame), so the
+ * centered dialog opens at its final height and never re-centers afterwards. */
 export function observeDonationPeek(content: HTMLDivElement): () => void {
   let frame: number | undefined;
-  let settled = false;
+  let last: number | undefined;
   const apply = () => {
     frame = undefined;
     const slider = content.querySelector('input[type="range"]');
     if (!(slider instanceof HTMLInputElement)) {
+      last = undefined;
       content.style.maxHeight = "";
       return;
     }
-    const box = content.getBoundingClientRect();
-    const thumb = slider.getBoundingClientRect();
-    const height = donationPeekHeight(box.top, thumb.top, thumb.height, content.scrollTop, window.innerHeight);
-    const previous = Number.parseFloat(content.style.maxHeight);
-    if (!Number.isFinite(previous) || Math.abs(previous - height) >= 1) {
+    const top = offsetWithin(slider, content);
+    if (!Number.isFinite(top)) {
+      last = undefined;
+      content.style.maxHeight = "";
+      return;
+    }
+    const height = donationPeekHeight(0, top, slider.offsetHeight, 0, window.innerHeight);
+    if (last === undefined || Math.abs(last - height) >= 1) {
       content.style.maxHeight = `${height}px`;
+      last = height;
     }
   };
   const schedule = () => {
-    if (settled && frame === undefined) frame = window.requestAnimationFrame(apply);
+    if (frame === undefined) frame = window.requestAnimationFrame(apply);
   };
-  // The opening zoom must finish before measuring relative positions.
-  const timer = window.setTimeout(() => { settled = true; schedule(); }, 260);
   const watcher = new ResizeObserver(schedule);
   for (const child of content.children) watcher.observe(child);
   window.addEventListener("resize", schedule);
   return () => {
-    window.clearTimeout(timer);
     if (frame !== undefined) window.cancelAnimationFrame(frame);
     watcher.disconnect();
     window.removeEventListener("resize", schedule);
