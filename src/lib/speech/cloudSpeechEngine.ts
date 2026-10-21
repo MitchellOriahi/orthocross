@@ -37,6 +37,7 @@ const players: HTMLAudioElement[] = [];
 let currentAbort: AbortController | null = null;
 let glowTimer: ReturnType<typeof setInterval> | null = null;
 let liveUrls: string[] = [];
+let playbackRate = 1;
 
 // Tiny silent WAV used to unlock playback inside the user's tap (iOS/Safari).
 const SILENT_WAV =
@@ -264,7 +265,7 @@ export const cloudSpeechEngine: SpeechEngine = {
     const voiceId = opts.voiceId === "male" ? "male" : "female";
     const { chunks, startWord } = plan(words, fromIndex, voiceId);
     if (!chunks.length) return cb.onEnd();
-    const rate = opts.rate || 1;
+    playbackRate = opts.rate || 1;
 
     // Unlock both audio elements synchronously while still inside the tap.
     for (const i of [0, 1]) {
@@ -335,8 +336,8 @@ export const cloudSpeechEngine: SpeechEngine = {
       const url = urlFor(k, prepared);
       el.onended = null;
       if (el.src !== url) el.src = url;
-      el.defaultPlaybackRate = rate;
-      el.playbackRate = rate;
+      el.defaultPlaybackRate = playbackRate;
+      el.playbackRate = playbackRate;
 
       const duration = () => prepared.duration ?? (isFinite(el.duration) ? el.duration : 0);
       let starts = buildWordTimeline(chunk.wordIdx.map((wi) => spokenForm(words[wi])), duration(), prepared.windows);
@@ -356,7 +357,7 @@ export const cloudSpeechEngine: SpeechEngine = {
       let last = -1;
       clearGlowTimer();
       const syncGlow = () => {
-        if (gen !== generation || el.paused || el.seeking || el.readyState < 2) return;
+        if (gen !== generation || el.paused || el.seeking || el.readyState < 3) return;
         timeOfWord(0);
         const j = wordAtTime(starts, el.currentTime);
         if (j !== last && j >= 0) { last = j; cb.onWord(chunk.wordIdx[j]); }
@@ -382,6 +383,15 @@ export const cloudSpeechEngine: SpeechEngine = {
     };
 
     void playChunk(0, startWord);
+  },
+
+  setRate(rate) {
+    if (!Number.isFinite(rate) || rate <= 0) return;
+    playbackRate = rate;
+    for (const el of players) {
+      el.defaultPlaybackRate = rate;
+      el.playbackRate = rate;
+    }
   },
 
   stop() {

@@ -713,6 +713,8 @@ All colors MUST be HSL.
 }
 /* The word being read right now: the brightest thing on the page. */
 .tts-current {
+  /* The active glow appears on the clock boundary, not after a fade-in. */
+  transition: none;
   color: hsl(var(--tts-glow-bright));
   text-shadow:
     0 0 2px hsl(var(--tts-glow-bright) / 0.95),

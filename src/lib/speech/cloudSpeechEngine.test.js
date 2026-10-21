@@ -76,9 +76,20 @@ test("cloud glow waits for playback, freezes while paused and follows media seek
     const audio = instances[0];
     expect(audio.playbackRate).toBe(1.75);
     expect(seen).toEqual([0]);
+    const source = audio.src;
+    audio.currentTime = 0.3;
+    cloudSpeechEngine.setRate(0.75);
+    expect(audio.currentTime).toBe(0.3);
+    expect(audio.src).toBe(source);
+    expect(instances.every(el => el.playbackRate === 0.75)).toBe(true);
     audio.currentTime = 1.1;
     audio.ontimeupdate();
     expect(seen.at(-1)).toBe(2);
+    audio.readyState = 2;
+    audio.currentTime = 1.6;
+    audio.ontimeupdate();
+    expect(seen.at(-1)).toBe(2);
+    audio.readyState = 4;
     audio.paused = true;
     audio.currentTime = 1.6;
     audio.ontimeupdate();
@@ -87,6 +98,8 @@ test("cloud glow waits for playback, freezes while paused and follows media seek
     audio.currentTime = 0.6;
     audio.onseeked();
     expect(seen.at(-1)).toBe(1);
+    audio.onended();
+    expect(instances[1].playbackRate).toBe(0.75);
   } finally {
     cloudSpeechEngine.stop();
     globalThis.Audio = oldAudio;
