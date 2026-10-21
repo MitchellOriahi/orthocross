@@ -23,7 +23,7 @@ function offsetWithin(element: HTMLElement, root: HTMLElement): number {
 }
 
 /** Pin the dialog to show half of the price slider. Runs synchronously before
- * the dialog's first paint (layout effect + requestAnimationFrame), so the
+ * the dialog's first paint (layout effect), so the
  * centered dialog opens at its final height and never re-centers afterwards. */
 export function observeDonationPeek(content: HTMLDivElement): () => void {
   let frame: number | undefined;
@@ -54,6 +54,9 @@ export function observeDonationPeek(content: HTMLDivElement): () => void {
   const watcher = new ResizeObserver(schedule);
   for (const child of content.children) watcher.observe(child);
   window.addEventListener("resize", schedule);
+  // Do not wait for ResizeObserver's first notification: that arrives after
+  // layout and can expose the default height before the centered window moves.
+  apply();
   return () => {
     if (frame !== undefined) window.cancelAnimationFrame(frame);
     watcher.disconnect();
