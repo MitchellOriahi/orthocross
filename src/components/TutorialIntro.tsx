@@ -38,6 +38,7 @@ const slides = [
 ];
 
 export const TutorialIntro = () => {
+  const { isPlaying, toggleMusic } = useMusic();
   const [isOpen, setIsOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
