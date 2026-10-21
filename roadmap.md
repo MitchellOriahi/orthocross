@@ -1,6 +1,6 @@
 # Prayers category browser
 ## Journal folder organization
-- [ ] Folder Back returns to folders, X returns to general Journal notes, and manual list/gallery choices persist without late reads overwriting them; verify navigation and reload.
+- [x] Folder Back returns to folders, X returns to general Journal notes, and manual list/gallery choices persist without late reads overwriting them. Sixteen tests pass; signed-in navigation and both views verified across folders and reload; temporary folder removed; no runtime errors; preview build clean.
 - [x] Separate general notes from named folders; retain All Notes, folder counts, in-folder creation and moving notes. Eleven tests pass; signed-in create/move/reload/delete flow verified at 393×681 with no runtime errors; deleting folders preserves their notes; temporary records removed; preview build clean.
 ## Translation accuracy audit
 - [x] Correct ambiguous Orthodox tradition names in French, Spanish, Portuguese and Armenian; signed-in language selection and distinct, fitting tradition choices verified across all 17 languages with no runtime errors.
