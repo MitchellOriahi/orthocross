@@ -21,7 +21,7 @@ import tewahedo_theotokos_sq2 from "@/assets/category-styles/tewahedo-theotokos-
 import tewahedo_george_sq from "@/assets/category-styles/tewahedo-george-sq2.jpg.asset.json";
 import tewahedo_annunciation_sq from "@/assets/category-styles/tewahedo-annunciation-sq.jpg.asset.json";
 import tewahedo_monastics_sq from "@/assets/category-styles/tewahedo-monastics-sq.jpg.asset.json";
-import tewahedo_fathers_sq from "@/assets/category-styles/tewahedo-fathers-sq4.jpg.asset.json";
+import tewahedo_fathers_sq from "@/assets/category-styles/tewahedo-fathers-sq5.jpg.asset.json";
 import tewahedo_laypeople_sq from "@/assets/category-styles/tewahedo-laypeople-sq.jpg.asset.json";
 import tewahedo_missionaries_sq from "@/assets/category-styles/tewahedo-missionaries-sq2.jpg.asset.json";
 import coptic_trinity_sq from "@/assets/category-styles/coptic-trinity-sq.jpg.asset.json";
