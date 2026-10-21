@@ -54,6 +54,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const contentRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = contentRef.current;
+    console.log("PEEKDBG effect", open, !!el);
     if (!open || !el) return;
     let settled = false;
     const apply = () => {
