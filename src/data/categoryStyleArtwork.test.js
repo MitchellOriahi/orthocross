@@ -5,9 +5,11 @@ import { categoryArtwork } from "./categoryStyleArtwork";
 import { SAINT_DISPLAY_ICONS, SAINT_CATEGORY_DISPLAY_ICON } from "./saintDisplayIcons";
 
 // Photographs and icons the app owner supplied. The Coptic ones are George
-// Makary's work and credit his page; the rest carry no online source link.
+// Makary's work and credit his page; the Tewahedo saint photographs credit the
+// Taamra Maryam collection page at the Royal Collection Trust.
 const SUPPLIED = ["tewahedo-fathers", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-annunciation", "tewahedo-monastics", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
 const MAKARY = "https://www.copticicon.com/";
+const TAAMRA = "https://www.rct.uk/collection/1005083/taamra-maryam-taamera-maareyaame-the-miracles-of-the-virgin-mary";
 
 test("Russian prayer top and middle rows use supplied panels in upload order and preserve Saints", () => {
   expect(categoryArtwork("prayers", "byzantine", "foundational").image_url).toContain("russian-prayer-foundational.png");
@@ -59,7 +61,7 @@ test("each tradition covers all seven saint and six prayer categories with store
         expect(art.image_url).toStartWith("/__l5e/assets-v1/");
         expect(art.image_author.length).toBeGreaterThan(0);
         if (art.image_license === "Supplied by the app owner") {
-          expect(art.image_source === "" || ["www.copticicon.com", "www.instagram.com"].includes(new URL(art.image_source).hostname)).toBe(true);
+          expect(art.image_source === "" || ["www.copticicon.com", "www.instagram.com", "www.rct.uk"].includes(new URL(art.image_source).hostname)).toBe(true);
           expect(art.image_license_url).toBe("");
         } else {
           expect(new URL(art.image_source).hostname).toBe("commons.wikimedia.org");
@@ -78,7 +80,7 @@ test("Tewahedo Saints top row shows the supplied Annunciation and Theotokos phot
   expect(biblical.image_url).toContain("tewahedo-theotokos-sq4");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(TAAMRA);
   }
 });
 
@@ -89,7 +91,7 @@ test("Tewahedo Saints middle row shows the supplied rainbow-winged archangel and
   expect(fathers.image_url).toContain("tewahedo-fathers");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(TAAMRA);
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
   }
@@ -102,7 +104,7 @@ test("Tewahedo Saints row below the middle shows the supplied Saint George and T
   expect(missionaries.image_url).toContain("tewahedo-missionaries-sq");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(TAAMRA);
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
   }
@@ -112,7 +114,7 @@ test("the laypeople tile shows the supplied seated righteous layman photograph, 
   const art = categoryArtwork("saints", "tewahedo", "laypeople");
   expect(art.image_url).toContain("tewahedo-laypeople-sq");
   expect(art.image_license).toBe("Supplied by the app owner");
-  expect(art.image_source).toBe("");
+  expect(art.image_source).toBe(TAAMRA);
   expect(art.image_license_url).toBe("");
   expect(art.image_modification).toContain("Square-cropped");
 });
@@ -380,11 +382,11 @@ test("prayer tiles credit the artists of the supplied artwork", () => {
     expect(tewahedo.image_author).toContain(YAHUDAH);
     expect(tewahedo.image_source).toBe(YAHUDAH_POST);
   }
-  // Russian and Tewahedo saint tiles keep their own credits: the prayer artists'
-  // links stay out of them.
+  // Russian saint tiles keep their own credits, and the Tewahedo saint tiles
+  // credit the Taamra Maryam page; the prayer artists' links stay out of them.
   for (const category of SAINT_CATEGORIES) {
     expect(categoryArtwork("saints", "byzantine", category.id).image_source).toBe("");
-    expect(categoryArtwork("saints", "tewahedo", category.id).image_source).toBe("");
+    expect(categoryArtwork("saints", "tewahedo", category.id).image_source).toBe(TAAMRA);
   }
 });
 
