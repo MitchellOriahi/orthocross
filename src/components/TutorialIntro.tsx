@@ -80,6 +80,14 @@ export const TutorialIntro = () => {
   return (
     <Dialog open={isOpen}>
       <DialogContent className="w-[92%] max-w-sm rounded-2xl sm:rounded-2xl [&>button]:hidden p-6" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+        <button
+          type="button"
+          aria-label={isPlaying ? 'Mute music' : 'Play music'}
+          onClick={toggleMusic}
+          className="absolute left-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+        >
+          {isPlaying ? <Megaphone className="h-4 w-4" /> : <MegaphoneOff className="h-4 w-4" />}
+        </button>
         <DialogTitle className="sr-only">App Tutorial</DialogTitle>
         <div className="flex flex-col items-center text-center justify-between min-h-[420px] py-2">
           {/* Icon */}
