@@ -12,8 +12,8 @@ export function MoveNoteMenu({ folders, folderId, onMove }: MoveNoteMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="Move note" title="Move note">
-          <FolderInput className="h-4 w-4" />
+        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" aria-label="Move note" title="Move note">
+          <FolderInput className="h-3 w-3" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="max-h-72 overflow-y-auto">
