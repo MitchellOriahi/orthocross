@@ -1285,28 +1285,28 @@ const Reading = () => {
 
       {/* Floating page arrows ride with the bottom bar. */}
       <div
-        className={`fixed left-0 right-0 z-40 flex justify-between px-4 pointer-events-none transition-all duration-150 ${showBottomNav ? "opacity-100" : "opacity-0 translate-y-6"}`}
-        style={{ bottom: showBottomNav ? "calc(var(--bottom-nav-height, 72px) + 0.75rem)" : "calc(env(safe-area-inset-bottom) + 0.75rem)" }}
+        className={`fixed left-0 right-0 z-40 flex justify-between px-2 pointer-events-none transition-all duration-150 ${showBottomNav ? "opacity-100" : "opacity-0 translate-y-6"}`}
+        style={{ bottom: showBottomNav ? "calc(var(--bottom-nav-height, 72px) + 0.5rem)" : "calc(env(safe-area-inset-bottom) + 0.75rem)" }}
       >
         <Button
-          variant="secondary"
+          variant="ghost"
           size="icon"
           aria-label="Previous"
           onClick={readingMode === "page" ? handlePrevVerse : handlePrevChapter}
           disabled={!swipeNavRef.current.canPrev}
-          className={`h-12 w-12 rounded-full shadow-lg ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canPrev ? "" : "invisible"}`}
+          className={`h-10 w-10 rounded-full border border-border bg-card/95 text-muted-foreground backdrop-blur-sm shadow-md hover:bg-card hover:text-primary ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canPrev ? "" : "invisible"}`}
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className="h-5 w-5" />
         </Button>
         <Button
-          variant="secondary"
+          variant="ghost"
           size="icon"
           aria-label="Next"
           onClick={readingMode === "page" ? handleNextVerse : handleNextChapter}
           disabled={!swipeNavRef.current.canNext}
-          className={`h-12 w-12 rounded-full shadow-lg ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canNext ? "" : "invisible"}`}
+          className={`h-10 w-10 rounded-full border border-border bg-card/95 text-muted-foreground backdrop-blur-sm shadow-md hover:bg-card hover:text-primary ${showBottomNav ? "pointer-events-auto" : ""} ${swipeNavRef.current.canNext ? "" : "invisible"}`}
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronRight className="h-5 w-5" />
         </Button>
       </div>
 
