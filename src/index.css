@@ -495,6 +495,10 @@ All colors MUST be HSL.
 .media-container img,
 .media-container video {
   display: block;
+  /* The container's own my-4 provides the outer spacing; the global
+     [contenteditable] img margin would otherwise inflate the frame and
+     push the action buttons above the image's top edge. */
+  margin: 0;
 }
 
 .media-action-btns button {
