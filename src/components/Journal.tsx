@@ -253,6 +253,18 @@ export const Journal = () => {
     setShowSidebar(false);
   };
 
+  // Rightward swipe goes back one level: open note -> notes list, folder view ->
+  // folders list, folders list -> notes. Null on the Journal home (the X exits).
+  const getSwipeBack = (): (() => void) | null => {
+    if (!isMobile) return null;
+    if (selectedNoteId && !showNotesList) {
+      return () => { void (async () => { if (await saveCurrentNote()) { discardUntouchedDraft(); clearExitedSelection('notes'); setShowNotesList(true); } })(); };
+    }
+    if (showSidebar) return () => { void handleJournalHome(); };
+    if (selectedFolderId) return () => { void handleBackToFolders(); };
+    return null;
+  };
+
   const handleNoteMove = async (noteId: string, folderId: string | null) => {
     if (!user || (noteId === selectedNoteId && !await saveCurrentNote())) return;
     const { error } = await (supabase as any).from('journal_entries').update({ folder_id: folderId })
