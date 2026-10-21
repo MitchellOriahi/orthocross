@@ -260,10 +260,8 @@ export const Journal = () => {
       return;
     }
     setNotes(prev => prev.map(note => note.id === noteId ? { ...note, folder_id: folderId } : note));
-    if (selectedNoteId === noteId) {
-      setSelectedFolderId(folderId);
-      setSearchQuery('');
-    }
+    const folderName = folderId ? folders.find(folder => folder.id === folderId)?.name : null;
+    toast({ title: 'Note moved', description: folderName ?? 'Notes' });
   };
 
   const handleNoteCreate = async () => {
