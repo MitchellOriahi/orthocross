@@ -303,7 +303,7 @@ export const JournalNotesList = ({
       </div>
 
       <ScrollArea className="journal-notes-scroll flex-1 min-h-0 min-w-0 w-full [&_[data-radix-scroll-area-viewport]>div]:!block">
-        <div className={cn("pr-5", viewMode === 'gallery' ? "p-2 pr-5 grid grid-cols-2 gap-2" : "p-2")}>
+        <div className={cn("p-2", viewMode === 'gallery' ? "grid grid-cols-2 gap-2" : "", "pr-4")}>
           {notes.length === 0 ? (
             <>
               {viewMode === 'list' ? (
