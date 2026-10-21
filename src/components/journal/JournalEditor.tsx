@@ -293,6 +293,14 @@ export const JournalEditor = ({
     const handleMediaClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       
+      // Tapping a drawing opens it directly in the drawing editor
+      if (target.tagName === 'IMG' && (target as HTMLImageElement).alt === 'Drawing') {
+        e.preventDefault();
+        e.stopPropagation();
+        handleEditDrawing(target as HTMLImageElement);
+        return;
+      }
+
       // Check if clicked element is a media element
       if (target.tagName === 'IMG' || target.tagName === 'VIDEO' || target.tagName === 'AUDIO') {
         const actionBtns = target.parentElement?.querySelector('.media-action-btns') as HTMLElement;
