@@ -243,16 +243,6 @@ export const Journal = () => {
     setShowSidebar(true);
   };
 
-  const handleJournalHome = async () => {
-    if (!await saveCurrentNote()) return;
-    discardUntouchedDraft();
-    clearExitedSelection('home');
-    setSearchQuery('');
-    setIsNoteExpanded(false);
-    setShowNotesList(true);
-    setShowSidebar(false);
-  };
-
   // Rightward swipe goes back one level, exiting Journal from its folder browser.
   const getSwipeBack = (): (() => void) | null => {
     if (!isMobile) return null;
