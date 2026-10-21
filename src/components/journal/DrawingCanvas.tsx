@@ -111,7 +111,10 @@ const DrawingCanvasView = ({ onSave, initialImageUrl, autoSaveOnUnmount, forward
       if (initialImageUrl) {
         FabricImage.fromURL(initialImageUrl, { crossOrigin: 'anonymous' })
           .then((fabricImg) => {
+            // Anchor at the top-left corner (Fabric centers objects by default).
+            fabricImg.set({ originX: 'left', originY: 'top', left: 0, top: 0 });
             fabricImg.scaleToWidth(canvasWidth);
+            fabricImg.setCoords();
             canvas?.add(fabricImg);
             canvas?.renderAll();
           })
