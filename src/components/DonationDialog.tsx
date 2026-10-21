@@ -51,29 +51,26 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
   // The window opens with the price slider half-cut by its bottom edge, so the
   // other gift amounts read as a peek worth pulling down, not a hidden list.
-  const contentRef = useRef<HTMLDivElement>(null);
+  const [contentEl, setContentEl] = useState<HTMLDivElement | null>(null);
   useEffect(() => {
-    const el = contentRef.current;
-    console.log("PEEKDBG effect", open, !!el);
-    if (!open || !el) return;
+    if (!open || !contentEl) return;
     let settled = false;
     const apply = () => {
-      const slider = el.querySelector('input[type="range"]');
-      if (!(slider instanceof HTMLInputElement)) { console.log("PEEKDBG no slider"); el.style.maxHeight = ""; return; }
-      const box = el.getBoundingClientRect();
+      const slider = contentEl.querySelector('input[type="range"]');
+      if (!(slider instanceof HTMLInputElement)) { contentEl.style.maxHeight = ""; return; }
+      const box = contentEl.getBoundingClientRect();
       const thumb = slider.getBoundingClientRect();
       const delta = thumb.bottom - thumb.height / 2 - box.bottom;
-      console.log("PEEKDBG apply delta", delta, "boxH", box.height);
       if (Math.abs(delta) < 1) return;
-      el.style.maxHeight = `${Math.min(Math.max(box.height + delta, 240), window.innerHeight - 32)}px`;
+      contentEl.style.maxHeight = `${Math.min(Math.max(box.height + delta, 240), window.innerHeight - 32)}px`;
     };
     // Wait out the open animation: its zoom would skew the measured positions.
     const timer = window.setTimeout(() => { settled = true; apply(); }, 260);
     const watcher = new ResizeObserver(() => { if (settled) apply(); });
-    for (const child of el.children) watcher.observe(child);
+    for (const child of contentEl.children) watcher.observe(child);
     window.addEventListener("resize", apply);
     return () => { window.clearTimeout(timer); watcher.disconnect(); window.removeEventListener("resize", apply); };
-  }, [open, isNative, language]);
+  }, [open, contentEl, isNative, language]);
 
   useEffect(() => {
     if (!open || !user) return;
