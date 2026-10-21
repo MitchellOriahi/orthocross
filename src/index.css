@@ -58,6 +58,15 @@ All colors MUST be HSL.
     --ring: 0 0% 0%;
 
     --radius: 0.75rem;
+    --drawing-black: 0 0% 0%;
+    --drawing-red: 0 84% 60%;
+    --drawing-blue: 217 91% 60%;
+    --drawing-green: 142 71% 45%;
+    --drawing-yellow: 45 93% 47%;
+    --drawing-purple: 271 91% 65%;
+    --drawing-orange: 25 95% 53%;
+    --drawing-pink: 330 81% 60%;
+
     --tradition-eastern: 217 91% 60%;
     --tradition-oriental: 25 95% 53%;
     --language-hint: var(--tradition-oriental);
@@ -855,3 +864,12 @@ html:not([lang="en"]) [role="dialog"] .flex-col.items-center > div { max-width: 
 html:not([lang="en"]) [role="dialog"] .localized-text-button { flex-shrink: 0; }
 .language-list-fade > button { flex-shrink: 0; }
 html:not([lang="en"]) .language-list-fade > button { height: 3.5rem; min-height: 3.5rem; }
+
+.drawing-swatch-black { background-color: hsl(var(--drawing-black)); }
+.drawing-swatch-red { background-color: hsl(var(--drawing-red)); }
+.drawing-swatch-blue { background-color: hsl(var(--drawing-blue)); }
+.drawing-swatch-green { background-color: hsl(var(--drawing-green)); }
+.drawing-swatch-yellow { background-color: hsl(var(--drawing-yellow)); }
+.drawing-swatch-purple { background-color: hsl(var(--drawing-purple)); }
+.drawing-swatch-orange { background-color: hsl(var(--drawing-orange)); }
+.drawing-swatch-pink { background-color: hsl(var(--drawing-pink)); }

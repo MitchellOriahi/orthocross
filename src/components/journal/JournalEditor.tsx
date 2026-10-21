@@ -532,6 +532,8 @@ export const JournalEditor = ({
             variant="ghost"
             size="icon"
             onClick={() => setShowDrawing(true)}
+            aria-label="Open drawing"
+            title="Draw"
             className="h-10 w-10"
           >
             <Pencil className="h-5 w-5" />
@@ -563,9 +565,9 @@ export const JournalEditor = ({
           setEditingDrawingElement(null);
         }
       }}>
-        <SheetContent side="bottom" className="h-[90vh] w-screen p-0 max-w-none">
+        <SheetContent side="bottom" className="h-[90dvh] w-screen p-0 max-w-none overflow-hidden">
           <SheetTitle className="sr-only">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</SheetTitle>
-          <div className="h-full p-4 safe-top">
+          <div className="h-full min-w-0 p-4 safe-top pb-[calc(env(safe-area-inset-bottom)+1rem)]">
             <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
           </div>
         </SheetContent>

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Canvas as FabricCanvas, PencilBrush, FabricImage } from "fabric";
 import { Button } from "@/components/ui/button";
-import { Eraser, Pencil, Trash2, Palette } from "lucide-react";
+import { Eraser, Pencil, Trash2, Palette, MousePointer2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface DrawingCanvasProps {
   onSave?: (dataUrl: string) => void;
@@ -136,78 +137,79 @@ export const DrawingCanvas = ({ onSave, initialImageUrl }: DrawingCanvasProps) =
   };
 
   return (
-    <div ref={containerRef} className="flex flex-col gap-4 h-full">
-      <div className="flex gap-2 items-center flex-wrap">
+    <div ref={containerRef} className="flex flex-col gap-3 h-full min-h-0 min-w-0">
+      <div className="flex flex-col gap-2 shrink-0 min-w-0">
+        <div className="grid grid-cols-3 gap-2 pr-10">
         <Button
           variant={tool === 'draw' ? "default" : "outline"}
-          className="min-h-[44px]"
+          className="h-11 min-w-0 px-2"
           aria-pressed={tool === 'draw'}
           onClick={() => setTool('draw')}
         >
-          <Pencil className="h-4 w-4 mr-2" />
-          Draw
+          <Pencil className="h-5 w-5" />
+          <span className="sr-only">Draw</span>
         </Button>
         <Button
           variant={tool === 'erase' ? "default" : "outline"}
-          className="min-h-[44px]"
+          className="h-11 min-w-0 px-2"
           aria-pressed={tool === 'erase'}
           onClick={() => setTool('erase')}
         >
-          <Eraser className="h-4 w-4 mr-2" />
-          Erase
+          <Eraser className="h-5 w-5" />
+          <span className="sr-only">Erase</span>
         </Button>
         <Button
           variant={tool === 'select' ? "default" : "outline"}
-          className="min-h-[44px]"
+          className="h-11 min-w-0 px-2"
           aria-pressed={tool === 'select'}
           onClick={() => setTool('select')}
         >
-          Select
+          <MousePointer2 className="h-5 w-5" />
+          <span className="sr-only">Select</span>
         </Button>
-        <div className="relative">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowColorPicker(!showColorPicker)}
-          >
-            <Palette className="h-4 w-4 mr-2" />
-            <div
-              className="w-4 h-4 rounded border border-border"
-              style={{ backgroundColor: selectedColor }}
-            />
-          </Button>
-          {showColorPicker && (
-            <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-lg shadow-lg z-10 flex gap-1 flex-wrap max-w-[200px]">
-              {BRUSH_COLORS.map((color) => (
-                <button
-                  key={color.value}
-                  onClick={() => {
-                    setSelectedColor(color.value);
-                    setShowColorPicker(false);
-                  }}
-                  className="w-11 h-11 rounded border-2 hover:scale-110 transition-transform"
-                  style={{
-                    backgroundColor: color.value,
-                    borderColor: selectedColor === color.value ? "#000" : "transparent",
-                  }}
-                  title={color.name}
-                  aria-label={`Brush color ${color.name}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
-        <Button variant="outline" size="sm" onClick={handleClear}>
-          <Trash2 className="h-4 w-4 mr-2" />
-          Clear
+        <div className="flex flex-wrap items-center gap-2">
+        <Popover open={showColorPicker} onOpenChange={setShowColorPicker}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="h-11 shrink-0 px-3" aria-label="Pen colors" title="Pen colors">
+              <Palette className="h-4 w-4 mr-2" />
+              <span className={`w-4 h-4 rounded border border-border drawing-swatch-${BRUSH_COLORS.find(color => color.value === selectedColor)?.name.toLowerCase()}`} />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="start" collisionPadding={16} className="w-56 max-w-[calc(100vw-2rem)] p-2 grid grid-cols-4 gap-2">
+            {BRUSH_COLORS.map(color => (
+              <Button key={color.value} variant="outline"
+                className={`h-11 w-full p-1 ${selectedColor === color.value ? 'ring-2 ring-ring ring-offset-2 ring-offset-popover' : ''}`}
+                title={color.name} aria-label={`Brush color ${color.name}`} aria-pressed={selectedColor === color.value}
+                onClick={() => {
+                  setSelectedColor(color.value);
+                  setTool('draw');
+                  if (fabricCanvas) {
+                    fabricCanvas.isDrawingMode = true;
+                    fabricCanvas.selection = false;
+                    if (fabricCanvas.freeDrawingBrush) {
+                      fabricCanvas.freeDrawingBrush.color = color.value;
+                      fabricCanvas.freeDrawingBrush.width = 2;
+                    }
+                  }
+                  setShowColorPicker(false);
+                }}>
+                <span className={`h-full w-full rounded-sm drawing-swatch-${color.name.toLowerCase()}`} />
+              </Button>
+            ))}
+          </PopoverContent>
+        </Popover>
+        <Button variant="outline" size="icon" className="h-11 w-11 shrink-0" onClick={handleClear} aria-label="Clear" title="Clear">
+          <Trash2 className="h-5 w-5" />
         </Button>
         {onSave && (
-          <Button variant="default" size="sm" onClick={handleSave}>
+          <Button variant="default" className="h-11 min-w-0 flex-1 whitespace-normal" onClick={handleSave}>
             Save Drawing
           </Button>
         )}
+        </div>
       </div>
-      <div ref={canvasWrapRef} className="border border-border rounded-lg overflow-hidden flex-1 flex items-center justify-center bg-muted/20">
+      <div ref={canvasWrapRef} className="border border-border rounded-lg overflow-hidden flex-1 min-h-0 min-w-0 flex items-center justify-center bg-muted/20">
         <canvas ref={canvasRef} className="max-w-full max-h-full" />
       </div>
     </div>
