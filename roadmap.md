@@ -1,6 +1,6 @@
 # Prayers category browser
 ## Journal folder organization
-- [ ] Fix drawing controls overflowing the page and pen colors remaining in erase/select mode; verify actual colored strokes and saving.
+- [x] Keep drawing controls within the page and switch to the pen when selecting colors. Signed-in red/blue strokes verified after erase/select; all controls fit 393×763; saved drawing persisted after reload; temporary note and attachment removed; 19 regression tests pass, no runtime errors, preview build clean.
 - [x] Remove redundant Notes folder and clear folder/note selection on exit. Nineteen tests pass; signed-in folder Back, note Back and X verified with no retained highlights or runtime errors; temporary records removed; preview build clean.
 - [x] Folder Back returns to folders, X returns to general Journal notes, and manual list/gallery choices persist without late reads overwriting them. Sixteen tests pass; signed-in navigation and both views verified across folders and reload; temporary folder removed; no runtime errors; preview build clean.
 - [x] Separate general notes from named folders; retain All Notes, folder counts, in-folder creation and moving notes. Eleven tests pass; signed-in create/move/reload/delete flow verified at 393×681 with no runtime errors; deleting folders preserves their notes; temporary records removed; preview build clean.
