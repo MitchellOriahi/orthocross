@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Flame, Book, Hand, Move, Settings } from "lucide-react";
+import { ChevronLeft, ChevronRight, Flame, Book, Hand, Move, Settings, Megaphone, MegaphoneOff } from "lucide-react";
+import { useMusic } from "@/contexts/MusicContext";
 
 const slides = [
   {
