@@ -49,6 +49,29 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const money = (amount: number) => formatDonationMoney(amount, language);
   const isNative = Capacitor.isNativePlatform();
 
+  // The window opens with the price slider half-cut by its bottom edge, so the
+  // other gift amounts read as a peek worth pulling down, not a hidden list.
+  const [contentEl, setContentEl] = useState<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!open || !contentEl) return;
+    let settled = false;
+    const apply = () => {
+      const slider = contentEl.querySelector('input[type="range"]');
+      if (!(slider instanceof HTMLInputElement)) { contentEl.style.maxHeight = ""; return; }
+      const box = contentEl.getBoundingClientRect();
+      const thumb = slider.getBoundingClientRect();
+      const delta = thumb.bottom - thumb.height / 2 - box.bottom;
+      if (Math.abs(delta) < 1) return;
+      contentEl.style.maxHeight = `${Math.min(Math.max(box.height + delta, 240), window.innerHeight - 32)}px`;
+    };
+    // Wait out the open animation: its zoom would skew the measured positions.
+    const timer = window.setTimeout(() => { settled = true; apply(); }, 260);
+    const watcher = new ResizeObserver(() => { if (settled) apply(); });
+    for (const child of contentEl.children) watcher.observe(child);
+    window.addEventListener("resize", apply);
+    return () => { window.clearTimeout(timer); watcher.disconnect(); window.removeEventListener("resize", apply); };
+  }, [open, contentEl, isNative, language]);
+
   useEffect(() => {
     if (!open || !user) return;
     supabase.from("profiles").select("donor_anonymous").eq("id", user.id).maybeSingle()
@@ -245,7 +268,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md max-h-[72vh] overflow-y-auto overscroll-contain p-6">
+      <DialogContent ref={setContentEl} className="sm:max-w-md max-h-[72vh] overflow-y-auto overscroll-contain p-6">
         <DialogHeader className="text-left space-y-2">
           <DialogTitle className="text-3xl font-bold leading-tight">Support OrthoCross</DialogTitle>
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
