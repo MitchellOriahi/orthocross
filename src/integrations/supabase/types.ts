@@ -259,6 +259,30 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_verses: {
+        Row: {
+          active: boolean
+          id: string
+          reference: string
+          sort_order: number
+          verse_text: string
+        }
+        Insert: {
+          active?: boolean
+          id?: string
+          reference: string
+          sort_order: number
+          verse_text: string
+        }
+        Update: {
+          active?: boolean
+          id?: string
+          reference?: string
+          sort_order?: number
+          verse_text?: string
+        }
+        Relationships: []
+      }
       donations: {
         Row: {
           amount: number
@@ -1252,6 +1276,7 @@ export type Database = {
           timezone: string | null
           updated_at: string
           username: string | null
+          verse_notifications_enabled: boolean
           voice_recording_enabled: boolean | null
           wednesday_notifications_enabled: boolean | null
         }
@@ -1274,6 +1299,7 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           username?: string | null
+          verse_notifications_enabled?: boolean
           voice_recording_enabled?: boolean | null
           wednesday_notifications_enabled?: boolean | null
         }
@@ -1296,6 +1322,7 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           username?: string | null
+          verse_notifications_enabled?: boolean
           voice_recording_enabled?: boolean | null
           wednesday_notifications_enabled?: boolean | null
         }
@@ -1707,6 +1734,13 @@ export type Database = {
           total_donated: number
           user_id: string
           username: string
+        }[]
+      }
+      get_verse_of_the_day: {
+        Args: { p_date?: string }
+        Returns: {
+          reference: string
+          verse_text: string
         }[]
       }
       has_role: {
