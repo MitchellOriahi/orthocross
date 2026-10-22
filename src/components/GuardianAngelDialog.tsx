@@ -83,15 +83,7 @@ export const GuardianAngelDialog = ({
           <AlertDialogTitle className="text-center text-3xl font-bold leading-tight">
             {saved ? "Streak Saved!" : "Streak Lost"}
           </AlertDialogTitle>
-          <div className="streak-mascot-stage flex w-full items-center justify-center" aria-hidden="true">
-            <img
-              src={saved ? savedFlame : lostFlame}
-              alt=""
-              width={1024}
-              height={1024}
-              className="streak-mascot h-full w-full object-contain"
-            />
-          </div>
+          <StreakMascotFlame saved={saved} />
           <AlertDialogDescription asChild>
             <div className="w-full text-center space-y-3 text-muted-foreground">
             {saved ? (
