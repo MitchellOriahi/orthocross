@@ -66,6 +66,15 @@ All colors MUST be HSL.
     --drawing-purple: 271 91% 65%;
     --drawing-orange: 25 95% 53%;
     --drawing-pink: 330 81% 60%;
+    --highlight-yellow: var(--drawing-yellow);
+    --highlight-green: var(--drawing-green);
+    --highlight-blue: var(--drawing-blue);
+    --highlight-pink: var(--drawing-pink);
+    --highlight-red: var(--drawing-red);
+    --highlight-purple: var(--drawing-purple);
+    --highlight-orange: var(--drawing-orange);
+    --highlight-gray: 0 0% 55%;
+    --highlight-opacity: 0.28;
     --streak-saved: 29 95% 49%;
     --streak-lost: 224 18% 56%;
     --streak-action-shadow: 0 4px 0 hsl(var(--primary) / 0.25);
@@ -500,6 +509,16 @@ All colors MUST be HSL.
   border-radius: 0.25rem;
   color: inherit;
 }
+
+.dark { --highlight-opacity: 0.35; }
+.journal-highlight-yellow { background-color: hsl(var(--highlight-yellow) / var(--highlight-opacity)); }
+.journal-highlight-green { background-color: hsl(var(--highlight-green) / var(--highlight-opacity)); }
+.journal-highlight-blue { background-color: hsl(var(--highlight-blue) / var(--highlight-opacity)); }
+.journal-highlight-pink { background-color: hsl(var(--highlight-pink) / var(--highlight-opacity)); }
+.journal-highlight-red { background-color: hsl(var(--highlight-red) / var(--highlight-opacity)); }
+.journal-highlight-purple { background-color: hsl(var(--highlight-purple) / var(--highlight-opacity)); }
+.journal-highlight-orange { background-color: hsl(var(--highlight-orange) / var(--highlight-opacity)); }
+.journal-highlight-gray { background-color: hsl(var(--highlight-gray) / var(--highlight-opacity)); }
 
 /* Media action buttons styling */
 .media-action-btns {

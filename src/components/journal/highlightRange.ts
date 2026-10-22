@@ -6,7 +6,12 @@ export type HighlightMode = 'word' | 'sentence';
 // Use the browser's Unicode sentence parser rather than splitting only on dots.
 export const sentenceBounds = (text: string, offset: number): [number, number] | null => {
   if (!text.trim() || offset < 0 || offset > text.length) return null;
-  const segmenter = new Intl.Segmenter(undefined, { granularity: 'sentence' });
+  const { Segmenter } = Intl as typeof Intl & {
+    Segmenter: new (locale: undefined, options: { granularity: 'sentence' }) => {
+      segment: (text: string) => Iterable<{ segment: string; index: number }>;
+    };
+  };
+  const segmenter = new Segmenter(undefined, { granularity: 'sentence' });
   const position = Math.min(offset, text.length - 1);
   for (const { segment, index } of segmenter.segment(text)) {
     if (position < index || position >= index + segment.length) continue;
@@ -64,12 +69,13 @@ export const toggleHighlightAt = (
         const start = text.length;
         text += child.textContent || '';
         pieces.push({ node: child as Text, start, end: text.length });
-      } else if (child instanceof root.ownerDocument.defaultView!.Element) {
-        if (child.matches('img,audio,video,button,svg,[contenteditable="false"]')) continue;
-        if (child.tagName === 'BR') text += '\n';
+      } else if (child.nodeType === 1) {
+        const element = child as Element;
+        if (element.matches('img,audio,video,button,svg,[contenteditable="false"]')) continue;
+        if (element.tagName === 'BR') text += '\n';
         else {
           collect(child);
-          if (child.matches('p,li,h1,h2,h3,div')) text += '\n';
+          if (element.matches('p,li,h1,h2,h3,div')) text += '\n';
         }
       }
     }
