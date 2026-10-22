@@ -205,53 +205,6 @@ All colors MUST be HSL.
     .streak-mascot { animation: none; }
     .streak-action { transition: none; }
   }
-  /* "Arise" button: a steady treasure-chest radiance — bloom, drifting rays, slow sheen. */
-  .streak-arise {
-    --streak-arise-tone: 42 92% 58%;
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    background: hsl(var(--primary));
-    border: 1px solid hsl(var(--streak-arise-tone) / 0.6);
-    box-shadow:
-      0 0 0 1px hsl(var(--streak-arise-tone) / 0.35),
-      0 0 16px 3px hsl(var(--streak-arise-tone) / 0.5),
-      0 0 42px 14px hsl(var(--streak-arise-tone) / 0.3),
-      0 0 84px 30px hsl(var(--streak-arise-tone) / 0.16);
-  }
-  .dark .streak-arise { --streak-arise-tone: 0 0% 100%; }
-  .streak-arise:hover { filter: brightness(1.08); }
-  .streak-arise::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(105deg, transparent 32%, hsl(var(--streak-arise-tone) / 0.45) 46%, hsl(var(--streak-arise-tone) / 0.9) 51%, hsl(var(--streak-arise-tone) / 0.45) 56%, transparent 70%);
-    transform: translateX(-130%);
-    animation: streak-arise-sheen 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    pointer-events: none;
-  }
-  .streak-arise::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(130% 150% at 50% 120%, hsl(var(--streak-arise-tone) / 0.38), transparent 62%);
-    pointer-events: none;
-  }
-  .streak-arise-rays {
-    background: repeating-conic-gradient(from 0deg at 50% 50%, hsl(var(--streak-arise-tone) / 0.18) 0deg 4deg, transparent 4deg 16deg);
-    mask-image: radial-gradient(circle at 50% 50%, black 6%, transparent 66%);
-    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 6%, transparent 66%);
-    animation: donor-rays-spin 26s linear infinite;
-    pointer-events: none;
-  }
-  @keyframes streak-arise-sheen {
-    0% { transform: translateX(-130%); }
-    60%, 100% { transform: translateX(130%); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .streak-arise::before, .streak-arise-rays { animation: none; }
-  }
   .profile-branch-eastern { --profile-branch-color: var(--profile-branch-eastern); }
   .profile-branch-oriental { --profile-branch-color: var(--profile-branch-oriental); }
   .profile-branch-unaffiliated { --profile-branch-color: var(--profile-branch-unaffiliated); }
