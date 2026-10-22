@@ -968,70 +968,68 @@ html:not([lang="en"]) .reading-complete-button { min-height: 3rem; padding-top: 
 /* ============= "Arise" button: treasure-chest shimmer ============= */
 /* The button face is deliberately dark in both themes so the light sweep reads
    against it (the app's own primary is white in dark mode, which hid the sheen). */
+/* "Arise" button: the app's ordinary button, wrapped in a living aura —
+   a soft luminous bloom that breathes, plus a thin highlight that sweeps
+   continuously around the rounded border and loops seamlessly. */
+@property --streak-arise-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 .streak-arise {
   --streak-arise-tone: 42 92% 60%;
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-  background: linear-gradient(180deg, hsl(0 0% 14%), hsl(0 0% 4%));
-  color: hsl(0 0% 100%);
-  border: 1px solid hsl(var(--streak-arise-tone) / 0.65);
-  box-shadow:
-    0 0 0 1px hsl(var(--streak-arise-tone) / 0.4),
-    0 0 16px 3px hsl(var(--streak-arise-tone) / 0.55),
-    0 0 44px 14px hsl(var(--streak-arise-tone) / 0.3),
-    0 0 88px 30px hsl(var(--streak-arise-tone) / 0.16);
-  transition: filter 150ms ease;
 }
 .dark .streak-arise {
   --streak-arise-tone: 0 0% 100%;
-  background: linear-gradient(180deg, hsl(220 14% 17%), hsl(220 18% 6%));
 }
-.streak-arise:hover { filter: brightness(1.18); }
-/* Bright band sweeping across the face of the button. */
+/* Layered blurred bloom spilling just past the button's edges. */
 .streak-arise::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(100deg,
-    transparent 34%,
-    hsl(var(--streak-arise-tone) / 0.3) 45%,
-    hsl(var(--streak-arise-tone) / 0.95) 50%,
-    hsl(var(--streak-arise-tone) / 0.3) 55%,
-    transparent 66%);
-  transform: translateX(-130%);
-  animation: streak-arise-sheen 2.8s ease-in-out infinite;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow:
+    0 0 14px 2px hsl(var(--streak-arise-tone) / 0.5),
+    0 0 34px 10px hsl(var(--streak-arise-tone) / 0.28),
+    0 0 68px 26px hsl(var(--streak-arise-tone) / 0.14);
+  animation: streak-arise-breathe 3.2s ease-in-out infinite;
   pointer-events: none;
 }
-/* A second glint crossing the other way, slower, so the shimmer never looks like a loop. */
+/* Thin bright edge running around the border. */
 .streak-arise::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(100deg,
-    transparent 42%,
-    hsl(var(--streak-arise-tone) / 0.55) 50%,
-    transparent 58%);
-  transform: translateX(130%);
-  animation: streak-arise-sheen-rev 4.3s ease-in-out infinite;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(from var(--streak-arise-angle),
+    transparent 0deg,
+    hsl(var(--streak-arise-tone) / 0.12) 55deg,
+    hsl(var(--streak-arise-tone) / 0.95) 90deg,
+    hsl(var(--streak-arise-tone) / 0.25) 130deg,
+    transparent 190deg,
+    transparent 250deg,
+    hsl(var(--streak-arise-tone) / 0.45) 290deg,
+    transparent 345deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: streak-arise-orbit 3.6s linear infinite;
   pointer-events: none;
 }
-/* Rays drifting behind the button. */
-.streak-arise-rays {
-  background: repeating-conic-gradient(from 0deg at 50% 50%, hsl(var(--streak-arise-tone) / 0.2) 0deg 4deg, transparent 4deg 16deg);
-  mask-image: radial-gradient(circle at 50% 50%, black 6%, transparent 66%);
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 6%, transparent 66%);
-  animation: donor-rays-spin 26s linear infinite;
-  pointer-events: none;
+@keyframes streak-arise-orbit {
+  to { --streak-arise-angle: 360deg; }
 }
-@keyframes streak-arise-sheen {
-  0% { transform: translateX(-130%); }
-  100% { transform: translateX(130%); }
-}
-@keyframes streak-arise-sheen-rev {
-  0% { transform: translateX(130%); }
-  100% { transform: translateX(-130%); }
+@keyframes streak-arise-breathe {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .streak-arise::before, .streak-arise::after, .streak-arise-rays { animation: none; }
+  .streak-arise::before { animation: none; opacity: 0.9; }
+  .streak-arise::after { animation: none; }
 }
