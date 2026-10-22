@@ -36,6 +36,14 @@ describe('sentence boundaries', () => {
 });
 
 describe('word and sentence highlighting', () => {
+  it('keeps a word in one highlight when its last letter is a separate text fragment', () => {
+    const root = rootFor('Flexxagainng');
+    root.firstChild.splitText(10);
+    root.insertBefore(dom.window.document.createTextNode(''), root.lastChild);
+    tap(root, 'Flexx', 'word');
+    expect(root.querySelectorAll('mark').length).toBe(1);
+    expect(root.querySelector('mark').textContent).toBe('Flexxagainng');
+  });
   it('highlights only the full tapped sentence across formatting', () => {
     const root = rootFor('Have <strong>faith</strong> today! Rise anew.');
     tap(root, 'faith');

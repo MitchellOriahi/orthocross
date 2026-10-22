@@ -18,6 +18,27 @@ const run = (html) => {
 };
 
 describe('mergeWithAdjacentHighlights', () => {
+  for (const direction of ['backwards', 'forwards']) {
+    it(`joins a final letter across multiple empty text nodes ${direction}`, () => {
+      const root = dom.window.document.createElement('div');
+      root.innerHTML = `<mark class="${YELLOW}">Flexxing</mark><mark class="${YELLOW}">g</mark>`;
+      const [first, last] = root.querySelectorAll('mark');
+      root.insertBefore(dom.window.document.createTextNode(''), last);
+      root.insertBefore(dom.window.document.createTextNode(''), last);
+      mergeWithAdjacentHighlights(direction === 'backwards' ? last : first);
+      expect(root.querySelectorAll('mark').length).toBe(1);
+      expect(root.textContent).toBe('Flexxingg');
+    });
+  }
+  it('preserves multiple whitespace fragments while joining neighbouring words', () => {
+    const root = dom.window.document.createElement('div');
+    root.innerHTML = `<mark class="${YELLOW}">one</mark><mark class="${YELLOW}">two</mark>`;
+    const last = root.querySelectorAll('mark')[1];
+    for (const text of ['', ' ', '', ' ']) root.insertBefore(dom.window.document.createTextNode(text), last);
+    mergeWithAdjacentHighlights(last);
+    expect(root.querySelectorAll('mark').length).toBe(1);
+    expect(root.textContent).toBe('one  two');
+  });
   it('joins two same-colour words separated by a space into one highlight', () => {
     expect(run(`<mark class="${YELLOW}">one</mark> <mark class="${YELLOW}">two</mark>`))
       .toBe(`<mark class="${YELLOW}">one two</mark>`);
