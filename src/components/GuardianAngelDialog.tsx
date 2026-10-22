@@ -4,7 +4,7 @@ import { Flame } from "lucide-react";
 
 const StreakMascotFlame = ({ saved }: { saved: boolean }) => (
   <div className="streak-mascot-stage flex w-full items-center justify-center" aria-hidden="true">
-    <div className="relative flex h-32 w-32 items-center justify-center">
+    <div className="streak-mascot relative flex h-32 w-32 items-center justify-center">
       <div
         className={`absolute inset-0 rounded-full blur-xl opacity-50 ${saved ? "animate-glow-pulse dark:hidden" : ""}`}
         style={{
