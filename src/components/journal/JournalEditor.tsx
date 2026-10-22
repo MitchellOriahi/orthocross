@@ -8,6 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { DrawingCanvas, type DrawingCanvasHandle } from "./DrawingCanvas";
 import { toggleHighlightAt, type HighlightMode } from "./highlightRange";
 import { mergeWithAdjacentHighlights } from "./highlightMerge";
+import { leaveHighlightForInput } from "./plainHighlightInput";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -138,33 +139,19 @@ export const JournalEditor = ({
   const handleBeforeInput = (e: Event) => {
     if (highlightArmed) return;
     const input = e as InputEvent;
-    if (input.inputType !== 'insertText' || !input.data || input.isComposing) return;
+    if (!input.inputType.startsWith('insert')) return;
     const root = contentDivRef.current;
     const selection = window.getSelection();
     if (!root || !selection || !selection.rangeCount || !selection.isCollapsed) return;
-    const range = selection.getRangeAt(0);
-    const element = range.startContainer.nodeType === Node.ELEMENT_NODE
-      ? range.startContainer as Element
-      : range.startContainer.parentElement;
-    const mark = element?.closest('mark');
-    if (!mark || !root.contains(mark)) return;
-
+    if (!leaveHighlightForInput(root, selection)) return;
+    // Composition/paste/line breaks proceed natively at the now-plain caret.
+    if (!input.cancelable || input.isComposing || !input.data ||
+        !['insertText', 'insertReplacementText'].includes(input.inputType)) return;
     e.preventDefault();
-    const remainderRange = range.cloneRange();
-    remainderRange.setEnd(mark, mark.childNodes.length);
-    const remainder = remainderRange.extractContents();
-    const plainText = document.createTextNode(input.data);
-    const plainSpan = document.createElement('span');
-    plainSpan.className = 'whitespace-pre-wrap';
-    plainSpan.appendChild(plainText);
-    mark.after(plainSpan);
-    if (remainder.textContent) {
-      const trailingMark = mark.cloneNode(false);
-      trailingMark.appendChild(remainder);
-      plainSpan.after(trailingMark);
-    }
-    if (!mark.textContent) mark.remove();
-    range.setStart(plainText, plainText.length);
+    const range = selection.getRangeAt(0);
+    const plainText = range.startContainer;
+    plainText.textContent = input.data;
+    range.setStart(plainText, input.data.length);
     range.collapse(true);
     selection.removeAllRanges();
     selection.addRange(range);
