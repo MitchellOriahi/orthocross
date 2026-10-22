@@ -1,5 +1,5 @@
 import { wordBounds } from './highlightWord';
-import { mergeWithAdjacentHighlights } from './highlightMerge';
+import { repairHighlights } from './highlightMerge';
 
 export type HighlightMode = 'word' | 'sentence';
 
@@ -94,7 +94,11 @@ export const toggleHighlightAt = (
     ? wordBounds(text, absoluteOffset)
     : sentenceBounds(text.slice(lineStart, lineEnd), absoluteOffset - lineStart)?.map(n => n + lineStart);
   if (!bounds) return false;
-  const selected = pieces.filter(piece => piece.start < bounds[1] && piece.end > bounds[0]);
+  // Whitespace is never painted, so blank pieces neither veto removal nor
+  // get wrapped in a mark on apply.
+  const selected = pieces.filter(piece =>
+    piece.start < bounds[1] && piece.end > bounds[0] &&
+    (piece.node.textContent || '').trim() !== '');
   if (!selected.length) return false;
   const remove = selected.every(piece => {
     const mark = piece.node.parentElement?.closest('mark');
@@ -114,10 +118,10 @@ export const toggleHighlightAt = (
     }
   }
   for (const mark of Array.from(root.querySelectorAll('mark'))) {
-    if (!root.contains(mark)) continue;
-    mark.className = canonicalColor(mark.className);
-    mergeWithAdjacentHighlights(mark);
+    if (root.contains(mark)) mark.className = canonicalColor(mark.className);
   }
+  // Whitespace never sits inside a highlight: strip it, then fold marks that touch.
+  repairHighlights(root);
   root.normalize();
   return true;
 };
