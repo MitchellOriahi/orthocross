@@ -1,4 +1,8 @@
 # Prayers category browser
+## Revenue offer rollout
+- [ ] Feature yearly $8/$12/$16 (default $12), $2.99 monthly; preserve existing subscriptions and lifetime tiers.
+- [ ] Show honest annual comparison, renewal terms, warm impact copy and direct cancellation.
+- [ ] Paid narration and media perks: blocked until native recurring store products and verified entitlements are configured; do not advertise unavailable perks.
 ## Welcome and calendar tradition
 - [x] Add the question mark while preserving translated titles, and a subtle matching glow to Get Started.
 - [x] Keep Eastern choices blue, including hovered buttons after language selection; shared styles verified once in both themes.
