@@ -1,6 +1,6 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Heart, Shield, Sparkles } from "lucide-react";
+import { Feather, Sunrise, Sparkles } from "lucide-react";
 
 interface GuardianAngelDialogProps {
   open: boolean;
@@ -25,7 +25,7 @@ export const GuardianAngelDialog = ({
         <AlertDialogHeader>
           <div className="flex justify-center mb-3">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-100 to-white flex items-center justify-center shadow-lg">
-              {saved ? <Shield className="w-8 h-8 text-yellow-600" /> : <Heart className="w-8 h-8 text-yellow-600" />}
+              {saved ? <Feather className="w-8 h-8 text-yellow-600" /> : <Sunrise className="w-8 h-8 text-yellow-600" />}
             </div>
           </div>
 
@@ -37,7 +37,7 @@ export const GuardianAngelDialog = ({
                 <Sparkles className="inline w-6 h-6 text-yellow-500 ml-2" />
               </>
             ) : (
-              "A Gentle New Start"
+              "Streak Lost"
             )}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-center space-y-4 pt-4">
@@ -67,18 +67,14 @@ export const GuardianAngelDialog = ({
               </>
             ) : (
               <>
-                <p className="text-lg">
-                  Every day is a fresh beginning. 🕊️
+                <p className="text-base italic">
+                  "For a righteous man may fall seven times and rise again."
+                  <span className="block text-xs not-italic text-muted-foreground mt-1">Proverbs 24:16</span>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Your streak starts over today, but every prayer and chapter you've read still matters. Your guardian angel is cheering you on!
+                  Like the prodigal son, we are always welcomed home. Not a single chapter or prayer you offered was in vain.
                 </p>
-                <div className="bg-muted/50 rounded-lg p-4">
-                  <p className="text-sm">
-                    <span className="font-semibold">Next Save Chance:</span>{" "}
-                    {remainingPercentage}%
-                  </p>
-                </div>
+                <p className="text-base font-semibold">Let us rise anew with the Lord.</p>
               </>
             )}
           </AlertDialogDescription>
