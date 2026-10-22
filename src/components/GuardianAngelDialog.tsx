@@ -36,9 +36,9 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
                     <span className="font-bold text-primary">{streakDays}-day streak</span>.
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    He spent all his strength on this month's grace.
+                    He spent a lot of energy saving your streak.
                     <br />
-                    Read and pray each day to awaken him again next month.
+                    Read and pray every day to awaken him again next month.
                   </p>
                 </>
               ) : (
