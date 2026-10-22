@@ -1,7 +1,7 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import lostMascot from "@/assets/streak-lost-mascot.png";
-import savedMascot from "@/assets/streak-saved-mascot.png";
+import lostFlame from "@/assets/streak-lost-flame.png";
+import savedFlame from "@/assets/streak-saved-flame.png";
 
 interface GuardianAngelDialogProps {
   open: boolean;
@@ -28,10 +28,10 @@ export const GuardianAngelDialog = ({
           </AlertDialogTitle>
           <div className="streak-mascot-stage flex w-full items-center justify-center" aria-hidden="true">
             <img
-              src={saved ? savedMascot : lostMascot}
+              src={saved ? savedFlame : lostFlame}
               alt=""
-              width={816}
-              height={816}
+              width={1024}
+              height={1024}
               className="streak-mascot h-full w-full object-contain"
             />
           </div>
