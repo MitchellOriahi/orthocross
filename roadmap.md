@@ -1,4 +1,6 @@
 # Prayers category browser
+## Journal highlight modes
+- [x] Add Word/Sentence chooser and eight colors; preserve sentence highlights when removing or repainting one word. Thirty-five focused checks and one signed-in save/reload flow passed.
 ## Revenue offer rollout
 - [x] Feature yearly $8/$12/$16 (default $12), $2.99 monthly; preserve existing subscriptions and lifetime tiers. Created tracked Stripe preset prices; authenticated $12 yearly checkout creation returned success without submitting payment.
 - [x] Show honest annual comparison, renewal terms, warm impact copy and direct cancellation. Pricing and cancellation rule checks passed; offer controls translated into all 16 non-English languages. Full browser checkout check was blocked by the first-run tutorial; no paid transaction or actual donor cancellation was performed.
