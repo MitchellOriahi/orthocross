@@ -968,34 +968,3 @@ html:not([lang="en"]) .reading-complete-button { min-height: 3rem; padding-top: 
 /* ============= "Arise" button: treasure-chest shimmer ============= */
 /* The button face is deliberately dark in both themes so the light sweep reads
    against it (the app's own primary is white in dark mode, which hid the sheen). */
-/* "Arise" button: the app's ordinary button. Only its glow moves —
-   the button itself never scales, shifts, or fades. */
-.streak-arise {
-  --streak-arise-tone: 42 92% 60%;
-  position: relative;
-  isolation: isolate;
-}
-.dark .streak-arise {
-  --streak-arise-tone: 0 0% 100%;
-}
-/* Soft layered bloom that swells and settles. */
-.streak-arise::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  box-shadow:
-    0 0 14px 3px hsl(var(--streak-arise-tone) / 0.5),
-    0 0 30px 10px hsl(var(--streak-arise-tone) / 0.32),
-    0 0 58px 22px hsl(var(--streak-arise-tone) / 0.14);
-  animation: streak-arise-breathe 2.6s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes streak-arise-breathe {
-  0%, 100% { opacity: 0.45; transform: scale(0.97); }
-  50% { opacity: 1; transform: scale(1.06); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .streak-arise::before { animation: none; opacity: 0.9; }
-}

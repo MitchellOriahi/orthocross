@@ -60,7 +60,7 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
         <AlertDialogFooter>
           <Button
             onClick={() => onOpenChange(false)}
-            className={`w-full size-lg ${saved ? "" : "streak-arise"}`}
+            className={`w-full size-lg ${saved ? "" : "shadow-[0_0_30px_rgba(255,255,255,0.55)] animate-glow-pulse"}`}
           >
             {saved ? "Continue" : "Arise"}
           </Button>
