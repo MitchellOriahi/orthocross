@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DrawingCanvas, type DrawingCanvasHandle } from "./DrawingCanvas";
 import { wordBounds, highlightTapAction } from "./highlightWord";
+import { mergeWithAdjacentHighlights } from "./highlightMerge";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -188,6 +189,7 @@ export const JournalEditor = ({
         mark.className = selectedColor.class;
         try {
           range.surroundContents(mark);
+          mergeWithAdjacentHighlights(mark);
           commitContent();
           setShowHighlighter(true);
           setHighlightArmed(true);
@@ -249,6 +251,7 @@ export const JournalEditor = ({
         parentMark.replaceWith(...Array.from(parentMark.childNodes));
       } else {
         parentMark.className = selectedColor.class;
+        mergeWithAdjacentHighlights(parentMark);
       }
     } else {
       const range = document.createRange();
@@ -257,6 +260,7 @@ export const JournalEditor = ({
       const mark = document.createElement('mark');
       mark.className = selectedColor.class;
       range.surroundContents(mark);
+      mergeWithAdjacentHighlights(mark);
     }
     root.normalize();
     commitContent();

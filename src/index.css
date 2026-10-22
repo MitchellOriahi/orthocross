@@ -492,9 +492,13 @@ All colors MUST be HSL.
   margin: 0.5rem 0;
 }
 
+/* Browsers paint <mark> text with their own black-on-yellow pair, which turns
+   highlighted words dark on a dark page. Inherit keeps the note's own colour
+   (white in dark mode) and only the background changes. */
 [contenteditable] mark {
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
+  color: inherit;
 }
 
 /* Media action buttons styling */
