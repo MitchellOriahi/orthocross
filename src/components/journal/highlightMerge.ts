@@ -65,42 +65,75 @@ export const mergeWithAdjacentHighlights = (mark: Element): Element => {
 /**
  * Lift every run of whitespace out of a mark so a highlight never paints the
  * spaces between words: <mark>one two</mark> becomes
- * <mark>one</mark>' '<mark>two</mark>. Runs on the mark's direct contents and
- * returns the mark (or its first surviving segment, or null when the mark held
+ * <mark>one</mark>' '<mark>two</mark>. Inline formatting inside the mark is
+ * split the same way, so spaces inside <strong> never stay painted either.
+ * Returns the mark (or its first surviving segment, or null when the mark held
  * nothing but whitespace and dissolves).
  */
-export const stripMarkWhitespace = (mark: Element): Element | null => {
-  const kids = Array.from(mark.childNodes);
-  if (!kids.some(isBlankText)) return mark;
-  const doc = mark.ownerDocument;
-  type Piece = { node?: Node; text?: string; blank: boolean };
-  const pieces: Piece[] = [];
-  for (const kid of kids) {
-    if (kid.nodeType !== Node.TEXT_NODE) {
-      pieces.push({ node: kid, blank: false });
+type Segment = { node: Node } | { text: string; blank: boolean };
+
+const VOIDED = 'img,audio,video,button,svg,br';
+
+const explode = (node: Node, doc: Document): Segment[] => {
+  if (node.nodeType === Node.TEXT_NODE) {
+    const text = node.textContent || '';
+    // Text without whitespace stays a single untouched node.
+    if (!/\s/.test(text)) return [{ node }];
+    return text.split(/(\s+)/).filter(Boolean).map(part =>
+      part.trim() ? ({ text: part, blank: false } as Segment) : ({ text: part, blank: true } as Segment));
+  }
+  if (node.nodeType !== Node.ELEMENT_NODE) return [{ node }];
+  const element = node as Element;
+  if ((element as HTMLElement).matches?.(VOIDED)) return [{ node }];
+  const inner = Array.from(element.childNodes).flatMap(child => explode(child, doc));
+  // Whitespace inside the element is hoisted out; word runs are re-wrapped in
+  // fresh copies of the element, one per run.
+  const groups: Segment[][] = [];
+  let run: Segment[] = [];
+  for (const piece of inner) {
+    if ('blank' in piece && piece.blank) {
+      if (run.length) groups.push(run);
+      run = [];
       continue;
     }
-    const text = kid.textContent || '';
-    for (const part of text.split(/(\s+)/)) {
-      if (!part) continue;
-      pieces.push({ text: part, blank: !part.trim() });
+    run.push(piece);
+  }
+  if (run.length) groups.push(run);
+  const identity = groups.length === 1 &&
+    inner.every((piece, index) => 'node' in piece && piece.node === element.childNodes[index]);
+  if (identity) return [{ node }];
+  if (groups.length === 0) return inner; // element held only whitespace
+  return groups.map(group => {
+    const copy = element.cloneNode(false);
+    for (const piece of group) {
+      copy.appendChild('node' in piece ? piece.node : doc.createTextNode(piece.text));
     }
+    return { node: copy } as Segment;
+  });
+};
+
+export const stripMarkWhitespace = (mark: Element): Element | null => {
+  const doc = mark.ownerDocument;
+  const pieces = Array.from(mark.childNodes).flatMap(kid => explode(kid, doc));
+  if (pieces.length === mark.childNodes.length &&
+      pieces.every((piece, index) => 'node' in piece && piece.node === mark.childNodes[index])) {
+    return mark;
   }
   const rebuild: Node[] = [];
-  let chunk: Piece[] = [];
+  let chunk: Segment[] = [];
   const flush = () => {
     if (!chunk.length) return;
     const fresh = mark.cloneNode(false);
     for (const piece of chunk) {
-      fresh.appendChild(piece.node ? piece.node : doc.createTextNode(piece.text || ''));
+      fresh.appendChild('node' in piece ? piece.node : doc.createTextNode(piece.text));
     }
     rebuild.push(fresh);
     chunk = [];
   };
   for (const piece of pieces) {
-    if (piece.blank) {
+    if ('blank' in piece && piece.blank) {
       flush();
-      rebuild.push(doc.createTextNode(piece.text || ''));
+      rebuild.push(doc.createTextNode(piece.text));
     } else {
       chunk.push(piece);
     }
