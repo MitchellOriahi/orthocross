@@ -23,30 +23,42 @@ export const GuardianAngelDialog = ({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="w-[86vw] max-w-sm max-h-[80vh] overflow-y-auto rounded-2xl p-5 sm:p-6">
         <AlertDialogHeader>
-          <div className="flex justify-center mb-3">
+          {!saved && (
+            <AlertDialogTitle className="text-center text-2xl">
+              Streak Lost
+            </AlertDialogTitle>
+          )}
+
+          <div className="relative flex justify-center mb-3">
             {saved ? (
-              <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-orange-300 via-amber-200 to-yellow-100 flex items-center justify-center shadow-lg shadow-orange-400/40">
-                <Flame className="w-11 h-11 text-orange-500 fill-orange-400" />
-                <Feather className="absolute -right-1 -bottom-1 w-8 h-8 p-1.5 rounded-full bg-sky-100 text-sky-600 shadow" />
-              </div>
+              <>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-28 h-28 rounded-full bg-orange-400/20 blur-xl" />
+                </div>
+                <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-orange-300 via-amber-200 to-yellow-100 flex items-center justify-center shadow-lg shadow-orange-400/40">
+                  <Flame className="w-11 h-11 text-orange-500 fill-orange-400" />
+                  <Feather className="absolute -right-1 -bottom-1 w-8 h-8 p-1.5 rounded-full bg-sky-100 text-sky-600 shadow" />
+                </div>
+              </>
             ) : (
-              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center shadow-inner">
-                <Flame className="w-11 h-11 text-muted-foreground/60 fill-muted-foreground/20" />
-              </div>
+              <>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-28 h-28 rounded-full bg-muted-foreground/10 blur-xl" />
+                </div>
+                <div className="relative w-20 h-20 rounded-full bg-gradient-to-b from-muted to-muted/50 ring-1 ring-border flex items-center justify-center shadow-inner">
+                  <Flame className="w-11 h-11 text-muted-foreground/70 fill-muted-foreground/25" />
+                </div>
+              </>
             )}
           </div>
 
-          <AlertDialogTitle className="text-center text-2xl">
-            {saved ? (
-              <>
-                <Sparkles className="inline w-6 h-6 text-yellow-500 mr-2" />
-                Guardian Angel Saved You!
-                <Sparkles className="inline w-6 h-6 text-yellow-500 ml-2" />
-              </>
-            ) : (
-              "Streak Lost"
-            )}
-          </AlertDialogTitle>
+          {saved && (
+            <AlertDialogTitle className="text-center text-2xl">
+              <Sparkles className="inline w-6 h-6 text-yellow-500 mr-2" />
+              Guardian Angel Saved You!
+              <Sparkles className="inline w-6 h-6 text-yellow-500 ml-2" />
+            </AlertDialogTitle>
+          )}
           <AlertDialogDescription className="text-center space-y-4 pt-4">
             {saved ? (
               <>
