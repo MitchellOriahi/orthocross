@@ -983,15 +983,15 @@ html:not([lang="en"]) .reading-complete-button { min-height: 3rem; padding-top: 
   z-index: -1;
   border-radius: inherit;
   box-shadow:
-    0 0 16px 3px hsl(var(--streak-arise-tone) / 0.4),
-    0 0 32px 9px hsl(var(--streak-arise-tone) / 0.2);
-  animation: streak-glow-breathe 3.4s ease-in-out infinite;
+    0 0 10px 1px hsl(var(--streak-arise-tone) / 0.16),
+    0 0 22px 5px hsl(var(--streak-arise-tone) / 0.09);
+  animation: streak-glow-breathe 4.5s ease-in-out infinite;
   pointer-events: none;
 }
 @keyframes streak-glow-breathe {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .streak-arise-glow::before { animation: none; opacity: 0.8; }
+  .streak-arise-glow::before { animation: none; opacity: 0.55; }
 }
