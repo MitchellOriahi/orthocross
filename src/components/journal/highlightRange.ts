@@ -13,7 +13,9 @@ export const sentenceBounds = (text: string, offset: number): [number, number] |
   };
   const segmenter = new Segmenter(undefined, { granularity: 'sentence' });
   const position = Math.min(offset, text.length - 1);
-  for (const { segment, index } of segmenter.segment(text)) {
+  // Unicode ellipsis is not treated as a terminator by every ICU version.
+  // Substitute a same-length terminator for parsing, keeping original offsets.
+  for (const { segment, index } of segmenter.segment(text.replace(/…/g, '!'))) {
     if (position < index || position >= index + segment.length) continue;
     const start = index + segment.length - segment.trimStart().length;
     const end = index + segment.trimEnd().length;
