@@ -94,7 +94,11 @@ export const toggleHighlightAt = (
     ? wordBounds(text, absoluteOffset)
     : sentenceBounds(text.slice(lineStart, lineEnd), absoluteOffset - lineStart)?.map(n => n + lineStart);
   if (!bounds) return false;
-  const selected = pieces.filter(piece => piece.start < bounds[1] && piece.end > bounds[0]);
+  // Whitespace is never painted, so blank pieces neither veto removal nor
+  // get wrapped in a mark on apply.
+  const selected = pieces.filter(piece =>
+    piece.start < bounds[1] && piece.end > bounds[0] &&
+    (piece.node.textContent || '').trim() !== '');
   if (!selected.length) return false;
   const remove = selected.every(piece => {
     const mark = piece.node.parentElement?.closest('mark');

@@ -83,30 +83,31 @@ const explode = (node: Node, doc: Document): Segment[] => {
   const element = node as Element;
   if ((element as HTMLElement).matches?.(VOIDED)) return [{ node }];
   const inner = Array.from(element.childNodes).flatMap(child => explode(child, doc));
-  // Whitespace inside the element is hoisted out; word runs are re-wrapped in
-  // fresh copies of the element, one per run.
-  const groups: Segment[][] = [];
-  let run: Segment[] = [];
-  for (const piece of inner) {
-    if ('blank' in piece && piece.blank) {
-      if (run.length) groups.push(run);
-      run = [];
-      continue;
-    }
-    run.push(piece);
-  }
-  if (run.length) groups.push(run);
-  const identity = groups.length === 1 &&
+  // Unchanged when every child survives as itself in order.
+  const identity = inner.length === element.childNodes.length &&
     inner.every((piece, index) => 'node' in piece && piece.node === element.childNodes[index]);
   if (identity) return [{ node }];
-  if (groups.length === 0) return inner; // element held only whitespace
-  return groups.map(group => {
+  // Otherwise re-emit the children in order: hoisted whitespace leaves the
+  // element, each surviving word run is re-wrapped in a fresh copy.
+  const out: Segment[] = [];
+  let run: Segment[] = [];
+  const flushRun = () => {
+    if (!run.length) return;
     const copy = element.cloneNode(false);
-    for (const piece of group) {
-      copy.appendChild('node' in piece ? piece.node : doc.createTextNode(piece.text));
+    for (const piece of run) copy.appendChild('node' in piece ? piece.node : doc.createTextNode(piece.text));
+    out.push({ node: copy });
+    run = [];
+  };
+  for (const piece of inner) {
+    if ('blank' in piece && piece.blank) {
+      flushRun();
+      out.push(piece);
+    } else {
+      run.push(piece);
     }
-    return { node: copy } as Segment;
-  });
+  }
+  flushRun();
+  return out;
 };
 
 export const stripMarkWhitespace = (mark: Element): Element | null => {
