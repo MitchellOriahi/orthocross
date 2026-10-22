@@ -1,5 +1,5 @@
 export type DonationInterval = "month" | "year";
-export const DEFAULT_DONATION_INTERVAL: DonationInterval = "month";
+export const DEFAULT_DONATION_INTERVAL: DonationInterval = "year";
 
 export function donationInterval(value: unknown): DonationInterval {
   if (value === undefined) return DEFAULT_DONATION_INTERVAL;

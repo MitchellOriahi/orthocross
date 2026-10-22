@@ -26,6 +26,7 @@
 - Verify Stripe payments and totals server-side; friend donation alerts come from a service-only queue enforcing anonymity, friendship, blocks and preferences, idempotent per push.
 
 - Share donation interval validation. Currency estimates use dated public USD rates; checkout amounts and tiers stay unchanged; the picker sits in the dialog's corner help button, not a standalone row.
+- Resolve new preset support checkouts from the shared offer price registry, with custom-gift fallback; never mutate existing subscriptions or equate lifetime donor tiers with recurring entitlements.
 - Test gift thresholds; measure peek without scroll, set opening height before paint, and defer resize writes to avoid shifts and loops.
 - Schedule donation and rating prompts through one pure, tested coordinator (src/lib/promptScheduler) mounted only on the Board, so prompts never collide or interrupt reading.
 

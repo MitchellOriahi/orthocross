@@ -1,10 +1,18 @@
 import { describe, expect, test } from "bun:test";
-import { YEARLY_SLIDER_AMOUNTS, minimumGift, getGiftPreview } from "./donationGift";
+import { YEARLY_SLIDER_AMOUNTS, DEFAULT_YEARLY_AMOUNT, DEFAULT_GIFT_AMOUNT, minimumGift, getGiftPreview, annualComparison } from "./donationGift";
 
 describe("yearly gifts", () => {
-  test("start at $12", () => {
-    expect(minimumGift("year")).toBe(12);
-    expect([...YEARLY_SLIDER_AMOUNTS]).toEqual([12, 18, 24]);
+  test("annual gifts are $8, $12 and $16 with an $8 minimum", () => {
+    expect(minimumGift("year")).toBe(8);
+    expect([...YEARLY_SLIDER_AMOUNTS]).toEqual([8, 12, 16]);
+  });
+  test("feature $12 yearly and $2.99 monthly", () => {
+    expect(DEFAULT_YEARLY_AMOUNT).toBe(12);
+    expect(DEFAULT_GIFT_AMOUNT).toBe(2.99);
+  });
+  test("annual comparison uses twelve actual monthly payments", () => {
+    expect(annualComparison(12)).toEqual({ monthlyYear: 35.88, savings: 23.88 });
+    expect(annualComparison(40).savings).toBe(0);
   });
   test("monthly and one-time minimum stays $1", () => {
     expect(minimumGift("month")).toBe(1);
