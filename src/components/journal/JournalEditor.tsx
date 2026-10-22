@@ -184,7 +184,9 @@ export const JournalEditor = ({
         mark.className = selectedColor.class;
         try {
           range.surroundContents(mark);
-          mergeWithAdjacentHighlights(mark);
+          // Lift any whitespace the selection caught out of the highlight,
+          // then fold marks that still touch.
+          repairHighlights(contentDivRef.current!);
           commitContent();
           setShowHighlighter(true);
           setHighlightArmed(true);
