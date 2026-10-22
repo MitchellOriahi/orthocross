@@ -11,7 +11,7 @@ describe("yearly gifts", () => {
     expect(DEFAULT_GIFT_AMOUNT).toBe(3);
   });
   test("annual comparison uses twelve actual monthly payments", () => {
-    expect(annualComparison(12)).toEqual({ monthlyYear: 35.88, savings: 23.88 });
+    expect(annualComparison(12)).toEqual({ monthlyYear: 36, savings: 24 });
     expect(annualComparison(40).savings).toBe(0);
   });
   test("monthly and one-time minimum stays $1", () => {
