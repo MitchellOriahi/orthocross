@@ -21,10 +21,10 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
             {saved ? "Streak Saved" : "Streak Lost"}
           </AlertDialogTitle>
           <div className="relative flex justify-center py-2">
-            <div className={`absolute inset-0 m-auto h-24 w-24 rounded-full blur-2xl ${saved ? "bg-primary/40" : "bg-muted-foreground/20"}`} />
-            <div className={`relative flex h-24 w-24 items-center justify-center rounded-full ring-2 shadow-lg ${saved ? "bg-gradient-to-br from-primary/30 to-primary/5 ring-primary/50" : "bg-gradient-to-br from-muted to-muted/40 ring-border"}`}>
+            <div className={`absolute inset-0 m-auto h-24 w-24 rounded-full blur-2xl ${saved ? "bg-[hsl(var(--streak-saved-glow)/0.45)]" : "bg-muted-foreground/20"}`} />
+            <div className={`relative flex h-24 w-24 items-center justify-center rounded-full ring-2 shadow-lg ${saved ? "bg-[hsl(var(--streak-saved-glow)/0.22)] ring-[hsl(var(--streak-saved-glow)/0.55)]" : "bg-gradient-to-br from-muted to-muted/40 ring-border"}`}>
               <span role="img" aria-label={saved ? "Angel wing" : "Bandaged heart"} className="text-5xl leading-none">
-                {saved ? "\u{1FABD}" : "\u{1FA79}"}
+                {saved ? "\u{1FABD}" : "\u{2764}\u{FE0F}\u{200D}\u{1FA79}"}
               </span>
             </div>
           </div>
@@ -42,12 +42,14 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
                 </>
               ) : (
                 <>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Proverbs 24:16</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Micah 7:8</p>
                   <p className="text-base italic text-foreground">
-                    "For a righteous man may fall seven times and rise again."
+                    "Though I have fallen, I will rise."
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Not a single chapter or prayer was in vain. Let us rise anew.
+                    Not a single chapter or prayer was in vain.
+                    <br />
+                    Let us rise anew.
                   </p>
                 </>
               )}

@@ -772,6 +772,16 @@ All colors MUST be HSL.
     --tts-glow-bright: 213 100% 72%;
   }
 }
+
+/* Streak Saved glow: steady blue in the dark, warm orange on light paper. */
+@layer base {
+  :root {
+    --streak-saved-glow: var(--tradition-oriental);
+  }
+  .dark {
+    --streak-saved-glow: 217 91% 60%;
+  }
+}
 .tts-word {
   transition: text-shadow 120ms ease-out, filter 120ms ease-out, background-color 120ms ease-out, box-shadow 120ms ease-out, color 120ms ease-out, opacity 600ms ease-out;
 }
