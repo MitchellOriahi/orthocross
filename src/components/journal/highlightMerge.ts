@@ -144,11 +144,19 @@ export const stripMarkWhitespace = (mark: Element): Element | null => {
 };
 
 /** Convenience pass used wherever highlights are repaired: strip whitespace
- * out of every mark, then fold marks that still touch. */
+ * out of every mark first (whitespace-only marks dissolve), then fold marks
+ * that still touch. Stripping completes before any merge so a merge can never
+ * swallow whitespace from a not-yet-stripped neighbour. */
 export const repairHighlights = (root: HTMLElement): void => {
+  const survivors: Element[] = [];
   for (const mark of Array.from(root.querySelectorAll('mark'))) {
     if (!root.contains(mark)) continue;
     const kept = stripMarkWhitespace(mark);
-    if (kept) mergeWithAdjacentHighlights(kept);
+    if (kept) survivors.push(kept);
+  }
+  for (const kept of survivors) {
+    // The mark may already have been folded into an earlier merge.
+    if (!root.contains(kept)) continue;
+    mergeWithAdjacentHighlights(kept);
   }
 };
