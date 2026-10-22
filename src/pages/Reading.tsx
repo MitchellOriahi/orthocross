@@ -589,13 +589,6 @@ const Reading = () => {
 
         }
       }
-      
-      // Navigate to next chapter quickly after completion
-      if (chapter < totalChapters) {
-        setTimeout(() => {
-          handleChapterChange(chapter + 1);
-        }, 300); // Quick 0.3 second display
-      }
     } catch (error) {
       console.error('Error saving completed chapter:', error);
     }
