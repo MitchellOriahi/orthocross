@@ -101,9 +101,12 @@ describe('word and sentence highlighting', () => {
   it('removes only one sentence from a joined two-sentence highlight', () => {
     const root = rootFor('Have faith. Rise anew!');
     tap(root, 'faith'); tap(root, 'anew'); tap(root, 'faith');
+    // Removing 'faith' keeps the rest of both sentences highlighted;
+    // the sentence's own period stays part of the highlight.
     expect(
       Array.from(root.querySelectorAll('mark'), mark => mark.textContent).join(' '),
-    ).toBe('Have Rise anew!');
+    ).toBe('Have . Rise anew!');
+    expect(root.textContent).toBe('Have faith. Rise anew!');
     expectNoPaintedWhitespace(root);
   });
   it('stops at line breaks and paragraph boundaries', () => {
