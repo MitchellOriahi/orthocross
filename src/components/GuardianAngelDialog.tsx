@@ -1,6 +1,6 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Shield, Sparkles } from "lucide-react";
+import { Heart, Shield, Sparkles } from "lucide-react";
 
 interface GuardianAngelDialogProps {
   open: boolean;
@@ -25,7 +25,7 @@ export const GuardianAngelDialog = ({
         <AlertDialogHeader>
           <div className="flex justify-center mb-3">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-100 to-white flex items-center justify-center shadow-lg">
-              <Shield className="w-8 h-8 text-yellow-600" />
+              {saved ? <Shield className="w-8 h-8 text-yellow-600" /> : <Heart className="w-8 h-8 text-yellow-600" />}
             </div>
           </div>
 
@@ -37,7 +37,7 @@ export const GuardianAngelDialog = ({
                 <Sparkles className="inline w-6 h-6 text-yellow-500 ml-2" />
               </>
             ) : (
-              "Streak Lost"
+              "A Gentle New Start"
             )}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-center space-y-4 pt-4">
@@ -68,10 +68,10 @@ export const GuardianAngelDialog = ({
             ) : (
               <>
                 <p className="text-lg">
-                  Your guardian angel couldn't save your streak this time.
+                  Every day is a fresh beginning. 🕊️
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Your streak has been reset to 0. Start building it back up today!
+                  Your streak starts over today, but every prayer and chapter you've read still matters. Your guardian angel is cheering you on!
                 </p>
                 <div className="bg-muted/50 rounded-lg p-4">
                   <p className="text-sm">

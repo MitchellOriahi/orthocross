@@ -501,27 +501,27 @@ const Reading = () => {
 
   const markChapterComplete = async () => {
     if (!user) return;
-    
-    await saveProgress(100);
-    
-    // Save to completed_chapters table
-    try {
-      await supabase
-        .from('completed_chapters')
-        .upsert({
-          user_id: user.id,
-          book_key: book,
-          chapter: chapter,
-        }, {
-          onConflict: 'user_id,book_key,chapter'
-        });
-      
-      // Update streak immediately after completing activity
-      const { updateUserStreak } = await import('@/utils/streakManager');
-      await updateUserStreak(user.id);
-      import('@/lib/promptScheduler').then(m => m.trackMeaningfulCompletion(user.id, `bible:${book}:${chapter}`));
 
-      // Create friend activity for chapter completion (only if not already created today)
+    // Celebrate instantly; saving continues in the background.
+    toast({ description: "Chapter completed! 🎉", duration: 1000 });
+    playSound('chapter');
+    if (chapter < totalChapters) {
+      setTimeout(() => handleChapterChange(chapter + 1), 300);
+    }
+
+    try {
+      await Promise.all([
+        saveProgress(100),
+        supabase.from('completed_chapters').upsert(
+          { user_id: user.id, book_key: book, chapter: chapter },
+          { onConflict: 'user_id,book_key,chapter' }
+        ),
+      ]);
+
+      import('@/utils/streakManager').then(m => m.updateUserStreak(user.id));
+      import('@/lib/promptScheduler').then(m => m.trackMeaningfulCompletion(user.id, `bible:${book}:${chapter}`));
+      supabase.rpc('award_leaderboard_point', { p_activity: 'chapter' }).then(() => {});
+
       const today = new Date().toISOString().slice(0, 10);
       const { data: existingActivity } = await supabase
         .from('friend_activities')
@@ -539,17 +539,6 @@ const Reading = () => {
         });
       }
 
-      // Award leaderboard point for chapter completion
-      await supabase.rpc('award_leaderboard_point', { p_activity: 'chapter' });
-
-      
-      toast({
-        description: "Chapter completed! 🎉",
-        duration: 1000, // Brief 1 second display
-      });
-
-      // Play chapter completion sound
-      playSound('chapter');
 
       // Check if book is now complete
       const { data: completedInBook } = await supabase
@@ -599,13 +588,6 @@ const Reading = () => {
           }
 
         }
-      }
-      
-      // Navigate to next chapter quickly after completion
-      if (chapter < totalChapters) {
-        setTimeout(() => {
-          handleChapterChange(chapter + 1);
-        }, 300); // Quick 0.3 second display
       }
     } catch (error) {
       console.error('Error saving completed chapter:', error);
