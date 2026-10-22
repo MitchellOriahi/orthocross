@@ -40,7 +40,7 @@ serve(async (req) => {
       }
     }
     const live = new Map(subs.filter((s) => LIVE.has(s.status)).map((s) => [s.id, s]));
-    if (live.size === 0) return json({ cancelled: 0, error: "No active monthly donation found" }, 404);
+    if (live.size === 0) return json({ cancelled: 0, error: "No active recurring donation found" }, 404);
 
     for (const id of live.keys()) {
       await stripe.subscriptions.cancel(id);

@@ -511,7 +511,7 @@ const Settings = () => {
                 Manage Donation
               </CardTitle>
               <CardDescription>
-                Manage or cancel your monthly donation subscription
+                Manage or cancel your monthly or yearly donation
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -521,7 +521,7 @@ const Settings = () => {
                 onClick={() => setCancelDonationDialogOpen(true)}
               >
                 <XCircle className="w-4 h-4 mr-3" />
-                Cancel Monthly Donation
+                Cancel Donation
               </Button>
             </CardContent>
           </Card>

@@ -1,7 +1,7 @@
 # Prayers category browser
 ## Revenue offer rollout
-- [ ] Feature yearly $8/$12/$16 (default $12), $2.99 monthly; preserve existing subscriptions and lifetime tiers.
-- [ ] Show honest annual comparison, renewal terms, warm impact copy and direct cancellation.
+- [x] Feature yearly $8/$12/$16 (default $12), $2.99 monthly; preserve existing subscriptions and lifetime tiers. Created tracked Stripe preset prices; authenticated $12 yearly checkout creation returned success without submitting payment.
+- [x] Show honest annual comparison, renewal terms, warm impact copy and direct cancellation. Pricing and cancellation rule checks passed; offer controls translated into all 16 non-English languages. Full browser checkout check was blocked by the first-run tutorial; no paid transaction or actual donor cancellation was performed.
 - [ ] Paid narration and media perks: blocked until native recurring store products and verified entitlements are configured; do not advertise unavailable perks.
 ## Welcome and calendar tradition
 - [x] Add the question mark while preserving translated titles, and a subtle matching glow to Get Started.
