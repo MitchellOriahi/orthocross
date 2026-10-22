@@ -1,9 +1,11 @@
 import { getTier, DONOR_TIERS, type DonorTier } from "../../supabase/functions/_shared/donorTiers";
+import { FEATURED_MONTHLY_AMOUNT, FEATURED_YEARLY_AMOUNT, MIN_YEARLY_CENTS } from "../../supabase/functions/_shared/supportOffer";
+export { annualComparison } from "../../supabase/functions/_shared/supportOffer";
 
-export const GIFT_SLIDER_AMOUNTS = [1, 2, 5] as const;
+export const GIFT_SLIDER_AMOUNTS = [1, FEATURED_MONTHLY_AMOUNT, 5] as const;
 
 /** Amount the donation slider rests on when the dialog opens with no other choice made. */
-export const DEFAULT_GIFT_AMOUNT = 2;
+export const DEFAULT_GIFT_AMOUNT = FEATURED_MONTHLY_AMOUNT;
 
 export function getGiftPreview(amount: number, custom: boolean, steps: readonly number[] = GIFT_SLIDER_AMOUNTS) {
   const sliderIndex = custom
@@ -33,11 +35,11 @@ export const EMPTY_GIFT: GiftAmount = { amount: 0, customAmount: "", useCustom: 
 export const giftAfterModeToggle = (): GiftAmount => ({ ...EMPTY_GIFT });
 export type GiftMode = "month" | "year" | "once";
 
-/** Yearly gifts start at $12 (about $1/month) and stay modest for everyday readers. */
-export const YEARLY_SLIDER_AMOUNTS = [12, 18, 24] as const;
-export const DEFAULT_YEARLY_AMOUNT = 18;
+/** Modest annual support with the middle gift featured, not a paid content tier. */
+export const YEARLY_SLIDER_AMOUNTS = [8, 12, 16] as const;
+export const DEFAULT_YEARLY_AMOUNT = FEATURED_YEARLY_AMOUNT;
 
-export const minimumGift = (mode: GiftMode) => (mode === "year" ? 12 : 1);
+export const minimumGift = (mode: GiftMode) => (mode === "year" ? MIN_YEARLY_CENTS / 100 : 1);
 
 /** Plain-language picture of what a gift sustains. */
 export function giftImpact(amount: number, mode: GiftMode): string {

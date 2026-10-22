@@ -3,6 +3,7 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 import { donationInterval } from "../_shared/donationBilling.ts";
+import { SUPPORT_PRICES, MIN_YEARLY_CENTS } from "../_shared/supportOffer.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -38,7 +39,7 @@ serve(async (req) => {
     const interval = donationInterval(requestedInterval);
     const billingLabel = interval === "year" ? "Yearly" : "Monthly";
     
-    const minCents = interval === "year" ? 1200 : 100;
+    const minCents = interval === "year" ? MIN_YEARLY_CENTS : 100;
     if (!Number.isSafeInteger(amount) || amount < minCents) {
       throw new Error(`Minimum donation amount is $${minCents / 100}.00`);
     }
@@ -59,7 +60,7 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user?.email,
-      line_items: [
+      line_items: SUPPORT_PRICES[`${interval}:${amount}`] ? [{ price: SUPPORT_PRICES[`${interval}:${amount}`], quantity: 1 }] : [
         {
           price_data: {
             currency: "usd",
