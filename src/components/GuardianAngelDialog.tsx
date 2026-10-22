@@ -1,7 +1,6 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import lostFlame from "@/assets/streak-lost-flame.png";
-import savedFlame from "@/assets/streak-saved-flame.png";
+import { Flame } from "lucide-react";
 
 interface GuardianAngelDialogProps {
   open: boolean;
