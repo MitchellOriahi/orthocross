@@ -1,5 +1,5 @@
 import { wordBounds } from './highlightWord';
-import { mergeWithAdjacentHighlights } from './highlightMerge';
+import { mergeWithAdjacentHighlights, repairHighlights } from './highlightMerge';
 
 export type HighlightMode = 'word' | 'sentence';
 
@@ -114,10 +114,10 @@ export const toggleHighlightAt = (
     }
   }
   for (const mark of Array.from(root.querySelectorAll('mark'))) {
-    if (!root.contains(mark)) continue;
-    mark.className = canonicalColor(mark.className);
-    mergeWithAdjacentHighlights(mark);
+    if (root.contains(mark)) mark.className = canonicalColor(mark.className);
   }
+  // Whitespace never sits inside a highlight: strip it, then fold marks that touch.
+  repairHighlights(root);
   root.normalize();
   return true;
 };
