@@ -1,6 +1,6 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Feather, Sunrise, Sparkles } from "lucide-react";
+import { Feather, Flame, Sparkles } from "lucide-react";
 
 interface GuardianAngelDialogProps {
   open: boolean;
@@ -24,9 +24,16 @@ export const GuardianAngelDialog = ({
       <AlertDialogContent className="w-[86vw] max-w-sm max-h-[80vh] overflow-y-auto rounded-2xl p-5 sm:p-6">
         <AlertDialogHeader>
           <div className="flex justify-center mb-3">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-100 to-white flex items-center justify-center shadow-lg">
-              {saved ? <Feather className="w-8 h-8 text-yellow-600" /> : <Sunrise className="w-8 h-8 text-yellow-600" />}
-            </div>
+            {saved ? (
+              <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-orange-300 via-amber-200 to-yellow-100 flex items-center justify-center shadow-lg shadow-orange-400/40">
+                <Flame className="w-11 h-11 text-orange-500 fill-orange-400" />
+                <Feather className="absolute -right-1 -bottom-1 w-8 h-8 p-1.5 rounded-full bg-sky-100 text-sky-600 shadow" />
+              </div>
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center shadow-inner">
+                <Flame className="w-11 h-11 text-muted-foreground/60 fill-muted-foreground/20" />
+              </div>
+            )}
           </div>
 
           <AlertDialogTitle className="text-center text-2xl">
@@ -68,11 +75,11 @@ export const GuardianAngelDialog = ({
             ) : (
               <>
                 <p className="text-base italic">
+                  <span className="block text-xs not-italic text-muted-foreground mb-1">Proverbs 24:16</span>
                   "For a righteous man may fall seven times and rise again."
-                  <span className="block text-xs not-italic text-muted-foreground mt-1">Proverbs 24:16</span>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Like the prodigal son, we are always welcomed home. Not a single chapter or prayer you offered was in vain.
+                  Not a single chapter or prayer you offered was in vain.
                 </p>
                 <p className="text-base font-semibold">Let us rise anew with the Lord.</p>
               </>
@@ -81,7 +88,7 @@ export const GuardianAngelDialog = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <Button onClick={() => onOpenChange(false)} className="w-full">
-            Continue
+            {saved ? "Continue" : "Rise"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
