@@ -12,7 +12,6 @@ interface GuardianAngelDialogProps {
 }
 
 export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: GuardianAngelDialogProps) => {
-  const month = new Date().toLocaleDateString(undefined, { month: "long" });
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="max-w-sm text-center">
