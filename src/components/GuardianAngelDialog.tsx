@@ -1,6 +1,5 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Shield, ShieldCheck, Sunrise } from "lucide-react";
 
 interface GuardianAngelDialogProps {
   open: boolean;
@@ -11,8 +10,6 @@ interface GuardianAngelDialogProps {
   /** 100 while this month's grace is still available, 0 once used. */
   remainingPercentage: number;
 }
-
-const GRACE_STREAK_DAYS = 7;
 
 export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: GuardianAngelDialogProps) => {
   const month = new Date().toLocaleDateString(undefined, { month: "long" });
@@ -26,11 +23,9 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
           <div className="relative flex justify-center py-2">
             <div className={`absolute inset-0 m-auto h-24 w-24 rounded-full blur-2xl ${saved ? "bg-primary/40" : "bg-muted-foreground/20"}`} />
             <div className={`relative flex h-24 w-24 items-center justify-center rounded-full ring-2 shadow-lg ${saved ? "bg-gradient-to-br from-primary/30 to-primary/5 ring-primary/50" : "bg-gradient-to-br from-muted to-muted/40 ring-border"}`}>
-              {saved ? (
-                <ShieldCheck className="h-12 w-12 text-primary" strokeWidth={1.75} />
-              ) : (
-                <Sunrise className="h-12 w-12 text-muted-foreground" strokeWidth={1.75} />
-              )}
+              <span role="img" aria-label={saved ? "Angel wing" : "Bandaged heart"} className="text-5xl leading-none">
+                {saved ? "\u{1FABD}" : "\u{1FA79}"}
+              </span>
             </div>
           </div>
           <AlertDialogDescription asChild>
@@ -52,12 +47,8 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
                     "For a righteous man may fall seven times and rise again."
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Not a single chapter or prayer you offered was in vain. Let us rise anew with the Lord.
+                    Not a single chapter or prayer was in vain. Let us rise anew.
                   </p>
-                  <div className="flex items-center justify-center gap-2 rounded-lg bg-muted/50 p-3 text-xs text-muted-foreground">
-                    <Shield className="h-4 w-4 shrink-0" />
-                    <span>Reach a {GRACE_STREAK_DAYS}-day streak to earn your guardian angel's monthly save.</span>
-                  </div>
                 </>
               )}
             </div>
