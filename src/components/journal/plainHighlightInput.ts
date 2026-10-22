@@ -6,7 +6,7 @@ export const leaveHighlightForInput = (root: HTMLElement, selection: Selection):
   if (!root.contains(range.startContainer)) return false;
   const container = range.startContainer;
   const element = container.nodeType === 1 ? container as Element : container.parentElement;
-  let mark = element?.closest('mark');
+  let mark: Element | null | undefined = element?.closest('mark');
   if (!mark && container.nodeType === 1) {
     const previous = container.childNodes[range.startOffset - 1];
     const next = container.childNodes[range.startOffset];
