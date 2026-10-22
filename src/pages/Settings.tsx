@@ -22,6 +22,7 @@ import { useProfileData } from "@/hooks/useProfileData";
 import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import { toast } from "sonner";
 import { CancelDonationDialog } from "@/components/CancelDonationDialog";
+import { GuardianAngelDialog } from "@/components/GuardianAngelDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { TraditionChoiceDialog } from "@/components/OrientationOnboarding";
 import { useToast } from "@/hooks/use-toast";
@@ -40,6 +41,7 @@ const Settings = () => {
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDonationDialogOpen, setCancelDonationDialogOpen] = useState(false);
+  const [streakPreview, setStreakPreview] = useState<null | "lost" | "saved">(null);
   const [traditionDialog, setTraditionDialog] = useState<null | "family" | "eastern" | "oriental">(null);
   const { profile, refetch: refetchProfile } = useProfileData();
   const [streakVisible, setStreakVisible] = useState(true);
@@ -529,6 +531,29 @@ const Settings = () => {
           <CancelDonationDialog 
             open={cancelDonationDialogOpen} 
             onOpenChange={setCancelDonationDialogOpen} 
+          />
+
+          {/* TEMPORARY: streak sticker previews */}
+          <Card className="shadow-elevated">
+            <CardHeader>
+              <CardTitle>Sticker Preview (temporary)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button variant="outline" className="w-full" onClick={() => setStreakPreview("lost")}>
+                Preview Streak Lost Sticker
+              </Button>
+              <Button variant="outline" className="w-full" onClick={() => setStreakPreview("saved")}>
+                Preview Guardian Angel Saved Sticker
+              </Button>
+            </CardContent>
+          </Card>
+          <GuardianAngelDialog
+            open={streakPreview !== null}
+            onOpenChange={(o) => { if (!o) setStreakPreview(null); }}
+            saved={streakPreview === "saved"}
+            streakDays={7}
+            savesCount={1}
+            remainingPercentage={50}
           />
 
           {/* App Information */}
