@@ -1597,6 +1597,7 @@ export type Database = {
           current_streak: number
           guardian_angel_percentage: number | null
           guardian_angel_saves: number | null
+          guardian_last_save_month: string | null
           id: string
           last_activity_date: string | null
           last_completion_date: string | null
@@ -1609,6 +1610,7 @@ export type Database = {
           current_streak?: number
           guardian_angel_percentage?: number | null
           guardian_angel_saves?: number | null
+          guardian_last_save_month?: string | null
           id?: string
           last_activity_date?: string | null
           last_completion_date?: string | null
@@ -1621,6 +1623,7 @@ export type Database = {
           current_streak?: number
           guardian_angel_percentage?: number | null
           guardian_angel_saves?: number | null
+          guardian_last_save_month?: string | null
           id?: string
           last_activity_date?: string | null
           last_completion_date?: string | null
