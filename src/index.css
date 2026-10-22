@@ -968,15 +968,8 @@ html:not([lang="en"]) .reading-complete-button { min-height: 3rem; padding-top: 
 /* ============= "Arise" button: treasure-chest shimmer ============= */
 /* The button face is deliberately dark in both themes so the light sweep reads
    against it (the app's own primary is white in dark mode, which hid the sheen). */
-/* "Arise" button: the app's ordinary button, wrapped in a living aura —
-   a soft luminous bloom that breathes, plus a thin highlight that sweeps
-   continuously around the rounded border and loops seamlessly. */
-@property --streak-arise-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
+/* "Arise" button: the app's ordinary button. Only its glow moves —
+   the button itself never scales, shifts, or fades. */
 .streak-arise {
   --streak-arise-tone: 42 92% 60%;
   position: relative;
@@ -985,7 +978,7 @@ html:not([lang="en"]) .reading-complete-button { min-height: 3rem; padding-top: 
 .dark .streak-arise {
   --streak-arise-tone: 0 0% 100%;
 }
-/* Layered blurred bloom spilling just past the button's edges. */
+/* Soft layered bloom that swells and settles. */
 .streak-arise::before {
   content: "";
   position: absolute;
@@ -993,43 +986,16 @@ html:not([lang="en"]) .reading-complete-button { min-height: 3rem; padding-top: 
   z-index: -1;
   border-radius: inherit;
   box-shadow:
-    0 0 14px 2px hsl(var(--streak-arise-tone) / 0.5),
-    0 0 34px 10px hsl(var(--streak-arise-tone) / 0.28),
-    0 0 68px 26px hsl(var(--streak-arise-tone) / 0.14);
-  animation: streak-arise-breathe 3.2s ease-in-out infinite;
+    0 0 14px 3px hsl(var(--streak-arise-tone) / 0.5),
+    0 0 30px 10px hsl(var(--streak-arise-tone) / 0.32),
+    0 0 58px 22px hsl(var(--streak-arise-tone) / 0.14);
+  animation: streak-arise-breathe 2.6s ease-in-out infinite;
   pointer-events: none;
-}
-/* Thin bright edge running around the border. */
-.streak-arise::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1.5px;
-  background: conic-gradient(from var(--streak-arise-angle),
-    transparent 0deg,
-    hsl(var(--streak-arise-tone) / 0.12) 55deg,
-    hsl(var(--streak-arise-tone) / 0.95) 90deg,
-    hsl(var(--streak-arise-tone) / 0.25) 130deg,
-    transparent 190deg,
-    transparent 250deg,
-    hsl(var(--streak-arise-tone) / 0.45) 290deg,
-    transparent 345deg);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: streak-arise-orbit 3.6s linear infinite;
-  pointer-events: none;
-}
-@keyframes streak-arise-orbit {
-  to { --streak-arise-angle: 360deg; }
 }
 @keyframes streak-arise-breathe {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.45; transform: scale(0.97); }
+  50% { opacity: 1; transform: scale(1.06); }
 }
 @media (prefers-reduced-motion: reduce) {
   .streak-arise::before { animation: none; opacity: 0.9; }
-  .streak-arise::after { animation: none; }
 }
