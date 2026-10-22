@@ -13,7 +13,7 @@ describe('typing with the highlighter off', () => {
       const range = dom.window.document.createRange();
       if (position === 'parent-after') range.setStart(root, 1);
       else if (position === 'parent-before') range.setStart(root, 0);
-      else range.setStart(root.querySelector('mark:last-child').lastChild, 5);
+      else if (position !== 'nested') range.setStart(root.querySelector('mark').firstChild, 5);
       // For nested markup select its actual text node.
       if (position === 'nested') range.setStart(root.querySelector('mark mark').firstChild, 5);
       range.collapse(true);
