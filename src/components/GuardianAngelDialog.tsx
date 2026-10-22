@@ -18,11 +18,11 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
       <AlertDialogContent className="max-w-sm text-center">
         <AlertDialogHeader className="items-center space-y-3">
           <AlertDialogTitle className="text-center text-2xl">
-            {saved ? "Streak Saved" : "Streak Lost"}
+            {saved ? "Streak Saved" : "Streak Lost :("}
           </AlertDialogTitle>
           <div className="relative flex justify-center py-2">
-            <div className={`absolute inset-0 m-auto h-24 w-24 rounded-full blur-2xl ${saved ? "bg-[hsl(var(--streak-saved-glow)/0.45)]" : "bg-muted-foreground/20"}`} />
-            <div className={`relative flex h-24 w-24 items-center justify-center rounded-full ring-2 shadow-lg ${saved ? "bg-[hsl(var(--streak-saved-glow)/0.22)] ring-[hsl(var(--streak-saved-glow)/0.55)]" : "bg-gradient-to-br from-muted to-muted/40 ring-border"}`}>
+            <div className={`absolute inset-0 m-auto h-24 w-24 rounded-full blur-2xl ${saved ? "bg-[hsl(var(--streak-saved-glow)/0.45)]" : "bg-white/40"}`} />
+            <div className={`relative flex h-24 w-24 items-center justify-center rounded-full ring-2 shadow-lg ${saved ? "bg-[hsl(var(--streak-saved-glow)/0.22)] ring-[hsl(var(--streak-saved-glow)/0.55)]" : "bg-gradient-to-br from-muted to-muted/40 ring-white/30"}`}>
               <span role="img" aria-label={saved ? "Angel wing" : "Bandaged heart"} className="text-5xl leading-none">
                 {saved ? "\u{1FABD}" : "\u{2764}\u{FE0F}\u{200D}\u{1FA79}"}
               </span>
@@ -47,9 +47,9 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
                     "Though I have fallen, I will rise."
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Not a single chapter or prayer was in vain.
+                    Your guardian angel spent this month's grace saving your streak.
                     <br />
-                    Let us rise anew.
+                    Read and pray each day to awaken him again next month.
                   </p>
                 </>
               )}
@@ -57,8 +57,11 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button onClick={() => onOpenChange(false)} className="w-full" size="lg">
-            {saved ? "Continue" : "Rise"}
+          <Button
+            onClick={() => onOpenChange(false)}
+            className={`w-full size-lg ${saved ? "" : "shadow-[0_0_30px_rgba(255,255,255,0.55)] animate-glow-pulse"}`}
+          >
+            {saved ? "Continue" : "Arise"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
