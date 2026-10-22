@@ -6,7 +6,7 @@ import { Highlighter, Pencil, Image as ImageIcon, Mic, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DrawingCanvas, type DrawingCanvasHandle } from "./DrawingCanvas";
-import { wordBounds, highlightTapAction } from "./highlightWord";
+import { toggleHighlightAt, type HighlightMode } from "./highlightRange";
 import { mergeWithAdjacentHighlights } from "./highlightMerge";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,10 +39,14 @@ interface JournalEditorProps {
 }
 
 const HIGHLIGHT_COLORS = [
-  { name: "Yellow", class: "bg-yellow-200 dark:bg-yellow-900/50" },
-  { name: "Green", class: "bg-green-200 dark:bg-green-900/50" },
-  { name: "Blue", class: "bg-blue-200 dark:bg-blue-900/50" },
-  { name: "Pink", class: "bg-pink-200 dark:bg-pink-900/50" },
+  { name: "Yellow", class: "journal-highlight-yellow" },
+  { name: "Green", class: "journal-highlight-green" },
+  { name: "Blue", class: "journal-highlight-blue" },
+  { name: "Pink", class: "journal-highlight-pink" },
+  { name: "Red", class: "journal-highlight-red" },
+  { name: "Purple", class: "journal-highlight-purple" },
+  { name: "Orange", class: "journal-highlight-orange" },
+  { name: "Gray", class: "journal-highlight-gray" },
 ];
 
 export const JournalEditor = ({
@@ -58,6 +62,7 @@ export const JournalEditor = ({
   const [showHighlighter, setShowHighlighter] = useState(false);
   const [selectedColor, setSelectedColor] = useState(HIGHLIGHT_COLORS[0]);
   const [highlightArmed, setHighlightArmed] = useState(false);
+  const [highlightMode, setHighlightMode] = useState<HighlightMode>('word');
   const [showDrawing, setShowDrawing] = useState(false);
   const [showAttachments, setShowAttachments] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
@@ -240,30 +245,10 @@ export const JournalEditor = ({
     }
     if (!node || node.nodeType !== Node.TEXT_NODE || !root.contains(node)) return;
 
-    const text = node.textContent || '';
-    const bounds = wordBounds(text, offset);
-    if (!bounds) return;
-
-    const parentMark = (node as Text).parentElement?.closest('mark');
-    if (parentMark && root.contains(parentMark)) {
-      const action = highlightTapAction(parentMark.className, selectedColor.class);
-      if (action === 'remove') {
-        parentMark.replaceWith(...Array.from(parentMark.childNodes));
-      } else {
-        parentMark.className = selectedColor.class;
-        mergeWithAdjacentHighlights(parentMark);
-      }
-    } else {
-      const range = document.createRange();
-      range.setStart(node, bounds[0]);
-      range.setEnd(node, bounds[1]);
-      const mark = document.createElement('mark');
-      mark.className = selectedColor.class;
-      range.surroundContents(mark);
-      mergeWithAdjacentHighlights(mark);
+    if (toggleHighlightAt(root, node as Text, offset, highlightMode, selectedColor.class)) {
+      window.getSelection()?.removeAllRanges();
+      commitContent();
     }
-    root.normalize();
-    commitContent();
   };
 
   const insertIntoContent = (html: string) => {
@@ -630,7 +615,23 @@ export const JournalEditor = ({
         <div className="flex-1 overflow-auto">
           <div className="p-4 min-h-full">
             {showHighlighter && (
-              <div className="mb-2 p-2 w-fit max-w-full bg-popover border border-border rounded-lg flex items-center gap-1" role="toolbar" aria-label="Highlight colors">
+              <div className="mb-2 p-2 w-fit max-w-full bg-popover border border-border rounded-lg flex flex-col gap-2" role="toolbar" aria-label="Highlight colors">
+                <div className="flex gap-1" role="group" aria-label="Highlight mode">
+                  {(['word', 'sentence'] as const).map(mode => (
+                    <Button
+                      key={mode}
+                      variant={highlightMode === mode ? 'secondary' : 'ghost'}
+                      size="sm"
+                      className="h-8 flex-1"
+                      onMouseDown={e => e.preventDefault()}
+                      onClick={() => setHighlightMode(mode)}
+                      aria-pressed={highlightMode === mode}
+                    >
+                      {mode === 'word' ? 'Word' : 'Sentence'}
+                    </Button>
+                  ))}
+                </div>
+                <div className="flex flex-wrap items-center gap-1">
                 {HIGHLIGHT_COLORS.map((color) => (
                   <Button
                     key={color.name}
@@ -659,6 +660,7 @@ export const JournalEditor = ({
                 >
                   <X className="h-4 w-4" />
                 </Button>
+                </div>
               </div>
             )}
 

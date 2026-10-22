@@ -12,6 +12,7 @@
 
 - Deduplicate React and React DOM in Vite resolution so the renderer and hook-based dependencies share one React instance and dispatcher.
 - Journal opens on Folders; shared scopes keep All Notes unfiled without move navigation. Separate untouched drafts; expand in place to retain list state.
+- Journal highlight ranges use Unicode sentence segmentation across inline formatting and split existing marks at selection boundaries, so removing one word preserves the rest of a highlighted sentence.
 - Use shared donor tiers and server-resolved anonymous names; portrait, crown and tag colors follow tier, not rank. Header glow uses account-keyed donor-status refreshed on donors-changed to avoid cross-account glow.
 - History: a pure ordered-progress selector advances the glow; rows prioritize island width and fixed checkpoints over optional spacers, keeping translations readable.
 - Render the Board daily verse via a dedicated card reusing the deterministic local selector and share dialog; notifications unchanged.
