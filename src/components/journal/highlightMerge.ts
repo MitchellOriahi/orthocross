@@ -14,9 +14,6 @@ const isJoinableGap = (node: Node | null): node is Text =>
   node.nodeType === Node.TEXT_NODE &&
   (node.textContent || '') === '';
 
-const isBlankText = (node: Node): boolean =>
-  node.nodeType === Node.TEXT_NODE && /\s/.test(node.textContent || '');
-
 const isSameColorMark = (node: Node | null, className: string): node is Element =>
   !!node &&
   node.nodeType === Node.ELEMENT_NODE &&
