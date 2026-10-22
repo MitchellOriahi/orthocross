@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DrawingCanvas, type DrawingCanvasHandle } from "./DrawingCanvas";
 import { toggleHighlightAt, type HighlightMode } from "./highlightRange";
-import { mergeWithAdjacentHighlights } from "./highlightMerge";
+import { repairHighlights } from "./highlightMerge";
 import { leaveHighlightForInput } from "./plainHighlightInput";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
@@ -100,9 +100,8 @@ export const JournalEditor = ({
       // Sanitize content when loading to prevent XSS
       contentDivRef.current.innerHTML = DOMPurify.sanitize(content, SANITIZE_CONFIG);
       // Repair adjacent fragments in previously saved notes as well.
-      for (const mark of Array.from(contentDivRef.current.querySelectorAll('mark'))) {
-        if (contentDivRef.current.contains(mark)) mergeWithAdjacentHighlights(mark);
-      }
+      // Whitespace never sits inside a highlight; repair adjacent fragments too.
+      repairHighlights(contentDivRef.current);
     }
     setHighlightArmed(false);
     setShowHighlighter(false);

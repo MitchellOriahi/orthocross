@@ -1,5 +1,5 @@
 import { wordBounds } from './highlightWord';
-import { mergeWithAdjacentHighlights, repairHighlights } from './highlightMerge';
+import { repairHighlights } from './highlightMerge';
 
 export type HighlightMode = 'word' | 'sentence';
 
