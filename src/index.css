@@ -965,6 +965,33 @@ html:not([lang="en"]) .reading-complete-button { min-height: 3rem; padding-top: 
 .journal-notes-scroll [data-orientation="vertical"] > div { background-color: hsl(var(--foreground) / 0.18); }
 .journal-notes-scroll [data-orientation="vertical"] > div:hover { background-color: hsl(var(--foreground) / 0.3); }
 
-/* ============= "Arise" button: treasure-chest shimmer ============= */
-/* The button face is deliberately dark in both themes so the light sweep reads
-   against it (the app's own primary is white in dark mode, which hid the sheen). */
+/* ============= "Arise" button: soft breathing glow ============= */
+/* The button keeps the app's ordinary face and never moves itself — only the
+   light around it swells and settles. */
+.streak-arise-glow {
+  --streak-arise-tone: 42 92% 60%;
+  position: relative;
+  isolation: isolate;
+}
+.dark .streak-arise-glow {
+  --streak-arise-tone: 0 0% 100%;
+}
+.streak-arise-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow:
+    0 0 16px 3px hsl(var(--streak-arise-tone) / 0.4),
+    0 0 32px 9px hsl(var(--streak-arise-tone) / 0.2);
+  animation: streak-glow-breathe 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes streak-glow-breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .streak-arise-glow::before { animation: none; opacity: 0.8; }
+}
