@@ -12,7 +12,6 @@ interface GuardianAngelDialogProps {
 }
 
 export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: GuardianAngelDialogProps) => {
-  const month = new Date().toLocaleDateString(undefined, { month: "long" });
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="max-w-sm text-center">
@@ -37,7 +36,9 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
                     <span className="font-bold text-primary">{streakDays}-day streak</span>.
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {month}'s grace has been used. Keep reading daily to earn it again next month.
+                    He spent all his strength on this month's grace.
+                    <br />
+                    Read and pray each day to awaken him again next month.
                   </p>
                 </>
               ) : (
@@ -47,9 +48,9 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
                     "Though I have fallen, I will rise."
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Your guardian angel spent this month's grace saving your streak.
+                    Not a single chapter or prayer was in vain.
                     <br />
-                    Read and pray each day to awaken him again next month.
+                    Let us rise anew.
                   </p>
                 </>
               )}
