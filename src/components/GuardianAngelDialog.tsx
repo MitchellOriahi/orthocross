@@ -58,12 +58,18 @@ export const GuardianAngelDialog = ({ open, onOpenChange, saved, streakDays }: G
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button
-            onClick={() => onOpenChange(false)}
-            className={`w-full size-lg ${saved ? "" : "shadow-[0_0_30px_rgba(255,255,255,0.55)] animate-glow-pulse"}`}
-          >
-            {saved ? "Continue" : "Arise"}
-          </Button>
+          {saved ? (
+            <Button onClick={() => onOpenChange(false)} className="w-full size-lg">
+              Continue
+            </Button>
+          ) : (
+            <div className="relative w-full">
+              <div aria-hidden className="streak-arise-rays absolute -inset-3" />
+              <Button onClick={() => onOpenChange(false)} className="streak-arise relative w-full size-lg">
+                <span className="relative z-10">Arise</span>
+              </Button>
+            </div>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
