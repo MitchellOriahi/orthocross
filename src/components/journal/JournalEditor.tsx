@@ -98,6 +98,10 @@ export const JournalEditor = ({
     if (contentDivRef.current && !isUpdatingContent.current) {
       // Sanitize content when loading to prevent XSS
       contentDivRef.current.innerHTML = DOMPurify.sanitize(content, SANITIZE_CONFIG);
+      // Repair adjacent fragments in previously saved notes as well.
+      for (const mark of Array.from(contentDivRef.current.querySelectorAll('mark'))) {
+        if (contentDivRef.current.contains(mark)) mergeWithAdjacentHighlights(mark);
+      }
     }
     setHighlightArmed(false);
     setShowHighlighter(false);

@@ -26,10 +26,14 @@ export const mergeWithAdjacentHighlights = (mark: Element): Element => {
 
   // Backwards: <mark>one</mark>␣<mark>two</mark>
   for (;;) {
-    const gap = current.previousSibling;
-    const prev = isWhitespaceText(gap) ? gap.previousSibling : gap;
+    const gaps: Text[] = [];
+    let prev = current.previousSibling;
+    while (isWhitespaceText(prev)) {
+      gaps.unshift(prev);
+      prev = prev.previousSibling;
+    }
     if (!isSameColorMark(prev, current.className)) break;
-    if (isWhitespaceText(gap)) prev.appendChild(gap);
+    for (const gap of gaps) prev.appendChild(gap);
     while (current.firstChild) prev.appendChild(current.firstChild);
     current.remove();
     current = prev;
@@ -37,10 +41,14 @@ export const mergeWithAdjacentHighlights = (mark: Element): Element => {
 
   // Forwards: <mark>one</mark>␣<mark>two</mark>
   for (;;) {
-    const gap = current.nextSibling;
-    const next = isWhitespaceText(gap) ? gap.nextSibling : gap;
+    const gaps: Text[] = [];
+    let next = current.nextSibling;
+    while (isWhitespaceText(next)) {
+      gaps.push(next);
+      next = next.nextSibling;
+    }
     if (!isSameColorMark(next, current.className)) break;
-    if (isWhitespaceText(gap)) current.appendChild(gap);
+    for (const gap of gaps) current.appendChild(gap);
     while (next.firstChild) current.appendChild(next.firstChild);
     next.remove();
   }
