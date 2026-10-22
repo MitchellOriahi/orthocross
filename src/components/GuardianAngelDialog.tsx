@@ -1,6 +1,7 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Feather, Flame, Sparkles } from "lucide-react";
+import lostMascot from "@/assets/streak-lost-mascot.png";
+import savedMascot from "@/assets/streak-saved-mascot.png";
 
 interface GuardianAngelDialogProps {
   open: boolean;
@@ -16,90 +17,56 @@ export const GuardianAngelDialog = ({
   onOpenChange,
   saved,
   streakDays,
-  savesCount,
   remainingPercentage,
 }: GuardianAngelDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="w-[86vw] max-w-sm max-h-[80vh] overflow-y-auto rounded-2xl p-5 sm:p-6">
-        <AlertDialogHeader>
-          {!saved && (
-            <AlertDialogTitle className="text-center text-2xl">
-              Streak Lost
-            </AlertDialogTitle>
-          )}
-
-          <div className="relative flex justify-center mb-3">
-            {saved ? (
-              <>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-28 h-28 rounded-full bg-orange-400/20 blur-xl" />
-                </div>
-                <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-orange-300 via-amber-200 to-yellow-100 flex items-center justify-center shadow-lg shadow-orange-400/40">
-                  <Flame className="w-11 h-11 text-orange-500 fill-orange-400" />
-                  <Feather className="absolute -right-1 -bottom-1 w-8 h-8 p-1.5 rounded-full bg-sky-100 text-sky-600 shadow" />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-28 h-28 rounded-full bg-muted-foreground/10 blur-xl" />
-                </div>
-                <div className="relative w-20 h-20 rounded-full bg-gradient-to-b from-muted to-muted/50 ring-1 ring-border flex items-center justify-center shadow-inner">
-                  <Flame className="w-11 h-11 text-muted-foreground/70 fill-muted-foreground/25" />
-                </div>
-              </>
-            )}
+      <AlertDialogContent className={`streak-sticker ${saved ? "streak-sticker-saved" : "streak-sticker-lost"} w-[86vw] max-w-sm max-h-[85dvh] overflow-y-auto rounded-2xl gap-4 p-5 sm:p-6`}>
+        <AlertDialogHeader className="items-center space-y-0">
+          <AlertDialogTitle className="text-center text-3xl font-bold leading-tight">
+            {saved ? "Streak Saved!" : "Streak Lost"}
+          </AlertDialogTitle>
+          <div className="streak-mascot-stage flex w-full items-center justify-center" aria-hidden="true">
+            <img
+              src={saved ? savedMascot : lostMascot}
+              alt=""
+              width={816}
+              height={816}
+              className="streak-mascot h-full w-full object-contain"
+            />
           </div>
-
-          {saved && (
-            <AlertDialogTitle className="text-center text-2xl">
-              <Sparkles className="inline w-6 h-6 text-yellow-500 mr-2" />
-              Guardian Angel Saved You!
-              <Sparkles className="inline w-6 h-6 text-yellow-500 ml-2" />
-            </AlertDialogTitle>
-          )}
-          <AlertDialogDescription className="text-center space-y-4 pt-4">
+          <AlertDialogDescription asChild>
+            <div className="w-full text-center space-y-3 text-muted-foreground">
             {saved ? (
               <>
-                <p className="text-lg">
-                  Your guardian angel intervened and saved your{" "}
-                  <span className="font-bold text-primary">{streakDays} day streak</span>!
+                <p className="streak-day-count text-2xl font-bold text-foreground">
+                  {streakDays} day streak
                 </p>
-                <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-                  <p className="text-sm">
-                    <span className="font-semibold">Total Saves:</span> {savesCount}
-                  </p>
-                  <p className="text-sm">
-                    <span className="font-semibold">Next Save Chance:</span>{" "}
-                    {remainingPercentage}%
-                  </p>
-                  {remainingPercentage === 0 && (
-                    <p className="text-xs text-destructive font-medium">
-                      Your guardian angel can no longer save your streak!
-                    </p>
-                  )}
-                </div>
-                <p className="text-sm text-muted-foreground italic">
-                  Remember to complete your daily activities to maintain your streak!
+                <p className="text-base leading-snug">
+                  Your guardian angel kept watch.<br />
+                  Keep the flame alive with today's reading.
                 </p>
+                {remainingPercentage === 0 && (
+                  <p className="text-xs">You've used your last streak save. Read each day to keep your streak.</p>
+                )}
               </>
             ) : (
               <>
-                <p className="text-base italic">
-                  <span className="block text-xs not-italic text-muted-foreground mb-1">Proverbs 24:16</span>
+                <p className="text-lg font-serif italic leading-snug text-foreground">
+                  <span className="block text-xs font-sans font-semibold not-italic text-muted-foreground mb-2">Proverbs 24:16</span>
                   "For a righteous man may fall seven times and rise again."
                 </p>
                 <p className="text-sm text-muted-foreground">
                   Not a single chapter or prayer you offered was in vain.
                 </p>
-                <p className="text-base font-semibold">Let us rise anew with the Lord.</p>
+                <p className="text-base font-semibold text-foreground">Let us rise anew with the Lord.</p>
               </>
             )}
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <Button onClick={() => onOpenChange(false)} className="w-full">
+          <Button onClick={() => onOpenChange(false)} className="streak-action w-full h-12 rounded-xl text-base font-bold">
             {saved ? "Continue" : "Rise"}
           </Button>
         </AlertDialogFooter>

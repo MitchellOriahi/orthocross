@@ -66,6 +66,9 @@ All colors MUST be HSL.
     --drawing-purple: 271 91% 65%;
     --drawing-orange: 25 95% 53%;
     --drawing-pink: 330 81% 60%;
+    --streak-saved: 29 95% 49%;
+    --streak-lost: 224 18% 56%;
+    --streak-action-shadow: 0 4px 0 hsl(var(--primary) / 0.25);
 
     --tradition-eastern: 217 91% 60%;
     --tradition-oriental: 25 95% 53%;
@@ -184,6 +187,24 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  .streak-sticker {
+    border-top: 4px solid hsl(var(--streak-lost));
+    background: hsl(var(--popover));
+  }
+  .streak-sticker-saved { border-top-color: hsl(var(--streak-saved)); }
+  .streak-mascot-stage { height: clamp(140px, 25dvh, 205px); margin: 10px 0 12px; }
+  .streak-mascot { animation: streak-arrive 450ms ease-out both; }
+  .streak-sticker-saved .streak-day-count { color: hsl(var(--streak-saved)); }
+  .streak-action { box-shadow: var(--streak-action-shadow); transition: transform 150ms ease; }
+  .streak-action:active { transform: translateY(2px); }
+  @keyframes streak-arrive {
+    from { opacity: 0; transform: translateY(10px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .streak-mascot { animation: none; }
+    .streak-action { transition: none; }
+  }
   .profile-branch-eastern { --profile-branch-color: var(--profile-branch-eastern); }
   .profile-branch-oriental { --profile-branch-color: var(--profile-branch-oriental); }
   .profile-branch-unaffiliated { --profile-branch-color: var(--profile-branch-unaffiliated); }

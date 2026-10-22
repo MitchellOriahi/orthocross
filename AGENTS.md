@@ -42,3 +42,4 @@
 - DonorTierName uses angelic dictionary keys; billing ranks stay unchanged.
 - Reminder runs auth via a grant-less scheduler_secrets row and send leaderboard pushes server-side, so closed apps still get them.
 - Open the Scripture reader at the top of its chapter on mount: an in-app route change keeps the window's old scroll position, so the reader resets scroll before paint.
+- Bundle streak sticker mascots as transparent local assets with semantic theme styling; artwork must never delay or change streak evaluation.
