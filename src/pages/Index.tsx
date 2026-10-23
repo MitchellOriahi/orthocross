@@ -56,6 +56,7 @@ const Index = () => {
   const [importing, setImporting] = useState(false);
   const [showChapterMarking, setShowChapterMarking] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [infoPulse, setInfoPulse] = useState(false);
   
   const { oldTestament, newTestament, additional } = getCategorizedBooks();
 
@@ -75,7 +76,7 @@ const Index = () => {
       // Check if user has seen the tutorial
       const hasSeenTutorial = localStorage.getItem("hasSeenBibleProgressTutorial");
       if (!hasSeenTutorial) {
-        setShowTutorial(true);
+        setInfoPulse(true);
       }
     }
   }, [user]);
@@ -371,8 +372,11 @@ const Index = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => setShowChapterMarking(true)}
+                              className={`h-6 w-6 p-0 rounded-full ${infoPulse ? "ring-2 ring-primary animate-pulse" : ""}`}
+                              onClick={() => {
+                                if (infoPulse) { setInfoPulse(false); setShowTutorial(true); }
+                                else setShowChapterMarking(true);
+                              }}
                             >
                               <Info className="h-4 w-4" />
                             </Button>
