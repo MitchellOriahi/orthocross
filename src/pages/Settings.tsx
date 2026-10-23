@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Capacitor } from "@capacitor/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { ArrowLeft, Music, Volume2, Bell, BellOff, Home, LogOut, Share2, Mail, MessageSquare, UserX, XCircle, Globe, Cross } from "lucide-react";
@@ -26,6 +27,7 @@ import { BottomNavigation } from "@/components/BottomNavigation";
 import { TraditionChoiceDialog } from "@/components/OrientationOnboarding";
 import { useToast } from "@/hooks/use-toast";
 import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
+import { getDeviceTimezone } from "@/lib/deviceTimezone";
 
 const Settings = () => {
   const orientation = useOrthodoxOrientation();
@@ -38,6 +40,9 @@ const Settings = () => {
   const [fastingNotificationsEnabled, setFastingNotificationsEnabled] = useState(true);
   const [streakNotificationsEnabled, setStreakNotificationsEnabled] = useState(true);
   const [friendsNotificationsEnabled, setFriendsNotificationsEnabled] = useState(true);
+  const [verseNotificationsEnabled, setVerseNotificationsEnabled] = useState(true);
+  const [leaderboardNotificationsEnabled, setLeaderboardNotificationsEnabled] = useState(true);
+  const [reactionNotificationsEnabled, setReactionNotificationsEnabled] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDonationDialogOpen, setCancelDonationDialogOpen] = useState(false);
   const [traditionDialog, setTraditionDialog] = useState<null | "family" | "eastern" | "oriental">(null);
@@ -65,6 +70,10 @@ const Settings = () => {
     { value: 'Asia/Kolkata', label: 'India (IST)' },
     { value: 'Australia/Sydney', label: 'Sydney (AEST)' },
   ];
+  const deviceTimezone = getDeviceTimezone();
+  const timezoneOptions = timezones.some((tz) => tz.value === timezone)
+    ? timezones
+    : [...timezones, { value: timezone, label: timezone.replace(/_/g, ' ') }];
 
   useEffect(() => {
     if (profile) {
@@ -76,6 +85,22 @@ const Settings = () => {
       setTimezone(profile.timezone ?? 'America/New_York');
     }
   }, [user, profile]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from('profiles')
+      .select('verse_notifications_enabled, leaderboard_notifications_enabled, reaction_notifications_enabled' as any)
+      .eq('id', user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        const prefs = data as any;
+        if (!prefs) return;
+        setVerseNotificationsEnabled(prefs.verse_notifications_enabled ?? true);
+        setLeaderboardNotificationsEnabled(prefs.leaderboard_notifications_enabled ?? true);
+        setReactionNotificationsEnabled(prefs.reaction_notifications_enabled ?? true);
+      });
+  }, [user]);
 
   const handleToggleFastingNotifications = async (enabled: boolean) => {
     if (!user) return;
@@ -117,6 +142,45 @@ const Settings = () => {
       .eq('id', user.id);
     
     toast.success(enabled ? "Friends notifications enabled" : "Friends notifications disabled");
+  };
+
+  const handleToggleVerseNotifications = async (enabled: boolean) => {
+    if (!user) return;
+
+    setVerseNotificationsEnabled(enabled);
+    await supabase
+      .from('profiles')
+      .update({ verse_notifications_enabled: enabled } as any)
+      .eq('id', user.id);
+
+    toast.success(enabled
+      ? "Verse of the Day enabled - you'll receive the daily verse at 8am"
+      : "Verse of the Day notifications disabled"
+    );
+  };
+
+  const handleToggleLeaderboardNotifications = async (enabled: boolean) => {
+    if (!user) return;
+
+    setLeaderboardNotificationsEnabled(enabled);
+    await supabase
+      .from('profiles')
+      .update({ leaderboard_notifications_enabled: enabled })
+      .eq('id', user.id);
+
+    toast.success(enabled ? "Leaderboard notifications enabled" : "Leaderboard notifications disabled");
+  };
+
+  const handleToggleReactionNotifications = async (enabled: boolean) => {
+    if (!user) return;
+
+    setReactionNotificationsEnabled(enabled);
+    await supabase
+      .from('profiles')
+      .update({ reaction_notifications_enabled: enabled })
+      .eq('id', user.id);
+
+    toast.success(enabled ? "Reaction notifications enabled" : "Reaction notifications disabled");
   };
 
   const handleToggleStreakVisibility = async (visible: boolean) => {
@@ -347,12 +411,51 @@ const Settings = () => {
                 <div className="space-y-1 pr-4">
                   <p className="font-medium">Friends Notifications</p>
                   <p className="text-sm text-muted-foreground">
-                    Get notified when friends complete books
+                    Get notified about friend requests and group invitations
                   </p>
                 </div>
                 <Switch
                   checked={friendsNotificationsEnabled}
                   onCheckedChange={handleToggleFriendsNotifications}
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1 pr-4">
+                  <p className="font-medium">Verse of the Day</p>
+                  <p className="text-sm text-muted-foreground">
+                    Receive the daily verse each morning at 8am
+                  </p>
+                </div>
+                <Switch
+                  checked={verseNotificationsEnabled}
+                  onCheckedChange={handleToggleVerseNotifications}
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1 pr-4">
+                  <p className="font-medium">Leaderboard Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Get notified when someone passes you on the monthly leaderboard
+                  </p>
+                </div>
+                <Switch
+                  checked={leaderboardNotificationsEnabled}
+                  onCheckedChange={handleToggleLeaderboardNotifications}
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                <div className="space-y-1 pr-4">
+                  <p className="font-medium">Reaction Notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Get notified when friends react to your achievements
+                  </p>
+                </div>
+                <Switch
+                  checked={reactionNotificationsEnabled}
+                  onCheckedChange={handleToggleReactionNotifications}
                 />
               </div>
 
@@ -397,13 +500,23 @@ const Settings = () => {
                       <SelectValue placeholder="Select timezone" />
                     </SelectTrigger>
                     <SelectContent>
-                      {timezones.map((tz) => (
+                      {timezoneOptions.map((tz) => (
                         <SelectItem key={tz.value} value={tz.value}>
                           {tz.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  {deviceTimezone && deviceTimezone !== timezone && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => handleTimezoneChange(deviceTimezone)}
+                    >
+                      Use device timezone ({deviceTimezone.replace(/_/g, ' ')})
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -503,7 +616,8 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-          {/* Cancel Monthly Donation */}
+          {/* Cancel Monthly Donation (monthly donations are web-only) */}
+          {!Capacitor.isNativePlatform() && (
           <Card className="shadow-elevated">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -525,6 +639,7 @@ const Settings = () => {
               </Button>
             </CardContent>
           </Card>
+          )}
 
           <CancelDonationDialog 
             open={cancelDonationDialogOpen} 

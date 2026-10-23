@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
 import { useAuth } from '@/contexts/AuthContext';
+import { syncDeviceTimezone } from '@/lib/deviceTimezone';
 
 const log = (msg: string) => console.log(msg);
 
@@ -21,6 +23,14 @@ let oneSignalInitialized = false;
 export const usePushNotifications = () => {
   const { user, loading } = useAuth();
   const linkedRef = useRef(false);
+  const navigate = useNavigate();
+  const navigateRef = useRef(navigate);
+  navigateRef.current = navigate;
+
+  useEffect(() => {
+    if (!user?.id) return;
+    syncDeviceTimezone(user.id).catch((error) => console.error('[Timezone] Sync error:', error));
+  }, [user?.id]);
 
   // Initialize OneSignal once on first native app launch
   useEffect(() => {
@@ -41,6 +51,12 @@ export const usePushNotifications = () => {
       }
       try {
         OneSignal.initialize(appId);
+        OneSignal.Notifications.addEventListener('click', (event) => {
+          const path = (event.notification?.additionalData as { path?: unknown } | undefined)?.path;
+          if (typeof path === 'string' && path.startsWith('/') && !path.startsWith('//')) {
+            navigateRef.current(path);
+          }
+        });
         oneSignalInitialized = true;
         log('[OneSignal] Initialized');
       } catch (error) {

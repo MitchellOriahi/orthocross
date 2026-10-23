@@ -3,9 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
 /**
- * Hook to listen for leaderboard position changes.
- * When someone passes the current user, this triggers a push notification via edge function.
- * The edge function handles FCM delivery.
+ * Marks leaderboard notifications as read when they arrive while the app is open.
+ * The push itself is sent server-side by send-scheduled-reminders.
  */
 export const useLeaderboardNotifications = () => {
   const { user } = useAuth();
@@ -13,7 +12,6 @@ export const useLeaderboardNotifications = () => {
   useEffect(() => {
     if (!user) return;
 
-    // Subscribe to leaderboard notifications (inserted by database trigger)
     const channel = supabase
       .channel('leaderboard_notifications')
       .on(
@@ -26,30 +24,8 @@ export const useLeaderboardNotifications = () => {
         },
         async (payload) => {
           const notification = payload.new as any;
-          
-          // Fetch the username of the person who passed us
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('username, display_name')
-            .eq('id', notification.passed_by_user_id)
-            .single();
+          if (notification.month_date === 'friend_request') return;
 
-          const passedByName = profile?.display_name || profile?.username || 'Someone';
-          
-          // Call edge function to send push notification via FCM
-          try {
-            await supabase.functions.invoke('send-leaderboard-notification', {
-              body: {
-                passed_user_ids: [user.id],
-                current_user_name: passedByName,
-                group_name: null, // Global leaderboard
-              },
-            });
-          } catch (error) {
-            console.log('Error triggering leaderboard notification:', error);
-          }
-
-          // Mark notification as read
           try {
             await supabase
               .from('leaderboard_notifications')

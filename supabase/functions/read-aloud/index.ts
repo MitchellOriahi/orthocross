@@ -7,8 +7,30 @@ const VOICES: Record<string, string> = {
   male: "Charon",
   female: "Kore",
 };
-const MODEL = "google/gemini-3.1-flash-tts-preview";
+const MODEL = Deno.env.get("GEMINI_TTS_MODEL") || "gemini-2.5-flash-preview-tts";
 const MAX_CHARS = 1200;
+
+function base64ToBytes(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
+// Gemini returns raw 16-bit little-endian PCM; wrap it so the browser can play it.
+function pcmToWav(pcm: Uint8Array, rate: number, channels = 1): Uint8Array {
+  const out = new Uint8Array(44 + pcm.length);
+  const w = new DataView(out.buffer);
+  const put = (p: number, s: string) => { for (let i = 0; i < 4; i++) w.setUint8(p + i, s.charCodeAt(i)); };
+  const frameBytes = 2 * channels;
+  put(0, "RIFF"); w.setUint32(4, 36 + pcm.length, true); put(8, "WAVE");
+  put(12, "fmt "); w.setUint32(16, 16, true); w.setUint16(20, 1, true);
+  w.setUint16(22, channels, true); w.setUint32(24, rate, true);
+  w.setUint32(28, rate * frameBytes, true); w.setUint16(32, frameBytes, true); w.setUint16(34, 16, true);
+  put(36, "data"); w.setUint32(40, pcm.length, true);
+  out.set(pcm, 44);
+  return out;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -48,7 +70,7 @@ serve(async (req) => {
     }
     const voiceName = VOICES[String(voice)] ?? VOICES.female;
 
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("GEMINI_API_KEY");
     if (!apiKey) {
       return new Response(JSON.stringify({ error: "Speech service is not configured" }), {
         status: 500,
@@ -56,11 +78,10 @@ serve(async (req) => {
       });
     }
 
-    const upstream = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
+    const upstream = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: MODEL,
         contents: [
           {
             role: "user",
@@ -83,12 +104,27 @@ serve(async (req) => {
       );
     }
 
-    const audio = await upstream.arrayBuffer();
-    return new Response(audio, {
+    const data = await upstream.json();
+    const inline = data.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData?.data)?.inlineData;
+    if (!inline) {
+      const reason = data.promptFeedback?.blockReason ?? data.candidates?.[0]?.finishReason ?? "no audio";
+      console.error(`Speech request returned no audio: ${reason}`);
+      return new Response(JSON.stringify({ error: "Speech request failed", details: String(reason) }), {
+        status: 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const mimeType = String(inline.mimeType ?? "").toLowerCase();
+    const bytes = base64ToBytes(inline.data);
+    const audio = mimeType.includes("wav")
+      ? bytes
+      : pcmToWav(bytes, Number(/rate=(\d+)/.exec(mimeType)?.[1]) || 24000, Number(/channels=(\d+)/.exec(mimeType)?.[1]) || 1);
+    return new Response(audio.buffer as ArrayBuffer, {
       status: 200,
       headers: {
         ...corsHeaders,
-        "Content-Type": upstream.headers.get("Content-Type") ?? "audio/wav",
+        "Content-Type": "audio/wav",
         "Cache-Control": "no-cache",
       },
     });

@@ -8,7 +8,9 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:parity": "node scripts/check-backend-parity.mjs",
+    "sync:lovable-assets": "node scripts/sync-lovable-assets.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",

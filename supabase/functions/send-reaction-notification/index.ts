@@ -1,27 +1,12 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendPush } from "../_shared/oneSignal.ts";
+import { areConnected, isUuid } from "../_shared/relationships.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-async function sendOneSignalNotification(
-  appId: string, apiKey: string, externalUserId: string, title: string, body: string
-): Promise<number> {
-  const response = await fetch("https://onesignal.com/api/v1/notifications", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Basic ${apiKey}` },
-    body: JSON.stringify({
-      app_id: appId,
-      include_external_user_ids: [externalUserId],
-      headings: { en: title },
-      contents: { en: body },
-    }),
-  });
-  const result = await response.json();
-  return result.recipients || 0;
-}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -46,12 +31,21 @@ serve(async (req) => {
     const senderId = claimsData.claims.sub as string;
 
     const { to_user_id, achievement_title } = await req.json();
-    if (!to_user_id || typeof to_user_id !== "string") {
+    if (!isUuid(to_user_id)) {
       return new Response(JSON.stringify({ ok: false, error: "Missing params" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+    if (to_user_id === senderId) {
+      return new Response(JSON.stringify({ ok: true, message: "Self" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+
+    if (!(await areConnected(admin, senderId, to_user_id))) {
+      return new Response(JSON.stringify({ ok: false, error: "Not allowed" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     const { data: senderProfile } = await admin.from("profiles")
       .select("username, display_name").eq("id", senderId).single();
@@ -67,15 +61,11 @@ serve(async (req) => {
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID");
-    const ONESIGNAL_REST_API_KEY = Deno.env.get("ONESIGNAL_REST_API_KEY");
-    if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) throw new Error("OneSignal not configured");
-
     const content = safeTitle
       ? `${from_user_name} reacted to your achievement: ${safeTitle}!`
       : `${from_user_name} reacted to your achievement!`;
 
-    const sent = await sendOneSignalNotification(ONESIGNAL_APP_ID, ONESIGNAL_REST_API_KEY, to_user_id, "New Reaction 🎉", content);
+    const sent = await sendPush([to_user_id], "New Reaction 🎉", content, { path: "/friends" });
 
     return new Response(JSON.stringify({ ok: true, sent }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });

@@ -61,6 +61,7 @@ Deno.serve(async (req) => {
           include_external_user_ids: [toUserId],
           headings: { en: "Don't forget your streak! 🔥" },
           contents: { en: `${name} nudged you to keep your streak going today.` },
+          data: { path: "/" },
         }),
       }).catch((e) => console.error("OneSignal", e));
     }

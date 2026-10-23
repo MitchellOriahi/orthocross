@@ -48,10 +48,11 @@ serve(async (req) => {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("GEMINI_API_KEY");
     if (!apiKey) {
       throw new Error("Image generation is not configured. Please contact support.");
     }
+    const model = Deno.env.get("GEMINI_IMAGE_MODEL") || "gemini-3.1-flash-image";
 
     const prompt = `Create a stunning 4K square (1:1) background illustration whose imagery, mood, palette, and symbolism are derived SPECIFICALLY from this Bible verse: "${verseText}" — ${verseReference}.
 
@@ -69,33 +70,33 @@ Interpretation rules:
 
 
     const aiResponse = await fetch(
-      "https://ai.gateway.lovable.dev/v1/images/generations",
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
         body: JSON.stringify({
-          model: "openai/gpt-image-2.5-sunburst",
-          prompt,
-          size: "1024x1024",
-          quality: "medium",
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { responseModalities: ["TEXT", "IMAGE"], imageConfig: { aspectRatio: "1:1" } },
         }),
       }
     );
 
     if (!aiResponse.ok) {
       const details = await aiResponse.json().catch(() => null);
-      const message = details?.message ?? details?.error?.message ?? `Image generation failed (${aiResponse.status}).`;
+      console.error("Image API error:", aiResponse.status, JSON.stringify(details));
+      const message = details?.error?.message ?? details?.message ?? `Image generation failed (${aiResponse.status}).`;
       return new Response(JSON.stringify({ error: message }), {
         status: aiResponse.status, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const aiData = await aiResponse.json();
-    const encodedImage = aiData.data?.[0]?.b64_json;
-    const imageUrl = encodedImage ? `data:image/png;base64,${encodedImage}` : undefined;
+    const inline = aiData.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData?.data)?.inlineData;
+    const imageUrl = inline ? `data:${inline.mimeType ?? "image/png"};base64,${inline.data}` : undefined;
 
     if (!imageUrl) {
-      return new Response(JSON.stringify({ error: aiData.error?.message ?? aiData.message ?? "No image was returned by the image service." }), {
+      const reason = aiData.promptFeedback?.blockReason ?? aiData.candidates?.[0]?.finishReason;
+      return new Response(JSON.stringify({ error: aiData.error?.message ?? (reason ? `No image was returned by the image service (${reason}).` : "No image was returned by the image service.") }), {
         status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

@@ -139,18 +139,26 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
       return;
     }
 
+    if (!user) {
+      toast({ title: "Please sign in", description: "Sign in to donate so your gift is tied to your account.", variant: "destructive" });
+      return;
+    }
+
     setLoading(true);
     try {
-      const result = await purchaseDonation(productId);
+      const result = await purchaseDonation(productId, user.id);
       if (result.success) {
         onOpenChange(false);
-        // Show the thank-you sticker
-        window.dispatchEvent(new Event("orthocross:donation-completed"));
-        // Record donation (Donators list) + thank-you email and message
-        const txId = (result as any).customerInfo?.nonSubscriptionTransactions?.slice(-1)?.[0]?.transactionIdentifier;
-        supabase.functions.invoke("record-donation", {
-          body: { productId, transactionId: txId },
-        }).catch(console.error);
+        // Record donation (verified server-side) + thank-you email and message
+        const { data } = await supabase.functions.invoke("record-donation", {
+          body: { productId, transactionId: result.transactionId, appUserId: result.appUserId },
+        }).catch((e) => { console.error(e); return { data: null }; });
+        if (data?.status === "confirmed") {
+          // Show the thank-you sticker
+          window.dispatchEvent(new Event("orthocross:donation-completed"));
+        } else {
+          toast({ title: "Thank you for your donation!", description: "It will appear in the Donators section once the app store confirms it." });
+        }
       } else if (!result.cancelled) {
         toast({ title: "Purchase failed", description: result.error || "Please try again.", variant: "destructive" });
       }
@@ -254,7 +262,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
         <div className="pt-2 space-y-2">
           <div>
             <h3 className="text-3xl font-bold">Gift what you want</h3>
-            <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>
+            {!isNative && <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>}
           </div>
 
           {!isNative && !oneTime && (

@@ -1,6 +1,17 @@
 import { DONOR_TEXT, getTier } from "./donorTiers.ts";
 
-export const APP_URL = "https://orthocross.lovable.app";
+export const APP_URL = (Deno.env.get("APP_URL") || "https://app.orthocrossapp.com").replace(/\/+$/, "");
+
+// Tier icons are served from public/email/; the img is omitted if the file is not deployed.
+async function emailAssetUrl(file: string): Promise<string> {
+  const url = `${APP_URL}/email/${file}`;
+  try {
+    const res = await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(3000) });
+    return res.ok && (res.headers.get("Content-Type") ?? "").startsWith("image/") ? url : "";
+  } catch {
+    return "";
+  }
+}
 
 // deno-lint-ignore no-explicit-any
 type Admin = any;
@@ -36,7 +47,7 @@ export async function sendThankYouOnce(admin: Admin, donationId: string) {
   const name = p?.display_name || p?.username || "friend";
   const total = await lifetimeTotal(admin, claimed.user_id);
   const tier = getTier(total);
-  const iconUrl = tier ? `${APP_URL}/__l5e/assets-v1/${TIER_ICON_IDS[tier.key]}/tier-${tier.key}.jpg` : "";
+  const iconUrl = tier ? await emailAssetUrl(`tier-${tier.key}.jpg`) : "";
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
 
   const html = `<div style="background:#111;color:#eee;font-family:Georgia,serif;padding:32px;text-align:center">
@@ -62,15 +73,3 @@ export async function sendThankYouOnce(admin: Admin, donationId: string) {
     }),
   }).catch((e) => console.error("thank-you email failed", e));
 }
-
-export const TIER_ICON_IDS: Record<string, string> = {
-  angel: "76947e96-8b8b-4539-bae4-6c7b6e51a4a7",
-  archangel: "d4a692d6-aa1e-48d9-a067-840a3892a836",
-  cherub: "8be593b4-f6b6-47fd-9d7d-636abd71509e",
-  dominion: "b8dce3bc-1d6c-43e0-8988-86a6e5e0ef05",
-  power: "ba38012e-158b-41c6-8d19-d6a0a62aadb2",
-  principality: "484e586b-83fc-4076-89e4-c3e7e5a3e952",
-  seraph: "c5c37dbe-5078-4b63-80c1-ae581093cac2",
-  throne: "de9d8b5d-18bc-4bb1-9d15-ebb986b8f4d7",
-  virtue: "a2e6adff-c65a-4d60-a5eb-5e32c6c81850",
-};

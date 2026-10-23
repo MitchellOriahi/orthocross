@@ -80,17 +80,137 @@ function getLocalTime(timezone: string): { hour: number; minute: number; dateStr
   }
 }
 
-function getTomorrowDate(timezone: string): string {
+function addDays(dateStr: string, days: number): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().split("T")[0];
+}
+
+function tzOffsetMs(instant: number, timezone: string): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone, hourCycle: "h23",
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+  }).formatToParts(new Date(instant));
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+  const asUtc = Date.UTC(get("year"), get("month") - 1, get("day"), get("hour") % 24, get("minute"), get("second"));
+  return asUtc - Math.floor(instant / 1000) * 1000;
+}
+
+// UTC instant at which the given local calendar date begins in `timezone`.
+function localMidnightUtc(dateStr: string, timezone: string): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const guess = Date.UTC(y, m - 1, d);
   try {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return new Intl.DateTimeFormat("en-CA", {
-      timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit",
-    }).format(tomorrow);
+    let instant = guess - tzOffsetMs(guess, timezone);
+    instant = guess - tzOffsetMs(instant, timezone);
+    return new Date(instant).toISOString();
   } catch {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split("T")[0];
+    return new Date(guess).toISOString();
+  }
+}
+
+// ─── Leaderboard ────────────────────────────────────────────────────
+
+type ProfileRow = {
+  id: string;
+  timezone: string | null;
+  leaderboard_notifications_enabled: boolean | null;
+};
+
+const LEADERBOARD_STALE_MS = 24 * 60 * 60 * 1000;
+
+function chunk<T>(items: T[], size = 200): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  return out;
+}
+
+// Sends pushes for leaderboard_notifications rows written by the
+// on_leaderboard_update trigger: user_id was passed by passed_by_user_id.
+// Rows are claimed (push_sent_at set) before sending so overlapping runs
+// never double-send. Recipients outside 8am–10pm local are retried next run.
+async function processLeaderboardNotifications(
+  supabase: any,
+  profileById: Map<string, ProfileRow>,
+  counters: Record<string, number>
+) {
+  const { data: rows, error } = await supabase
+    .from("leaderboard_notifications")
+    .select("id, user_id, passed_by_user_id, created_at")
+    .is("push_sent_at", null)
+    .neq("month_date", "friend_request")
+    .order("created_at", { ascending: true })
+    .limit(1000);
+
+  if (error) {
+    console.error("[leaderboard] fetch error:", error);
+    return;
+  }
+  if (!rows?.length) return;
+
+  const now = Date.now();
+  const nowIso = new Date(now).toISOString();
+  const closeWithoutPush: string[] = [];
+  const pending: typeof rows = [];
+
+  for (const row of rows) {
+    const profile = profileById.get(row.user_id);
+    if (
+      !profile ||
+      profile.leaderboard_notifications_enabled === false ||
+      row.user_id === row.passed_by_user_id ||
+      now - new Date(row.created_at).getTime() > LEADERBOARD_STALE_MS
+    ) {
+      closeWithoutPush.push(row.id);
+      continue;
+    }
+    const { hour } = getLocalTime(profile.timezone || "America/New_York");
+    if (hour >= 8 && hour < 22) pending.push(row);
+  }
+
+  for (const ids of chunk(closeWithoutPush)) {
+    await supabase.from("leaderboard_notifications").update({ push_sent_at: nowIso }).in("id", ids);
+  }
+  if (!pending.length) return;
+
+  const claimed = new Set<string>();
+  for (const ids of chunk(pending.map((r: { id: string }) => r.id))) {
+    const { data } = await supabase
+      .from("leaderboard_notifications")
+      .update({ push_sent_at: nowIso })
+      .in("id", ids)
+      .is("push_sent_at", null)
+      .select("id");
+    (data ?? []).forEach((r: { id: string }) => claimed.add(r.id));
+  }
+
+  const byRecipient = new Map<string, string[]>();
+  for (const row of pending) {
+    if (!claimed.has(row.id)) continue;
+    const passers = byRecipient.get(row.user_id) ?? [];
+    passers.push(row.passed_by_user_id);
+    byRecipient.set(row.user_id, passers);
+  }
+  if (!byRecipient.size) return;
+
+  const passerIds = [...new Set([...byRecipient.values()].flat())];
+  const nameById = new Map<string, string>();
+  for (const ids of chunk(passerIds)) {
+    const { data } = await supabase.from("profiles").select("id, username, display_name").in("id", ids);
+    (data ?? []).forEach((p: any) => nameById.set(p.id, p.display_name || p.username || "Someone"));
+  }
+
+  for (const [recipientId, passers] of byRecipient) {
+    const distinct = [...new Set(passers.reverse())];
+    const name = nameById.get(distinct[0]) || "Someone";
+    const others = distinct.length - 1;
+    const message = others > 0
+      ? `${name} and ${others} other${others === 1 ? "" : "s"} just surpassed you on the leaderboard! Keep going!`
+      : `${name} just surpassed you on the leaderboard! Keep going!`;
+
+    const sent = await sendOneSignalNotification(recipientId, "Leaderboard Update 📊", message, { path: "/friends" });
+    if (sent) counters.sentLeaderboard++;
+    else counters.oneSignalFailed++;
   }
 }
 
@@ -128,6 +248,7 @@ const handler = async (req: Request): Promise<Response> => {
       sentStreak: 0,
       sentFasting: 0,
       sentVerse: 0,
+      sentLeaderboard: 0,
       skippedWrongTime: 0,
       skippedCompleted: 0,
       skippedPrefsOff: 0,
@@ -137,7 +258,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
-      .select("id, streak_notifications_enabled, fasting_notifications_enabled, verse_notifications_enabled, timezone");
+      .select("id, streak_notifications_enabled, fasting_notifications_enabled, verse_notifications_enabled, leaderboard_notifications_enabled, timezone");
 
     if (profilesError) {
       console.error("[send-scheduled-reminders] Error fetching profiles:", profilesError);
@@ -152,6 +273,14 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`[send-scheduled-reminders] Processing ${profiles.length} users`);
+
+    try {
+      await processLeaderboardNotifications(
+        supabase, new Map(profiles.map((p: ProfileRow) => [p.id, p])), counters
+      );
+    } catch (error: any) {
+      console.error("[leaderboard] Error:", error.message);
+    }
 
     // Verse of the day is identical for everyone sharing a local date, so
     // resolve it once per distinct date (max ~2 across live timezones).
@@ -168,7 +297,7 @@ const handler = async (req: Request): Promise<Response> => {
     for (const profile of profiles) {
       const timezone = profile.timezone || "America/New_York";
       const localTime = getLocalTime(timezone);
-      const tomorrowDate = getTomorrowDate(timezone);
+      const tomorrowDate = addDays(localTime.dateStr, 1);
 
       // ========== STREAK NOTIFICATIONS at 18:00 (6pm) local time ==========
       // Deduplication via notification_log prevents double-sending within the same hour
@@ -186,8 +315,8 @@ const handler = async (req: Request): Promise<Response> => {
         if (existingLog) {
           counters.skippedDup++;
         } else {
-          const todayStart = `${localTime.dateStr}T00:00:00.000Z`;
-          const todayEnd = `${localTime.dateStr}T23:59:59.999Z`;
+          const todayStart = localMidnightUtc(localTime.dateStr, timezone);
+          const todayEnd = localMidnightUtc(tomorrowDate, timezone);
 
           const [chaptersResult, saintsResult, historyResult] = await Promise.all([
             supabase.from("completed_chapters").select("id").eq("user_id", profile.id)
@@ -214,7 +343,7 @@ const handler = async (req: Request): Promise<Response> => {
               ? `🔥 Keep Your ${currentStreak}-Day Streak! Complete your daily reading now.`
               : `📖 Start Your Reading Streak! Complete a reading today to begin.`;
 
-            const sent = await sendOneSignalNotification(profile.id, "OrthoCross Reminder", message);
+            const sent = await sendOneSignalNotification(profile.id, "OrthoCross Reminder", message, { path: "/" });
 
             if (sent) {
               await supabase.from("notification_log").insert({
@@ -265,7 +394,8 @@ const handler = async (req: Request): Promise<Response> => {
             const sent = await sendOneSignalNotification(
               profile.id,
               calendarEvent.is_fast ? "Upcoming Fast" : "Upcoming Feast",
-              message
+              message,
+              { path: "/dashboard" }
             );
 
             if (sent) {
@@ -305,7 +435,8 @@ const handler = async (req: Request): Promise<Response> => {
             const sent = await sendOneSignalNotification(
               profile.id,
               "Verse of the Day",
-              `"${verse.verse_text}" — ${verse.reference}`
+              `"${verse.verse_text}" — ${verse.reference}`,
+              { path: "/" }
             );
             if (sent) {
               await supabase.from("notification_log").insert({

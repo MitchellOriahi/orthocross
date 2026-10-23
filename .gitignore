@@ -37,3 +37,8 @@ pnpm-lock.yaml
 # Android signing keys - publishing these to a remote is unrecoverable
 *.jks
 *.keystore
+
+# Local tooling state and scratch caches
+supabase/.temp/
+scripts/.cache-*/
+scripts/.*-parsed.json

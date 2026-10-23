@@ -1,27 +1,12 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendPush } from "../_shared/oneSignal.ts";
+import { isUuid } from "../_shared/relationships.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-async function sendOneSignalNotification(
-  appId: string, apiKey: string, externalUserId: string, title: string, body: string
-): Promise<number> {
-  const response = await fetch("https://onesignal.com/api/v1/notifications", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Basic ${apiKey}` },
-    body: JSON.stringify({
-      app_id: appId,
-      include_external_user_ids: [externalUserId],
-      headings: { en: title },
-      contents: { en: body },
-    }),
-  });
-  const result = await response.json();
-  return result.recipients || 0;
-}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -45,27 +30,46 @@ serve(async (req) => {
     }
     const senderId = claimsData.claims.sub as string;
 
-    const { to_user_id, group_id, group_name: client_group_name } = await req.json();
-    if (!to_user_id || typeof to_user_id !== "string") {
+    const { to_user_id, group_id } = await req.json();
+    if (!isUuid(to_user_id) || (group_id != null && !isUuid(group_id))) {
       return new Response(JSON.stringify({ ok: false, error: "Missing required parameters" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const forbidden = () => new Response(JSON.stringify({ ok: false, error: "Not allowed" }),
+      { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    // Resolve sender name server-side
+    // The caller must have a pending invitation out to the recipient...
+    let inviteQuery = admin.from("group_invitations").select("id, group_id")
+      .eq("inviter_id", senderId).eq("invitee_id", to_user_id).eq("status", "pending");
+    if (group_id) inviteQuery = inviteQuery.eq("group_id", group_id);
+    const { data: invites } = await inviteQuery.order("created_at", { ascending: false }).limit(1);
+    const invitation = invites?.[0];
+    if (!invitation) return forbidden();
+
+    // ...and still belong to that group.
+    const { data: membership } = await admin.from("group_members").select("role")
+      .eq("group_id", invitation.group_id).eq("user_id", senderId).maybeSingle();
+    if (!membership) return forbidden();
+
+    // One push per invitation per day, however often this is called.
+    const { error: logErr } = await admin.from("notification_log").insert({
+      user_id: to_user_id,
+      type: `group_invite:${invitation.id}`,
+      local_date: new Date().toISOString().split("T")[0],
+    });
+    if (logErr) {
+      return new Response(JSON.stringify({ ok: true, message: "Already notified" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const { data: senderProfile } = await admin.from("profiles")
       .select("username, display_name").eq("id", senderId).single();
     const from_user_name = senderProfile?.display_name || senderProfile?.username || "Someone";
 
-    // Resolve group name from id when provided; otherwise sanitize client value
-    let group_name = "a group";
-    if (group_id && typeof group_id === "string") {
-      const { data: g } = await admin.from("groups").select("name").eq("id", group_id).single();
-      if (g?.name) group_name = g.name;
-    } else if (typeof client_group_name === "string") {
-      group_name = client_group_name.slice(0, 80);
-    }
+    const { data: g } = await admin.from("groups").select("name").eq("id", invitation.group_id).single();
+    const group_name = g?.name || "a group";
 
     const { data: profile } = await admin.from("profiles")
       .select("friends_notifications_enabled").eq("id", to_user_id).single();
@@ -74,12 +78,8 @@ serve(async (req) => {
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const ONESIGNAL_APP_ID = Deno.env.get("ONESIGNAL_APP_ID");
-    const ONESIGNAL_REST_API_KEY = Deno.env.get("ONESIGNAL_REST_API_KEY");
-    if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) throw new Error("OneSignal not configured");
-
     const content = `${from_user_name} invited you to join "${group_name}"! Will you accept?`;
-    const sent = await sendOneSignalNotification(ONESIGNAL_APP_ID, ONESIGNAL_REST_API_KEY, to_user_id, "Group Invitation 👀", content);
+    const sent = await sendPush([to_user_id], "Group Invitation 👀", content, { path: "/friends" });
 
     return new Response(JSON.stringify({ ok: true, sent }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });

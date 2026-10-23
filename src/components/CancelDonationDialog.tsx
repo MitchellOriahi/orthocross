@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { Capacitor } from "@capacitor/core";
 import { toast } from "sonner";
 import { Heart, Pause } from "lucide-react";
 import {
@@ -73,6 +74,28 @@ export const CancelDonationDialog = ({ open, onOpenChange }: CancelDonationDialo
   };
 
   const renderStep = () => {
+    // Monthly donations are web-only (Stripe); the app never links out to manage them.
+    if (Capacitor.isNativePlatform()) {
+      return (
+        <>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Heart className="w-5 h-5" />
+              Monthly donations
+            </DialogTitle>
+            <DialogDescription>
+              Monthly donations are managed on the OrthoCross website. Thank you for your support.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 mt-4">
+            <Button variant="outline" onClick={handleClose} className="w-full">
+              Close
+            </Button>
+          </div>
+        </>
+      );
+    }
+
     switch (step) {
       case "confirm":
         return (
