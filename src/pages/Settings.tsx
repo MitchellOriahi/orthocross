@@ -28,9 +28,12 @@ import { TraditionChoiceDialog } from "@/components/OrientationOnboarding";
 import { useToast } from "@/hooks/use-toast";
 import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
 import { getDeviceTimezone } from "@/lib/deviceTimezone";
+import { MonthlyPodiumModal } from "@/components/MonthlyPodiumModal";
+import { Trophy } from "lucide-react";
 
 const Settings = () => {
   const orientation = useOrthodoxOrientation();
+  const [podiumPreview, setPodiumPreview] = useState(false);
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { isPlaying, toggleMusic, volume, setVolume, sfxVolume, setSfxVolume, playSound } = useMusic();
@@ -568,6 +571,26 @@ const Settings = () => {
             open={traditionDialog !== null}
             initialStep={traditionDialog ?? "family"}
             onClose={() => setTraditionDialog(null)}
+          />
+
+          {/* Monthly podium preview */}
+          <Card className="shadow-elevated">
+            <CardContent className="p-0">
+              <Button variant="ghost" className="w-full justify-start h-14 px-6 rounded-none" onClick={() => setPodiumPreview(true)}>
+                <Trophy className="w-5 h-5 mr-3 text-primary" />
+                <span className="text-base">Preview Monthly Podium</span>
+              </Button>
+            </CardContent>
+          </Card>
+          <MonthlyPodiumModal
+            isOpen={podiumPreview}
+            onClose={() => setPodiumPreview(false)}
+            monthName={new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).toLocaleString(undefined, { month: "long", year: "numeric" })}
+            topThree={[
+              { id: "p1", username: "Theophilus", profile_picture_url: null, total_points: 42, rank: 1 },
+              { id: "p2", username: "Seraphima", profile_picture_url: null, total_points: 35, rank: 2 },
+              { id: "p3", username: "Nektarios", profile_picture_url: null, total_points: 28, rank: 3 },
+            ]}
           />
 
           {/* Refer a Friend */}

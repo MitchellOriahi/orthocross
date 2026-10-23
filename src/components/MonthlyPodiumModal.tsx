@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy } from "lucide-react";
+import { Crown, Trophy } from "lucide-react";
 
 interface PodiumEntry {
   id: string;
@@ -19,106 +19,93 @@ interface MonthlyPodiumModalProps {
   monthName: string;
 }
 
-export const MonthlyPodiumModal = ({
-  isOpen,
-  onClose,
-  topThree,
-  monthName,
-}: MonthlyPodiumModalProps) => {
-  const [canSkip, setCanSkip] = useState(false);
+const WAIT_SECONDS = 3;
+const TONE: Record<number, string> = { 1: "--podium-gold", 2: "--podium-silver", 3: "--podium-bronze" };
+
+export const MonthlyPodiumModal = ({ isOpen, onClose, topThree, monthName }: MonthlyPodiumModalProps) => {
+  const [secondsLeft, setSecondsLeft] = useState(WAIT_SECONDS);
+  const canSkip = secondsLeft <= 0;
 
   useEffect(() => {
-    if (isOpen) {
-      setCanSkip(false);
-      const timer = setTimeout(() => {
-        setCanSkip(true);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
+    if (!isOpen) return;
+    setSecondsLeft(WAIT_SECONDS);
+    const timer = setInterval(() => {
+      setSecondsLeft(s => {
+        if (s <= 1) { clearInterval(timer); return 0; }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
   }, [isOpen]);
 
-  const first = topThree.find(w => w.rank === 1);
-  const second = topThree.find(w => w.rank === 2);
-  const third = topThree.find(w => w.rank === 3);
-
-  const getMedalColor = (rank: number) => {
-    if (rank === 1) return "text-amber-400";
-    if (rank === 2) return "text-slate-300";
-    return "text-amber-700";
-  };
+  const byRank = (r: number) => topThree.find(w => w.rank === r);
 
   const PodiumWinner = ({ winner, rank, height }: { winner?: PodiumEntry; rank: number; height: string }) => {
-    if (!winner) return <div className={`${height} w-20 sm:w-24 md:w-32`} />;
-    
+    const tone = `var(${TONE[rank]})`;
     const isFirst = rank === 1;
-    const avatarSize = isFirst ? "h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28" : "h-16 w-16 sm:h-18 sm:w-18 md:h-20 md:w-20";
-    
+    if (!winner) return <div className={`${height} w-[30%] max-w-32`} />;
     return (
-      <div className="flex flex-col items-center gap-2 sm:gap-3">
+      <div className="flex w-[30%] max-w-32 flex-col items-center gap-2 animate-fade-in" style={{ animationDelay: `${(3 - rank) * 120}ms` }}>
         <div className="relative">
-          <Avatar className={`${avatarSize} border-4 border-background shadow-xl`}>
+          {isFirst && (
+            <Crown className="absolute -top-7 left-1/2 h-7 w-7 -translate-x-1/2 drop-shadow" style={{ color: `hsl(${tone})` }} fill="currentColor" />
+          )}
+          <Avatar
+            className={isFirst ? "h-20 w-20 sm:h-24 sm:w-24" : "h-16 w-16 sm:h-20 sm:w-20"}
+            style={{ boxShadow: `0 0 0 3px hsl(${tone}), 0 0 18px 4px hsl(${tone} / 0.45)` }}
+          >
             <AvatarImage src={winner.profile_picture_url || undefined} />
-            <AvatarFallback className="text-xl sm:text-2xl font-bold">
-              {winner.username?.substring(0, 2).toUpperCase() || 'U'}
-            </AvatarFallback>
+            <AvatarFallback className="text-lg font-bold">{winner.username?.substring(0, 2).toUpperCase() || "U"}</AvatarFallback>
           </Avatar>
-          <div className={`absolute -top-2 -right-2 ${getMedalColor(rank)} bg-background rounded-full p-1.5 sm:p-2 shadow-lg`}>
-            <Trophy className={isFirst ? "h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8" : "h-5 w-5 sm:h-6 sm:w-6"} fill="currentColor" />
-          </div>
-          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground rounded-full w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 flex items-center justify-center font-bold text-base sm:text-lg shadow-md">
+          <div
+            className="absolute -bottom-2 left-1/2 flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full text-sm font-bold text-primary-foreground shadow-md"
+            style={{ background: `hsl(${tone})` }}
+          >
             {rank}
           </div>
         </div>
-        <div className="text-center">
-          <p className={`font-bold ${isFirst ? 'text-base sm:text-lg md:text-xl' : 'text-sm sm:text-base'} truncate max-w-[80px] sm:max-w-[100px] md:max-w-none`}>{winner.username}</p>
-          <p className="text-xs sm:text-sm text-muted-foreground">{winner.total_points} points</p>
+        <div className="mt-1 w-full text-center">
+          <p className={`truncate font-semibold ${isFirst ? "text-base" : "text-sm"}`}>{winner.username}</p>
+          <p className="text-xs text-muted-foreground">{winner.total_points} points</p>
         </div>
-        <div className={`${height} w-20 sm:w-24 md:w-32 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg border-t-4 border-primary/30 flex items-end justify-center pb-2 sm:pb-3 md:pb-4`}>
-          <span className={`font-bold ${isFirst ? 'text-4xl sm:text-5xl md:text-6xl' : 'text-2xl sm:text-3xl md:text-4xl'} text-primary/20`}>{rank}</span>
+        <div
+          className={`${height} relative w-full overflow-hidden rounded-t-2xl border border-b-0 flex items-start justify-center pt-3`}
+          style={{
+            borderColor: `hsl(${tone} / 0.6)`,
+            background: `linear-gradient(to bottom, hsl(${tone} / 0.45), hsl(${tone} / 0.08))`,
+            boxShadow: `inset 0 1px 0 hsl(${tone} / 0.8), 0 -6px 24px -8px hsl(${tone} / 0.6)`,
+          }}
+        >
+          <Trophy className={isFirst ? "h-8 w-8" : "h-6 w-6"} style={{ color: `hsl(${tone})` }} fill="currentColor" />
         </div>
       </div>
     );
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={canSkip ? onClose : undefined}>
-      <DialogContent 
-        className="max-w-[95vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl [&>button]:hidden"
-        onInteractOutside={(e) => !canSkip && e.preventDefault()}
-        onEscapeKeyDown={(e) => !canSkip && e.preventDefault()}
+    <Dialog open={isOpen} onOpenChange={o => { if (!o && canSkip) onClose(); }}>
+      <DialogContent
+        className="max-w-[95vw] sm:max-w-xl overflow-hidden rounded-3xl border-[hsl(var(--podium-gold)/0.4)] [&>button]:hidden"
+        style={{ backgroundImage: "radial-gradient(ellipse at top, hsl(var(--podium-gold) / 0.18), transparent 60%)" }}
+        onInteractOutside={e => !canSkip && e.preventDefault()}
+        onEscapeKeyDown={e => !canSkip && e.preventDefault()}
       >
         <DialogTitle className="sr-only">Monthly Leaderboard Winners</DialogTitle>
-        <div className="flex flex-col items-center justify-center py-4 sm:py-6 md:py-8 px-2 sm:px-4 space-y-4 sm:space-y-6 md:space-y-8">
-          <div className="text-center space-y-1 sm:space-y-2">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground flex items-center justify-center gap-2 sm:gap-3">
-              <Trophy className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-yellow-500" fill="currentColor" />
-              {monthName} Winners
-              <Trophy className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 text-yellow-500" fill="currentColor" />
-            </h2>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
-              Congratulations to our top performers!
-            </p>
+        <div className="flex flex-col items-center space-y-6 px-1 py-4">
+          <div className="space-y-1 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em]" style={{ color: "hsl(var(--podium-gold))" }}>Monthly Champions</p>
+            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">{monthName}</h2>
+            <p className="text-sm text-muted-foreground">Congratulations to our top performers!</p>
           </div>
 
-          <div className="flex items-end justify-center gap-3 sm:gap-5 md:gap-8 w-full px-2">
-            {/* Second Place - Left */}
-            <PodiumWinner winner={second} rank={2} height="h-32 sm:h-36 md:h-40" />
-            
-            {/* First Place - Center (tallest) */}
-            <PodiumWinner winner={first} rank={1} height="h-44 sm:h-50 md:h-56" />
-            
-            {/* Third Place - Right */}
-            <PodiumWinner winner={third} rank={3} height="h-24 sm:h-28 md:h-32" />
+          <div className="flex w-full items-end justify-center gap-2 pt-6 sm:gap-4">
+            <PodiumWinner winner={byRank(2)} rank={2} height="h-24" />
+            <PodiumWinner winner={byRank(1)} rank={1} height="h-36" />
+            <PodiumWinner winner={byRank(3)} rank={3} height="h-16" />
           </div>
 
-          <Button 
-            variant="sacred" 
-            size="lg" 
-            onClick={onClose}
-            disabled={!canSkip}
-            className="w-full max-w-md"
-          >
-            {canSkip ? "Continue" : "Please wait 3s..."}
+          <Button variant="sacred" size="lg" onClick={onClose} disabled={!canSkip} className="w-full max-w-md">
+            {canSkip ? "Continue" : `Please wait ${secondsLeft}s...`}
           </Button>
         </div>
       </DialogContent>
