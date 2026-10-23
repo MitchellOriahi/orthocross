@@ -101,7 +101,7 @@ export const MonthlyPodiumModal = ({ isOpen, onClose, topThree, monthName }: Mon
             <p className="text-sm text-muted-foreground">Congratulations to our top performers!</p>
           </div>
 
-          <div className="podium-stage-glow flex w-full items-end justify-center gap-2 pt-6 sm:gap-4">
+          <div className="flex w-full items-end justify-center gap-2 pt-6 sm:gap-4">
             <PodiumWinner winner={byRank(2)} rank={2} height="h-24" />
             <PodiumWinner winner={byRank(1)} rank={1} height="h-36" />
             <PodiumWinner winner={byRank(3)} rank={3} height="h-16" />
