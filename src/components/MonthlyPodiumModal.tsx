@@ -45,11 +45,13 @@ export const MonthlyPodiumModal = ({ isOpen, onClose, topThree, monthName }: Mon
     const isFirst = rank === 1;
     if (!winner) return <div className={`${height} w-[30%] max-w-32`} />;
     return (
-      <div className="flex w-[30%] max-w-32 flex-col items-center gap-2 animate-fade-in" style={{ animationDelay: `${(3 - rank) * 120}ms` }}>
+      <div className="podium-winner-rise flex w-[30%] max-w-32 flex-col items-center gap-2" style={{ animationDelay: `${(rank - 1) * 160}ms` }}>
         <div className="relative">
-          {isFirst && (
-            <Crown className="absolute -top-7 left-1/2 h-7 w-7 -translate-x-1/2 drop-shadow" style={{ color: `hsl(${tone})` }} fill="currentColor" />
-          )}
+          <Crown
+            className={`podium-crown-float absolute drop-shadow ${isFirst ? "-top-8 h-8 w-8" : "-top-6 h-5 w-5"}`}
+            style={{ color: `hsl(${tone})` }}
+            fill="currentColor"
+          />
           <Avatar
             className={isFirst ? "h-20 w-20 sm:h-24 sm:w-24" : "h-16 w-16 sm:h-20 sm:w-20"}
             style={{ boxShadow: `0 0 0 3px hsl(${tone}), 0 0 18px 4px hsl(${tone} / 0.45)` }}
