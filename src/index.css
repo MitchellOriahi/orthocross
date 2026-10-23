@@ -466,12 +466,13 @@ All colors MUST be HSL.
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(-4px); }
 }
-/* Golden light sweeping across each podium step. */
+/* Light sweeping across each podium step, tinted per place via --shine-tone. */
 .podium-step-shine {
+  --shine-tone: var(--podium-gold);
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(115deg, transparent 35%, hsl(var(--podium-gold) / 0) 44%, hsl(var(--podium-gold) / 0.4) 50%, hsl(var(--podium-gold) / 0) 56%, transparent 65%);
+  background: linear-gradient(115deg, transparent 35%, hsl(var(--shine-tone) / 0) 44%, hsl(var(--shine-tone) / 0.4) 50%, hsl(var(--shine-tone) / 0) 56%, transparent 65%);
   background-size: 260% 100%;
   background-repeat: no-repeat;
   animation: podium-shine 3.2s ease-in-out infinite;
