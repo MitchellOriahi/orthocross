@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
+import { DONOR_TIERS } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
+import { TierPortrait } from "./TierPortrait";
 
 export function DonorTierGuide({ tierKey, onClose, onDonateTier }: {
   tierKey: string | null;
@@ -11,7 +12,7 @@ export function DonorTierGuide({ tierKey, onClose, onDonateTier }: {
   return (
     <Dialog open={!!selected} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className="donor-tier-guide donor-tier-seraph max-w-sm w-[calc(100%-2rem)] max-h-[calc(100dvh-2rem)] gap-2 overflow-hidden rounded-lg p-4 text-center">
-        <img src={TIER_ICONS.seraph} alt="Seraph" className="donor-guide-portrait mx-auto rounded-full object-cover" />
+        <TierPortrait tierKey="seraph" alt="Seraph" className="donor-guide-portrait mx-auto rounded-full object-cover" />
         <DialogTitle className="text-center text-xl tracking-normal">Donator tiers</DialogTitle>
         <DialogDescription className="sr-only">Donator tiers from Seraph to Angel</DialogDescription>
         <ol className="donor-guide-tiers text-left">
@@ -23,7 +24,7 @@ export function DonorTierGuide({ tierKey, onClose, onDonateTier }: {
                 className="flex flex-1 items-center gap-3 rounded-md text-left"
                 aria-label={`Donate to become a ${tier.name} ($${tier.minCents / 100} or more)`}
               >
-                <img src={TIER_ICONS[tier.key]} alt="" className="donor-guide-tier-icon shrink-0 rounded-full object-cover" />
+                <TierPortrait tierKey={tier.key} className="donor-guide-tier-icon shrink-0 rounded-full object-cover" />
                 <span className="min-w-0 flex-1 text-sm font-semibold"><DonorTierName tier={tier} /></span>
                 <span className="text-sm tabular-nums">${(tier.minCents / 100).toLocaleString("en-US")}+</span>
               </button>

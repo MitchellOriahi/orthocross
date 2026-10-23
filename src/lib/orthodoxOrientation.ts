@@ -8,6 +8,10 @@ export const ORIENTATION_SIGNUP_METADATA = { orientation_onboarding_status: "pen
 export function shouldShowOrientationOnboarding(metadata: Record<string, unknown> | undefined, locallyCompleted: boolean) {
   return !locallyCompleted && metadata?.orientation_onboarding_status !== "completed";
 }
+/** Device-wide language preferences cannot stand in for this account's first choice. */
+export function initialOrientationOnboardingStep(metadata: Record<string, unknown> | undefined, locallyCompleted: boolean): "language" | null {
+  return shouldShowOrientationOnboarding(metadata, locallyCompleted) ? "language" : null;
+}
 export function orientationChurchOptions(tradition: "eastern" | "oriental") {
   return ORTHODOX_BRANCHES
     .filter(branch => branch.tradition === tradition && branch.value !== "Eastern Orthodox" && branch.value !== "Oriental Orthodox")
@@ -35,6 +39,24 @@ export function iconStyleForBranch(branch: string | null | undefined): CategoryI
     case "Ethiopian Tewahedo": case "Eritrean Tewahedo": return "tewahedo";
     case "Russian Orthodox": return "byzantine";
     default: return "original";
+  }
+}
+
+/** Community-specific defaults only; all other languages use Greek, without assigning religious identity. */
+export function iconStyleForLanguage(language: string | null | undefined): CategoryIconStyle {
+  switch (language) {
+    case "am": case "ti": return "tewahedo";
+    case "ar": case "cop": return "coptic";
+    case "ru": return "byzantine";
+    default: return "original";
+  }
+}
+
+export function applyLanguageIconDefaults(language: string | null | undefined, branch: string | null | undefined) {
+  if (branch && orientationForBranch(branch) !== "undecided") return;
+  const style = iconStyleForLanguage(language);
+  for (const scope of CATEGORY_ICON_SCOPES) {
+    if (!hasManualCategoryIconStyle(scope)) setCategoryIconStyle(scope, style);
   }
 }
 

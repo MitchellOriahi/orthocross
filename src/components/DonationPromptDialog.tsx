@@ -73,11 +73,11 @@ export const DonationPromptDialog = () => {
             </div>
             <DialogTitle className="text-2xl">Enjoying OrthoCross?</DialogTitle>
             <DialogDescription className="text-base text-center">
-              If this app has helped you stay connected to Scripture and the Orthodox faith, consider supporting its continued growth.
+              If OrthoCross has become part of your prayer life, a small yearly gift helps keep it here for you and for others. Give only if you can.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2 pt-4">
-            <Button variant="sacred" onClick={handleDonate} className="w-full">Become a donator</Button>
+            <Button variant="sacred" onClick={handleDonate} className="w-full">Support OrthoCross</Button>
             <Button variant="ghost" onClick={() => dismiss("donation")} className="w-full text-muted-foreground">Maybe later</Button>
           </div>
         </DialogContent>

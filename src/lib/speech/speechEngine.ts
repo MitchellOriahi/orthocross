@@ -27,6 +27,8 @@ export interface SpeechEngine {
   pickDefaultVoice(voices: VoiceOption[]): string | null;
   speak(words: string[], fromIndex: number, opts: SpeakOptions, cb: SpeechCallbacks): void;
   stop(): void;
+  /** Change the media speed without restarting the current word, when supported. */
+  setRate?(rate: number): void;
 }
 
 /** Text that should actually be voiced for a word (drops footnote markers). */

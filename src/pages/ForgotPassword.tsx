@@ -40,8 +40,8 @@ const ForgotPassword = () => {
           @orthocross on Instagram
         </div>
         <CardHeader className="text-center pt-8 sm:pt-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-background rounded-2xl shadow-sacred mb-4 p-2 mx-auto">
-            <img src={orthodoxCross} alt="Orthodox Cross" className="w-full h-full object-contain" />
+          <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-foreground p-2 shadow-lg dark:bg-card">
+            <img src={orthodoxCross} alt="OrthoCross" className="h-full w-full object-contain" />
           </div>
           <CardTitle className="text-2xl">Forgot Password</CardTitle>
           <CardDescription>

@@ -5,8 +5,9 @@ import { Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { DONOR_TEXT, DONOR_TIERS, TIER_ICONS } from "@/config/donorTiers";
+import { DONOR_TEXT, DONOR_TIERS } from "@/config/donorTiers";
 import { DonorTierAnnouncement } from "./DonorTierName";
+import { TierPortrait } from "./TierPortrait";
 
 export const DONATION_COMPLETED_EVENT = "orthocross:donation-completed";
 const STARTED_KEY = "orthocross:donation-started";
@@ -149,7 +150,7 @@ export const DonationThankYouDialog = () => {
         ) : (
           <>
             {tier && (
-              <img src={TIER_ICONS[tier.key]} alt={tier.name} width={160} height={160}
+              <TierPortrait tierKey={tier.key} alt={tier.name}
                 className={`donor-tier-${tier.key} donor-sticker donor-sticker-rim mx-auto h-40 w-40 rounded-full object-cover ${rose ? "donor-sticker-rise" : ""}`} />
             )}
             <h2 className="text-3xl font-serif text-primary">{DONOR_TEXT.thankYouTitle(status.name)}</h2>

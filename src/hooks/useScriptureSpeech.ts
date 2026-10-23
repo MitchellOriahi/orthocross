@@ -126,7 +126,10 @@ export function useScriptureSpeech(words: string[], resetKey: string, onChapterE
   const setRate = (r: number) => {
     setRateState(r);
     localStorage.setItem(RATE_KEY, String(r));
-    if (statusRef.current === "playing") start(resumeWordRef.current, { rate: r });
+    if (statusRef.current === "playing") {
+      if (speechEngine.setRate) speechEngine.setRate(r);
+      else start(resumeWordRef.current, { rate: r });
+    }
   };
   const setVoiceId = (id: string) => {
     setVoiceIdState(id);

@@ -259,6 +259,30 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_verses: {
+        Row: {
+          active: boolean
+          id: string
+          reference: string
+          sort_order: number
+          verse_text: string
+        }
+        Insert: {
+          active?: boolean
+          id?: string
+          reference: string
+          sort_order: number
+          verse_text: string
+        }
+        Update: {
+          active?: boolean
+          id?: string
+          reference?: string
+          sort_order?: number
+          verse_text?: string
+        }
+        Relationships: []
+      }
       donations: {
         Row: {
           amount: number
@@ -848,25 +872,42 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_default: boolean
           name: string
+          parent_id: string | null
+          sort_order: number
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          is_default?: boolean
           name: string
+          parent_id?: string | null
+          sort_order?: number
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          is_default?: boolean
           name?: string
+          parent_id?: string | null
+          sort_order?: number
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "journal_folders_parent_owner_fk"
+            columns: ["user_id", "parent_id"]
+            isOneToOne: false
+            referencedRelation: "journal_folders"
+            referencedColumns: ["user_id", "id"]
+          },
+        ]
       }
       leaderboard_notifications: {
         Row: {
@@ -874,6 +915,7 @@ export type Database = {
           id: string
           month_date: string
           passed_by_user_id: string
+          push_sent_at: string | null
           read: boolean
           user_id: string
         }
@@ -882,6 +924,7 @@ export type Database = {
           id?: string
           month_date: string
           passed_by_user_id: string
+          push_sent_at?: string | null
           read?: boolean
           user_id: string
         }
@@ -890,6 +933,7 @@ export type Database = {
           id?: string
           month_date?: string
           passed_by_user_id?: string
+          push_sent_at?: string | null
           read?: boolean
           user_id?: string
         }
@@ -1252,6 +1296,7 @@ export type Database = {
           timezone: string | null
           updated_at: string
           username: string | null
+          verse_notifications_enabled: boolean
           voice_recording_enabled: boolean | null
           wednesday_notifications_enabled: boolean | null
         }
@@ -1274,6 +1319,7 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           username?: string | null
+          verse_notifications_enabled?: boolean
           voice_recording_enabled?: boolean | null
           wednesday_notifications_enabled?: boolean | null
         }
@@ -1296,6 +1342,7 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           username?: string | null
+          verse_notifications_enabled?: boolean
           voice_recording_enabled?: boolean | null
           wednesday_notifications_enabled?: boolean | null
         }
@@ -1436,6 +1483,21 @@ export type Database = {
         }
         Relationships: []
       }
+      scheduler_secrets: {
+        Row: {
+          name: string
+          secret: string
+        }
+        Insert: {
+          name: string
+          secret?: string
+        }
+        Update: {
+          name?: string
+          secret?: string
+        }
+        Relationships: []
+      }
       streak_nudges: {
         Row: {
           created_at: string
@@ -1535,6 +1597,7 @@ export type Database = {
           current_streak: number
           guardian_angel_percentage: number | null
           guardian_angel_saves: number | null
+          guardian_last_save_month: string | null
           id: string
           last_activity_date: string | null
           last_completion_date: string | null
@@ -1547,6 +1610,7 @@ export type Database = {
           current_streak?: number
           guardian_angel_percentage?: number | null
           guardian_angel_saves?: number | null
+          guardian_last_save_month?: string | null
           id?: string
           last_activity_date?: string | null
           last_completion_date?: string | null
@@ -1559,6 +1623,7 @@ export type Database = {
           current_streak?: number
           guardian_angel_percentage?: number | null
           guardian_angel_saves?: number | null
+          guardian_last_save_month?: string | null
           id?: string
           last_activity_date?: string | null
           last_completion_date?: string | null
@@ -1709,6 +1774,13 @@ export type Database = {
           username: string
         }[]
       }
+      get_verse_of_the_day: {
+        Args: { p_date?: string }
+        Returns: {
+          reference: string
+          verse_text: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1779,6 +1851,10 @@ export type Database = {
           longest_streak: number
           was_incremented: boolean
         }[]
+      }
+      reorder_journal_folders: {
+        Args: { p_ids: string[]; p_parent_id: string }
+        Returns: undefined
       }
       search_user_for_friend_request: {
         Args: { search_term: string }

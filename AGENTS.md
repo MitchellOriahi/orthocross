@@ -11,32 +11,36 @@
 - Keep the Saints browser separate from saved biographies; audited portrait registries preserve identities and classifications.
 
 - Deduplicate React and React DOM in Vite resolution so the renderer and hook-based dependencies share one React instance and dispatcher.
-- Track Journal drafts separately with shared empty-note cleanup to preserve existing/edited notes. Expand in the same editor, hiding columns to retain list state.
+- Journal opens on Folders; shared scopes keep All Notes unfiled without move navigation. Separate untouched drafts; expand in place to retain list state.
+- Journal highlight ranges use Unicode sentence segmentation across inline formatting and split existing marks at selection boundaries, so removing one word preserves the rest of a highlighted sentence. Highlights never paint whitespace: strip spaces out of every mark before folding same-colour marks, and same-colour marks merge only when nothing (not even a space) separates them.
 - Use shared donor tiers and server-resolved anonymous names; portrait, crown and tag colors follow tier, not rank. Header glow uses account-keyed donor-status refreshed on donors-changed to avoid cross-account glow.
 - History: a pure ordered-progress selector advances the glow; rows prioritize island width and fixed checkpoints over optional spacers, keeping translations readable.
 - Render the Board daily verse via a dedicated card reusing the deterministic local selector and share dialog; notifications unchanged.
-- Preload licensed photos and compose locally; pick each day's three photos by date index from a bundled per-category library (no repeats within the cycle) and cache compositions, so daily rotation never waits on AI or sign-in.
+- Compose verse images locally from bundled licensed photos picked by date index (no repeats per cycle) and cached, so rotation never waits on AI or sign-in.
 - Share composed verse images as file-only payloads through native attachment sharing or browser file sharing, downloading when unsupported; text-only email/SMS links cannot carry image attachments.
 - Validate the image function's bearer token with getUser(token) on a stateless auth client; global headers do not create an SDK session.
 - Keep the legacy verse artwork function isolated so sharing never triggers billed image generation.
 - Keep style-specific verse typography in a dedicated canvas renderer with measured text fitting and global artwork palette tokens, so all styles preserve the complete verse without clipping.
-- Resolve island lesson images via a provenance registry with credits; cover framing, upper-aligned for faces.
 - Reset island detail scroll before paint on each selection; same-page selection skips route scroll restoration.
 - Resolve saint card icons through a bundled roster-keyed registry with focus/zoom crop values, overridden by admin-saved rows from the hidden icon tuner; derive detail images and credits from the same registry so new portraits keep attribution without touching the saved catalog or card layout.
-- Fetch public permission-based Athonite catalogs through an authenticated, fixed-collection cloud function with storage caching and a persistent blocked-feed stop flag; this operation cannot approve portraits or alter saint records.
-- Verify Stripe payments and compute totals server-side; queue friend alerts via a service-only donation-keyed function enforcing anonymity, friendship, blocks and preferences, with push UUID idempotency to prevent duplicate alerts.
+- Fetch Athonite catalogs via an authenticated fixed-collection function with storage caching and a blocked-feed stop flag; it cannot approve portraits or alter saints.
+- Verify Stripe payments and totals server-side; friend donation alerts come from a service-only queue enforcing anonymity, friendship, blocks and preferences, idempotent per push.
 
-- Share donation interval validation between dialog and checkout.
-- Use a tested gift-preview selector for slider position, portrait tier and glow; shared thresholds align custom gifts.
+- Share donation interval validation. Currency estimates use dated public USD rates; checkout amounts and tiers stay unchanged; the picker sits in the dialog's corner help button, not a standalone row.
+- Resolve new preset support checkouts from the shared offer price registry, with custom-gift fallback; never mutate existing subscriptions or equate lifetime donor tiers with recurring entitlements.
+- Test gift thresholds; measure peek without scroll, set opening height before paint, and defer resize writes to avoid shifts and loops.
 - Schedule donation and rating prompts through one pure, tested coordinator (src/lib/promptScheduler) mounted only on the Board, so prompts never collide or interrupt reading.
 
-- Resolve category artwork and silhouette framing through the shared provenance registry; preserve originals and identities. Transparent panels render without borders or backgrounds at stable dimensions.
-- Derive tradition defaults (history, Saints/Prayers filters, icons) from one orientation store; branch edits and onboarding write through it for consistency.
+- Resolve island lesson and category artwork via the shared provenance registry with credits; preserve originals; transparent panels render borderless at stable dimensions. A panel too tall for its square tile is fitted whole with a slight vertical compression, never cropped away or padded with flat bands.
+- Resolve explicit community icon defaults in the orientation store with Greek fallback; identity queries protect branch priority and manual picks.
 - Store the chosen category icon style per section (saints, prayers) so a manual pick in one never moves the other; a church choice writes both, and the older single-style key migrates into both on first read.
-- Gate tradition onboarding by account/legacy completion, not branch or signup flags; include unseen accounts without cross-device repeats.
+- Gate onboarding by account completion, not device language or branch; eligible accounts choose language before tradition, without cross-device repeats.
 - Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
 - LanguageContext sets lang/dir/fallback; reveal switches after React and DOM translation settle.
-- public/i18n drives DOM translation; protect scripture, fit whole words, scroll dialogs. content_keys.py extracts rendered History and JSON Saints to prevent omissions.
+- public/i18n drives DOM translation; protect scripture/whole words. content_keys.py checks History/Saints; audit typed and DOM church-family labels for meaning.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.
-- Resolve donor labels through angelic dictionary keys and DonorTierName, preventing secular translations without changing billing ranks.
+- DonorTierName uses angelic dictionary keys; billing ranks stay unchanged.
+- Reminder runs auth via a grant-less scheduler_secrets row and send leaderboard pushes server-side, so closed apps still get them.
+- Open the Scripture reader at the top of its chapter on mount: an in-app route change keeps the window's old scroll position, so the reader resets scroll before paint.
+- Bundle streak sticker mascots as transparent local assets with semantic theme styling; artwork must never delay or change streak evaluation.

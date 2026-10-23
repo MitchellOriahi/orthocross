@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCalendarReminders } from "@/hooks/useCalendarReminders";
 import { CalendarDayDialog } from "./CalendarDayDialog";
 import { calendarDateKey } from "@/lib/calendarReminders";
@@ -63,10 +63,12 @@ interface FastingCalendarViewProps {
   selectedTradition: "Eastern Orthodox" | "Oriental Orthodox";
   selectedMonth: number;
   selectedYear: number;
+  onPreviousMonth: () => void;
+  onNextMonth: () => void;
   calendarSystem?: CalendarSystem;
 }
 
-export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, calendarSystem = "Gregorian" }: FastingCalendarViewProps) => {
+export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, onPreviousMonth, onNextMonth, calendarSystem = "Gregorian" }: FastingCalendarViewProps) => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [introGlow, setIntroGlow] = useState(() => {
     try {
@@ -189,8 +191,19 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
     <>
     <Card className="shadow-elevated border-border/50">
       <CardHeader>
-        <CardTitle className="text-xl flex items-center gap-2">
-          {traditionIcon} {monthNames[currentMonth]} {currentYear} - {selectedTradition}
+        <CardTitle className="text-xl flex items-center justify-between gap-2">
+          <span className="flex min-w-0 flex-col items-start gap-1.5">
+            <span className="break-words">{monthNames[currentMonth]} {currentYear}</span>
+            <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold ${selectedTradition === "Oriental Orthodox" ? "profile-branch-oriental" : "profile-branch-eastern"}`}>{traditionIcon} {selectedTradition}</span>
+          </span>
+          <div className="flex shrink-0 items-center gap-1">
+            <Button variant="ghost" size="icon" aria-label="Previous month" onClick={() => { setSelectedDay(null); onPreviousMonth(); }}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => { setSelectedDay(null); onNextMonth(); }}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">

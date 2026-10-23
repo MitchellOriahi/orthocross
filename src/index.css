@@ -58,6 +58,27 @@ All colors MUST be HSL.
     --ring: 0 0% 0%;
 
     --radius: 0.75rem;
+    --drawing-black: 0 0% 0%;
+    --drawing-red: 0 84% 60%;
+    --drawing-blue: 217 91% 60%;
+    --drawing-green: 142 71% 45%;
+    --drawing-yellow: 45 93% 47%;
+    --drawing-purple: 271 91% 65%;
+    --drawing-orange: 25 95% 53%;
+    --drawing-pink: 330 81% 60%;
+    --highlight-yellow: var(--drawing-yellow);
+    --highlight-green: var(--drawing-green);
+    --highlight-blue: var(--drawing-blue);
+    --highlight-pink: var(--drawing-pink);
+    --highlight-red: var(--drawing-red);
+    --highlight-purple: var(--drawing-purple);
+    --highlight-orange: var(--drawing-orange);
+    --highlight-gray: 0 0% 55%;
+    --highlight-opacity: 0.28;
+    --streak-saved: 29 95% 49%;
+    --streak-lost: 224 18% 56%;
+    --streak-action-shadow: 0 4px 0 hsl(var(--primary) / 0.25);
+
     --tradition-eastern: 217 91% 60%;
     --tradition-oriental: 25 95% 53%;
     --language-hint: var(--tradition-oriental);
@@ -88,6 +109,7 @@ All colors MUST be HSL.
     /* Shadows */
     --shadow-sacred: 0 4px 20px -2px hsl(0 0% 0% / 0.3);
     --shadow-elevated: 0 8px 30px -5px hsl(0 0% 0% / 0.2);
+    --tutorial-start-glow: 0 0 10px 1px hsl(var(--primary) / 0.18), 0 0 22px 3px hsl(var(--primary) / 0.1);
 
     /* Animation timing */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -174,15 +196,33 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  .streak-sticker {
+    border-top: 4px solid hsl(var(--streak-lost));
+    background: hsl(var(--popover));
+  }
+  .streak-sticker-saved { border-top-color: hsl(var(--streak-saved)); }
+  .streak-mascot-stage { height: clamp(140px, 25dvh, 205px); margin: 10px 0 12px; }
+  .streak-mascot { animation: streak-arrive 450ms ease-out both; }
+  .streak-sticker-saved .streak-day-count { color: hsl(var(--streak-saved)); }
+  .streak-action { box-shadow: var(--streak-action-shadow); transition: transform 150ms ease; }
+  .streak-action:active { transform: translateY(2px); }
+  @keyframes streak-arrive {
+    from { opacity: 0; transform: translateY(10px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .streak-mascot { animation: none; }
+    .streak-action { transition: none; }
+  }
   .profile-branch-eastern { --profile-branch-color: var(--profile-branch-eastern); }
   .profile-branch-oriental { --profile-branch-color: var(--profile-branch-oriental); }
   .profile-branch-unaffiliated { --profile-branch-color: var(--profile-branch-unaffiliated); }
-  .profile-branch-eastern, .profile-branch-oriental, .profile-branch-unaffiliated {
+  .profile-branch-eastern.profile-branch-eastern, .profile-branch-oriental.profile-branch-oriental, .profile-branch-unaffiliated.profile-branch-unaffiliated {
     color: hsl(var(--profile-branch-color));
     border-color: hsl(var(--profile-branch-color) / 0.5);
     background-color: hsl(var(--profile-branch-color) / 0.12);
   }
-  .profile-branch-eastern:hover, .profile-branch-oriental:hover, .profile-branch-unaffiliated:hover {
+  .profile-branch-eastern.profile-branch-eastern:hover, .profile-branch-oriental.profile-branch-oriental:hover, .profile-branch-unaffiliated.profile-branch-unaffiliated:hover {
     color: hsl(var(--profile-branch-color));
     background-color: hsl(var(--profile-branch-color) / 0.2);
   }
@@ -196,6 +236,10 @@ All colors MUST be HSL.
 
   .shadow-sacred {
     box-shadow: var(--shadow-sacred);
+  }
+
+  .tutorial-start-glow.tutorial-start-glow {
+    box-shadow: var(--shadow-sacred), var(--tutorial-start-glow);
   }
 
   .shadow-elevated {
@@ -457,10 +501,24 @@ All colors MUST be HSL.
   margin: 0.5rem 0;
 }
 
+/* Browsers paint <mark> text with their own black-on-yellow pair, which turns
+   highlighted words dark on a dark page. Inherit keeps the note's own colour
+   (white in dark mode) and only the background changes. */
 [contenteditable] mark {
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
+  color: inherit;
 }
+
+.dark { --highlight-opacity: 0.35; }
+.journal-highlight-yellow { background-color: hsl(var(--highlight-yellow) / var(--highlight-opacity)); }
+.journal-highlight-green { background-color: hsl(var(--highlight-green) / var(--highlight-opacity)); }
+.journal-highlight-blue { background-color: hsl(var(--highlight-blue) / var(--highlight-opacity)); }
+.journal-highlight-pink { background-color: hsl(var(--highlight-pink) / var(--highlight-opacity)); }
+.journal-highlight-red { background-color: hsl(var(--highlight-red) / var(--highlight-opacity)); }
+.journal-highlight-purple { background-color: hsl(var(--highlight-purple) / var(--highlight-opacity)); }
+.journal-highlight-orange { background-color: hsl(var(--highlight-orange) / var(--highlight-opacity)); }
+.journal-highlight-gray { background-color: hsl(var(--highlight-gray) / var(--highlight-opacity)); }
 
 /* Media action buttons styling */
 .media-action-btns {
@@ -471,6 +529,42 @@ All colors MUST be HSL.
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
+  /* Keep the buttons fully inside the media frame, clear of rounded corners */
+  top: 0.75rem !important;
+  right: 0.75rem !important;
+}
+
+/* Media frames wrap their content exactly — no line-box strut pushing the
+   image down and the buttons above its top edge (covers notes saved before
+   the template fix, where the img is still inline). */
+.media-container {
+  line-height: 0;
+}
+
+.media-container img,
+.media-container video {
+  display: block;
+  /* The container's own my-4 provides the outer spacing; the global
+     [contenteditable] img margin would otherwise inflate the frame and
+     push the action buttons above the image's top edge. */
+  margin: 0;
+}
+
+/* A finished drawing is shown small enough that the whole board fits on one
+   screen, so it can be seen without scrolling. Tapping it still opens the
+   full-size editor. Written as a rule (not just markup) so drawings saved
+   before this change are displayed the same way. */
+.media-container:has(> img[alt="Drawing"]) {
+  display: block;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.media-container img[alt="Drawing"] {
+  max-height: 45vh;
+  width: auto;
 }
 
 .media-action-btns button {
@@ -690,15 +784,25 @@ All colors MUST be HSL.
 }
 
 
-/* Read-aloud word glow: a steady blue in both themes. */
+/* Read-aloud word glow: warm orange on light paper, steady blue in the dark. */
 @layer base {
   :root {
-    --tts-glow: 217 91% 60%;
-    --tts-glow-bright: 214 100% 52%;
+    --tts-glow: var(--tradition-oriental);
+    --tts-glow-bright: 22 95% 41%;
   }
   .dark {
     --tts-glow: 217 91% 60%;
     --tts-glow-bright: 213 100% 72%;
+  }
+}
+
+/* Streak Saved glow: steady blue in the dark, warm orange on light paper. */
+@layer base {
+  :root {
+    --streak-saved-glow: var(--tradition-oriental);
+  }
+  .dark {
+    --streak-saved-glow: 217 91% 60%;
   }
 }
 .tts-word {
@@ -713,6 +817,8 @@ All colors MUST be HSL.
 }
 /* The word being read right now: the brightest thing on the page. */
 .tts-current {
+  /* The active glow appears on the clock boundary, not after a fade-in. */
+  transition: none;
   color: hsl(var(--tts-glow-bright));
   text-shadow:
     0 0 2px hsl(var(--tts-glow-bright) / 0.95),
@@ -830,7 +936,7 @@ html:not([lang="en"]) .localized-text-button {
 html:not([lang="en"]) [role="tab"] { white-space: normal; min-width: 0; line-height: 1.2; }
 html:not([lang="en"]) [role="tablist"] { height: auto; min-height: 2.5rem; }
 html:not([lang="en"]) [role="tab"] svg { flex-shrink: 0; }
-[role="dialog"]:not(.inset-0), [role="alertdialog"] { max-width: calc(100vw - 1.5rem); overflow-wrap: anywhere; }
+[role="dialog"]:not(.inset-0):not(.inset-x-0), [role="alertdialog"] { max-width: calc(100vw - 1.5rem); overflow-wrap: anywhere; }
 [role="dialog"] > *, [role="alertdialog"] > * { min-width: 0; }
 .resource-tile-title { min-width: 0; overflow-wrap: anywhere; }
 .resource-tile-title > svg { flex-shrink: 0; }
@@ -853,3 +959,62 @@ html:not([lang="en"]) [role="dialog"] .flex-col.items-center > div { max-width: 
 html:not([lang="en"]) [role="dialog"] .localized-text-button { flex-shrink: 0; }
 .language-list-fade > button { flex-shrink: 0; }
 html:not([lang="en"]) .language-list-fade > button { height: 3.5rem; min-height: 3.5rem; }
+
+/* Mark Complete fills its row and keeps a generous height in every language. */
+.reading-complete-button { min-height: 3rem; padding-block: 0.625rem; }
+html:not([lang="en"]) .reading-complete-button { min-height: 3rem; padding-top: 0.625rem; padding-bottom: 0.625rem; }
+
+.drawing-swatch-black { background-color: hsl(var(--drawing-black)); }
+.drawing-swatch-red { background-color: hsl(var(--drawing-red)); }
+.drawing-swatch-blue { background-color: hsl(var(--drawing-blue)); }
+.drawing-swatch-green { background-color: hsl(var(--drawing-green)); }
+.drawing-swatch-yellow { background-color: hsl(var(--drawing-yellow)); }
+.drawing-swatch-purple { background-color: hsl(var(--drawing-purple)); }
+.drawing-swatch-orange { background-color: hsl(var(--drawing-orange)); }
+.drawing-swatch-pink { background-color: hsl(var(--drawing-pink)); }
+
+/* Top-bar icon row: every icon's highlight tile stays clear of the page title on its
+   left and of the profile circle on its right, at phone width and in every language. */
+.header-icon-nav { gap: 0.25rem; flex-shrink: 0; }
+.header-icon-nav > button:not([data-profile-trigger]) { width: 2.25rem; height: 2.25rem; }
+/* The title shortens if it must; it never pushes the icons out of their positions. */
+.header-title-group { min-width: 0; }
+.header-title-group > div:first-of-type { flex-shrink: 0; }
+.header-title-group h1 { min-width: 0; padding-inline-end: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Journal notes list: the scroll handle stays slim and see-through so it never
+   crowds the New Note button or the Personal/Bible Notes tabs beside it. */
+.journal-notes-scroll [data-orientation="vertical"] { width: 0.375rem; }
+.journal-notes-scroll [data-orientation="vertical"] > div { background-color: hsl(var(--foreground) / 0.18); }
+.journal-notes-scroll [data-orientation="vertical"] > div:hover { background-color: hsl(var(--foreground) / 0.3); }
+
+/* ============= "Arise" button: soft breathing glow ============= */
+/* The button keeps the app's ordinary face and never moves itself — only the
+   light around it swells and settles. */
+.streak-arise-glow {
+  --streak-arise-tone: 42 92% 60%;
+  position: relative;
+  isolation: isolate;
+}
+.dark .streak-arise-glow {
+  --streak-arise-tone: 0 0% 100%;
+}
+.streak-arise-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow:
+    0 0 10px 1px hsl(var(--streak-arise-tone) / 0.16),
+    0 0 22px 5px hsl(var(--streak-arise-tone) / 0.09);
+  animation: streak-glow-breathe 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes streak-glow-breathe {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .streak-arise-glow::before { animation: none; opacity: 0.55; }
+}

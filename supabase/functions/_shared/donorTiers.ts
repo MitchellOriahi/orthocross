@@ -28,7 +28,7 @@ export const DONOR_TEXT = {
   sectionTitle: "Donators",
   sectionSubtitle: "Generous supporters of the community",
   becomeDonator: "Become a donator",
-  showAll: "Show all donors",
+  showAll: "Show all donators",
   showLess: "Show less",
   thisMonth: "This month",
   allTime: "All time",

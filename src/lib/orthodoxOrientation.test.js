@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { iconStyleForBranch, orientationFilter, orientationForBranch, orientationChurchOptions, shouldShowOrientationOnboarding, ORIENTATION_SIGNUP_METADATA } from "./orthodoxOrientation";
+import { iconStyleForBranch, orientationFilter, orientationForBranch, orientationChurchOptions, shouldShowOrientationOnboarding, initialOrientationOnboardingStep, ORIENTATION_SIGNUP_METADATA } from "./orthodoxOrientation";
 
 describe("orthodox orientation rules", () => {
   test("church lists are alphabetical", () => {
@@ -15,6 +15,22 @@ describe("orthodox orientation rules", () => {
   });
   test("new accounts are eligible for the sticker", () => {
     expect(shouldShowOrientationOnboarding(ORIENTATION_SIGNUP_METADATA, false)).toBe(true);
+  });
+  test("a new account chooses language first even when this device has a language", () => {
+    const previousStorage = globalThis.localStorage;
+    globalThis.localStorage = { getItem: key => key === "orthocross-language" ? "es" : null };
+    try {
+      expect(initialOrientationOnboardingStep(ORIENTATION_SIGNUP_METADATA, false)).toBe("language");
+    } finally {
+      globalThis.localStorage = previousStorage;
+    }
+  });
+  test("an unseen legacy account also starts with language", () => {
+    expect(initialOrientationOnboardingStep({}, false)).toBe("language");
+  });
+  test("completed accounts do not restart language onboarding", () => {
+    expect(initialOrientationOnboardingStep({ orientation_onboarding_status: "completed" }, false)).toBeNull();
+    expect(initialOrientationOnboardingStep(ORIENTATION_SIGNUP_METADATA, true)).toBeNull();
   });
   test("existing accounts that have never seen the sticker are eligible on next use", () => {
     expect(shouldShowOrientationOnboarding({}, false)).toBe(true);

@@ -257,7 +257,7 @@ const Settings = () => {
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm safe-top">
         <div className="container mx-auto px-4 lg:px-2 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="header-title-group flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="icon"
@@ -277,7 +277,7 @@ const Settings = () => {
               </div>
               <h1 className="text-2xl font-bold">Settings</h1>
             </div>
-            <nav className="flex items-center gap-1">
+            <nav className="header-icon-nav flex items-center">
               <DonateButton />
               <LanguageButton />
               <ThemeToggle />
@@ -625,7 +625,7 @@ const Settings = () => {
                 Manage Donation
               </CardTitle>
               <CardDescription>
-                Manage or cancel your monthly donation subscription
+                Manage or cancel your monthly or yearly donation
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -635,7 +635,7 @@ const Settings = () => {
                 onClick={() => setCancelDonationDialogOpen(true)}
               >
                 <XCircle className="w-4 h-4 mr-3" />
-                Cancel Monthly Donation
+                Cancel Donation
               </Button>
             </CardContent>
           </Card>

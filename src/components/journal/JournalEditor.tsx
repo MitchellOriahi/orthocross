@@ -5,7 +5,10 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Highlighter, Pencil, Image as ImageIcon, Mic, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { DrawingCanvas } from "./DrawingCanvas";
+import { DrawingCanvas, type DrawingCanvasHandle } from "./DrawingCanvas";
+import { toggleHighlightAt, type HighlightMode } from "./highlightRange";
+import { repairHighlights } from "./highlightMerge";
+import { leaveHighlightForInput } from "./plainHighlightInput";
 import { VoiceRecorder } from "./VoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -37,10 +40,14 @@ interface JournalEditorProps {
 }
 
 const HIGHLIGHT_COLORS = [
-  { name: "Yellow", class: "bg-yellow-200 dark:bg-yellow-900/50" },
-  { name: "Green", class: "bg-green-200 dark:bg-green-900/50" },
-  { name: "Blue", class: "bg-blue-200 dark:bg-blue-900/50" },
-  { name: "Pink", class: "bg-pink-200 dark:bg-pink-900/50" },
+  { name: "Yellow", class: "journal-highlight-yellow" },
+  { name: "Green", class: "journal-highlight-green" },
+  { name: "Blue", class: "journal-highlight-blue" },
+  { name: "Pink", class: "journal-highlight-pink" },
+  { name: "Red", class: "journal-highlight-red" },
+  { name: "Purple", class: "journal-highlight-purple" },
+  { name: "Orange", class: "journal-highlight-orange" },
+  { name: "Gray", class: "journal-highlight-gray" },
 ];
 
 export const JournalEditor = ({
@@ -55,6 +62,8 @@ export const JournalEditor = ({
   const contentDivRef = useRef<HTMLDivElement>(null);
   const [showHighlighter, setShowHighlighter] = useState(false);
   const [selectedColor, setSelectedColor] = useState(HIGHLIGHT_COLORS[0]);
+  const [highlightArmed, setHighlightArmed] = useState(false);
+  const [highlightMode, setHighlightMode] = useState<HighlightMode>('word');
   const [showDrawing, setShowDrawing] = useState(false);
   const [showAttachments, setShowAttachments] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
@@ -64,6 +73,8 @@ export const JournalEditor = ({
   const [pinnedMediaUrl, setPinnedMediaUrl] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const isUpdatingContent = useRef(false);
+  const drawingCanvasRef = useRef<DrawingCanvasHandle>(null);
+
 
   // Save cursor position
   const saveCursorPosition = () => {
@@ -88,7 +99,12 @@ export const JournalEditor = ({
     if (contentDivRef.current && !isUpdatingContent.current) {
       // Sanitize content when loading to prevent XSS
       contentDivRef.current.innerHTML = DOMPurify.sanitize(content, SANITIZE_CONFIG);
+      // Repair adjacent fragments in previously saved notes as well.
+      // Whitespace never sits inside a highlight; repair adjacent fragments too.
+      repairHighlights(contentDivRef.current);
     }
+    setHighlightArmed(false);
+    setShowHighlighter(false);
   }, [noteId]);
 
   const handleContentInput = (e: React.FormEvent<HTMLDivElement>) => {
@@ -101,28 +117,130 @@ export const JournalEditor = ({
     }, 0);
   };
 
+  const commitContent = () => {
+    const root = contentDivRef.current;
+    if (!root) return;
+    isUpdatingContent.current = true;
+    onContentChange(DOMPurify.sanitize(root.innerHTML, SANITIZE_CONFIG));
+    setTimeout(() => {
+      isUpdatingContent.current = false;
+    }, 0);
+  };
+
+  const stopHighlighting = () => {
+    setHighlightArmed(false);
+    setShowHighlighter(false);
+    contentDivRef.current?.focus({ preventScroll: true });
+  };
+
+  // Native contenteditable typing inherits the surrounding mark. Insert plain
+  // text outside it instead, preserving the highlighted text on either side.
+  const handleBeforeInput = (e: Event) => {
+    if (highlightArmed) return;
+    const input = e as InputEvent;
+    if (!input.inputType.startsWith('insert')) return;
+    const root = contentDivRef.current;
+    const selection = window.getSelection();
+    if (!root || !selection || !selection.rangeCount || !selection.isCollapsed) return;
+    if (!leaveHighlightForInput(root, selection)) return;
+    // Composition/paste/line breaks proceed natively at the now-plain caret.
+    if (!input.cancelable || input.isComposing || !input.data ||
+        !['insertText', 'insertReplacementText'].includes(input.inputType)) return;
+    e.preventDefault();
+    const range = selection.getRangeAt(0);
+    const plainText = range.startContainer;
+    plainText.textContent = input.data;
+    range.setStart(plainText, input.data.length);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    commitContent();
+  };
+
+  // React 18 synthesizes beforeInput from keypress, losing inputType; use the
+  // native cancelable event for keyboard and mobile text insertion instead.
+  useEffect(() => {
+    const root = contentDivRef.current;
+    if (!root) return;
+    root.addEventListener('beforeinput', handleBeforeInput);
+    return () => root.removeEventListener('beforeinput', handleBeforeInput);
+  }, [highlightArmed, onContentChange]);
+
   const handleHighlight = () => {
     if (!contentDivRef.current) return;
-    
+
+    // Tapping the marker again stops tap-to-highlight mode.
+    if (showHighlighter || highlightArmed) {
+      stopHighlighting();
+      return;
+    }
+
     const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) {
-      setShowHighlighter(!showHighlighter);
-      return;
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      if (!range.collapsed && contentDivRef.current.contains(range.commonAncestorContainer)) {
+        // A selected passage is highlighted directly with the chosen color.
+        const mark = document.createElement('mark');
+        mark.className = selectedColor.class;
+        try {
+          range.surroundContents(mark);
+          // Lift any whitespace the selection caught out of the highlight,
+          // then fold marks that still touch.
+          repairHighlights(contentDivRef.current!);
+          commitContent();
+          setShowHighlighter(true);
+          setHighlightArmed(true);
+          selection.removeAllRanges();
+          return;
+        } catch {
+          // Selection crosses element boundaries; fall through to the palette.
+        }
+      }
     }
 
-    const range = selection.getRangeAt(0);
-    if (range.collapsed) {
-      setShowHighlighter(!showHighlighter);
-      return;
-    }
+    setShowHighlighter(true);
+    setHighlightArmed(true);
+  };
 
-    const mark = document.createElement('mark');
-    mark.className = selectedColor.class;
-    range.surroundContents(mark);
-    
-    onContentChange(contentDivRef.current.innerHTML);
-    setShowHighlighter(false);
-    selection.removeAllRanges();
+  const pickHighlightColor = (color: (typeof HIGHLIGHT_COLORS)[number]) => {
+    setSelectedColor(color);
+    setShowHighlighter(true);
+    setHighlightArmed(true);
+  };
+
+  // While armed, tapping a word paints it with the chosen color; tapping a
+  // highlighted word with the same color clears it, another color repaints it.
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!highlightArmed) return;
+    e.preventDefault();
+    const root = contentDivRef.current;
+    if (!root) return;
+
+    let node: Node | null = null;
+    let offset = 0;
+    const doc = document as Document & {
+      caretRangeFromPoint?: (x: number, y: number) => Range | null;
+      caretPositionFromPoint?: (x: number, y: number) => { offsetNode: Node; offset: number } | null;
+    };
+    if (doc.caretRangeFromPoint) {
+      const r = doc.caretRangeFromPoint(e.clientX, e.clientY);
+      if (r) {
+        node = r.startContainer;
+        offset = r.startOffset;
+      }
+    } else if (doc.caretPositionFromPoint) {
+      const pos = doc.caretPositionFromPoint(e.clientX, e.clientY);
+      if (pos) {
+        node = pos.offsetNode;
+        offset = pos.offset;
+      }
+    }
+    if (!node || node.nodeType !== Node.TEXT_NODE || !root.contains(node)) return;
+
+    if (toggleHighlightAt(root, node as Text, offset, highlightMode, selectedColor.class)) {
+      window.getSelection()?.removeAllRanges();
+      commitContent();
+    }
   };
 
   const insertIntoContent = (html: string) => {
@@ -211,6 +329,14 @@ export const JournalEditor = ({
     const handleMediaClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       
+      // Tapping a drawing opens it directly in the drawing editor
+      if (target.tagName === 'IMG' && (target as HTMLImageElement).alt === 'Drawing') {
+        e.preventDefault();
+        e.stopPropagation();
+        handleEditDrawing(target as HTMLImageElement);
+        return;
+      }
+
       // Check if clicked element is a media element
       if (target.tagName === 'IMG' || target.tagName === 'VIDEO' || target.tagName === 'AUDIO') {
         const actionBtns = target.parentElement?.querySelector('.media-action-btns') as HTMLElement;
@@ -369,7 +495,7 @@ export const JournalEditor = ({
         toast.success("Drawing updated!");
       } else {
         // Insert new drawing with action buttons
-        const imgHtml = `<div class="my-4 relative inline-block group media-container"><img src="${signedUrlData.signedUrl}" alt="Drawing" class="max-w-full rounded-lg border border-border" /><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-edit-btn bg-secondary text-secondary-foreground rounded-full p-1.5 hover:bg-secondary/90" title="Edit drawing"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
+        const imgHtml = `<div class="my-4 relative block w-fit mx-auto group media-container"><img src="${signedUrlData.signedUrl}" alt="Drawing" class="block max-w-full max-h-[45vh] w-auto rounded-lg border border-border" /><div class="media-action-btns absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-edit-btn bg-secondary text-secondary-foreground rounded-full p-1.5 hover:bg-secondary/90" title="Edit drawing"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
         insertIntoContent(imgHtml);
         toast.success("Drawing inserted!");
       }
@@ -410,7 +536,7 @@ export const JournalEditor = ({
       if (!signedUrlData?.signedUrl) throw new Error('Failed to create signed URL');
       
       // Insert audio into content with pin and delete buttons
-      const audioHtml = `<div class="my-4 relative group media-container"><div class="p-3 bg-muted rounded-lg"><audio src="${signedUrlData.signedUrl}" controls class="w-full"></audio></div><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
+      const audioHtml = `<div class="my-4 relative group media-container"><div class="p-3 bg-muted rounded-lg"><audio src="${signedUrlData.signedUrl}" controls class="w-full"></audio></div><div class="media-action-btns absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
       insertIntoContent(audioHtml);
       
       toast.success("Voice note inserted!");
@@ -444,10 +570,10 @@ export const JournalEditor = ({
         
         // Insert image or video into content with pin and delete buttons
         if (file.type.startsWith('image/')) {
-          const imgHtml = `<div class="my-4 relative inline-block group media-container"><img src="${signedUrlData.signedUrl}" alt="${file.name}" class="max-w-full rounded-lg border border-border" /><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
+          const imgHtml = `<div class="my-4 relative inline-block group media-container"><img src="${signedUrlData.signedUrl}" alt="${file.name}" class="block max-w-full rounded-lg border border-border" /><div class="media-action-btns absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
           insertIntoContent(imgHtml);
         } else if (file.type.startsWith('video/')) {
-          const videoHtml = `<div class="my-4 relative group media-container"><video src="${signedUrlData.signedUrl}" controls class="max-w-full rounded-lg border border-border"></video><div class="media-action-btns absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
+          const videoHtml = `<div class="my-4 relative group media-container"><video src="${signedUrlData.signedUrl}" controls class="block max-w-full rounded-lg border border-border"></video><div class="media-action-btns absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1" style="display: none;"><button class="media-pin-btn bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90" data-pinned="false" title="Pin to dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button><button class="media-delete-btn bg-destructive text-destructive-foreground rounded-full p-1.5 hover:bg-destructive/90" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>`;
           insertIntoContent(videoHtml);
         }
       }
@@ -481,21 +607,52 @@ export const JournalEditor = ({
         <div className="flex-1 overflow-auto">
           <div className="p-4 min-h-full">
             {showHighlighter && (
-              <div className="mb-2 p-2 bg-popover border border-border rounded-lg flex gap-1">
+              <div className="mb-2 p-2 w-fit max-w-full bg-popover border border-border rounded-lg flex flex-col gap-2" role="toolbar" aria-label="Highlight colors">
+                <div className="flex gap-1" role="group" aria-label="Highlight mode">
+                  {(['word', 'sentence'] as const).map(mode => (
+                    <Button
+                      key={mode}
+                      variant={highlightMode === mode ? 'secondary' : 'ghost'}
+                      size="sm"
+                      className="h-8 flex-1"
+                      onMouseDown={e => e.preventDefault()}
+                      onClick={() => setHighlightMode(mode)}
+                      aria-pressed={highlightMode === mode}
+                    >
+                      {mode === 'word' ? 'Word' : 'Sentence'}
+                    </Button>
+                  ))}
+                </div>
+                <div className="flex flex-wrap items-center gap-1">
                 {HIGHLIGHT_COLORS.map((color) => (
-                  <button
+                  <Button
                     key={color.name}
-                    onClick={() => {
-                      setSelectedColor(color);
-                      setShowHighlighter(false);
-                    }}
+                    variant="ghost"
+                    size="icon"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => pickHighlightColor(color)}
                     className={cn(
-                      "w-8 h-8 rounded border border-border",
-                      color.class
+                      "w-8 h-8 shrink-0 rounded border border-border",
+                      color.class,
+                      selectedColor.name === color.name && "ring-2 ring-ring ring-offset-1 ring-offset-popover"
                     )}
                     title={color.name}
+                    aria-label={`Highlight ${color.name}`}
+                    aria-pressed={selectedColor.name === color.name}
                   />
                 ))}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-8 h-8 shrink-0"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={stopHighlighting}
+                  aria-label="Stop highlighting"
+                  title="Stop highlighting"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+                </div>
               </div>
             )}
 
@@ -504,8 +661,12 @@ export const JournalEditor = ({
               contentEditable
               suppressContentEditableWarning
               onInput={handleContentInput}
+              onClick={handleContentClick}
               dir="ltr"
-              className="resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none text-base"
+              className={cn(
+                "resize-none border-none bg-transparent px-0 focus:outline-none leading-relaxed prose dark:prose-invert max-w-none text-base",
+                highlightArmed && "cursor-pointer"
+              )}
               style={{ minHeight: 'calc(100vh - 400px)' }}
               data-placeholder="Start writing..."
             />
@@ -523,8 +684,12 @@ export const JournalEditor = ({
           <Button
             variant="ghost"
             size="icon"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={handleHighlight}
-            className="h-10 w-10"
+            aria-label="Highlight"
+            aria-pressed={highlightArmed}
+            title="Highlight"
+            className={cn("h-10 w-10", highlightArmed && "bg-secondary text-secondary-foreground")}
           >
             <Highlighter className="h-5 w-5" />
           </Button>
@@ -532,6 +697,8 @@ export const JournalEditor = ({
             variant="ghost"
             size="icon"
             onClick={() => setShowDrawing(true)}
+            aria-label="Open drawing"
+            title="Draw"
             className="h-10 w-10"
           >
             <Pencil className="h-5 w-5" />
@@ -557,23 +724,26 @@ export const JournalEditor = ({
 
       {/* Full-screen Drawing Interface */}
       <Sheet open={showDrawing} onOpenChange={(open) => {
-        setShowDrawing(open);
         if (!open) {
+          // Exiting inserts the drawing — there is no save button to press.
+          drawingCanvasRef.current?.save();
           setEditingDrawingUrl(null);
           setEditingDrawingElement(null);
         }
+        setShowDrawing(open);
       }}>
-        <SheetContent side="bottom" className="h-[90vh] w-screen p-0 max-w-none">
+
+        <SheetContent side="bottom" className="inset-0 h-[100dvh] w-full max-w-none border-0 p-0 overflow-hidden" closeButtonClassName="grid h-11 w-11 place-items-center rounded-xl border border-border bg-secondary opacity-100 [&_svg]:h-6 [&_svg]:w-6">
           <SheetTitle className="sr-only">{editingDrawingUrl ? 'Edit Drawing' : 'Draw'}</SheetTitle>
-          <div className="h-full p-4 safe-top">
-            <DrawingCanvas onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
+          <div className="h-full min-h-0 min-w-0 px-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-[calc(env(safe-area-inset-bottom)+1rem)]">
+            <DrawingCanvas ref={drawingCanvasRef} onSave={handleDrawingSave} initialImageUrl={editingDrawingUrl} />
           </div>
         </SheetContent>
       </Sheet>
 
       {/* Image/Video Upload Sheet */}
       <Sheet open={showAttachments} onOpenChange={setShowAttachments}>
-        <SheetContent side="bottom" className="h-[30vh] w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
+        <SheetContent side="bottom" className="h-[30dvh] w-full p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
           <SheetTitle className="sr-only">Insert Media</SheetTitle>
           <div className="h-full flex flex-col items-center justify-center p-4">
             <input
@@ -598,7 +768,7 @@ export const JournalEditor = ({
 
       {/* Voice Recorder Sheet */}
       <Sheet open={showVoiceRecorder} onOpenChange={setShowVoiceRecorder}>
-        <SheetContent side="bottom" className="h-[40vh] w-screen p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
+        <SheetContent side="bottom" className="h-[40dvh] w-full p-0 max-w-none" onInteractOutside={(e) => e.preventDefault()}>
           <SheetTitle className="sr-only">Voice Recorder</SheetTitle>
           <div className="h-full flex flex-col">
             <div className="p-3 border-b border-border">

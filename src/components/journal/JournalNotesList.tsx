@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
+import { MoveNoteMenu } from './MoveNoteMenu';
 
 interface JournalNote {
   id: string;
@@ -12,9 +13,13 @@ interface JournalNote {
   content: string | null;
   updated_at: string;
   pinned: boolean;
+  folder_id: string | null;
 }
 
 interface JournalNotesListProps {
+  folders: { id: string; name: string }[];
+  onNoteMove: (noteId: string, folderId: string | null) => void;
+  isFolderView: boolean;
   notes: JournalNote[];
   selectedNoteId: string | null;
   onNoteSelect: (noteId: string) => void;
@@ -29,6 +34,9 @@ interface JournalNotesListProps {
 }
 
 export const JournalNotesList = ({
+  folders,
+  onNoteMove,
+  isFolderView,
   notes,
   selectedNoteId,
   onNoteSelect,
@@ -138,18 +146,19 @@ export const JournalNotesList = ({
           className="w-full text-left"
         >
           <div className="font-medium text-sm truncate mb-1 pr-16">
-            {displayTitle}
+            <span translate="no">{displayTitle}</span>
           </div>
           {showBody && (
             <div className="text-xs text-muted-foreground line-clamp-2 mb-1">
-              {preview}
+              <span translate="no">{preview}</span>
             </div>
           )}
           <div className="text-xs text-muted-foreground">
             {formatDistanceToNow(new Date(note.updated_at), { addSuffix: true })}
           </div>
         </button>
-        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="mt-2 flex justify-end gap-1">
+          <MoveNoteMenu folders={folders} folderId={note.folder_id} onMove={folderId => onNoteMove(note.id, folderId)} />
           <Button
             variant="ghost"
             size="icon"
@@ -220,7 +229,8 @@ export const JournalNotesList = ({
             </div>
           </div>
         </button>
-        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="mt-1 flex justify-end gap-1">
+          <MoveNoteMenu folders={folders} folderId={note.folder_id} onMove={folderId => onNoteMove(note.id, folderId)} />
           <Button
             variant="ghost"
             size="icon"
@@ -262,6 +272,9 @@ export const JournalNotesList = ({
               size="icon"
               className={cn("h-7 w-7", viewMode === 'list' && "bg-accent")}
               onClick={() => onViewModeChange('list')}
+              aria-label="List view"
+              title="List view"
+              aria-pressed={viewMode === 'list'}
             >
               <List className="h-4 w-4" />
             </Button>
@@ -270,6 +283,9 @@ export const JournalNotesList = ({
               size="icon"
               className={cn("h-7 w-7", viewMode === 'gallery' && "bg-accent")}
               onClick={() => onViewModeChange('gallery')}
+              aria-label="Gallery view"
+              title="Gallery view"
+              aria-pressed={viewMode === 'gallery'}
             >
               <LayoutGrid className="h-4 w-4" />
             </Button>
@@ -286,8 +302,8 @@ export const JournalNotesList = ({
         </div>
       </div>
 
-      <ScrollArea className="flex-1 min-h-0 min-w-0 w-full [&_[data-radix-scroll-area-viewport]>div]:!block">
-        <div className={cn("p-2 pr-4", viewMode === 'gallery' && "grid grid-cols-2 gap-2 pr-4")}>
+      <ScrollArea className="journal-notes-scroll flex-1 min-h-0 min-w-0 w-full [&_[data-radix-scroll-area-viewport]>div]:!block">
+        <div className={cn("py-2 px-4", viewMode === 'gallery' ? "grid grid-cols-2 gap-2" : "")}>
           {notes.length === 0 ? (
             <>
               {viewMode === 'list' ? (
@@ -311,9 +327,6 @@ export const JournalNotesList = ({
                   </div>
                 </button>
               )}
-              <div className={cn("text-center py-8 text-sm text-muted-foreground", viewMode === 'gallery' && "col-span-2")}>
-                Click above to create your first note
-              </div>
             </>
           ) : (
             <>
@@ -361,8 +374,8 @@ export const JournalNotesList = ({
 
                 // A note is a "Bible note" if its content contains a verse reference
                 const isBibleNote = (n: JournalNote) => getVerseRef(n) !== null || isBibleBookTitle(n);
-                const bibleNotes = unpinnedNotes.filter(isBibleNote);
-                const personalNotes = unpinnedNotes.filter((n) => !isBibleNote(n));
+                const bibleNotes = isFolderView ? [] : unpinnedNotes.filter(isBibleNote);
+                const personalNotes = isFolderView ? unpinnedNotes : unpinnedNotes.filter((n) => !isBibleNote(n));
 
                 // Derive the canonical book name from a Bible note's title,
                 // so "Exodus 1:1" still groups under "Exodus".
@@ -390,7 +403,7 @@ export const JournalNotesList = ({
                     groups.set(key, []);
                     order.push(key);
                   }
-                  groups.get(key)!.push(n);
+                  groups.get(key)?.push(n);
                 }
                 // Sort book groups by canonical Bible order
                 order.sort((a, b) => {
@@ -400,7 +413,7 @@ export const JournalNotesList = ({
                 });
                 // Sort each group from furthest within the book to earliest
                 for (const key of order) {
-                  groups.get(key)!.sort((a, b) => {
+                  groups.get(key)?.sort((a, b) => {
                     const ra = getRef(a), rb = getRef(b);
                     if (rb.ch !== ra.ch) return rb.ch - ra.ch;
                     return rb.vs - ra.vs;
@@ -457,8 +470,8 @@ export const JournalNotesList = ({
                   <div className="space-y-2">
                     {bibleNotes.length > 0 ? (
                       order.map((key) => {
-                        const items = groups.get(key)!;
-                        return renderStackCard(key, items);
+                        const items = groups.get(key);
+                        return items?.length ? renderStackCard(key, items) : null;
                       })
                     ) : (
                       <div className="text-center py-8 text-sm text-muted-foreground">
@@ -468,6 +481,7 @@ export const JournalNotesList = ({
                   </div>
                 );
 
+                if (isFolderView) return <div className={cn(viewMode === 'gallery' && 'col-span-2')}>{renderPersonal()}</div>;
                 return (
                   <div className={cn(viewMode === 'gallery' && "col-span-2")}>
                     {/* Tab slider */}

@@ -5,9 +5,11 @@ import { categoryArtwork } from "./categoryStyleArtwork";
 import { SAINT_DISPLAY_ICONS, SAINT_CATEGORY_DISPLAY_ICON } from "./saintDisplayIcons";
 
 // Photographs and icons the app owner supplied. The Coptic ones are George
-// Makary's work and credit his page; the rest carry no online source link.
-const SUPPLIED = ["tewahedo-selassie-panel", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-angels-michael", "tewahedo-archangel-wings", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
+// Makary's work and credit his page; the Tewahedo saint photographs credit the
+// Taamra Maryam collection page at the Royal Collection Trust.
+const SUPPLIED = ["tewahedo-fathers", "tewahedo-selassie-manuscript", "tewahedo-theotokos", "tewahedo-george", "tewahedo-annunciation", "tewahedo-monastics", "coptic-trinity", "coptic-fathers", "coptic-john-olympia", "coptic-photini", "coptic-christ-photini", "coptic-katherine", "coptic-david", "coptic-church-bridegroom", "byzantine-owner-christ", "byzantine-owner-hierarch", "byzantine-owner-george", "byzantine-owner-mandylion"];
 const MAKARY = "https://www.copticicon.com/";
+const TAAMRA = "https://www.rct.uk/collection/1005083/taamra-maryam-taamera-maareyaame-the-miracles-of-the-virgin-mary";
 
 test("Russian prayer top and middle rows use supplied panels in upload order and preserve Saints", () => {
   expect(categoryArtwork("prayers", "byzantine", "foundational").image_url).toContain("russian-prayer-foundational.png");
@@ -27,18 +29,14 @@ test("Original leaves all existing category art untouched", () => {
   for (const category of PRAYER_CATEGORIES) expect(categoryArtwork("prayers", "original", category.id)).toBeNull();
 });
 
-test("Tewahedo prayers show all six supplied panels in the arranged order without replacing Saints art", () => {
-  // Tiles sit in a two-column grid: foundational/daily on top, christ-saints/communion in
-  // the middle, occasions/psalms at the bottom. The middle-left tile was swapped with the
-  // bottom-right one, then with the middle-right one; the bottom-left was then swapped
-  // with the top-left one.
-  const placed = { foundational: "occasions", daily: "daily", "christ-saints": "communion", communion: "psalms", occasions: "foundational", psalms: "christ-saints" };
+test("Tewahedo prayers use all six supplied crosses in upload order", () => {
+  const placed = { foundational: "gold-cross-matched.png", daily: "copper-cross-matched.png", "christ-saints": "silver-cross-cut.png", communion: "brass-cross-cut.png", occasions: "lattice-cross-cut.png", psalms: "loop-cross-cut.png" };
   const categories = ["foundational", "daily", "christ-saints", "communion", "occasions", "psalms"];
   const urls = categories.map(category => {
     const artwork = categoryArtwork("prayers", "tewahedo", category);
-    expect(artwork.image_url).toContain(`tewahedo-prayer-${placed[category]}-sq.jpg`);
+    expect(artwork.image_url).toContain(`tewahedo-prayer-${placed[category]}`);
     expect(artwork.image_license).toBe("Supplied by the app owner");
-    expect(artwork.image_source).toBe("https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cmthYmV0Zjcw");
+    expect(artwork.image_source).toBe("");
     expect(artwork.image_license_url).toBe("");
     return artwork.image_url;
   });
@@ -59,7 +57,7 @@ test("each tradition covers all seven saint and six prayer categories with store
         expect(art.image_url).toStartWith("/__l5e/assets-v1/");
         expect(art.image_author.length).toBeGreaterThan(0);
         if (art.image_license === "Supplied by the app owner") {
-          expect(art.image_source === "" || ["www.copticicon.com", "www.instagram.com"].includes(new URL(art.image_source).hostname)).toBe(true);
+          expect(art.image_source === "" || ["www.copticicon.com", "www.instagram.com", "www.rct.uk"].includes(new URL(art.image_source).hostname)).toBe(true);
           expect(art.image_license_url).toBe("");
         } else {
           expect(new URL(art.image_source).hostname).toBe("commons.wikimedia.org");
@@ -71,25 +69,25 @@ test("each tradition covers all seven saint and six prayer categories with store
   }
 });
 
-test("Tewahedo Saints top row shows the supplied Archangel Michael host and Theotokos photographs", () => {
+test("Tewahedo Saints top row shows the supplied Annunciation and Theotokos photographs", () => {
   const angels = categoryArtwork("saints", "tewahedo", "angels");
   const biblical = categoryArtwork("saints", "tewahedo", "biblical");
-  expect(angels.image_url).toContain("tewahedo-angels-michael");
-  expect(biblical.image_url).toContain("tewahedo-theotokos");
+  expect(angels.image_url).toContain("tewahedo-annunciation");
+  expect(biblical.image_url).toContain("tewahedo-theotokos-sq4");
   for (const art of [angels, biblical]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(TAAMRA);
   }
 });
 
 test("Tewahedo Saints middle row shows the supplied rainbow-winged archangel and Trinity panel photographs", () => {
   const monastics = categoryArtwork("saints", "tewahedo", "monastics");
   const fathers = categoryArtwork("saints", "tewahedo", "fathers-hierarchs");
-  expect(monastics.image_url).toContain("tewahedo-archangel-wings");
-  expect(fathers.image_url).toContain("tewahedo-selassie-panel");
+  expect(monastics.image_url).toContain("tewahedo-monastics");
+  expect(fathers.image_url).toContain("tewahedo-fathers");
   for (const art of [monastics, fathers]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(TAAMRA);
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
   }
@@ -99,20 +97,20 @@ test("Tewahedo Saints row below the middle shows the supplied Saint George and T
   const martyrs = categoryArtwork("saints", "tewahedo", "martyrs");
   const missionaries = categoryArtwork("saints", "tewahedo", "apostles-missionaries");
   expect(martyrs.image_url).toContain("tewahedo-george");
-  expect(missionaries.image_url).toContain("tewahedo-selassie-manuscript");
+  expect(missionaries.image_url).toContain("tewahedo-missionaries-sq");
   for (const art of [martyrs, missionaries]) {
     expect(art.image_license).toBe("Supplied by the app owner");
-    expect(art.image_source).toBe("");
+    expect(art.image_source).toBe(TAAMRA);
     expect(art.image_license_url).toBe("");
     expect(art.image_author).toContain("supplied by the app owner");
   }
 });
 
-test("the laypeople tile shows the supplied cherubim-grid photograph, square-cropped", () => {
+test("the laypeople tile shows the supplied seated righteous layman photograph, square-cropped", () => {
   const art = categoryArtwork("saints", "tewahedo", "laypeople");
-  expect(art.image_url).toContain("tewahedo-laypeople");
+  expect(art.image_url).toContain("tewahedo-laypeople-sq");
   expect(art.image_license).toBe("Supplied by the app owner");
-  expect(art.image_source).toBe("");
+  expect(art.image_source).toBe(TAAMRA);
   expect(art.image_license_url).toBe("");
   expect(art.image_modification).toContain("Square-cropped");
 });
@@ -363,9 +361,7 @@ test("Coptic prayers left column shows the supplied blessing-hands and jar panel
 test("prayer tiles credit the artists of the supplied artwork", () => {
   const RUBLEV = "Andrei Rublev, Holy Gates";
   const MAKARY = "George Makary";
-  const YAHUDAH = "Abba Yahudah's PROTECTION, Oil on Canvas";
   const MAKARY_PAGE = "https://www.copticicon.com/";
-  const YAHUDAH_POST = "https://www.instagram.com/p/BJLBk6TDaA9/?srtk=cTg2cmthYmV0Zjcw";
   for (const category of PRAYER_CATEGORIES) {
     // The Russian panels are Rublev's Holy Gates; no online page was supplied for them.
     const russian = categoryArtwork("prayers", "byzantine", category.id);
@@ -375,16 +371,16 @@ test("prayer tiles credit the artists of the supplied artwork", () => {
     const coptic = categoryArtwork("prayers", "coptic", category.id);
     expect(coptic.image_author).toContain(MAKARY);
     expect(coptic.image_source).toBe(MAKARY_PAGE);
-    // The Tewahedo panels are Abba Yahudah's PROTECTION, oil on canvas, linked to its post.
+    // The Tewahedo crosses are owner-supplied photographs without a source link.
     const tewahedo = categoryArtwork("prayers", "tewahedo", category.id);
-    expect(tewahedo.image_author).toContain(YAHUDAH);
-    expect(tewahedo.image_source).toBe(YAHUDAH_POST);
+    expect(tewahedo.image_author).toContain("cross");
+    expect(tewahedo.image_source).toBe("");
   }
-  // Russian and Tewahedo saint tiles keep their own credits: the prayer artists'
-  // links stay out of them.
+  // Russian saint tiles keep their own credits, and the Tewahedo saint tiles
+  // credit the Taamra Maryam page; the prayer artists' links stay out of them.
   for (const category of SAINT_CATEGORIES) {
     expect(categoryArtwork("saints", "byzantine", category.id).image_source).toBe("");
-    expect(categoryArtwork("saints", "tewahedo", category.id).image_source).toBe("");
+    expect(categoryArtwork("saints", "tewahedo", category.id).image_source).toBe(TAAMRA);
   }
 });
 

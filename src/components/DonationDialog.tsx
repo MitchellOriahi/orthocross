@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,10 +9,16 @@ import { Capacitor } from "@capacitor/core";
 import { ChevronDown, Eye, EyeOff, HandCoins, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
-import { DONOR_TIERS, TIER_ICONS, GIFT_CROSS_ICON } from "@/config/donorTiers";
-import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle, giftImpact, minimumGift } from "@/config/donationGift";
+import { DONOR_TIERS } from "@/config/donorTiers";
+import { TierPortrait } from "./TierPortrait";
+import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle, giftImpact, minimumGift, shownTier, annualComparison } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
+
+import { useLanguage } from "@/contexts/LanguageContext";
+import { formatDonationMoney } from "@/lib/donationCurrency";
+import { DonationCurrencyEstimate } from "./DonationCurrencyEstimate";
+import { observeDonationPeek } from "@/lib/donationPeek";
 
 interface DonationDialogProps {
   open: boolean;
@@ -25,7 +31,7 @@ interface DonationDialogProps {
 const NATIVE_PRESETS = [5, 10, 25, 50];
 
 export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: DonationDialogProps) => {
-  const [selectedAmount, setSelectedAmount] = useState(Capacitor.isNativePlatform() ? 5 : DEFAULT_GIFT_AMOUNT);
+  const [selectedAmount, setSelectedAmount] = useState(Capacitor.isNativePlatform() ? 5 : DEFAULT_YEARLY_AMOUNT);
   const submittedRef = useRef(false);
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
@@ -38,10 +44,24 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   });
   const [anonymous, setAnonymous] = useState(false);
   const [oneTime, setOneTime] = useState(false);
+  // Angel shown the instant a tier row is tapped, before the amount settles.
+  const [pickedTierKey, setPickedTierKey] = useState<string | null>(null);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { language, tr } = useLanguage();
+  const money = (amount: number) => formatDonationMoney(amount, language);
   const isNative = Capacitor.isNativePlatform();
+
+  // The window opens with the price slider half-cut by its bottom edge, so the
+  // other gift amounts read as a peek worth pulling down, not a hidden list.
+  const [contentEl, setContentEl] = useState<HTMLDivElement | null>(null);
+  // Layout effect: the peek height is applied before the dialog's first paint,
+  // so the window never re-centers (shifts) after opening.
+  useLayoutEffect(() => {
+    if (!open || !contentEl) return;
+    return observeDonationPeek(contentEl);
+  }, [open, contentEl, isNative, language]);
 
   useEffect(() => {
     if (!open || !user) return;
@@ -49,10 +69,23 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
       .then(({ data }) => { setAnonymous(!!data?.donor_anonymous); });
   }, [open, user]);
 
+  // A fresh opening starts with no manually chosen angel.
+  useEffect(() => { setPickedTierKey(null); }, [open]);
+
+
   // Preselect the amount chosen from the tier guide (e.g. $1 for Angel) in the custom field
   useEffect(() => {
     if (open) submittedRef.current = false;
-    if (!open || initialAmount === undefined) return;
+    if (!open) return;
+    setOneTime(false);
+    setInterval_(DEFAULT_DONATION_INTERVAL);
+    setTiersOpen(false);
+    if (initialAmount === undefined) {
+      setSelectedAmount(isNative ? 5 : DEFAULT_YEARLY_AMOUNT);
+      setUseCustom(false);
+      setCustomAmount("");
+      return;
+    }
     if (Capacitor.isNativePlatform()) {
       // App stores only sell fixed presets: snap to the closest available one
       const snapped = NATIVE_PRESETS.find(v => v >= initialAmount) ?? NATIVE_PRESETS[NATIVE_PRESETS.length - 1];
@@ -91,12 +124,14 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     setSelectedAmount(next.amount);
     setCustomAmount(next.customAmount);
     setUseCustom(next.useCustom);
+    setPickedTierKey(null);
   };
 
   const chooseInterval = (next: DonationInterval) => {
     setInterval_(next);
     setUseCustom(false); setCustomAmount("");
     setSelectedAmount(next === "year" ? DEFAULT_YEARLY_AMOUNT : DEFAULT_GIFT_AMOUNT);
+    setPickedTierKey(null);
   };
   const mode = oneTime ? "once" : interval;
   const minAmount = isNative ? 1 : minimumGift(mode);
@@ -120,6 +155,9 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const effectiveAmount = getEffectiveAmount();
   const giftPreview = getGiftPreview(effectiveAmount, useCustom, SLIDER_STEPS);
   const giftTier = giftPreview.tier;
+  // Angel shown in the circle: the tier just tapped wins at once, otherwise what this gift qualifies for.
+  const activeTier = shownTier(pickedTierKey, giftTier);
+  const activeTierKey = activeTier?.key ?? null;
 
   // Native path: RevenueCat in-app purchase (required by App Store / Play Store)
   const handleNativeDonate = async () => {
@@ -203,7 +241,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const handleWebDonate = async () => {
     const amount = getEffectiveAmount();
     if (isNaN(amount) || amount < minAmount) {
-      toast({ title: "Invalid amount", description: `Minimum gift is $${minAmount}.00`, variant: "destructive" });
+      toast({ title: "Invalid amount", description: tr("Minimum gift is {amount}").replace("{amount}", money(minAmount)), variant: "destructive" });
       return;
     }
 
@@ -247,43 +285,39 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md max-h-[72vh] overflow-y-auto overscroll-contain p-6">
+      <DialogContent ref={setContentEl} className="sm:max-w-md max-h-[72vh] overflow-y-auto overscroll-contain p-6">
         <DialogHeader className="text-left space-y-2">
-          <DialogTitle className="text-3xl font-bold leading-tight">Become a donator,<br />support OrthoCross</DialogTitle>
+          <DialogTitle className="text-3xl font-bold leading-tight">Support OrthoCross</DialogTitle>
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
 
-        <div className="rounded-xl border bg-muted/40 p-4 text-sm leading-relaxed">
+        <div className="rounded-xl border bg-muted/40 p-3 text-sm leading-relaxed">
           <p className="font-medium">A note from the creator of OrthoCross</p>
           <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read, and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone. God bless.</p>
         </div>
 
-
-        <div className="pt-2 space-y-2">
-          <div>
-            <h3 className="text-3xl font-bold">Gift what you want</h3>
-            {!isNative && <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">No commitment · cancel anytime</p>}
-          </div>
-
+        <div className="space-y-2">
           {!isNative && !oneTime && (
             <div role="radiogroup" aria-label="Billing" className="mx-auto grid w-full max-w-xs grid-cols-2 rounded-full border p-1">
               {(["month", "year"] as const).map(v => (
                 <Button key={v} type="button" role="radio" aria-checked={interval === v} variant={interval === v ? "sacred" : "ghost"} onClick={() => chooseInterval(v)} className="h-8 rounded-full text-xs">
-                  {v === "month" ? "Monthly" : "Yearly"}
+                  {tr(v === "month" ? "Monthly" : "Yearly")}
                 </Button>
               ))}
             </div>
           )}
+          <p className="text-center text-xs font-semibold text-muted-foreground">{tr(isNative || oneTime ? "A gift, not a commitment" : "Renews automatically · cancel anytime")}</p>
 
-          <div className="flex flex-col items-center gap-3">
-            <div className={`donor-tier-${giftTier?.key ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
-              <img src={giftTier ? TIER_ICONS[giftTier.key] : GIFT_CROSS_ICON} alt={giftTier ? giftTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
+          <div className="relative flex flex-col items-center gap-3">
+            <div className={`donor-tier-${activeTierKey ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
+              <TierPortrait tierKey={activeTierKey} alt={activeTier ? activeTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
             </div>
-            <p className="text-4xl font-bold text-primary">${shownAmount}{!isNative && !oneTime && (interval === "year" ? "/year" : "/month")}</p>
-            {!isNative && !oneTime && interval === "year" && effectiveAmount >= 12 && (
-              <p className="text-xs text-muted-foreground">About ${(effectiveAmount / 12).toFixed(2)} a month</p>
+            <p className="text-4xl font-bold text-primary text-center" data-no-translate>{money(Number(shownAmount))}{!isNative && !oneTime && tr(interval === "year" ? "/year" : "/month")}</p>
+            {!isNative && !oneTime && interval === "year" && effectiveAmount >= minAmount && (
+              <p className="text-xs text-muted-foreground" data-no-translate>{tr("About {amount} a month").replace("{amount}", money(effectiveAmount / 12))}</p>
             )}
-            <p className="text-sm text-muted-foreground text-center">{effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone."}</p>
+            <p className="text-sm text-muted-foreground text-center">{tr(effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone.")}</p>
+            {!isNative && <DonationCurrencyEstimate amount={effectiveAmount} />}
           </div>
 
           {(isNative || !oneTime) && (
@@ -295,13 +329,21 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 max={SLIDER_STEPS.length - 1}
                 step={1}
                 value={stepIndex}
-                onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); }}
+                onChange={(e) => { const v = SLIDER_STEPS[Number(e.target.value)]; setSelectedAmount(v); setUseCustom(false); setCustomAmount(""); setPickedTierKey(null); }}
                 className="w-full accent-[hsl(var(--primary))]"
               />
               <div className="flex justify-between text-sm font-medium text-muted-foreground">
-                {SLIDER_STEPS.map((amount, i) => <span key={amount}>${amount}{!isNative && i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
+                {SLIDER_STEPS.map((amount, i) => <span key={amount} data-no-translate>{money(amount)}{!isNative && i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
               </div>
             </>
+          )}
+
+          {!isNative && !oneTime && interval === "year" && effectiveAmount >= minAmount && (
+            <div className="space-y-1 text-center text-xs text-muted-foreground" data-no-translate>
+              {effectiveAmount === DEFAULT_YEARLY_AMOUNT && <p className="font-semibold text-primary">{tr("Recommended yearly gift")}</p>}
+              {annualComparison(effectiveAmount).savings > 0 && <p>{tr("Save {amount} compared with monthly support").replace("{amount}", money(annualComparison(effectiveAmount).savings))}</p>}
+              <p>{tr("Compared with {amount}/month for 12 months.").replace("{amount}", money(DEFAULT_GIFT_AMOUNT))}</p>
+            </div>
           )}
 
           {!isNative && (
@@ -312,33 +354,34 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 aria-label="Custom amount"
                 type="number" step="0.01" min={minAmount}
                 value={customAmount}
-                onChange={(e) => { setCustomAmount(e.target.value); setUseCustom(true); }}
+                onChange={(e) => { setCustomAmount(e.target.value); setUseCustom(true); setPickedTierKey(null); }}
                 onFocus={() => setUseCustom(true)}
                 className="pl-7"
-                placeholder={interval === "year" && !oneTime ? "Custom amount ($12 minimum)" : "Custom amount"}
+                placeholder={tr(interval === "year" && !oneTime ? "Custom amount ($8 minimum)" : "Custom amount")}
               />
             </div>
           )}
 
           <div className="rounded-xl border">
             <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => toggleTiers(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
-              <span>Donator tiers{giftTier && <> · <span className={`donor-tier-${giftTier.key} text-[hsl(var(--donor-tier-tone))]`}><DonorTierName tier={giftTier} /></span></>}</span>
+              <span>Donator tiers{activeTier && <> · <span className={`donor-tier-${activeTier.key} text-[hsl(var(--donor-tier-tone))]`}><DonorTierName tier={activeTier} /></span></>}</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
             </Button>
             {tiersOpen && (
               <ul className="space-y-1 px-3 pb-3">
                 {DONOR_TIERS.map((t) => {
-                  const current = giftTier?.key === t.key;
+                  const current = activeTierKey === t.key;
                   return (
                     <li key={t.key}>
                       <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option ${t.key === "archangel" && tiersPulse ? "donor-gift-tier-pulse" : ""} h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
                         setCustomAmount(String(t.minCents / 100));
                         setSelectedAmount(t.minCents / 100);
                         setUseCustom(true);
+                        setPickedTierKey(t.key);
                         toggleTiers(false);
                       }}>
-                        <span><DonorTierName tier={t} />{current && " · this gift"}</span>
-                        <span>${(t.minCents / 100).toLocaleString()}+</span>
+                        <span><DonorTierName tier={t} />{current && tr(" · this gift")}</span>
+                        <span data-no-translate>{money(t.minCents / 100)}+</span>
                       </Button>
                     </li>
                   );
@@ -356,7 +399,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${oneTime ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
               >
                 <HandCoins className="h-3.5 w-3.5" />
-                <span>{DONOR_TEXT.oneTime}</span>
+                <span>{tr(DONOR_TEXT.oneTime)}</span>
                 <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${oneTime ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
                   <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${oneTime ? "translate-x-3" : "translate-x-0"}`} />
                 </span>
@@ -368,20 +411,23 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${anonymous ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
             >
               {anonymous ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-              <span>{DONOR_TEXT.donateAnonymouslyShort}</span>
+              <span>{tr(DONOR_TEXT.donateAnonymouslyShort)}</span>
               <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${anonymous ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
                 <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${anonymous ? "translate-x-3" : "translate-x-0"}`} />
               </span>
             </Button>
           </div>
+          {anonymous && <p className="text-center text-xs text-muted-foreground">Hides your name and photo on the Donators list; your tier still shows.</p>}
 
           {isNative && productsAvailable === false && (
             <p className="text-xs text-destructive text-center">In-app purchases are not available right now. Please try again later.</p>
           )}
 
-          <Button onClick={handleDonate} disabled={loading || (isNative && productsAvailable === false)} className="h-14 w-full rounded-full text-lg" variant="sacred">
-            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Processing...</> : "Donate"}
+          <Button onClick={handleDonate} disabled={loading || effectiveAmount < minAmount || (isNative && productsAvailable === false)} className="h-14 w-full rounded-full text-lg" variant="sacred">
+            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{tr("Processing...")}</> : tr(isNative || oneTime ? "Give once" : "Support OrthoCross")}
           </Button>
+
+          <p className="text-center text-xs text-muted-foreground">{tr("Scripture, prayers, Saints, History and basic journaling stay free.")}</p>
 
           <p className="text-xs text-muted-foreground">
             {isNative

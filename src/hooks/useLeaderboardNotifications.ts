@@ -26,6 +26,9 @@ export const useLeaderboardNotifications = () => {
           const notification = payload.new as any;
           if (notification.month_date === 'friend_request') return;
 
+          // The push itself is sent by the scheduled reminders function
+          // (server-side, naming the user who passed us); the client only
+          // marks the in-app row as read.
           try {
             await supabase
               .from('leaderboard_notifications')
