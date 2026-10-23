@@ -78,6 +78,7 @@ export const MonthlyPodiumModal = ({ isOpen, onClose, topThree, monthName }: Mon
             boxShadow: `inset 0 1px 0 hsl(${tone} / 0.8), 0 -6px 24px -8px hsl(${tone} / 0.6)`,
           }}
         >
+          <span className="podium-step-shine" aria-hidden="true" />
           <Trophy className={isFirst ? "h-8 w-8" : "h-6 w-6"} style={{ color: `hsl(${tone})` }} fill="currentColor" />
         </div>
       </div>
@@ -100,7 +101,7 @@ export const MonthlyPodiumModal = ({ isOpen, onClose, topThree, monthName }: Mon
             <p className="text-sm text-muted-foreground">Congratulations to our top performers!</p>
           </div>
 
-          <div className="flex w-full items-end justify-center gap-2 pt-6 sm:gap-4">
+          <div className="podium-stage-glow flex w-full items-end justify-center gap-2 pt-6 sm:gap-4">
             <PodiumWinner winner={byRank(2)} rank={2} height="h-24" />
             <PodiumWinner winner={byRank(1)} rank={1} height="h-36" />
             <PodiumWinner winner={byRank(3)} rank={3} height="h-16" />
