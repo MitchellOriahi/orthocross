@@ -480,15 +480,6 @@ All colors MUST be HSL.
   from { background-position: 130% 0; }
   to { background-position: -30% 0; }
 }
-/* Soft breathing golden aura behind the whole stage. */
-.podium-stage-glow {
-  border-radius: 1.5rem;
-  animation: podium-aura 3.5s ease-in-out infinite;
-}
-@keyframes podium-aura {
-  0%, 100% { box-shadow: 0 0 36px -12px hsl(var(--podium-gold) / 0.3); }
-  50% { box-shadow: 0 0 64px -8px hsl(var(--podium-gold) / 0.5); }
-}
 
 @keyframes progress-bar {
   0% {
