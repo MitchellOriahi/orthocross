@@ -50,17 +50,23 @@ export function OrientationOnboarding() {
   }, []);
 
   useEffect(() => {
-    if (!user || !tutorialDone || localStorage.getItem(doneKey(user.id))) return;
+    if (!user || localStorage.getItem(doneKey(user.id))) return;
+    // Open the language step immediately so the Board never shows first.
+    const initialStep = initialOrientationOnboardingStep(user.user_metadata, false);
+    if (initialStep) { setStep(initialStep); setOpen(true); (window as any).__orientationOpen = true; }
     let cancelled = false;
     supabase.from("profile_identity_tags").select("branch").eq("user_id", user.id).maybeSingle().then(({ data, error }) => {
       if (cancelled || error) return;
       if (data?.branch && !hasStoredOrientation()) applyBranchPreferences(data.branch);
-      // A saved branch is not evidence that this account has seen the sticker.
-      const initialStep = initialOrientationOnboardingStep(user.user_metadata, false);
-      if (initialStep) { setStep(initialStep); setOpen(true); }
     });
     return () => { cancelled = true; };
-  }, [user, tutorialDone]);
+  }, [user]);
+
+  useEffect(() => {
+    if (open) return;
+    (window as any).__orientationOpen = false;
+    window.dispatchEvent(new Event("orthocross:orientation-done"));
+  }, [open]);
 
   /** Persist completion; silent when the sticker is dismissed without choosing, so no toast is shown. */
   const finish = async (silent = false) => {
