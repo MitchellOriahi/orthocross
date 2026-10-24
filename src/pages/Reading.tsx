@@ -786,8 +786,9 @@ const Reading = () => {
       }
       const direction = readerScrollDirection(scrollAnchor, y, max);
       if (direction || y < 0 || y > max || scrollAnchor < 0 || scrollAnchor > max) scrollAnchor = y;
+      // Momentum from the preceding stroke must not overrule the new finger direction.
+      if (gesture?.axis === "vertical" && ((gesture.lastY > gesture.y && direction === "hide") || (gesture.lastY < gesture.y && direction === "show"))) return;
       if (direction === "hide") {
-        hidDuringGesture = true;
         setShowBottomNav(false);
       } else if (direction === "show" && !hidDuringGesture) setShowBottomNav(true);
     };
