@@ -1,4 +1,9 @@
 import { useEffect, useRef } from "react";
+
+// Browsers cancel the click of a tap that lands while the page is still
+// scrolling or swiping — the tap just stops the scroll. Activating on
+// pointer-up with a small movement allowance makes the first tap navigate.
+const TAP_SLOP_PX = 12;
 import { useNavigate, useLocation } from "react-router-dom";
 import { Flame, Book, Church, ScrollText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
