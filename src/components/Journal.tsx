@@ -477,6 +477,23 @@ export const Journal = () => {
     });
   };
 
+  // Pinning a drawing or media item also makes its note the dashboard cover.
+  const handleMediaPinChange = async (noteId: string, mediaUrl: string | null, mediaType: string | null) => {
+    if (mediaUrl) {
+      const others = notes.filter(n => n.pinned && n.id !== noteId);
+      for (const other of others) {
+        await (supabase as any).from('journal_entries').update({ pinned: false }).eq('id', other.id);
+      }
+      await (supabase as any).from('journal_entries').update({ pinned: true }).eq('id', noteId);
+    }
+    setNotes(prev => prev.map(n => {
+      if (n.id === noteId) {
+        return { ...n, pinned_media_url: mediaUrl, pinned_media_type: mediaType, pinned: mediaUrl ? true : n.pinned };
+      }
+      return mediaUrl ? { ...n, pinned: false } : n;
+    }));
+  };
+
   const handleViewModeChange = async (newMode: 'list' | 'gallery') => {
     viewRevisionRef.current += 1;
     setViewMode(newMode);
