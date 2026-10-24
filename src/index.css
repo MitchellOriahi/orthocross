@@ -178,6 +178,10 @@ All colors MUST be HSL.
     background: hsl(var(--background));
   }
 
+  html, body, #root {
+    overscroll-behavior-x: none;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "kern" 1, "liga" 1;

@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 // Browsers cancel the click of a tap that lands while the page is still
 // scrolling or swiping — the tap just stops the scroll. Activating on
 // pointer-up with a small movement allowance makes the first tap navigate.
-const TAP_SLOP_PX = 12;
 import { useNavigate, useLocation } from "react-router-dom";
 import { Flame, Book, Church, ScrollText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { isNavigationTap, trackNavigationMovement, type NavigationTap } from "@/lib/navigationTap";
 
 export const BottomNavigation = () => {
   const navigate = useNavigate();
@@ -19,28 +19,31 @@ export const BottomNavigation = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navRef = useRef<HTMLElement>(null);
-  const tapStartRef = useRef<{ x: number; y: number; path: string } | null>(null);
-  const skipClickRef = useRef(false);
+  const tapStartRef = useRef<NavigationTap | null>(null);
 
   const handleTapStart = (e: React.PointerEvent, path: string) => {
-    tapStartRef.current = { x: e.clientX, y: e.clientY, path };
+    if (!e.isPrimary || e.button !== 0) return;
+    tapStartRef.current = { pointerId: e.pointerId, x: e.clientX, y: e.clientY, path, cancelled: false };
+  };
+
+  const handleTapMove = (e: React.PointerEvent) => {
+    const start = tapStartRef.current;
+    if (!start || start.pointerId !== e.pointerId) return;
+    tapStartRef.current = trackNavigationMovement(start, e.clientX, e.clientY);
   };
 
   const handleTapEnd = (e: React.PointerEvent, path: string) => {
     const start = tapStartRef.current;
+    if (start && start.pointerId !== e.pointerId) return;
     tapStartRef.current = null;
-    if (!start || start.path !== path) return;
-    if (Math.abs(e.clientX - start.x) > TAP_SLOP_PX || Math.abs(e.clientY - start.y) > TAP_SLOP_PX) return;
-    // Pointer-up already navigated; swallow the click that may still follow.
-    skipClickRef.current = true;
+    if (!isNavigationTap(start, e.pointerId, path, e.clientX, e.clientY)) return;
     navigate(path);
   };
 
-  const handleClick = (path: string) => {
-    if (skipClickRef.current) {
-      skipClickRef.current = false;
-      return;
-    }
+  const handleClick = (e: React.MouseEvent, path: string) => {
+    // Pointer activation is handled above; never let a swipe's trailing click navigate.
+    // Zero-detail clicks preserve keyboard and assistive-technology activation.
+    if (e.detail !== 0) { e.preventDefault(); return; }
     navigate(path);
   };
 
@@ -348,8 +351,9 @@ export const BottomNavigation = () => {
               <Button
                 key={item.path}
                 variant="ghost"
-                onClick={() => handleClick(item.path)}
+                onClick={(e) => handleClick(e, item.path)}
                 onPointerDown={(e) => handleTapStart(e, item.path)}
+                onPointerMove={handleTapMove}
                 onPointerUp={(e) => handleTapEnd(e, item.path)}
                 onPointerCancel={() => { tapStartRef.current = null; }}
                 onMouseEnter={() => {
