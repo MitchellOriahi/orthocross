@@ -758,17 +758,15 @@ export const Journal = () => {
                 <Button variant="ghost" className="h-11 min-w-[4.5rem] px-4 text-base font-medium rounded-xl border border-border/60 bg-muted/70 hover:bg-muted" onClick={() => setEditingFolders(value => !value)}>{editingFolders ? 'Done' : 'Edit'}</Button>
                 <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl border border-border/60 bg-muted/70 hover:bg-muted" onClick={() => handleFolderCreate()} aria-label="New folder" title="New folder"><FolderPlus className="h-5 w-5" /></Button>
               </div>}
-              {showSidebar && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleClose}
-                  aria-label="Close"
-                  className="h-11 w-11 shrink-0 ms-2 rounded-xl border border-border/60 bg-muted/70 hover:bg-muted"
-                >
-                  <X className="h-6 w-6" />
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClose}
+                aria-label="Close"
+                className="h-11 w-11 shrink-0 ms-2 rounded-xl border border-border/60 bg-muted/70 hover:bg-muted"
+              >
+                <X className="h-6 w-6" />
+              </Button>
             </div>
 
             <div
