@@ -62,6 +62,8 @@ export function OrientationOnboarding() {
   useEffect(() => {
     if (open) return;
     (window as any).__orientationOpen = false;
+    // Ending the survey reveals the Board; it must open at the top, not at the restored middle.
+    window.scrollTo(0, 0);
     window.dispatchEvent(new Event("orthocross:orientation-done"));
   }, [open]);
 
