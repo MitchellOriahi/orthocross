@@ -22,7 +22,6 @@ export function moveReaderGesture(g: ReaderGesture, x: number, y: number): Reade
 export function readerPageTurn(g: ReaderGesture): "next" | "prev" | null {
   const horizontal = g.maxX - g.minX;
   const vertical = g.maxY - g.minY;
-  const dx = g.lastY; // Final horizontal position is represented by the dominant excursion below.
   const left = g.x - g.minX;
   const right = g.maxX - g.x;
   if (g.axis !== "horizontal" || Math.max(left, right) < 80 || horizontal <= vertical * 2.5) return null;
