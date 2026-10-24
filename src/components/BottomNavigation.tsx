@@ -376,6 +376,7 @@ export const BottomNavigation = () => {
                     prefetchProfileData();
                   }
                 }}
+                style={{ touchAction: "manipulation" }}
                 className={`flex min-w-0 w-full flex-col items-center gap-1 h-auto py-2 px-1 ${
                   isActive ? "text-primary" : "text-muted-foreground"
                 }`}
