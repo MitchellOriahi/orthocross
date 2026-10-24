@@ -579,13 +579,13 @@ export const Journal = () => {
                     <img 
                       src={pinnedMediaUrl} 
                       alt="Pinned media" 
-                      className="max-w-full max-h-full object-contain"
+                      className="w-full h-full object-contain"
                     />
                   ) : pinnedMediaType === 'video' ? (
                     <>
                       <video 
                         src={pinnedMediaUrl} 
-                        className="max-w-full max-h-full object-contain"
+                        className="w-full h-full object-contain"
                         muted
                         onPlay={() => setPlayingMediaId(displayNote.id)}
                         onPause={() => setPlayingMediaId(null)}
@@ -659,7 +659,7 @@ export const Journal = () => {
                     <img 
                       src={contentPreview.imageUrl} 
                       alt="Note preview" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain bg-muted"
                     />
                   </div>
                   <div className="p-4 flex-1">
@@ -843,6 +843,7 @@ export const Journal = () => {
                       onContentChange={handleContentChange}
                       isSaving={isSaving}
                       noteId={selectedNoteId}
+                      onMediaPinChange={handleMediaPinChange}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full p-4 text-center text-muted-foreground">
