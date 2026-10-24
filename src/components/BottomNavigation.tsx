@@ -1,4 +1,9 @@
 import { useEffect, useRef } from "react";
+
+// Browsers cancel the click of a tap that lands while the page is still
+// scrolling or swiping — the tap just stops the scroll. Activating on
+// pointer-up with a small movement allowance makes the first tap navigate.
+const TAP_SLOP_PX = 12;
 import { useNavigate, useLocation } from "react-router-dom";
 import { Flame, Book, Church, ScrollText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,6 +19,30 @@ export const BottomNavigation = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navRef = useRef<HTMLElement>(null);
+  const tapStartRef = useRef<{ x: number; y: number; path: string } | null>(null);
+  const skipClickRef = useRef(false);
+
+  const handleTapStart = (e: React.PointerEvent, path: string) => {
+    tapStartRef.current = { x: e.clientX, y: e.clientY, path };
+  };
+
+  const handleTapEnd = (e: React.PointerEvent, path: string) => {
+    const start = tapStartRef.current;
+    tapStartRef.current = null;
+    if (!start || start.path !== path) return;
+    if (Math.abs(e.clientX - start.x) > TAP_SLOP_PX || Math.abs(e.clientY - start.y) > TAP_SLOP_PX) return;
+    // Pointer-up already navigated; swallow the click that may still follow.
+    skipClickRef.current = true;
+    navigate(path);
+  };
+
+  const handleClick = (path: string) => {
+    if (skipClickRef.current) {
+      skipClickRef.current = false;
+      return;
+    }
+    navigate(path);
+  };
 
   // Publish the real bar height so pages clear it exactly in every language.
   useEffect(() => {
@@ -319,7 +348,10 @@ export const BottomNavigation = () => {
               <Button
                 key={item.path}
                 variant="ghost"
-                onClick={() => navigate(item.path)}
+                onClick={() => handleClick(item.path)}
+                onPointerDown={(e) => handleTapStart(e, item.path)}
+                onPointerUp={(e) => handleTapEnd(e, item.path)}
+                onPointerCancel={() => { tapStartRef.current = null; }}
                 onMouseEnter={() => {
                   if (item.path === "/dashboard") {
                     prefetchDashboardData();
@@ -344,6 +376,7 @@ export const BottomNavigation = () => {
                     prefetchProfileData();
                   }
                 }}
+                style={{ touchAction: "manipulation" }}
                 className={`flex min-w-0 w-full flex-col items-center gap-1 h-auto py-2 px-1 ${
                   isActive ? "text-primary" : "text-muted-foreground"
                 }`}
