@@ -35,6 +35,7 @@
 - Resolve explicit community icon defaults in the orientation store with Greek fallback; identity queries protect branch priority and manual picks.
 - Store the chosen category icon style per section (saints, prayers) so a manual pick in one never moves the other; a church choice writes both, and the older single-style key migrates into both on first read.
 - Gate onboarding by account completion, not device language or branch; eligible accounts choose language before tradition, without cross-device repeats.
+- Initialize the orientation survey by stable account ID, not auth user-object identity; submit branch and completion sequentially with one lock so token refresh cannot restart the survey or strand disabled controls.
 - Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
 - LanguageContext sets lang/dir/fallback; reveal switches after React and DOM translation settle.
