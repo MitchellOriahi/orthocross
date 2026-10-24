@@ -1,4 +1,6 @@
 # Prayers category browser
+## Mobile navigation swipes
+- [ ] Cancel swipes on navigation buttons without losing first-tap or keyboard activation; contain horizontal browser overscroll and verify on a phone-sized screen.
 ## Journal highlight modes
 - [x] Add Word/Sentence chooser and eight colors; preserve sentence highlights when removing or repainting one word. Thirty-five focused checks and one signed-in save/reload flow passed.
 ## Revenue offer rollout

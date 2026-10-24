@@ -39,6 +39,7 @@
 - Initialize the orientation survey by stable account ID, not auth user-object identity; submit branch and completion sequentially with one lock so token refresh cannot restart the survey or strand disabled controls.
 - Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
+- Bottom navigation activates pointer taps only once on pointer-up, permanently cancels moved gestures and ignores trailing pointer clicks; keyboard clicks remain available, while horizontal overscroll containment reduces browser history gestures where supported.
 - LanguageContext sets lang/dir/fallback; reveal switches after React and DOM translation settle.
 - public/i18n drives DOM translation; protect scripture/whole words. content_keys.py checks History/Saints; audit typed and DOM church-family labels for meaning.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.
