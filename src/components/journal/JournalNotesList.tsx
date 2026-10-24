@@ -212,7 +212,7 @@ export const JournalNotesList = ({
               <img 
                 src={imageSrc} 
                 alt="Note preview" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             ) : (
               <div className="p-4 text-sm text-muted-foreground line-clamp-6 text-center">

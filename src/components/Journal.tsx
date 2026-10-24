@@ -477,6 +477,23 @@ export const Journal = () => {
     });
   };
 
+  // Pinning a drawing or media item also makes its note the dashboard cover.
+  const handleMediaPinChange = async (noteId: string, mediaUrl: string | null, mediaType: string | null) => {
+    if (mediaUrl) {
+      const others = notes.filter(n => n.pinned && n.id !== noteId);
+      for (const other of others) {
+        await (supabase as any).from('journal_entries').update({ pinned: false }).eq('id', other.id);
+      }
+      await (supabase as any).from('journal_entries').update({ pinned: true }).eq('id', noteId);
+    }
+    setNotes(prev => prev.map(n => {
+      if (n.id === noteId) {
+        return { ...n, pinned_media_url: mediaUrl, pinned_media_type: mediaType, pinned: mediaUrl ? true : n.pinned };
+      }
+      return mediaUrl ? { ...n, pinned: false } : n;
+    }));
+  };
+
   const handleViewModeChange = async (newMode: 'list' | 'gallery') => {
     viewRevisionRef.current += 1;
     setViewMode(newMode);
@@ -562,13 +579,13 @@ export const Journal = () => {
                     <img 
                       src={pinnedMediaUrl} 
                       alt="Pinned media" 
-                      className="max-w-full max-h-full object-contain"
+                      className="w-full h-full object-contain"
                     />
                   ) : pinnedMediaType === 'video' ? (
                     <>
                       <video 
                         src={pinnedMediaUrl} 
-                        className="max-w-full max-h-full object-contain"
+                        className="w-full h-full object-contain"
                         muted
                         onPlay={() => setPlayingMediaId(displayNote.id)}
                         onPause={() => setPlayingMediaId(null)}
@@ -642,7 +659,7 @@ export const Journal = () => {
                     <img 
                       src={contentPreview.imageUrl} 
                       alt="Note preview" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain bg-muted"
                     />
                   </div>
                   <div className="p-4 flex-1">
@@ -826,6 +843,7 @@ export const Journal = () => {
                       onContentChange={handleContentChange}
                       isSaving={isSaving}
                       noteId={selectedNoteId}
+                      onMediaPinChange={handleMediaPinChange}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full p-4 text-center text-muted-foreground">
