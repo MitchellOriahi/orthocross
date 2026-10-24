@@ -15,6 +15,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { currentMonthKey, previousMonthKey } from "@/lib/month";
+import { attachLeaderboardProfiles } from "@/lib/leaderboardProfiles";
 import { toast } from "@/hooks/use-toast";
 import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 import { BottomNavigation } from "@/components/BottomNavigation";
@@ -310,6 +311,7 @@ export default function Friends() {
         .select('user_id, total_points')
         .eq('month_date', currentMonth)
         .order('total_points', { ascending: false })
+        .order('user_id', { ascending: true })
         .limit(15);
 
       // If the request fails, do NOT clear UI (prevents flicker)
@@ -320,21 +322,18 @@ export default function Friends() {
 
       if (leaderboardData && leaderboardData.length > 0) {
         const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, username, profile_picture_url')
-          .in('id', leaderboardData.map((l) => l.user_id));
+          .rpc('get_public_profiles_for_leaderboard', { p_user_ids: leaderboardData.map(l => l.user_id) });
 
         if (profilesError) {
           console.error('Error loading profiles:', profilesError);
           return;
         }
 
-        const leaderboardWithUsernames = leaderboardData.map((entry) => ({
-          id: entry.user_id,
-          username: profilesData?.find((p) => p.id === entry.user_id)?.username || 'Unknown User',
-          profile_picture_url:
-            profilesData?.find((p) => p.id === entry.user_id)?.profile_picture_url || null,
-          books_completed: entry.total_points || 0,
+        const leaderboardWithUsernames = attachLeaderboardProfiles(leaderboardData, profilesData ?? []).map(entry => ({
+          id: entry.id,
+          username: entry.username,
+          profile_picture_url: entry.profile_picture_url,
+          books_completed: entry.total_points,
         }));
 
         setLeaderboard(leaderboardWithUsernames);
@@ -701,26 +700,29 @@ export default function Friends() {
 
     if (!viewedData) {
       // Load last month's top 3 (global now, not friends-only)
-      const { data: leaderboardData } = await supabase
+      const { data: leaderboardData, error: leaderboardError } = await supabase
         .from('monthly_leaderboard')
         .select('user_id, total_points')
         .eq('month_date', lastMonthDate)
         .order('total_points', { ascending: false })
+        .order('user_id', { ascending: true })
         .limit(3);
 
-      if (leaderboardData && leaderboardData.length > 0) {
-        const { data: profilesData } = await supabase
-          .from('profiles')
-          .select('id, username, profile_picture_url')
-          .in('id', leaderboardData.map(l => l.user_id));
+      if (leaderboardError) {
+        console.error('Error loading monthly podium:', leaderboardError);
+        return;
+      }
 
-        const topThree = leaderboardData.map((entry, index) => ({
-          id: entry.user_id,
-          username: profilesData?.find(p => p.id === entry.user_id)?.username || 'Unknown User',
-          profile_picture_url: profilesData?.find(p => p.id === entry.user_id)?.profile_picture_url || null,
-          total_points: entry.total_points,
-          rank: index + 1
-        }));
+      if (leaderboardData && leaderboardData.length > 0) {
+        const { data: profilesData, error: profilesError } = await supabase
+          .rpc('get_public_profiles_for_leaderboard', { p_user_ids: leaderboardData.map(l => l.user_id) });
+
+        if (profilesError) {
+          console.error('Error loading podium profiles:', profilesError);
+          return;
+        }
+
+        const topThree = attachLeaderboardProfiles(leaderboardData, profilesData ?? []);
 
         setPodiumData(topThree);
         setLastMonthName(lastMonthLabel);
