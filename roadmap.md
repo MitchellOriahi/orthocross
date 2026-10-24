@@ -1,4 +1,6 @@
 # Prayers category browser
+## Reader swipe clarity
+- [x] Separate vertical scrolling from deliberate page turns and reveal the bottom bar promptly with bounce-safe scroll detection. Eleven tests pass; signed-in phone-sized checks confirm vertical arcs, left/right turns, cancellation, scroll fallback, programmatic suppression and real touch hide/reveal without chapter changes. Preview build clean; external website needs deployment, native device testing remains unverified.
 ## Mobile navigation swipes
 - [x] Cancel swipes on navigation buttons without losing first-tap or keyboard activation; horizontal overscroll contained where supported. Four tests pass; signed-in phone-sized checks verify all five first taps, returning swipes, real left/right touch swipes and keyboard activation; build clean. Safari's system edge gestures and native device behavior remain device-specific and unverified.
 ## Journal highlight modes
