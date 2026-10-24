@@ -348,7 +348,10 @@ export const BottomNavigation = () => {
               <Button
                 key={item.path}
                 variant="ghost"
-                onClick={() => navigate(item.path)}
+                onClick={() => handleClick(item.path)}
+                onPointerDown={(e) => handleTapStart(e, item.path)}
+                onPointerUp={(e) => handleTapEnd(e, item.path)}
+                onPointerCancel={() => { tapStartRef.current = null; }}
                 onMouseEnter={() => {
                   if (item.path === "/dashboard") {
                     prefetchDashboardData();
