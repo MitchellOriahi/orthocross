@@ -13,7 +13,7 @@ type Photo = { url: string; credit: string; source: string };
 const LIBRARY = library as Record<VerseTreatment, Photo[]>;
 /** Days before any photo can come back (every category holds this many unique photos). */
 export const VERSE_PHOTO_CYCLE_DAYS = Math.min(...VERSE_IMAGE_STYLES.map(s => LIBRARY[s.treatment].length));
-const START_DAY = Math.floor(Date.parse("2026-10-09T00:00:00Z") / 86400000);
+const START_DAY = Math.floor(Date.parse("2026-10-25T00:00:00Z") / 86400000);
 
 export function verseArtworkDay(date = new Date()) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
