@@ -9,9 +9,14 @@ const ORIGIN = process.env.LOVABLE_ASSET_ORIGIN ?? "https://orthocross.lovable.a
 const root = new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
 const walk = (d) => readdirSync(d).flatMap((n) => statSync(join(d, n)).isDirectory() ? walk(join(d, n)) : [join(d, n)]);
 
-const assets = walk(join(root, "src"))
+// The daily verse photo library lists its Lovable-hosted photos by URL.
+const dailyLibrary = JSON.parse(readFileSync(join(root, "src/assets/verse-backgrounds/dailyLibrary.json"), "utf8"));
+const libraryPhotos = Object.values(dailyLibrary).flat().map((p) => ({ url: p.url, original_filename: basename(p.url) }));
+
+const assets = [...walk(join(root, "src"))
   .filter((f) => f.endsWith(".asset.json"))
-  .map((f) => JSON.parse(readFileSync(f, "utf8")))
+  .map((f) => JSON.parse(readFileSync(f, "utf8"))), ...libraryPhotos]
+  .filter((a, i, all) => all.findIndex((b) => b.url === a.url) === i)
   .filter((a) => a.url?.startsWith("/__l5e/") && !existsSync(join(root, "public", a.url)));
 
 console.log(`${assets.length} image(s) to download from ${ORIGIN}`);
