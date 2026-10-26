@@ -13,9 +13,15 @@ const walk = (d) => readdirSync(d).flatMap((n) => statSync(join(d, n)).isDirecto
 const dailyLibrary = JSON.parse(readFileSync(join(root, "src/assets/verse-backgrounds/dailyLibrary.json"), "utf8"));
 const libraryPhotos = Object.values(dailyLibrary).flat().map((p) => ({ url: p.url, original_filename: basename(p.url) }));
 
+// Catch-all: any other source file that references a Lovable-hosted path.
+const referenced = walk(join(root, "src"))
+  .filter((f) => /\.(json|ts|tsx|js|jsx|css)$/.test(f))
+  .flatMap((f) => readFileSync(f, "utf8").match(/\/__l5e\/assets-v1\/[^"'`\s)]+/g) ?? [])
+  .map((url) => ({ url, original_filename: basename(url) }));
+
 const assets = [...walk(join(root, "src"))
   .filter((f) => f.endsWith(".asset.json"))
-  .map((f) => JSON.parse(readFileSync(f, "utf8"))), ...libraryPhotos]
+  .map((f) => JSON.parse(readFileSync(f, "utf8"))), ...libraryPhotos, ...referenced]
   .filter((a, i, all) => all.findIndex((b) => b.url === a.url) === i)
   .filter((a) => a.url?.startsWith("/__l5e/") && !existsSync(join(root, "public", a.url)));
 

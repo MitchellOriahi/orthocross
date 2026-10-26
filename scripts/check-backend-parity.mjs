@@ -62,11 +62,11 @@ if (lovableOnly) for (const f of lovableOnly.split("\n")) fail(`uses a Lovable-o
 console.log("\n3) Lovable-hosted images have local copies (public/__l5e/...)");
 const beforeAssets = problems;
 const walk = (d) => readdirSync(d).flatMap((n) => statSync(join(d, n)).isDirectory() ? walk(join(d, n)) : [join(d, n)]);
-let missing = 0;
-for (const f of walk(join(root, "src")).filter((f) => f.endsWith(".asset.json"))) {
-  const { url } = JSON.parse(readFileSync(f, "utf8"));
-  if (url && !existsSync(join(root, "public", url))) missing++;
-}
+// Any Lovable-hosted path referenced anywhere in src (*.asset.json, data files, code).
+const urls = new Set(walk(join(root, "src"))
+  .filter((f) => /\.(json|ts|tsx|js|jsx|css)$/.test(f))
+  .flatMap((f) => readFileSync(f, "utf8").match(/\/__l5e\/assets-v1\/[^"'`\s)]+/g) ?? []));
+const missing = [...urls].filter((url) => !existsSync(join(root, "public", url))).length;
 if (missing) fail(`${missing} image(s) only exist on Lovable's hosting — run: npm run sync:lovable-assets`);
 if (problems === beforeAssets) console.log("  ✓ all images are bundled locally");
 
