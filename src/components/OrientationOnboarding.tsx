@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageList } from "@/components/LanguageButton";
 import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
+import { submitOrientationChoice } from "@/lib/orientationSubmission";
 import { applyBranchPreferences, applyLanguageIconDefaults, hasStoredOrientation, orientationForBranch, setOrientation, orientationChurchOptions, initialOrientationOnboardingStep } from "@/lib/orthodoxOrientation";
 
 type Step = "language" | "family" | "oriental" | "eastern";
@@ -24,7 +25,8 @@ export function OrientationOnboarding() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("family");
   const [saving, setSaving] = useState(false);
-  const [tutorialDone, setTutorialDone] = useState(() => localStorage.getItem("hasSeenTutorial") === "true");
+  const submitting = useRef(false);
+  const accountId = user?.id;
 
   const { data: identity, isSuccess: identityLoaded } = useQuery({
     queryKey: ["profileIdentityTags", user?.id],
@@ -44,56 +46,58 @@ export function OrientationOnboarding() {
   }, [user?.id, identityLoaded, identity?.branch, language]);
 
   useEffect(() => {
-    const onDone = () => setTutorialDone(true);
-    window.addEventListener("orthocross:tutorial-done", onDone);
-    return () => window.removeEventListener("orthocross:tutorial-done", onDone);
-  }, []);
-
-  useEffect(() => {
-    if (!user || !tutorialDone || localStorage.getItem(doneKey(user.id))) return;
+    if (!user || localStorage.getItem(doneKey(user.id))) return;
+    // Open the language step immediately so the Board never shows first.
+    const initialStep = initialOrientationOnboardingStep(user.user_metadata, false);
+    if (initialStep) { setStep(initialStep); setOpen(true); (window as any).__orientationOpen = true; }
     let cancelled = false;
     supabase.from("profile_identity_tags").select("branch").eq("user_id", user.id).maybeSingle().then(({ data, error }) => {
       if (cancelled || error) return;
       if (data?.branch && !hasStoredOrientation()) applyBranchPreferences(data.branch);
-      // A saved branch is not evidence that this account has seen the sticker.
-      const initialStep = initialOrientationOnboardingStep(user.user_metadata, false);
-      if (initialStep) { setStep(initialStep); setOpen(true); }
     });
     return () => { cancelled = true; };
-  }, [user, tutorialDone]);
+  // Token refreshes and updateUser replace the user object; they must not reset an active survey.
+  }, [accountId]);
+
+  useEffect(() => {
+    if (open) return;
+    (window as any).__orientationOpen = false;
+    // Ending the survey reveals the Board; it must open at the top, not at the restored middle.
+    window.scrollTo(0, 0);
+    window.dispatchEvent(new Event("orthocross:orientation-done"));
+  }, [open]);
 
   /** Persist completion; silent when the sticker is dismissed without choosing, so no toast is shown. */
-  const finish = async (silent = false) => {
-    if (!user || saving) return;
-    setSaving(true);
-    const { error } = await supabase.auth.updateUser({ data: { orientation_onboarding_status: "completed" } });
-    setSaving(false);
-    if (error) {
-      if (!silent) toast({ title: "Couldn't save your choice", description: "Please try again.", variant: "destructive" });
-      return;
+  const finish = async (silent = false, branch?: string) => {
+    if (!user || submitting.current) return;
+    submitting.current = true;
+    try {
+      await submitOrientationChoice({
+        saveBranch: branch ? () => supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch }, { onConflict: "user_id" }) : undefined,
+        saveCompletion: () => supabase.auth.updateUser({ data: { orientation_onboarding_status: "completed" } }),
+        setSaving,
+        onComplete: () => {
+          if (branch) {
+            void queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
+            applyBranchPreferences(branch, { force: true });
+          } else if (!silent) setOrientation("undecided");
+          // Account metadata is authoritative; unavailable browser storage must not trap the user.
+          try { localStorage.setItem(doneKey(user.id), "1"); } catch { /* completion is already saved */ }
+          setOpen(false);
+          if (!silent) toast(PROFILE_UPDATED_TOAST);
+        },
+      });
+    } catch {
+      toast({ title: "Couldn't save your choice", description: "Please try again.", variant: "destructive" });
+    } finally {
+      submitting.current = false;
     }
-    localStorage.setItem(doneKey(user.id), "1");
-    if (!silent) toast(PROFILE_UPDATED_TOAST);
-    setOpen(false);
   };
-  const chooseBranch = async (branch: string) => {
-    if (!user) return;
-    setSaving(true);
-    const { error } = await supabase.from("profile_identity_tags").upsert({ user_id: user.id, branch }, { onConflict: "user_id" });
-    setSaving(false);
-    if (error) {
-      toast({ title: "Couldn't save your church", description: "Please try again.", variant: "destructive" });
-      return;
-    }
-    queryClient.invalidateQueries({ queryKey: ["profileIdentityTags", user.id] });
-    applyBranchPreferences(branch, { force: true });
-    if (orientationForBranch(branch) === "undecided") setOrientation("undecided");
-    await finish();
-  };
+  const chooseBranch = (branch: string) => finish(false, branch);
 
   return (
     <Dialog open={open} onOpenChange={o => { if (!o) void finish(true); }}>
-      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel={t("justExploring")} onChooseBranch={chooseBranch} onNeither={() => { setOrientation("undecided"); void finish(); }} />
+      <OrientationSteps step={step} setStep={setStep} saving={saving} unaffiliatedLabel={t("justExploring")} onChooseBranch={chooseBranch} onNeither={() => void finish()} />
     </Dialog>
   );
 }

@@ -1,4 +1,8 @@
 # Prayers category browser
+## Reader swipe clarity
+- [x] Separate vertical scrolling from deliberate page turns and reveal the bottom bar promptly with bounce-safe scroll detection. Eleven tests pass; signed-in phone-sized checks confirm vertical arcs, left/right turns, cancellation, scroll fallback, programmatic suppression and real touch hide/reveal without chapter changes. Preview build clean; external website needs deployment, native device testing remains unverified.
+## Mobile navigation swipes
+- [x] Cancel swipes on navigation buttons without losing first-tap or keyboard activation; horizontal overscroll contained where supported. Four tests pass; signed-in phone-sized checks verify all five first taps, returning swipes, real left/right touch swipes and keyboard activation; build clean. Safari's system edge gestures and native device behavior remain device-specific and unverified.
 ## Journal highlight modes
 - [x] Add Word/Sentence chooser and eight colors; preserve sentence highlights when removing or repainting one word. Thirty-five focused checks and one signed-in save/reload flow passed.
 ## Revenue offer rollout
@@ -40,6 +44,7 @@
 - [x] Prevent translated words from splitting across lines and fit overlong labels in their existing slots, excluding protected Bible text. Friends buttons checked in all 16 translated languages; Church, Settings and History word-boundary checks passed in Serbian, Arabic and Malayalam. Three translation tests pass; preview build clean.
 - [x] Fix clipped stickers and resource tiles, preserve header/action control positions across languages, and protect OrthoCross. All 17 languages checked on Friends, Church and Settings; additional main-page checks, Russian cancellation/language stickers, phone and desktop screenshots, brand tests and preview build passed.
 ## Tradition sticker update
+- [x] Keep church selection and account completion in one guarded submission; auth refresh no longer restarts the survey. Twenty-seven checks pass; signed-in completion reaches the Board and stays completed after reload. External website requires its next deployment.
 - [x] Language precedes tradition even with a saved device language; verified signed in with pending onboarding, then restored account status. Confirmation uses 3 seconds; observed dismissal at 3.36 seconds including animation. All 25 tests pass; preview clean.
 - [x] Allow unseen existing accounts to receive the sticker once. Fourteen rule tests pass, including completed-account suppression across devices; signed-in existing account opens the sticker and Eastern church list without runtime errors. Completion saving is unchanged; the account was left uncompleted so its owner can test.
 - [x] Alphabetize church lists, remove generic family entries, rename the neutral choice Neither, and mark eligibility only at signup with account-persisted completion. Rule tests pass; real signed-in returning account shows no sticker or runtime errors. Fresh signup and cross-device completion were not exercised end-to-end.
@@ -143,6 +148,7 @@
 - [x] Continue with other online sources after the Athonite block; audit coverage, retain source/license credits, and verify all seven category pages with loaded images and unchanged cards.
 
 ## Monthly leaderboard podium
+- [x] Resolve global standings and monthly podium names/photos through the existing authenticated public-profile lookup; deterministic tie ordering gives viewers the same winners. Two identity tests pass; live signed-in standings display the saved winner name without Unknown User or runtime errors. Previous-month podium has no live September data; external website still requires deployment.
 - [x] Keep every place circle visible: own ring shade per place, tuned for light and dark pages, with a page-coloured hairline between ring and picture; verified against grey and brown pictures in both themes, build clean.
 - [x] Group ranking rows: top-three picture ring lightened to a 1.5px hairline (shadow ring, since a real border is rounded up to a whole pixel and 2px read as too bold); verified gold/silver/bronze outlines still clearly visible on the group page, build clean.
 - [x] Group ranking rows: soft glow added to each top-three picture circle in its own metal — gold first, silver second, bronze third — ring and glow share one tone per place and all three differ; verified in preview, build clean.

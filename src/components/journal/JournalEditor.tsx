@@ -37,6 +37,7 @@ interface JournalEditorProps {
   onContentChange: (content: string) => void;
   isSaving: boolean;
   noteId: string;
+  onMediaPinChange?: (noteId: string, mediaUrl: string | null, mediaType: string | null) => void;
 }
 
 const HIGHLIGHT_COLORS = [
@@ -57,6 +58,7 @@ export const JournalEditor = ({
   onContentChange,
   isSaving,
   noteId,
+  onMediaPinChange,
 }: JournalEditorProps) => {
   const { user } = useAuth();
   const contentDivRef = useRef<HTMLDivElement>(null);
@@ -307,8 +309,10 @@ export const JournalEditor = ({
       // Update local state
       if (!isPinned) {
         setPinnedMediaUrl(mediaUrl);
+        onMediaPinChange?.(noteId, mediaUrl, mediaType);
       } else {
         setPinnedMediaUrl(null);
+        onMediaPinChange?.(noteId, null, null);
       }
     } catch (error) {
       console.error('Error pinning media:', error);

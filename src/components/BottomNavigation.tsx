@@ -1,4 +1,8 @@
 import { useEffect, useRef } from "react";
+
+// Browsers cancel the click of a tap that lands while the page is still
+// scrolling or swiping — the tap just stops the scroll. Activating on
+// pointer-up with a small movement allowance makes the first tap navigate.
 import { useNavigate, useLocation } from "react-router-dom";
 import { Flame, Book, Church, ScrollText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { isNavigationTap, trackNavigationMovement, type NavigationTap } from "@/lib/navigationTap";
 
 export const BottomNavigation = () => {
   const navigate = useNavigate();
@@ -14,6 +19,33 @@ export const BottomNavigation = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navRef = useRef<HTMLElement>(null);
+  const tapStartRef = useRef<NavigationTap | null>(null);
+
+  const handleTapStart = (e: React.PointerEvent, path: string) => {
+    if (!e.isPrimary || e.button !== 0) return;
+    tapStartRef.current = { pointerId: e.pointerId, x: e.clientX, y: e.clientY, path, cancelled: false };
+  };
+
+  const handleTapMove = (e: React.PointerEvent) => {
+    const start = tapStartRef.current;
+    if (!start || start.pointerId !== e.pointerId) return;
+    tapStartRef.current = trackNavigationMovement(start, e.clientX, e.clientY);
+  };
+
+  const handleTapEnd = (e: React.PointerEvent, path: string) => {
+    const start = tapStartRef.current;
+    if (start && start.pointerId !== e.pointerId) return;
+    tapStartRef.current = null;
+    if (!isNavigationTap(start, e.pointerId, path, e.clientX, e.clientY)) return;
+    navigate(path);
+  };
+
+  const handleClick = (e: React.MouseEvent, path: string) => {
+    // Pointer activation is handled above; never let a swipe's trailing click navigate.
+    // Zero-detail clicks preserve keyboard and assistive-technology activation.
+    if (e.detail !== 0) { e.preventDefault(); return; }
+    navigate(path);
+  };
 
   // Publish the real bar height so pages clear it exactly in every language.
   useEffect(() => {
@@ -319,7 +351,11 @@ export const BottomNavigation = () => {
               <Button
                 key={item.path}
                 variant="ghost"
-                onClick={() => navigate(item.path)}
+                onClick={(e) => handleClick(e, item.path)}
+                onPointerDown={(e) => handleTapStart(e, item.path)}
+                onPointerMove={handleTapMove}
+                onPointerUp={(e) => handleTapEnd(e, item.path)}
+                onPointerCancel={() => { tapStartRef.current = null; }}
                 onMouseEnter={() => {
                   if (item.path === "/dashboard") {
                     prefetchDashboardData();
@@ -344,6 +380,7 @@ export const BottomNavigation = () => {
                     prefetchProfileData();
                   }
                 }}
+                style={{ touchAction: "manipulation" }}
                 className={`flex min-w-0 w-full flex-col items-center gap-1 h-auto py-2 px-1 ${
                   isActive ? "text-primary" : "text-muted-foreground"
                 }`}

@@ -477,6 +477,23 @@ export const Journal = () => {
     });
   };
 
+  // Pinning a drawing or media item also makes its note the dashboard cover.
+  const handleMediaPinChange = async (noteId: string, mediaUrl: string | null, mediaType: string | null) => {
+    if (mediaUrl) {
+      const others = notes.filter(n => n.pinned && n.id !== noteId);
+      for (const other of others) {
+        await (supabase as any).from('journal_entries').update({ pinned: false }).eq('id', other.id);
+      }
+      await (supabase as any).from('journal_entries').update({ pinned: true }).eq('id', noteId);
+    }
+    setNotes(prev => prev.map(n => {
+      if (n.id === noteId) {
+        return { ...n, pinned_media_url: mediaUrl, pinned_media_type: mediaType, pinned: mediaUrl ? true : n.pinned };
+      }
+      return mediaUrl ? { ...n, pinned: false } : n;
+    }));
+  };
+
   const handleViewModeChange = async (newMode: 'list' | 'gallery') => {
     viewRevisionRef.current += 1;
     setViewMode(newMode);
@@ -562,13 +579,13 @@ export const Journal = () => {
                     <img 
                       src={pinnedMediaUrl} 
                       alt="Pinned media" 
-                      className="max-w-full max-h-full object-contain"
+                      className="w-full h-full object-contain"
                     />
                   ) : pinnedMediaType === 'video' ? (
                     <>
                       <video 
                         src={pinnedMediaUrl} 
-                        className="max-w-full max-h-full object-contain"
+                        className="w-full h-full object-contain"
                         muted
                         onPlay={() => setPlayingMediaId(displayNote.id)}
                         onPause={() => setPlayingMediaId(null)}
@@ -642,7 +659,7 @@ export const Journal = () => {
                     <img 
                       src={contentPreview.imageUrl} 
                       alt="Note preview" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain bg-muted"
                     />
                   </div>
                   <div className="p-4 flex-1">
@@ -741,17 +758,15 @@ export const Journal = () => {
                 <Button variant="ghost" className="h-11 min-w-[4.5rem] px-4 text-base font-medium rounded-xl border border-border/60 bg-muted/70 hover:bg-muted" onClick={() => setEditingFolders(value => !value)}>{editingFolders ? 'Done' : 'Edit'}</Button>
                 <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl border border-border/60 bg-muted/70 hover:bg-muted" onClick={() => handleFolderCreate()} aria-label="New folder" title="New folder"><FolderPlus className="h-5 w-5" /></Button>
               </div>}
-              {showSidebar && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleClose}
-                  aria-label="Close"
-                  className="h-11 w-11 shrink-0 ms-2 rounded-xl border border-border/60 bg-muted/70 hover:bg-muted"
-                >
-                  <X className="h-6 w-6" />
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClose}
+                aria-label="Close"
+                className="h-11 w-11 shrink-0 ms-2 rounded-xl border border-border/60 bg-muted/70 hover:bg-muted"
+              >
+                <X className="h-6 w-6" />
+              </Button>
             </div>
 
             <div
@@ -826,6 +841,7 @@ export const Journal = () => {
                       onContentChange={handleContentChange}
                       isSaving={isSaving}
                       noteId={selectedNoteId}
+                      onMediaPinChange={handleMediaPinChange}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full p-4 text-center text-muted-foreground">

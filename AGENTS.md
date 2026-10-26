@@ -14,6 +14,7 @@
 - Journal opens on Folders; shared scopes keep All Notes unfiled without move navigation. Separate untouched drafts; expand in place to retain list state.
 - Journal highlight ranges use Unicode sentence segmentation across inline formatting and split existing marks at selection boundaries, so removing one word preserves the rest of a highlighted sentence. Highlights never paint whitespace: strip spaces out of every mark before folding same-colour marks, and same-colour marks merge only when nothing (not even a space) separates them.
 - Use shared donor tiers and server-resolved anonymous names; portrait, crown and tag colors follow tier, not rank. Header glow uses account-keyed donor-status refreshed on donors-changed to avoid cross-account glow.
+- Global monthly standings and the previous-month podium resolve identities through the public leaderboard profile lookup, joined by account ID with deterministic tie ordering; friends-only profile reads cannot supply global winners.
 - History: a pure ordered-progress selector advances the glow; rows prioritize island width and fixed checkpoints over optional spacers, keeping translations readable.
 - Render the Board daily verse via a dedicated card reusing the deterministic local selector and share dialog; notifications unchanged.
 - Compose verse images locally from bundled licensed photos picked by date index (no repeats per cycle) and cached, so rotation never waits on AI or sign-in.
@@ -35,8 +36,11 @@
 - Resolve explicit community icon defaults in the orientation store with Greek fallback; identity queries protect branch priority and manual picks.
 - Store the chosen category icon style per section (saints, prayers) so a manual pick in one never moves the other; a church choice writes both, and the older single-style key migrates into both on first read.
 - Gate onboarding by account completion, not device language or branch; eligible accounts choose language before tradition, without cross-device repeats.
+- Initialize the orientation survey by stable account ID, not auth user-object identity; submit branch and completion sequentially with one lock so token refresh cannot restart the survey or strand disabled controls.
 - Define auth context outside components to preserve identity during refresh.
 - Some subdirectories have their own AGENTS.md; read it before changing files there.
+- Bottom navigation activates pointer taps only once on pointer-up, permanently cancels moved gestures and ignores trailing pointer clicks; keyboard clicks remain available, while horizontal overscroll containment reduces browser history gestures where supported.
+- Reader gestures use a shared tested axis lock and full two-axis travel; user-driven scroll direction supplements touch visibility while ignoring overscroll and programmatic movement, preventing accidental page turns and delayed bar reveals.
 - LanguageContext sets lang/dir/fallback; reveal switches after React and DOM translation settle.
 - public/i18n drives DOM translation; protect scripture/whole words. content_keys.py checks History/Saints; audit typed and DOM church-family labels for meaning.
 - Offer the OSB plus the app language's own Bibles, fetched from fixed public sources by the chapter function.

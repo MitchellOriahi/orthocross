@@ -29,6 +29,7 @@ import orthodoxCross from "@/assets/orthodox-cross.jpg";
 import orthodoxCrossLight from "@/assets/orthodox-cross-light.png";
 import { VerseNoteDialog } from "@/components/VerseNoteDialog";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { startReaderGesture, moveReaderGesture, readerPageTurn, readerScrollDirection, type ReaderGesture } from "@/lib/readerGesture";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 interface VerseHighlight {
@@ -695,120 +696,133 @@ const Reading = () => {
     }
   };
 
-  // Bottom bar stays hidden while reading. Pulling the text back up (scrolling
-  // up, finger moving down) anywhere on the page — including a swipe starting
-  // mid-page — reveals it; scrolling down through the verses hides it again,
-  // matching the YouVersion behavior. Each gesture is judged by its total
-  // excursion from where the finger (or cursor) first landed, so slow drags and
-  // fast flicks both count and natural finger wobble within one gesture can
-  // never hide the bar again.
-  // A trackpad/wheel swipe is recognized too (deltaY < 0 = scrolling up =
-  // reveal; deltaY > 0 = scrolling down = hide).
+  // Touch owns intent; scroll events supplement it when a WebView throttles moves.
   useEffect(() => {
-    // Gestures that begin inside an overlay — the translation picker popup or
-    // its details dialog — never move the bar; scrolling those lists is just
-    // browsing options, not reading navigation.
     const inOverlay = (target: EventTarget | null) =>
       target instanceof Element &&
       !!(target.closest("[data-radix-popper-content-wrapper]") || target.closest('[role="dialog"]'));
     let ignoring = false;
+    let onControl = false;
     let hidDuringGesture = false;
-    let startY: number | null = null;
-    let extremeY: number | null = null; // furthest point reached during this gesture
-    let startX: number | null = null;
-    let minX: number | null = null; // furthest left reached
-    let maxX: number | null = null; // furthest right reached
+    let gesture: ReaderGesture | null = null;
+    let directionY = 0;
+    let userScrollUntil = 0;
+    let scrollAnchor = window.scrollY;
     const start = (x: number, y: number, target: EventTarget | null) => {
       ignoring = inOverlay(target);
-      startY = y;
-      extremeY = y;
+      onControl = target instanceof Element && !!target.closest('button, a, input, [role="slider"], [role="combobox"], nav');
+      gesture = startReaderGesture(x, y);
+      directionY = y;
       hidDuringGesture = false;
-      startX = x;
-      minX = x;
-      maxX = x;
+      userScrollUntil = 0;
+      scrollAnchor = window.scrollY;
     };
     const move = (x: number, y: number) => {
-      if (ignoring || startY === null || extremeY === null) return;
-      if (y > extremeY) extremeY = y;
-      if (minX !== null && x < minX) minX = x;
-      if (maxX !== null && x > maxX) maxX = x;
-      const downExcursion = extremeY - startY; // > 0 when the finger moved down
-      const upExcursion = startY - y; // > 0 when the finger moved up
-      if (startX !== null) {
-        const dx = x - startX;
-        const dy = Math.abs(y - startY);
+      if (ignoring || !gesture) return;
+      gesture = moveReaderGesture(gesture, x, y);
+      const dx = x - gesture.x;
+      if (gesture.axis === "horizontal" && !onControl) {
         const nav = swipeNavRef.current;
-        if (Math.abs(dx) > 12 && Math.abs(dx) > dy * 1.5 && (dx < 0 ? nav.canNext : nav.canPrev)) {
-          setSwipeDx(dx);
-          return;
-        }
-        setSwipeDx(0);
-      }
-      if (downExcursion >= 4) {
-        setShowBottomNav(true);
-      } else if (upExcursion >= 6) {
-        hidDuringGesture = true;
-        setShowBottomNav(false);
-      }
-    };
-    const end = () => {
-      if (!ignoring && startY !== null && extremeY !== null) {
-        // A quick flick may deliver its whole travel between start and end.
-        // An upward pull later in the same stroke wins: once the bar was hidden
-        // during this gesture, ending the touch must not bring it back.
-        if (extremeY - startY >= 4 && !hidDuringGesture) setShowBottomNav(true);
+        const vertical = gesture.maxY - gesture.minY;
+        setSwipeDx(Math.abs(dx) > 12 && Math.abs(dx) > vertical * 2.5 && (dx < 0 ? nav.canNext : nav.canPrev) ? dx : 0);
+        return;
       }
       setSwipeDx(0);
-      const SWIPE_PAGE_FLIP = true;
-      if (SWIPE_PAGE_FLIP && !ignoring && startX !== null && minX !== null && maxX !== null && startY !== null && extremeY !== null) {
-        const leftTravel = startX - minX;
-        const rightTravel = maxX - startX;
-        const horizontal = Math.max(leftTravel, rightTravel);
-        const vertical = Math.max(extremeY - startY, startY - extremeY);
-        if (horizontal >= 60 && horizontal > vertical * 1.5) {
-          swipeHandledAtRef.current = Date.now();
-          if (leftTravel >= rightTravel) {
-            if (swipeNavRef.current.canNext) swipeNavRef.current.next();
-          } else {
-            if (swipeNavRef.current.canPrev) swipeNavRef.current.prev();
-          }
-        }
+      if (gesture.axis === "pending" && Math.abs(dx) > Math.abs(y - gesture.y)) return;
+      const movement = y - directionY;
+      if (movement <= -6) {
+        hidDuringGesture = true;
+        directionY = y;
+        setShowBottomNav(false);
+      } else if (movement >= 4) {
+        directionY = y;
+        if (!hidDuringGesture) setShowBottomNav(true);
       }
-      startY = null;
-      extremeY = null;
-      startX = null;
-      minX = null;
-      maxX = null;
     };
-    const onTouchStart = (e: TouchEvent) => start(e.touches[0]?.clientX ?? 0, e.touches[0]?.clientY ?? 0, e.target);
-    const onTouchMove = (e: TouchEvent) => e.touches[0] && move(e.touches[0].clientX, e.touches[0].clientY);
-    // Any pointer type counts (touch, pen, mouse drag) so desktop preview,
-    // touchscreen laptops and tablets all work; hover moves are ignored
-    // because startY is only set while pressed.
-    const onPointerDown = (e: PointerEvent) => start(e.clientX, e.clientY, e.target);
-    const onPointerMove = (e: PointerEvent) => move(e.clientX, e.clientY);
+    const end = (cancelled = false) => {
+      const turn = !cancelled && !ignoring && !onControl && gesture ? readerPageTurn(gesture) : null;
+      userScrollUntil = !ignoring && gesture?.axis !== "horizontal" ? performance.now() + 800 : 0;
+      if (turn) {
+        swipeHandledAtRef.current = Date.now();
+        userScrollUntil = 0;
+        if (turn === "next" && swipeNavRef.current.canNext) swipeNavRef.current.next();
+        else if (turn === "prev" && swipeNavRef.current.canPrev) swipeNavRef.current.prev();
+      }
+      gesture = null;
+      setSwipeDx(0);
+    };
+    const onTouchStart = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (e.touches.length !== 1 || !touch) { end(true); ignoring = true; return; }
+      start(touch.clientX, touch.clientY, e.target);
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length !== 1) { end(true); ignoring = true; return; }
+      const touch = e.touches[0];
+      if (touch) move(touch.clientX, touch.clientY);
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      const touch = e.changedTouches[0];
+      if (touch) move(touch.clientX, touch.clientY);
+      end();
+    };
+    const onCancel = () => end(true);
+    // Touch events survive native scrolling's pointercancel; do not process both streams.
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.pointerType !== "touch" && e.isPrimary && e.button === 0) start(e.clientX, e.clientY, e.target);
+    };
+    const onPointerMove = (e: PointerEvent) => { if (e.pointerType !== "touch") move(e.clientX, e.clientY); };
+    const onPointerUp = (e: PointerEvent) => {
+      if (e.pointerType !== "touch") { move(e.clientX, e.clientY); end(); }
+    };
+    const onPointerCancel = (e: PointerEvent) => { if (e.pointerType !== "touch") end(true); };
+    const onScroll = () => {
+      const y = window.scrollY;
+      const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      const overlayOpen = !!document.querySelector('[role="dialog"], [data-radix-popper-content-wrapper]');
+      if (ignoring || onControl || overlayOpen || gesture?.axis === "horizontal" || (!gesture && performance.now() > userScrollUntil)) {
+        scrollAnchor = y;
+        return;
+      }
+      const direction = readerScrollDirection(scrollAnchor, y, max);
+      if (direction || y < 0 || y > max || scrollAnchor < 0 || scrollAnchor > max) scrollAnchor = y;
+      // Momentum from the preceding stroke must not overrule the new finger direction.
+      if (gesture?.axis === "vertical" && ((gesture.lastY > gesture.y && direction === "hide") || (gesture.lastY < gesture.y && direction === "show"))) return;
+      if (direction === "hide") {
+        setShowBottomNav(false);
+      } else if (direction === "show" && !hidDuringGesture) setShowBottomNav(true);
+    };
     const onWheel = (e: WheelEvent) => {
-      if (inOverlay(e.target)) return;
+      if (inOverlay(e.target) || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      ignoring = false;
+      onControl = false;
+      hidDuringGesture = e.deltaY > 5;
+      userScrollUntil = performance.now() + 800;
+      scrollAnchor = window.scrollY;
       if (e.deltaY < -5) setShowBottomNav(true);
       else if (e.deltaY > 5) setShowBottomNav(false);
     };
     const opts = { passive: true, capture: true } as const;
     window.addEventListener("touchstart", onTouchStart, opts);
     window.addEventListener("touchmove", onTouchMove, opts);
-    window.addEventListener("touchend", end, opts);
-    window.addEventListener("touchcancel", end, opts);
+    window.addEventListener("touchend", onTouchEnd, opts);
+    window.addEventListener("touchcancel", onCancel, opts);
     window.addEventListener("pointerdown", onPointerDown, opts);
     window.addEventListener("pointermove", onPointerMove, opts);
-    window.addEventListener("pointerup", end, opts);
+    window.addEventListener("pointerup", onPointerUp, opts);
+    window.addEventListener("pointercancel", onPointerCancel, opts);
+    window.addEventListener("scroll", onScroll, opts);
     window.addEventListener("wheel", onWheel, opts);
     return () => {
       window.removeEventListener("touchstart", onTouchStart, opts);
       window.removeEventListener("touchmove", onTouchMove, opts);
-      window.removeEventListener("touchend", end, opts);
-      window.removeEventListener("touchcancel", end, opts);
+      window.removeEventListener("touchend", onTouchEnd, opts);
+      window.removeEventListener("touchcancel", onCancel, opts);
       window.removeEventListener("pointerdown", onPointerDown, opts);
       window.removeEventListener("pointermove", onPointerMove, opts);
-      window.removeEventListener("pointerup", end, opts);
+      window.removeEventListener("pointerup", onPointerUp, opts);
+      window.removeEventListener("pointercancel", onPointerCancel, opts);
+      window.removeEventListener("scroll", onScroll, opts);
       window.removeEventListener("wheel", onWheel, opts);
     };
   }, []);

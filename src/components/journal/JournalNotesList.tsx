@@ -212,7 +212,7 @@ export const JournalNotesList = ({
               <img 
                 src={imageSrc} 
                 alt="Note preview" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             ) : (
               <div className="p-4 text-sm text-muted-foreground line-clamp-6 text-center">
@@ -263,7 +263,7 @@ export const JournalNotesList = ({
   };
 
   return (
-    <div className="flex flex-col h-full min-h-0 min-w-0 w-full border-r border-border bg-card/30">
+    <div className="flex flex-col h-full min-h-0 min-w-0 w-full bg-card/30">
       <div className="p-3 border-b border-border space-y-2">
         <div className="flex items-center justify-end">
           <div className="flex items-center gap-1">

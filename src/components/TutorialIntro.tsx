@@ -44,14 +44,16 @@ export const TutorialIntro = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
-    const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
-    if (!hasSeenTutorial) {
-      // Show tutorial after a brief delay
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
+    if (localStorage.getItem("hasSeenTutorial")) return;
+    // Show tutorial after a brief delay, but never over the language/tradition sticker.
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const schedule = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { if (!(window as any).__orientationOpen) setIsOpen(true); }, 500);
+    };
+    schedule();
+    window.addEventListener("orthocross:orientation-done", schedule);
+    return () => { clearTimeout(timer); window.removeEventListener("orthocross:orientation-done", schedule); };
   }, []);
 
   const handleNext = () => {
