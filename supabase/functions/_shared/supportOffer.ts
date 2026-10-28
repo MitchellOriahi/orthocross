@@ -3,10 +3,11 @@ export const SUPPORT_PRICES: Record<string, string> = {
   "year:800": "price_1UTBTBFLYUoHeT5Q9nHjQSki",
   "year:1200": "price_1UTBTyFLYUoHeT5Q48PwbpGt",
   "year:1600": "price_1UTBUVFLYUoHeT5QhtjvofEP",
+  "month:200": "price_1UVexYFLYUoHeT5Q3LjIj1es",
   "month:300": "price_1UTBzzFLYUoHeT5QrcdGyMee",
 };
 export const MIN_YEARLY_CENTS = 800;
-export const FEATURED_MONTHLY_AMOUNT = 3;
+export const FEATURED_MONTHLY_AMOUNT = 2;
 export const FEATURED_YEARLY_AMOUNT = 12;
 export function annualComparison(yearly: number) {
   const monthlyYear = Math.round(FEATURED_MONTHLY_AMOUNT * 12 * 100) / 100;

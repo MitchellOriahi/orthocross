@@ -49,7 +49,12 @@ export function giftImpact(amount: number, mode: GiftMode): string {
     if (amount >= 5) return "Keeps the read-aloud voices speaking for many chapters.";
     return "Every gift helps keep OrthoCross free.";
   }
-  if (monthly >= 5) return "Helps fund new saint stories, prayers and features.";
-  if (monthly >= 2) return "Helps keep the app running smoothly for every reader.";
-  return "Helps keep Scripture and prayers free and ad-free.";
+  if (mode === "year") {
+    if (amount >= 16) return "Funds new saint stories and prayers.";
+    if (amount >= 12) return "Keeps the read-aloud voices speaking.";
+    return "Keeps Scripture and prayers ad-free.";
+  }
+  if (monthly >= 5) return "Funds new saint stories and prayers.";
+  if (monthly >= 2) return "Keeps the app running smoothly.";
+  return "Keeps Scripture and prayers ad-free.";
 }
