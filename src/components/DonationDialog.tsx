@@ -340,18 +340,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button variant="ghost"
-                type="button" role="switch" aria-checked={oneTime} aria-label={DONOR_TEXT.oneTimeFull}
-                onClick={toggleOneTime}
-                className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${oneTime ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
-              >
-                <HandCoins className="h-3.5 w-3.5" />
-                <span>{tr(DONOR_TEXT.oneTime)}</span>
-                <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${oneTime ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
-                  <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${oneTime ? "translate-x-3" : "translate-x-0"}`} />
-                </span>
-              </Button>
-            )}
-            <Button variant="ghost"
               type="button" role="switch" aria-checked={anonymous} aria-label={DONOR_TEXT.donateAnonymously}
               onClick={() => updateAnonymous(!anonymous)}
               className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${anonymous ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
