@@ -6,12 +6,12 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
-import { ChevronDown, Eye, EyeOff, HandCoins, Loader2 } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
 import { DONOR_TIERS } from "@/config/donorTiers";
 import { TierPortrait } from "./TierPortrait";
-import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle, giftImpact, minimumGift, shownTier } from "@/config/donationGift";
+import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftImpact, minimumGift, shownTier } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
@@ -43,7 +43,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     try { return !localStorage.getItem("donor-tiers-intro-seen"); } catch { return true; }
   });
   const [anonymous, setAnonymous] = useState(false);
-  const [oneTime, setOneTime] = useState(false);
   // Angel shown the instant a tier row is tapped, before the amount settles.
   const [pickedTierKey, setPickedTierKey] = useState<string | null>(null);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
@@ -77,7 +76,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   useEffect(() => {
     if (open) submittedRef.current = false;
     if (!open) return;
-    setOneTime(false);
     setInterval_(DEFAULT_DONATION_INTERVAL);
     setTiersOpen(false);
     if (initialAmount === undefined) {
@@ -117,23 +115,13 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     }
   };
 
-  // Flipping between a monthly gift and a one-time gift starts the amount over at $0.
-  const toggleOneTime = () => {
-    setOneTime(!oneTime);
-    const next = giftAfterModeToggle();
-    setSelectedAmount(next.amount);
-    setCustomAmount(next.customAmount);
-    setUseCustom(next.useCustom);
-    setPickedTierKey(null);
-  };
-
   const chooseInterval = (next: DonationInterval) => {
     setInterval_(next);
     setUseCustom(false); setCustomAmount("");
     setSelectedAmount(next === "year" ? DEFAULT_YEARLY_AMOUNT : DEFAULT_GIFT_AMOUNT);
     setPickedTierKey(null);
   };
-  const mode = oneTime ? "once" : interval;
+  const mode = interval;
   const minAmount = isNative ? 1 : minimumGift(mode);
 
   // On native, check if IAP products are available when dialog opens
@@ -205,38 +193,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     }
   };
 
-  // Web path, one-time gift: Stripe Checkout (single payment)
-  const handleOneTimeDonate = async () => {
-    const amount = getEffectiveAmount();
-    if (isNaN(amount) || amount < 1) {
-      toast({ title: "Invalid amount", description: "Minimum donation is $1.00", variant: "destructive" });
-      return;
-    }
-
-    if (!user) {
-      toast({ title: "Please sign in", description: "Sign in to donate so your gift is tied to your account.", variant: "destructive" });
-      return;
-    }
-
-    setLoading(true);
-    try {
-      localStorage.setItem("orthocross:donation-started", new Date().toISOString());
-      const { data, error } = await supabase.functions.invoke("create-donation", {
-        body: { amount: Math.round(amount * 100) },
-      });
-      if (error) throw error;
-      if (data?.url) {
-        window.open(data.url, "_blank");
-        onOpenChange(false);
-      }
-    } catch (error: any) {
-      console.error("Donation error:", error);
-      toast({ title: "Error", description: error.message || "Failed to process donation", variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Web path: Stripe Checkout (monthly subscription)
   const handleWebDonate = async () => {
     const amount = getEffectiveAmount();
@@ -273,8 +229,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     submittedRef.current = true;
     if (isNative) {
       handleNativeDonate();
-    } else if (oneTime) {
-      handleOneTimeDonate();
+
     } else {
       handleWebDonate();
     }
@@ -297,7 +252,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
         </div>
 
         <div className="space-y-2">
-          {!isNative && !oneTime && (
+          {!isNative && (
             <div role="radiogroup" aria-label="Billing" className="mx-auto grid w-full max-w-xs grid-cols-2 rounded-full border p-1">
               {(["month", "year"] as const).map(v => (
                 <Button key={v} type="button" role="radio" aria-checked={interval === v} variant={interval === v ? "sacred" : "ghost"} onClick={() => chooseInterval(v)} className="h-8 rounded-full text-xs">
@@ -306,21 +261,21 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               ))}
             </div>
           )}
-          <p className="text-center text-xs font-semibold text-muted-foreground">{tr(isNative || oneTime ? "A gift, not a commitment" : "Renews automatically · cancel anytime")}</p>
+          <p className="text-center text-xs font-semibold text-muted-foreground">{tr(isNative ? "A gift, not a commitment" : "Renews automatically · cancel anytime")}</p>
 
           <div className="relative flex flex-col items-center gap-3">
             <div className={`donor-tier-${activeTierKey ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               <TierPortrait tierKey={activeTierKey} alt={activeTier ? activeTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
             </div>
-            <p className="text-4xl font-bold text-primary text-center" data-no-translate>{money(Number(shownAmount))}{!isNative && !oneTime && tr(interval === "year" ? "/year" : "/month")}</p>
-            {!isNative && !oneTime && interval === "year" && effectiveAmount >= minAmount && (
+            <p className="text-4xl font-bold text-primary text-center" data-no-translate>{money(Number(shownAmount))}{!isNative && tr(interval === "year" ? "/year" : "/month")}</p>
+            {!isNative && interval === "year" && effectiveAmount >= minAmount && (
               <p className="text-xs text-muted-foreground" data-no-translate>{tr("About {amount} a month").replace("{amount}", money(effectiveAmount / 12))}</p>
             )}
             <p className="w-full truncate whitespace-nowrap text-sm text-muted-foreground text-center">{tr(effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone.")}</p>
             {!isNative && <DonationCurrencyEstimate amount={effectiveAmount} />}
           </div>
 
-          {(isNative || !oneTime) && (
+          {(
             <>
               <input
                 type="range"
@@ -349,7 +304,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 onChange={(e) => { setCustomAmount(e.target.value); setUseCustom(true); setPickedTierKey(null); }}
                 onFocus={() => setUseCustom(true)}
                 className="pl-7"
-                placeholder={tr(interval === "year" && !oneTime ? "Custom amount ($8 minimum)" : "Custom amount")}
+                placeholder={tr("Custom amount")}
               />
             </div>
           )}
@@ -384,19 +339,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {!isNative && (
-              <Button variant="ghost"
-                type="button" role="switch" aria-checked={oneTime} aria-label={DONOR_TEXT.oneTimeFull}
-                onClick={toggleOneTime}
-                className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${oneTime ? "donor-anon-active" : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"}`}
-              >
-                <HandCoins className="h-3.5 w-3.5" />
-                <span>{tr(DONOR_TEXT.oneTime)}</span>
-                <span aria-hidden="true" className={`relative h-4 w-7 shrink-0 rounded-full transition-colors ${oneTime ? "bg-[hsl(var(--donor-anon))]" : "bg-muted-foreground/40"}`}>
-                  <span className={`absolute left-0.5 top-0.5 block h-3 w-3 rounded-full bg-background shadow transition-transform ${oneTime ? "translate-x-3" : "translate-x-0"}`} />
-                </span>
-              </Button>
-            )}
             <Button variant="ghost"
               type="button" role="switch" aria-checked={anonymous} aria-label={DONOR_TEXT.donateAnonymously}
               onClick={() => updateAnonymous(!anonymous)}
@@ -422,9 +364,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <p className="text-xs text-muted-foreground">
             {isNative
               ? "One-time donation processed securely through the app store."
-              : oneTime
-                ? "A single gift, processed securely by Stripe."
-                : interval === "year" ? "Your gift renews yearly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings." : "Your gift renews monthly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings."}
+              : interval === "year" ? "Your gift renews yearly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings." : "Your gift renews monthly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings."}
           </p>
         </div>
       </DialogContent>

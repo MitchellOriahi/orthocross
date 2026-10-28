@@ -1,6 +1,16 @@
 import { describe, expect, test } from "bun:test";
-import { shownTier } from "./donationGift";
+import { minimumGift, shownTier } from "./donationGift";
 import { getTier } from "../../supabase/functions/_shared/donorTiers";
+
+describe("custom donation minimums", () => {
+  test("monthly gifts require at least $1", () => {
+    expect(minimumGift("month")).toBe(1);
+  });
+
+  test("yearly gifts require at least $8", () => {
+    expect(minimumGift("year")).toBe(8);
+  });
+});
 
 describe("gift circle angel", () => {
   test("the tier row just tapped is shown at once", () => {
