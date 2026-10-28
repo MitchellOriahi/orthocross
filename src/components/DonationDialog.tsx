@@ -11,7 +11,7 @@ import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
 import { DONOR_TIERS } from "@/config/donorTiers";
 import { TierPortrait } from "./TierPortrait";
-import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle, giftImpact, minimumGift, shownTier, annualComparison } from "@/config/donationGift";
+import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftAfterModeToggle, giftImpact, minimumGift, shownTier } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
 
@@ -316,7 +316,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             {!isNative && !oneTime && interval === "year" && effectiveAmount >= minAmount && (
               <p className="text-xs text-muted-foreground" data-no-translate>{tr("About {amount} a month").replace("{amount}", money(effectiveAmount / 12))}</p>
             )}
-            <p className="text-sm text-muted-foreground text-center">{tr(effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone.")}</p>
+            <p className="w-full truncate whitespace-nowrap text-sm text-muted-foreground text-center">{tr(effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone.")}</p>
             {!isNative && <DonationCurrencyEstimate amount={effectiveAmount} />}
           </div>
 
@@ -336,14 +336,6 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 {SLIDER_STEPS.map((amount, i) => <span key={amount} data-no-translate>{money(amount)}{!isNative && i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
               </div>
             </>
-          )}
-
-          {!isNative && !oneTime && interval === "year" && effectiveAmount >= minAmount && (
-            <div className="space-y-1 text-center text-xs text-muted-foreground" data-no-translate>
-              {effectiveAmount === DEFAULT_YEARLY_AMOUNT && <p className="font-semibold text-primary">{tr("Recommended yearly gift")}</p>}
-              {annualComparison(effectiveAmount).savings > 0 && <p>{tr("Save {amount} compared with monthly support").replace("{amount}", money(annualComparison(effectiveAmount).savings))}</p>}
-              <p>{tr("Compared with {amount}/month for 12 months.").replace("{amount}", money(DEFAULT_GIFT_AMOUNT))}</p>
-            </div>
           )}
 
           {!isNative && (
@@ -424,10 +416,8 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           )}
 
           <Button onClick={handleDonate} disabled={loading || effectiveAmount < minAmount || (isNative && productsAvailable === false)} className="h-14 w-full rounded-full text-lg" variant="sacred">
-            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{tr("Processing...")}</> : tr(isNative || oneTime ? "Give once" : "Support OrthoCross")}
+            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{tr("Processing...")}</> : tr("Donate")}
           </Button>
-
-          <p className="text-center text-xs text-muted-foreground">{tr("Scripture, prayers, Saints, History and basic journaling stay free.")}</p>
 
           <p className="text-xs text-muted-foreground">
             {isNative

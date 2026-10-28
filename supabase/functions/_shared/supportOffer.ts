@@ -6,7 +6,7 @@ export const SUPPORT_PRICES: Record<string, string> = {
   "month:300": "price_1UTBzzFLYUoHeT5QrcdGyMee",
 };
 export const MIN_YEARLY_CENTS = 800;
-export const FEATURED_MONTHLY_AMOUNT = 3;
+export const FEATURED_MONTHLY_AMOUNT = 2;
 export const FEATURED_YEARLY_AMOUNT = 12;
 export function annualComparison(yearly: number) {
   const monthlyYear = Math.round(FEATURED_MONTHLY_AMOUNT * 12 * 100) / 100;

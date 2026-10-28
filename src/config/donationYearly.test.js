@@ -6,12 +6,12 @@ describe("yearly gifts", () => {
     expect(minimumGift("year")).toBe(8);
     expect([...YEARLY_SLIDER_AMOUNTS]).toEqual([8, 12, 16]);
   });
-  test("feature $12 yearly and $3 monthly", () => {
+  test("feature $12 yearly and $2 monthly", () => {
     expect(DEFAULT_YEARLY_AMOUNT).toBe(12);
-    expect(DEFAULT_GIFT_AMOUNT).toBe(3);
+    expect(DEFAULT_GIFT_AMOUNT).toBe(2);
   });
   test("annual comparison uses twelve actual monthly payments", () => {
-    expect(annualComparison(12)).toEqual({ monthlyYear: 36, savings: 24 });
+    expect(annualComparison(12)).toEqual({ monthlyYear: 24, savings: 12 });
     expect(annualComparison(40).savings).toBe(0);
   });
   test("monthly and one-time minimum stays $1", () => {
