@@ -19,6 +19,7 @@
 - Render the Board daily verse via a dedicated card reusing the deterministic local selector and share dialog; notifications unchanged.
 - Compose verse images locally from bundled licensed photos picked by date index (no repeats per cycle) and cached, so rotation never waits on AI or sign-in.
 - Share composed verse images as file-only payloads through native attachment sharing or browser file sharing, downloading when unsupported; text-only email/SMS links cannot carry image attachments.
+- Register verse Share/Filesystem proxies through the dynamically loaded bundled Capacitor core; ignored bare-package imports cannot resolve in release WebViews. Native binaries still require both plugins synced.
 - Validate the image function's bearer token with getUser(token) on a stateless auth client; global headers do not create an SDK session.
 - Keep the legacy verse artwork function isolated so sharing never triggers billed image generation.
 - Keep style-specific verse typography in a dedicated canvas renderer with measured text fitting and global artwork palette tokens, so all styles preserve the complete verse without clipping.

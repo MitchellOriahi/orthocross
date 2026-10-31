@@ -175,3 +175,6 @@
 - [x] Show the app's regular black logo (black rounded tile with the white-outlined cross, as in dark mode) on the sign in/up, forgot-password and reset-password pages, with no white tile behind it.
 ## Scripture page-turn controls
 - [x] Make the floating page arrows larger rounded squares in the bottom bar's style, lift them clear of the chapter-progress slider, and enlarge Mark Complete to fill its row. Signed-in phone measurements: arrows 48×48 with 12px corners and 49px clear of the slider; Mark Complete 295×48; build clean.
+## iPhone verse sharing
+- [x] Replace unresolved native package imports with bundled bridge registration; seven tests pass and the live module reaches a simulated iOS bridge with an image-only attachment. Preview build clean.
+- [ ] Verify the installed iPhone share sheet. Blocked: requires the release maintainer to update local code, build, run cap sync ios and upload an Apple update; native plugin inclusion and real-device sharing cannot be checked in this sandbox.
