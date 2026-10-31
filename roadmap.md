@@ -176,4 +176,5 @@
 ## Scripture page-turn controls
 - [x] Make the floating page arrows larger rounded squares in the bottom bar's style, lift them clear of the chapter-progress slider, and enlarge Mark Complete to fill its row. Signed-in phone measurements: arrows 48×48 with 12px corners and 49px clear of the slider; Mark Complete 295×48; build clean.
 ## iPhone verse sharing
-- [ ] Correct native attachment loading and verify regression checks; installed iPhone sharing requires device testing and an updated Apple build.
+- [x] Replace unresolved native package imports with bundled bridge registration; seven tests pass and the live module reaches a simulated iOS bridge with an image-only attachment. Preview build clean.
+- [ ] Verify the installed iPhone share sheet. Blocked: requires the release maintainer to update local code, build, run cap sync ios and upload an Apple update; native plugin inclusion and real-device sharing cannot be checked in this sandbox.
