@@ -1,3 +1,6 @@
+import type { SharePlugin } from "@capacitor/share";
+import type { FilesystemPlugin } from "@capacitor/filesystem";
+
 export const imageSharePayload = (file: File): ShareData => ({ files: [file] });
 
 export const downloadVerseImage = (imageUrl: string, filename: string) => {
@@ -10,16 +13,22 @@ export const downloadVerseImage = (imageUrl: string, filename: string) => {
 };
 
 export const shareVerseImage = async (imageUrl: string, filename: string) => {
-  const { Capacitor } = await import("@capacitor/core");
+  const { Capacitor, registerPlugin } = await import("@capacitor/core");
   if (Capacitor.isNativePlatform()) {
-    const sharePath = ["@capacitor", "share"].join("/");
-    const filesystemPath = ["@capacitor", "filesystem"].join("/");
-    const { Share } = await import(/* @vite-ignore */ sharePath);
-    const { Filesystem, Directory } = await import(/* @vite-ignore */ filesystemPath);
+    // Use the bundled bridge: a WebView cannot resolve bare npm module paths.
+    const Share = registerPlugin<SharePlugin>("Share");
+    const Filesystem = registerPlugin<FilesystemPlugin>("Filesystem");
     const base64 = imageUrl.split(",")[1];
     if (!base64) throw new Error("The image could not be attached.");
-    const { uri } = await Filesystem.writeFile({ path: filename, data: base64, directory: Directory.Cache });
-    await Share.share({ files: [uri] });
+    const { uri } = await Filesystem.writeFile({ path: filename, data: base64, directory: "CACHE" as import("@capacitor/filesystem").Directory });
+    try {
+      await Share.share({ files: [uri] });
+    } catch (error) {
+      if (error instanceof Error && /^(Share canceled|Share cancelled)$/.test(error.message)) {
+        return "cancelled";
+      }
+      throw error;
+    }
     return "shared";
   }
   const blob = await (await fetch(imageUrl)).blob();

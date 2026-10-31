@@ -175,3 +175,5 @@
 - [x] Show the app's regular black logo (black rounded tile with the white-outlined cross, as in dark mode) on the sign in/up, forgot-password and reset-password pages, with no white tile behind it.
 ## Scripture page-turn controls
 - [x] Make the floating page arrows larger rounded squares in the bottom bar's style, lift them clear of the chapter-progress slider, and enlarge Mark Complete to fill its row. Signed-in phone measurements: arrows 48×48 with 12px corners and 49px clear of the slider; Mark Complete 295×48; build clean.
+## iPhone verse sharing
+- [ ] Correct native attachment loading and verify regression checks; installed iPhone sharing requires device testing and an updated Apple build.
