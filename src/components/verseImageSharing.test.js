@@ -40,14 +40,13 @@ describe("native verse image sharing", () => {
   test("a failing native plugin falls back to the WebView share sheet with the image file", async () => {
     share.mockImplementation(async () => { throw new Error("Plugin unavailable"); });
     const webShare = mock(async () => {});
-    globalThis.navigator.share = webShare;
-    globalThis.navigator.canShare = () => true;
+    const original = globalThis.navigator;
+    Object.defineProperty(globalThis, "navigator", { value: { share: webShare, canShare: () => true }, configurable: true });
     try {
       expect(await shareVerseImage("data:image/png;base64,aW1hZ2U=", "verse.png")).toBe("shared");
       expect(webShare.mock.calls[0][0].files[0].name).toBe("verse.png");
     } finally {
-      delete globalThis.navigator.share;
-      delete globalThis.navigator.canShare;
+      Object.defineProperty(globalThis, "navigator", { value: original, configurable: true });
     }
   });
 
