@@ -7,7 +7,7 @@
 - Normalize profile photos to the crop circle before zooming; shared crop geometry drives preview and export, with captured pointer drag/pinch and anchored delta-based wheel zoom so saved framing matches the editor.
 - Embed Church Guide cross variants as data URLs so rendering never waits on image requests.
 - Track lifetime saint-story completion by exact roster ID in private reading records and shared query cache; award all-stories completion by unique IDs to avoid namesake and membership inflation.
-- Keep saint associations as reciprocal exact-roster-ID links supported by existing lives, separate from biographies; reuse shared portraits/completion and remount readers on story changes to prevent stale pages.
+- Keep saint associations as reciprocal exact-roster-ID links separate from biographies; expand their unchanged, already-localized evidence passages in place rather than navigating, and reuse shared portraits/completion to preserve identities and reading state.
 
 - Pause Saints via a visibility selector; keep the saved catalog and presentation intact.
 - Keep the Saints browser separate from saved biographies; audited portrait registries preserve identities and classifications.

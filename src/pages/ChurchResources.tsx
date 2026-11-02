@@ -217,7 +217,7 @@ const ChurchResources = () => {
         subtitle={selectedSaint.shortDescription}
         content={selectedSaint.content}
         iconCredit={selectedSaint.iconCredit}
-        afterCredits={<AssociatedSaints saintId={selectedSaint.id} onSelect={setSelectedSaint} />}
+        afterCredits={<AssociatedSaints saintId={selectedSaint.id} />}
         onClose={closeSaintStory}
         showProgress={true}
         completing={completion.isPending}

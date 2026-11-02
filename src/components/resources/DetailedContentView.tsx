@@ -61,8 +61,8 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
     <div className="fixed inset-x-0 top-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-50 bg-background overflow-y-auto overscroll-contain">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-top">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" onClick={onClose} className="-ml-2 mr-auto w-auto min-w-0 shrink-0 justify-start px-2">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
+            <Button variant="ghost" onClick={onClose} className="-ml-2 w-fit min-w-0 justify-self-start justify-start px-2">
               <ArrowLeft className="w-5 h-5 mr-2" />
               Back
             </Button>
