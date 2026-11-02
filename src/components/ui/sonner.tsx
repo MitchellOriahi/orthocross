@@ -12,6 +12,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       position="top-center"
       duration={1000}
+      offset={{ top: "calc(env(safe-area-inset-top) + 1rem)" }}
+      mobileOffset={{ top: "calc(env(safe-area-inset-top) + 0.75rem)" }}
       swipeDirections={["top", "left", "right"]}
       toastOptions={{
         classNames: {
