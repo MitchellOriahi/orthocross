@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, ChevronLeft, ChevronRight, Check } from "lucide-react";
@@ -16,9 +16,10 @@ interface DetailedContentViewProps {
   completing?: boolean;
   iconUrl?: string;
   iconCredit?: SaintIconCredit;
+  afterCredits?: ReactNode;
 }
 
-export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete, completing = false, iconUrl, iconCredit }: DetailedContentViewProps) => {
+export const DetailedContentView = ({ title, subtitle, content, onClose, showProgress = false, onComplete, completing = false, iconUrl, iconCredit, afterCredits }: DetailedContentViewProps) => {
   // If iconUrl exists, we'll show it on page 0, content starts from page 1
   const contentPages = iconUrl ? ['__ICON_PAGE__', ...content] : content;
   const [currentPage, setCurrentPage] = useState(0);
@@ -248,6 +249,7 @@ export const DetailedContentView = ({ title, subtitle, content, onClose, showPro
           </Card>
         )}
         {iconCredit && <SaintIconCredits credit={iconCredit} />}
+        {afterCredits}
       </main>
     </div>
   );
