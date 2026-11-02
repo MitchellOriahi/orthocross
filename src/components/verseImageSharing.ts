@@ -12,32 +12,66 @@ export const downloadVerseImage = (imageUrl: string, filename: string) => {
   link.remove();
 };
 
-export const shareVerseImage = async (imageUrl: string, filename: string) => {
-  const { Capacitor, registerPlugin } = await import("@capacitor/core");
-  if (Capacitor.isNativePlatform()) {
-    // Use the bundled bridge: a WebView cannot resolve bare npm module paths.
-    const Share = registerPlugin<SharePlugin>("Share");
-    const Filesystem = registerPlugin<FilesystemPlugin>("Filesystem");
-    const base64 = imageUrl.split(",")[1];
-    if (!base64) throw new Error("The image could not be attached.");
-    const { uri } = await Filesystem.writeFile({ path: filename, data: base64, directory: "CACHE" as import("@capacitor/filesystem").Directory });
-    try {
-      await Share.share({ files: [uri] });
-    } catch (error) {
-      if (error instanceof Error && /^(Share canceled|Share cancelled)$/.test(error.message)) {
-        return "cancelled";
-      }
-      throw error;
-    }
-    return "shared";
-  }
+const isCancel = (error: unknown) =>
+  error instanceof Error && (error.name === "AbortError" || /cancel/i.test(error.message));
+
+const imageFile = async (imageUrl: string, filename: string) => {
   const blob = await (await fetch(imageUrl)).blob();
-  const file = new File([blob], filename, { type: "image/png" });
-  const payload = imageSharePayload(file);
-  if (navigator.share && navigator.canShare?.(payload)) {
+  return new File([blob], filename, { type: "image/png" });
+};
+
+// WKWebView (iOS 15+) supports sharing files through the Web Share API, so it
+// rescues builds whose native Share/Filesystem plugins are missing or failing.
+const tryWebShare = async (imageUrl: string, filename: string) => {
+  if (typeof navigator === "undefined" || !navigator.share) return null;
+  const payload = imageSharePayload(await imageFile(imageUrl, filename));
+  if (navigator.canShare && !navigator.canShare(payload)) return null;
+  try {
     await navigator.share(payload);
-    return "shared";
+    return "shared" as const;
+  } catch (error) {
+    if (isCancel(error)) return "cancelled" as const;
+    throw error;
   }
+};
+
+const shareNatively = async (imageUrl: string, filename: string) => {
+  const { Capacitor, registerPlugin } = await import("@capacitor/core");
+  // Use the bundled bridge: a WebView cannot resolve bare npm module paths.
+  const Share = registerPlugin<SharePlugin>("Share");
+  const Filesystem = registerPlugin<FilesystemPlugin>("Filesystem");
+  if (Capacitor.isPluginAvailable && (!Capacitor.isPluginAvailable("Share") || !Capacitor.isPluginAvailable("Filesystem"))) {
+    throw new Error("Native sharing is unavailable in this build.");
+  }
+  const base64 = imageUrl.split(",")[1];
+  const { uri } = await Filesystem.writeFile({
+    path: `verse-${Date.now()}-${filename}`,
+    data: base64,
+    directory: "CACHE" as import("@capacitor/filesystem").Directory,
+  });
+  try {
+    await Share.share({ files: [uri] });
+  } catch (error) {
+    if (isCancel(error)) return "cancelled" as const;
+    throw error;
+  }
+  return "shared" as const;
+};
+
+export const shareVerseImage = async (imageUrl: string, filename: string) => {
+  const { Capacitor } = await import("@capacitor/core");
+  if (Capacitor.isNativePlatform()) {
+    if (!imageUrl.split(",")[1]) throw new Error("The image could not be attached.");
+    try {
+      return await shareNatively(imageUrl, filename);
+    } catch (nativeError) {
+      const fallback = await tryWebShare(imageUrl, filename).catch(() => null);
+      if (fallback) return fallback;
+      throw nativeError;
+    }
+  }
+  const outcome = await tryWebShare(imageUrl, filename);
+  if (outcome) return outcome;
   downloadVerseImage(imageUrl, filename);
   return "downloaded";
 };
