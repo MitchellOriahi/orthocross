@@ -4,6 +4,7 @@
 ## Mobile navigation swipes
 - [x] Cancel swipes on navigation buttons without losing first-tap or keyboard activation; horizontal overscroll contained where supported. Four tests pass; signed-in phone-sized checks verify all five first taps, returning swipes, real left/right touch swipes and keyboard activation; build clean. Safari's system edge gestures and native device behavior remain device-specific and unverified.
 ## Journal highlight modes
+- [ ] Differentiate deliberate Word/Sentence taps and prevent native typing from inheriting ink in either mode; verify mode switching and sentence removal.
 - [x] Add Word/Sentence chooser and eight colors; preserve sentence highlights when removing or repainting one word. Thirty-five focused checks and one signed-in save/reload flow passed.
 ## Revenue offer rollout
 - [x] Feature yearly $8/$12/$16 (default $12), $2.99 monthly; preserve existing subscriptions and lifetime tiers. Created tracked Stripe preset prices; authenticated $12 yearly checkout creation returned success without submitting payment.
