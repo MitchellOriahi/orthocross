@@ -44,10 +44,10 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
           Select Book
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-md [&>button.absolute]:hidden">
-        <SheetHeader>
-          <div className="flex items-center justify-between">
-            <SheetTitle>
+      <SheetContent side="right" className="flex h-[100dvh] w-full flex-col overflow-hidden pt-[max(3.5rem,calc(env(safe-area-inset-top)+1rem))] pb-[calc(env(safe-area-inset-bottom)+1.5rem)] sm:max-w-md sm:pt-[calc(env(safe-area-inset-top)+1.5rem)] [&>button.absolute]:hidden">
+        <SheetHeader className="shrink-0">
+          <div className="flex min-w-0 items-center justify-between gap-3">
+            <SheetTitle className="min-w-0 text-left">
               {selectedBook ? (
                 <button
                   onClick={handleBackToBooks}
@@ -63,6 +63,7 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
             <Button
               variant="ghost"
               size="icon"
+              className="shrink-0"
               onClick={() => setOpen(false)}
               aria-label="Close"
             >
@@ -71,7 +72,7 @@ export const BookSelector = ({ books, onSelectBook, currentBook }: BookSelectorP
           </div>
         </SheetHeader>
         
-        <ScrollArea className="h-[calc(100vh-120px)] mt-6 -mr-6">
+        <ScrollArea className="min-h-0 flex-1 mt-2 -mr-6">
           {!selectedBook ? (
             <div className="space-y-2 pr-6">
 
