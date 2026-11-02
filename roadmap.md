@@ -95,6 +95,7 @@
 - [x] Rotate three designs and matching names daily; New Image adds up to three unique replacements per day's verse, preserved on reopening. Twelve licensed photos verified; eight tests and replacement/reload browser checks pass, with a clean build.
 
 ## Saints
+- [ ] Add associated-saint story links below icon credits across the roster, localize the section and preserve completed-story portrait glows; verify relationships and navigation.
 - [x] Show individual saint-completion stickers with glowing portraits; verified dismissal clears search and centers John of Damascus in Theologians; existing all-stories award remains separate.
 - [x] Add persistent completed-story golden portrait rings and a heartfelt award for finishing every unique saint story; exact-identity and final-story rules pass tests, and simulated completion/reload/award flows pass in preview.
 - [x] Add Prayers-matched All/Eastern/Oriental toggles to every category heading; all seven categories verified in preview, combined filtering works, and nine roster tests pass.
