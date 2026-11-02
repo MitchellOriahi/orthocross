@@ -32,6 +32,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CongratulationsModal } from "@/components/CongratulationsModal";
 import { useMusic } from "@/contexts/MusicContext";
 import { useSaintReadingProgress } from "@/hooks/useSaintReadingProgress";
+import { AssociatedSaints } from "@/components/resources/AssociatedSaints";
 
 type SectionType = "eastern" | "oriental" | "prayers" | "saints" | null;
 type PrayerFilterType = "all" | "Eastern" | "Oriental";
@@ -211,10 +212,12 @@ const ChurchResources = () => {
   const saintStoryOverlay = selectedSaint && (
     <div className="fixed inset-0 z-[60] bg-background">
       <DetailedContentView
+        key={selectedSaint.id}
         title={`${selectedSaint.prefix} ${selectedSaint.name}${selectedSaint.epithet ? ` ${selectedSaint.epithet}` : ''}`}
         subtitle={selectedSaint.shortDescription}
         content={selectedSaint.content}
         iconCredit={selectedSaint.iconCredit}
+        afterCredits={<AssociatedSaints saintId={selectedSaint.id} onSelect={setSelectedSaint} />}
         onClose={closeSaintStory}
         showProgress={true}
         completing={completion.isPending}
