@@ -49,6 +49,18 @@ describe('sentence boundaries', () => {
 });
 
 describe('word and sentence highlighting', () => {
+  it('distinguishes Word from Sentence in the supplied unpunctuated phrase', () => {
+    const wordRoot = rootFor('Flexing flexed flexxxxc');
+    const sentenceRoot = rootFor('Flexing flexed flexxxxc');
+    tap(wordRoot, 'flexed', 'word');
+    tap(sentenceRoot, 'flexed', 'sentence');
+    expect(Array.from(wordRoot.querySelectorAll('mark'), mark => mark.textContent)).toEqual(['flexed']);
+    expect(Array.from(sentenceRoot.querySelectorAll('mark'), mark => mark.textContent)).toEqual(['Flexing', 'flexed', 'flexxxxc']);
+    tap(sentenceRoot, 'flexed', 'sentence');
+    expect(sentenceRoot.querySelectorAll('mark').length).toBe(0);
+    expect(sentenceRoot.textContent).toBe('Flexing flexed flexxxxc');
+    expectNoPaintedWhitespace(wordRoot);
+  });
   it('keeps a word in one highlight when its last letter is a separate text fragment', () => {
     const root = rootFor('Flexxagainng');
     root.firstChild.splitText(10);

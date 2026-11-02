@@ -135,10 +135,9 @@ export const JournalEditor = ({
     contentDivRef.current?.focus({ preventScroll: true });
   };
 
-  // Native contenteditable typing inherits the surrounding mark. Insert plain
-  // text outside it instead, preserving the highlighted text on either side.
+  // Typing is always plain; only a deliberate Word/Sentence tap applies ink.
+  // Otherwise the browser inherits a mark regardless of the selected mode.
   const handleBeforeInput = (e: Event) => {
-    if (highlightArmed) return;
     const input = e as InputEvent;
     if (!input.inputType.startsWith('insert')) return;
     const root = contentDivRef.current;
@@ -166,7 +165,7 @@ export const JournalEditor = ({
     if (!root) return;
     root.addEventListener('beforeinput', handleBeforeInput);
     return () => root.removeEventListener('beforeinput', handleBeforeInput);
-  }, [highlightArmed, onContentChange]);
+  }, [onContentChange]);
 
   const handleHighlight = () => {
     if (!contentDivRef.current) return;
@@ -188,7 +187,7 @@ export const JournalEditor = ({
           range.surroundContents(mark);
           // Lift any whitespace the selection caught out of the highlight,
           // then fold marks that still touch.
-          repairHighlights(contentDivRef.current!);
+          repairHighlights(contentDivRef.current);
           commitContent();
           setShowHighlighter(true);
           setHighlightArmed(true);
@@ -620,7 +619,10 @@ export const JournalEditor = ({
                       size="sm"
                       className="h-8 flex-1"
                       onMouseDown={e => e.preventDefault()}
-                      onClick={() => setHighlightMode(mode)}
+                      onClick={() => {
+                        setHighlightMode(mode);
+                        setHighlightArmed(true);
+                      }}
                       aria-pressed={highlightMode === mode}
                     >
                       {mode === 'word' ? 'Word' : 'Sentence'}
