@@ -67,6 +67,7 @@
 - [x] Fix donation tier tap glitches with scroll-independent sizing and deferred resize writes. All nine tier buttons selected their correct amounts with stable window height and no runtime errors; opening half-slider peek retained. Sixteen tests pass; build clean.
 - [x] Updated Acts quote and mission wording; added $1/$2/$5 with increasing Angel glow and clickable custom-tier previews. Fourteen tests and live amount/slider/portrait-selection checks pass; build clean. Hosted tier image delivery could not be verified in the local browser (asset URL did not load).
 ## Profile portraits
+- [x] Fix initial photo fitting, touch drag/pinch and anchored wheel zoom. Five geometry tests and browser checks pass for large-photo fitting, zoom buttons, wheel, real touch drag/pinch and matching 512px export without mobile overflow or runtime errors; build clean. No account photo changed; real-device testing and an Apple update remain required.
 - [ ] Keep successful profile portraits available through temporary image-request failures and navigation; verify saved-image recovery and monthly leaderboard edge-to-edge framing.
 ## Tier colors and friend donation alerts
 - [x] Match all donor portrait rings/glows and crowns to their tier tags; real donor and four sample tiers verified, including fourth place.
