@@ -95,6 +95,7 @@
 - [x] Rotate three designs and matching names daily; New Image adds up to three unique replacements per day's verse, preserved on reopening. Twelve licensed photos verified; eight tests and replacement/reload browser checks pass, with a clean build.
 
 ## Saints
+- [ ] Replace associated-story navigation with localized connection dropdowns, give Theotokos a gold name glow, and separate the Back hover from Pages.
 - [x] Add Associated Saints below credits: 273 evidence-backed reciprocal connections across 191 saints, leaving unsupported/ambiguous names unlinked and all biographies unchanged. Twenty-eight tests pass; isolated reader checks verify linked-story resets, gold completion classes, all 17 languages and phone/desktop fit. Build clean. Account-backed progress verification unavailable because the requesting user has no matched preview account; installed app requires an update.
 - [x] Show individual saint-completion stickers with glowing portraits; verified dismissal clears search and centers John of Damascus in Theologians; existing all-stories award remains separate.
 - [x] Add persistent completed-story golden portrait rings and a heartfelt award for finishing every unique saint story; exact-identity and final-story rules pass tests, and simulated completion/reload/award flows pass in preview.
