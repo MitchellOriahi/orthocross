@@ -44,7 +44,10 @@ export const LanguageButton = () => {
     }
   }, [open]);
 
-  const scrollDown = () => listRef.current?.scrollBy({ top: SCROLL_STEP, behavior: "smooth" });
+  const scrollDown = () => {
+    setBounce(false);
+    listRef.current?.scrollBy({ top: SCROLL_STEP, behavior: "smooth" });
+  };
 
   const handleScroll = (e: UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
