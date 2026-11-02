@@ -51,10 +51,10 @@ export function CalendarDayDialog({ date, events, weeklyFast, reminders, error, 
     <DialogTitle>{date.toLocaleDateString(undefined, { weekday:"long", month:"long", day:"numeric" })}</DialogTitle>
     <DialogDescription>{date.getFullYear()}</DialogDescription>
    </DialogHeader>
-   {editing ? <form onSubmit={submit} className="space-y-4">
-     <Button type="button" variant="ghost" size="sm" disabled={busy} onClick={()=>setEditing(false)}><ArrowLeft />Back</Button>
+   {editing ? <form onSubmit={submit} className="min-w-0 space-y-4">
+     <div className="flex justify-start"><Button type="button" variant="ghost" size="sm" className="w-fit shrink-0" disabled={busy} onClick={()=>setEditing(false)}><ArrowLeft />Back</Button></div>
      <div className="space-y-2"><Label htmlFor="reminder-title">Title</Label><Input id="reminder-title" value={title} onChange={e=>setTitle(e.target.value)} maxLength={160} required autoFocus placeholder="Personal reminder" /></div>
-     <div className="space-y-2"><Label htmlFor="reminder-time">Time</Label><Input type="time" id="reminder-time" value={time} onChange={e=>setTime(e.target.value)} required /></div>
+     <div className="min-w-0 space-y-2"><Label htmlFor="reminder-time">Time</Label><Input type="time" id="reminder-time" className="block min-w-0 max-w-full appearance-none [&::-webkit-date-and-time-value]:min-w-0 [&::-webkit-date-and-time-value]:text-center" value={time} onChange={e=>setTime(e.target.value)} required /></div>
      <div className="space-y-2"><Label htmlFor="reminder-notes">Notes</Label><Textarea id="reminder-notes" value={notes} onChange={e=>setNotes(e.target.value)} maxLength={2000} rows={3} /></div>
      <Button type="submit" className="w-full" disabled={busy}><Bell />{busy ? "Saving…" : "Save reminder"}</Button>
     </form> : <div className="space-y-5">
