@@ -222,7 +222,7 @@ export default function ProfilePictureUpload() {
         </div>
       </div>
       {tier && tenure && <p className="text-xs text-muted-foreground" data-no-translate>{tenure}</p>}
-      <DonorTierGuide open={tierGuideOpen} onOpenChange={setTierGuideOpen} selectedTierKey={tierKey} />
+      <DonorTierGuide tierKey={tierGuideOpen ? tierKey : null} onClose={() => setTierGuideOpen(false)} />
       {profile?.username && (
         <div className="pt-2 border-t border-border/50">
           <p className="text-sm text-muted-foreground">
