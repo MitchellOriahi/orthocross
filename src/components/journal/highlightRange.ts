@@ -115,7 +115,6 @@ export const toggleHighlightAt = (
     if (!remove && mode === 'word') {
       const mark = root.ownerDocument.createElement('mark');
       mark.className = color;
-      if (mode === 'sentence') mark.setAttribute('data-highlight-mode', 'sentence');
       target.replaceWith(mark);
       mark.appendChild(target);
     }
