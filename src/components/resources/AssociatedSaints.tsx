@@ -24,7 +24,7 @@ export function AssociatedSaints({ saintId }: { saintId: string }) {
               <Button variant="ghost" data-associated-saint-id={saint.id} className="group h-auto min-h-20 w-full justify-start gap-3 whitespace-normal rounded-lg p-3 text-start">
                 <SaintCardIcon saintId={saint.id} fallbackUrl={saint.iconUrl} className="!h-12 !w-12" />
                 <span className={`min-w-0 flex-1 text-base font-semibold leading-6${saint.id === "theotokos" ? " theotokos-name-tag" : ""}`} data-no-translate>
-                  {saint.prefix && <span>{tr(saint.prefix)} </span>}{tr(saint.name)}
+                  {saint.prefix ? tr(`${saint.prefix} ${saint.name}`) : tr(saint.name)}
                 </span>
                 <ChevronDown aria-hidden="true" className="shrink-0 transition-transform group-data-[state=open]:rotate-180 motion-reduce:transition-none" />
               </Button>

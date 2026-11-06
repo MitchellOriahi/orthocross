@@ -6,10 +6,10 @@ export function PrayerListCard({ prayer, isPinned, onSelect, onPin, paths }: { p
   return (
     <div className="relative group" data-prayer-id={prayer.id}>
       <Button variant="ghost" onClick={() => onSelect(prayer)} className={`block h-auto w-full p-4 text-left whitespace-normal rounded-lg border hover:border-primary hover:bg-accent transition-all relative ${isPinned ? "border-primary bg-primary/5" : "border-border"}`}>
-        <span className="absolute top-2 right-2 text-xs px-2 py-1 rounded-md bg-primary/10 font-medium">
+        <span className="absolute top-2 end-2 text-xs px-2 py-1 rounded-md bg-primary/10 font-medium">
           {prayer.tradition === "Oriental" ? <span className="text-tradition-oriental">Oriental</span> : prayer.tradition === "Eastern" ? <span className="text-tradition-eastern">Eastern</span> : <><span className="text-tradition-eastern">E</span><span className="text-primary">/</span><span className="text-tradition-oriental">O</span></>}
         </span>
-        <span className="block font-semibold text-base pr-20 break-words">
+        <span className="block font-semibold text-base pe-20 break-words">
           {isPinned && <Pin className="inline w-4 h-4 mr-2 text-primary fill-primary" />}
           {prayer.name === "Coptic 'Our Father'" ? <span className="inline-flex flex-col leading-tight"><span>Coptic</span><span>"Our Father"</span></span> : prayer.name}
         </span>
