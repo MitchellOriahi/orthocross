@@ -41,7 +41,7 @@ export const DONATION_ACCUMULATION_EXAMPLE = "{count} separate {amount} donation
 export const DONATION_ACCUMULATION_MILESTONE = "Reach a new milestone and permanently unlock its rewards.";
 
 export const DONATION_TIER_EXAMPLES: Readonly<Record<string, { count: number; amount: number }>> = {
-  angel: { count: 2, amount: 0.5 },
+  angel: { count: 1, amount: 1 },
   archangel: { count: 10, amount: 1 },
   principality: { count: 5, amount: 5 },
   power: { count: 10, amount: 5 },
