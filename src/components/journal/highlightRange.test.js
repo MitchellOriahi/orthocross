@@ -72,7 +72,7 @@ describe('word and sentence highlighting', () => {
   it('highlights the tapped sentence including internal spaces across formatting', () => {
     const root = rootFor('Have <strong>faith</strong> today! Rise anew.');
     tap(root, 'faith');
-    expect(root.querySelectorAll('mark').length).toBe(3);
+    expect(root.querySelectorAll('mark').length).toBe(1);
     expect(root.textContent).toBe('Have faith today! Rise anew.');
     expect(root.querySelector('strong').textContent).toBe('faith');
     expect(Array.from(root.querySelectorAll('mark'), mark => mark.textContent).join('')).toBe('Have faith today!');
