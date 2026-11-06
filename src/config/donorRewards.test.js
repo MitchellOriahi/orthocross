@@ -1,8 +1,22 @@
 import { describe, expect, test } from "bun:test";
-import { DONOR_REWARDS } from "./donorRewards";
+import { DONOR_REWARDS, DONATION_TIER_EXAMPLES } from "./donorRewards";
 import { DONOR_TIERS, getTier, getNextTier } from "../../supabase/functions/_shared/donorTiers";
 
 describe("supplied lifetime reward milestones", () => {
+  test("Archangel example is ten $1 donations reaching $10", () => {
+    expect(DONATION_TIER_EXAMPLES.archangel).toEqual({ count: 10, amount: 1 });
+    expect(getTier(10 * 100)?.key).toBe("archangel");
+  });
+  test("Throne example is ten $50 donations reaching $500", () => {
+    expect(DONATION_TIER_EXAMPLES.throne).toEqual({ count: 10, amount: 50 });
+    expect(getTier(10 * 5000)?.key).toBe("throne");
+  });
+  for (const tier of DONOR_TIERS) {
+    test(`${tier.key} example totals its actual lifetime milestone`, () => {
+      const { count, amount } = DONATION_TIER_EXAMPLES[tier.key];
+      expect(count * amount * 100).toBe(tier.minCents);
+    });
+  }
   test("all eight sketch and drawing rewards are drawn by the creator", () => {
     const drawings = Object.values(DONOR_REWARDS).flat().filter(r => r.kind === "drawing");
     expect(drawings).toHaveLength(8);
