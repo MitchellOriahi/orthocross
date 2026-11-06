@@ -714,7 +714,6 @@ All colors MUST be HSL.
   border-radius: 0 0 8px 8px;
 }
 .donor-reward-panel li::marker { color: hsl(var(--donor-tier-tone)); }
-.donor-accumulation-equation { color: hsl(var(--donor-tier-tone)); }
 .donate-glowing-button {
   color: hsl(var(--donate-button-ink));
   background: hsl(var(--donate-button-surface));
