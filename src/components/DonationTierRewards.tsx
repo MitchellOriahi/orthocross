@@ -25,13 +25,7 @@ export function DonationTierRewards({ activeTierKey, pulse, canSelectAmount, onS
         <p className="text-muted-foreground">{tr(DONATION_ACCUMULATION_COPY)}</p>
       </div>
       <div className="divide-y divide-border">
-        {DONOR_TIERS.map(t => {
-          const example = DONATION_TIER_EXAMPLES[t.key];
-          const total = t.minCents / 100;
-          const count = new Intl.NumberFormat(language).format(example.count);
-          const explanation = tr(DONATION_ACCUMULATION_EXAMPLE)
-            .replace("{count}", count).replace("{amount}", money(example.amount)).replace("{total}", money(total));
-          return (
+        {DONOR_TIERS.map(t => (
           <Collapsible key={t.key} className={`donor-tier-${t.key}`} onOpenChange={open => { if (open) onTierOpen(t.key); }}>
             <CollapsibleTrigger asChild>
               <Button type="button" variant="ghost" className={`group donor-gift-tier-option ${t.key === "archangel" && pulse ? "donor-gift-tier-pulse" : ""} h-auto min-h-11 w-full justify-between gap-2 whitespace-normal px-3 py-3 text-start text-sm ${activeTierKey === t.key ? "font-semibold" : ""}`}>
