@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { DonorTierName } from "./DonorTierName";
 import { DONOR_TIERS } from "@/config/donorTiers";
-import { DONATION_ACCUMULATION_COPY, DONOR_REWARDS } from "@/config/donorRewards";
+import { DONATION_ACCUMULATION_TITLE, DONATION_ACCUMULATION_COPY, DONATION_ACCUMULATION_EXAMPLE, DONATION_ACCUMULATION_MILESTONE, DONATION_TIER_EXAMPLES, DONOR_REWARDS } from "@/config/donorRewards";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { formatDonationMoney } from "@/lib/donationCurrency";
 
@@ -20,9 +20,18 @@ export function DonationTierRewards({ activeTierKey, pulse, canSelectAmount, onS
   const money = (amount: number) => formatDonationMoney(amount, language);
   return (
     <div className="px-3 pb-3">
-      <p className="px-3 pb-3 text-xs leading-relaxed text-muted-foreground">{tr(DONATION_ACCUMULATION_COPY)}</p>
+      <div className="space-y-2 px-3 pb-3 text-sm leading-relaxed">
+        <p className="font-semibold text-foreground">{tr(DONATION_ACCUMULATION_TITLE)}</p>
+        <p className="text-muted-foreground">{tr(DONATION_ACCUMULATION_COPY)}</p>
+      </div>
       <div className="divide-y divide-border">
-        {DONOR_TIERS.map(t => (
+        {DONOR_TIERS.map(t => {
+          const example = DONATION_TIER_EXAMPLES[t.key];
+          const total = t.minCents / 100;
+          const count = new Intl.NumberFormat(language).format(example.count);
+          const explanation = tr(DONATION_ACCUMULATION_EXAMPLE)
+            .replace("{count}", count).replace("{amount}", money(example.amount)).replace("{total}", money(total));
+          return (
           <Collapsible key={t.key} className={`donor-tier-${t.key}`} onOpenChange={open => { if (open) onTierOpen(t.key); }}>
             <CollapsibleTrigger asChild>
               <Button type="button" variant="ghost" className={`group donor-gift-tier-option ${t.key === "archangel" && pulse ? "donor-gift-tier-pulse" : ""} h-auto min-h-11 w-full justify-between gap-2 whitespace-normal px-3 py-3 text-start text-sm ${activeTierKey === t.key ? "font-semibold" : ""}`}>
@@ -35,6 +44,11 @@ export function DonationTierRewards({ activeTierKey, pulse, canSelectAmount, onS
             </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="donor-reward-panel px-3 pb-4 pt-3">
+                <div className="mb-4 space-y-2 text-sm leading-relaxed">
+                  <p className="donor-accumulation-equation text-xl font-semibold" dir="ltr" data-no-translate>{count} × {money(example.amount)} = {money(total)}</p>
+                  <p className="text-muted-foreground" data-no-translate>{explanation}</p>
+                  <p className="font-semibold text-foreground">{tr(DONATION_ACCUMULATION_MILESTONE)}</p>
+                </div>
                 <ul className="list-disc space-y-2 ps-4 text-sm leading-relaxed text-foreground">
                   {(DONOR_REWARDS[t.key] ?? []).map(reward => (
                     <li key={reward.kind} className="break-words">{tr(reward.text)}</li>
@@ -48,7 +62,7 @@ export function DonationTierRewards({ activeTierKey, pulse, canSelectAmount, onS
               </div>
             </CollapsibleContent>
           </Collapsible>
-        ))}
+        ); })}
       </div>
     </div>
   );
