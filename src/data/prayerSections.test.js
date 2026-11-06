@@ -35,3 +35,8 @@ test("boundaries are identical for translated paragraphs regardless of their wor
     expect(sections.explanation).toEqual(translated.slice(source.prayer.length));
   }
 });
+test("audit restores 159 misplaced prayer paragraphs across 43 prayers", () => {
+  const moved = prayerCatalog.map(prayer => getPrayerSections(prayer.id, prayer.content).prayer.length - 1);
+  expect(moved.filter(count => count > 0)).toHaveLength(43);
+  expect(moved.reduce((sum, count) => sum + count, 0)).toBe(159);
+});
