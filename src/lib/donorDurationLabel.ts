@@ -3,7 +3,7 @@ import { donorDuration } from "./donorDuration";
 
 // Whole-sentence templates keep donation tenure natural in each app language.
 const labels: Record<LanguageCode, { recent: string; month: string[]; year: string[] }> = {
-  en: { recent: "Faithful donator for less than a month", month: ["Faithful donator for {n} month", "Faithful donator for {n} months"], year: ["Faithful donator for {n} year", "Faithful donator for {n} years"] },
+  en: { recent: "Faithful donator for less than a month", month: ["Faithful donator for a month", "Faithful donator for {n} months"], year: ["Faithful donator for a year", "Faithful donator for {n} years"] },
   fr: { recent: "Donateur fidèle depuis moins d’un mois", month: ["Donateur fidèle depuis {n} mois"], year: ["Donateur fidèle depuis {n} an", "Donateur fidèle depuis {n} ans"] },
   el: { recent: "Πιστός δωρητής για λιγότερο από έναν μήνα", month: ["Πιστός δωρητής εδώ και {n} μήνα", "Πιστός δωρητής εδώ και {n} μήνες"], year: ["Πιστός δωρητής εδώ και {n} χρόνο", "Πιστός δωρητής εδώ και {n} χρόνια"] },
   es: { recent: "Donante fiel desde hace menos de un mes", month: ["Donante fiel desde hace {n} mes", "Donante fiel desde hace {n} meses"], year: ["Donante fiel desde hace {n} año", "Donante fiel desde hace {n} años"] },
