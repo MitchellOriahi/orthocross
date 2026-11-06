@@ -1,22 +1,21 @@
 import { describe, expect, test } from "bun:test";
-import { DONOR_REWARDS, DONATION_TIER_EXAMPLES } from "./donorRewards";
+import * as donorRewards from "./donorRewards";
 import { DONOR_TIERS, getTier, getNextTier } from "../../supabase/functions/_shared/donorTiers";
 
+const { DONOR_REWARDS, DONATION_ACCUMULATION_TITLE, DONATION_ACCUMULATION_COPY } = donorRewards;
+
 describe("supplied lifetime reward milestones", () => {
-  test("Archangel example is ten $1 donations reaching $10", () => {
-    expect(DONATION_TIER_EXAMPLES.archangel).toEqual({ count: 10, amount: 1 });
-    expect(getTier(10 * 100)?.key).toBe("archangel");
+  test("the heading keeps the supplied line", () => {
+    expect(DONATION_ACCUMULATION_TITLE).toBe("Every donation brings you closer.");
   });
-  test("Throne example is ten $50 donations reaching $500", () => {
-    expect(DONATION_TIER_EXAMPLES.throne).toEqual({ count: 10, amount: 50 });
-    expect(getTier(10 * 5000)?.key).toBe("throne");
+  test("the line under the heading is the supplied accumulation sentence", () => {
+    expect(DONATION_ACCUMULATION_COPY).toBe("Each one of your donations accumulate towards the next tier so you can unlock awesome new faith-based rewards as you keep on donating.");
   });
-  for (const tier of DONOR_TIERS) {
-    test(`${tier.key} example totals its actual lifetime milestone`, () => {
-      const { count, amount } = DONATION_TIER_EXAMPLES[tier.key];
-      expect(count * amount * 100).toBe(tier.minCents);
-    });
-  }
+  test("tier panels carry no per-tier accumulation examples", () => {
+    for (const gone of ["DONATION_TIER_EXAMPLES", "DONATION_ACCUMULATION_EXAMPLE", "DONATION_ACCUMULATION_MILESTONE"]) {
+      expect(gone in donorRewards).toBe(false);
+    }
+  });
   test("all eight sketch and drawing rewards are drawn by the creator", () => {
     const drawings = Object.values(DONOR_REWARDS).flat().filter(r => r.kind === "drawing");
     expect(drawings).toHaveLength(8);

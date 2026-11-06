@@ -189,3 +189,6 @@
 ## iPhone verse sharing
 - [x] Replace unresolved native package imports with bundled bridge registration; seven tests pass and the live module reaches a simulated iOS bridge with an image-only attachment. Preview build clean.
 - [ ] Verify the installed iPhone share sheet. Blocked: requires the release maintainer to update local code, build, run cap sync ios and upload an Apple update; native plugin inclusion and real-device sharing cannot be checked in this sandbox.
+
+## Donation tier panel wording
+- [x] Removed the per-tier accumulation blocks (equation, "separate donations count just like" line, milestone line) from every tier dropdown; the donation panel now carries one shared sentence under "Every donation brings you closer." translated in all 16 languages; 9 donor tests pass, build clean.
