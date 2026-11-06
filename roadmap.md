@@ -1,6 +1,6 @@
 # Prayers category browser
 ## Donation milestone rewards
-- [ ] Add per-tier reward dropdowns and lifetime accumulation explanation, preserving tier selection and payment behavior.
+- [x] Add per-tier reward dropdowns and lifetime accumulation explanation, preserving tier selection and payment behavior. All nine menus and $50 selection verified on signed-in phone/desktop; milestone and billing tests pass, no payment submitted. Manual reward fulfillment is unchanged.
 - [ ] Reproduce supplied emphasis: blocked because the uploaded plain text contains no underline markers.
 ## Reader swipe clarity
 - [x] Separate vertical scrolling from deliberate page turns and reveal the bottom bar promptly with bounce-safe scroll detection. Eleven tests pass; signed-in phone-sized checks confirm vertical arcs, left/right turns, cancellation, scroll fallback, programmatic suppression and real touch hide/reveal without chapter changes. Preview build clean; external website needs deployment, native device testing remains unverified.
