@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { DonorTierName } from "./DonorTierName";
 import { DONOR_TIERS } from "@/config/donorTiers";
-import { DONATION_ACCUMULATION_TITLE, DONATION_ACCUMULATION_COPY, DONATION_ACCUMULATION_EXAMPLE, DONATION_ACCUMULATION_MILESTONE, DONATION_TIER_EXAMPLES, DONOR_REWARDS } from "@/config/donorRewards";
+import { DONATION_ACCUMULATION_TITLE, DONATION_ACCUMULATION_COPY, DONOR_REWARDS } from "@/config/donorRewards";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { formatDonationMoney } from "@/lib/donationCurrency";
 

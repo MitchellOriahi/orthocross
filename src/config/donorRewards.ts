@@ -36,18 +36,4 @@ export const DONOR_REWARDS: Readonly<Record<string, readonly DonorReward[]>> = {
 };
 
 export const DONATION_ACCUMULATION_TITLE = "Every donation brings you closer.";
-export const DONATION_ACCUMULATION_COPY = "Your donations accumulate toward your lifetime total. You don’t have to donate everything at once.";
-export const DONATION_ACCUMULATION_EXAMPLE = "{count} separate {amount} donations count just like one {total} donation.";
-export const DONATION_ACCUMULATION_MILESTONE = "Reach a new milestone and permanently unlock its rewards.";
-
-export const DONATION_TIER_EXAMPLES: Readonly<Record<string, { count: number; amount: number }>> = {
-  angel: { count: 1, amount: 1 },
-  archangel: { count: 10, amount: 1 },
-  principality: { count: 5, amount: 5 },
-  power: { count: 10, amount: 5 },
-  virtue: { count: 10, amount: 10 },
-  dominion: { count: 10, amount: 25 },
-  throne: { count: 10, amount: 50 },
-  cherub: { count: 15, amount: 50 },
-  seraph: { count: 10, amount: 100 },
-};
+export const DONATION_ACCUMULATION_COPY = "Each one of your donations accumulate towards the next tier so you can unlock awesome new faith-based rewards as you keep on donating.";
