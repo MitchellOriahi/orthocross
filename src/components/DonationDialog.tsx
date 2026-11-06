@@ -19,6 +19,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { formatDonationMoney } from "@/lib/donationCurrency";
 import { DonationCurrencyEstimate } from "./DonationCurrencyEstimate";
 import { observeDonationPeek } from "@/lib/donationPeek";
+import { DONOR_TIER_INTRO_KEY, shouldPulseArchangel, completesDonorTierIntro } from "@/lib/donorTierIntro";
 
 interface DonationDialogProps {
   open: boolean;
@@ -40,7 +41,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   const [tiersOpen, setTiersOpen] = useState(false);
   // Archangel pulses only the very first time the tiers list is opened.
   const [tiersPulse, setTiersPulse] = useState(() => {
-    try { return !localStorage.getItem("donor-tiers-intro-seen"); } catch { return true; }
+    try { return shouldPulseArchangel(localStorage.getItem(DONOR_TIER_INTRO_KEY)); } catch { return true; }
   });
   const [anonymous, setAnonymous] = useState(false);
   // Angel shown the instant a tier row is tapped, before the amount settles.
@@ -109,10 +110,11 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   // Opening/closing the tiers list; the first open ever shows the Archangel pulse.
   const toggleTiers = (next: boolean) => {
     setTiersOpen(next);
-    if (!next) {
-      try { localStorage.setItem("donor-tiers-intro-seen", "1"); } catch { /* private mode */ }
-      setTiersPulse(false);
-    }
+  };
+  const handleTierOpen = (key: string) => {
+    if (!completesDonorTierIntro(key)) return;
+    try { localStorage.setItem(DONOR_TIER_INTRO_KEY, "1"); } catch { /* private mode */ }
+    setTiersPulse(false);
   };
 
   const chooseInterval = (next: DonationInterval) => {
@@ -315,7 +317,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
             </Button>
             {tiersOpen && (
-              <DonationTierRewards activeTierKey={activeTierKey} pulse={tiersPulse} canSelectAmount={!isNative} onSelect={(key, amount) => {
+              <DonationTierRewards activeTierKey={activeTierKey} pulse={tiersPulse} canSelectAmount={!isNative} onTierOpen={handleTierOpen} onSelect={(key, amount) => {
                 setCustomAmount(String(amount));
                 setSelectedAmount(amount);
                 setUseCustom(true);
@@ -344,7 +346,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             <p className="text-xs text-destructive text-center">In-app purchases are not available right now. Please try again later.</p>
           )}
 
-          <Button onClick={handleDonate} disabled={loading || effectiveAmount < minAmount || (isNative && productsAvailable === false)} className="h-14 w-full rounded-full text-lg" variant="sacred">
+          <Button onClick={handleDonate} disabled={loading || effectiveAmount < minAmount || (isNative && productsAvailable === false)} className="h-14 w-full rounded-full text-lg" variant="donation">
             {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{tr("Processing...")}</> : tr("Donate")}
           </Button>
 

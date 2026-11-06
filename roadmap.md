@@ -1,5 +1,6 @@
 # Prayers category browser
 ## Donation milestone rewards
+- [ ] Match expanded rewards to tier colors, use white glowing Donate buttons, and retain first-use Archangel attention until clicked.
 - [x] Add per-tier reward dropdowns and lifetime accumulation explanation in all 17 languages, preserving tier selection and payment behavior. All nine menus and $50 selection verified on signed-in phone/desktop; milestone and billing tests pass, no payment submitted. Manual reward fulfillment is unchanged.
 - [ ] Reproduce supplied emphasis: blocked because the uploaded plain text contains no underline markers.
 ## Reader swipe clarity

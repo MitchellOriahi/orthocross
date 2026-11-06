@@ -26,6 +26,10 @@ All colors MUST be HSL.
     /* Light mode - white background, black text */
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
+    --donate-button-surface: 0 0% 100%;
+    --donate-button-ink: 0 0% 8%;
+    --donate-button-edge: 0 0% 78%;
+    --donate-button-glow: 0 0% 100%;
 
     --card: 0 0% 98%;
     --card-foreground: 0 0% 0%;
@@ -703,6 +707,31 @@ All colors MUST be HSL.
 .donor-gift-tier-option {
   color: hsl(var(--donor-tier-tone));
   background: hsl(var(--donor-tier-tone) / 0.08);
+}
+.donor-reward-panel {
+  color: hsl(var(--foreground));
+  background: hsl(var(--donor-tier-tone) / 0.1);
+  border-inline-start: 2px solid hsl(var(--donor-tier-tone) / 0.65);
+  border-radius: 0 0 8px 8px;
+}
+.donor-reward-panel li::marker { color: hsl(var(--donor-tier-tone)); }
+.donate-glowing-button {
+  color: hsl(var(--donate-button-ink));
+  background: hsl(var(--donate-button-surface));
+  border: 1px solid hsl(var(--donate-button-edge));
+  box-shadow: 0 0 8px hsl(var(--donate-button-glow) / 0.4), 0 0 22px hsl(var(--donate-button-glow) / 0.22);
+}
+.donate-glowing-button:hover, .donate-glowing-button:focus-visible {
+  background: hsl(var(--donate-button-surface));
+  color: hsl(var(--donate-button-ink));
+  box-shadow: 0 0 12px hsl(var(--donate-button-glow) / 0.65), 0 0 28px hsl(var(--donate-button-glow) / 0.35);
+}
+.donate-glowing-button:disabled { box-shadow: none; }
+@media (prefers-reduced-motion: reduce) {
+  .donor-gift-tier-pulse {
+    animation: none;
+    box-shadow: 0 0 14px 3px hsl(var(--donor-tier-tone) / 0.45);
+  }
 }
 /* Gentle pulse drawing the eye to the Archangel tier when the tiers list opens. */
 .donor-gift-tier-pulse {
