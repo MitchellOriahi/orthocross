@@ -9,6 +9,7 @@
 ## Mobile navigation swipes
 - [x] Cancel swipes on navigation buttons without losing first-tap or keyboard activation; horizontal overscroll contained where supported. Four tests pass; signed-in phone-sized checks verify all five first taps, returning swipes, real left/right touch swipes and keyboard activation; build clean. Safari's system edge gestures and native device behavior remain device-specific and unverified.
 ## Journal highlight modes
+- [ ] Preserve internal sentence-highlight spaces while keeping Word mode separate and saved notes stable.
 - [x] Differentiate deliberate Word/Sentence taps and prevent native typing from inheriting ink in either mode. Fifty tests pass; isolated real-editor browser checks verify mode switching, sentence apply/remove, next-sentence isolation and plain typing with no runtime errors. Account-backed save/reload was blocked by unavailable sign-in service; installed iPhone needs an updated build.
 - [x] Add Word/Sentence chooser and eight colors; preserve sentence highlights when removing or repainting one word. Thirty-five focused checks and one signed-in save/reload flow passed.
 ## Revenue offer rollout

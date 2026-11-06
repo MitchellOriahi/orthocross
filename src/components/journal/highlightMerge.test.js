@@ -94,6 +94,10 @@ describe('mergeWithAdjacentHighlights', () => {
 });
 
 describe('stripMarkWhitespace', () => {
+  it('preserves internal sentence spaces on saved-note repair', () => {
+    expect(strip(`<mark class="${YELLOW}" data-highlight-mode="sentence"> one two </mark>`))
+      .toBe(` <mark class="${YELLOW}" data-highlight-mode="sentence">one two</mark> `);
+  });
   it('splits an interior space out of a highlight', () => {
     expect(strip(`<mark class="${YELLOW}">one two</mark>`))
       .toBe(`<mark class="${YELLOW}">one</mark> <mark class="${YELLOW}">two</mark>`);

@@ -35,7 +35,7 @@ export const mergeWithAdjacentHighlights = (mark: Element): Element => {
       gaps.unshift(prev);
       prev = prev.previousSibling;
     }
-    if (!isSameColorMark(prev, current.className)) break;
+    if (!isSameColorMark(prev, current.className) || prev.getAttribute('data-highlight-mode') !== current.getAttribute('data-highlight-mode')) break;
     for (const gap of gaps) prev.appendChild(gap);
     while (current.firstChild) prev.appendChild(current.firstChild);
     current.remove();
@@ -50,7 +50,7 @@ export const mergeWithAdjacentHighlights = (mark: Element): Element => {
       gaps.push(next);
       next = next.nextSibling;
     }
-    if (!isSameColorMark(next, current.className)) break;
+    if (!isSameColorMark(next, current.className) || next.getAttribute('data-highlight-mode') !== current.getAttribute('data-highlight-mode')) break;
     for (const gap of gaps) current.appendChild(gap);
     while (next.firstChild) current.appendChild(next.firstChild);
     next.remove();
@@ -112,6 +112,37 @@ const explode = (node: Node, doc: Document): Segment[] => {
 
 export const stripMarkWhitespace = (mark: Element): Element | null => {
   const doc = mark.ownerDocument;
+  if (mark.getAttribute('data-highlight-mode') === 'sentence') {
+    const text = mark.textContent || '';
+    if (!text.trim()) {
+      mark.replaceWith(doc.createTextNode(text));
+      return null;
+    }
+    // Keep sentence interiors continuous, but lift blank edges after word removal.
+    const trimEdge = (leading: boolean) => {
+      const walker = doc.createTreeWalker(mark, 4);
+      const nodes: Text[] = [];
+      let node = walker.nextNode();
+      while (node) { nodes.push(node as Text); node = walker.nextNode(); }
+      if (!leading) nodes.reverse();
+      let blank = '';
+      for (const part of nodes) {
+        const match = part.data.match(leading ? /^\s+/ : /\s+$/);
+        if (!match) { if (part.length) break; else continue; }
+        const value = match[0];
+        blank = leading ? blank + value : value + blank;
+        part.deleteData(leading ? 0 : part.length - value.length, value.length);
+        if (part.length) break;
+      }
+      if (blank) {
+        const gap = doc.createTextNode(blank);
+        if (leading) mark.before(gap); else mark.after(gap);
+      }
+    };
+    trimEdge(true);
+    trimEdge(false);
+    return mark;
+  }
   const pieces = Array.from(mark.childNodes).flatMap(kid => explode(kid, doc));
   if (pieces.length === mark.childNodes.length &&
       pieces.every((piece, index) => 'node' in piece && piece.node === mark.childNodes[index])) {

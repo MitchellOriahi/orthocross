@@ -94,13 +94,13 @@ export const toggleHighlightAt = (
     ? wordBounds(text, absoluteOffset)
     : sentenceBounds(text.slice(lineStart, lineEnd), absoluteOffset - lineStart)?.map(n => n + lineStart);
   if (!bounds) return false;
-  // Whitespace is never painted, so blank pieces neither veto removal nor
-  // get wrapped in a mark on apply.
+  // Sentence application includes whitespace-only nodes between inline words.
   const selected = pieces.filter(piece =>
     piece.start < bounds[1] && piece.end > bounds[0] &&
-    (piece.node.textContent || '').trim() !== '');
+    (mode === 'sentence' || (piece.node.textContent || '').trim() !== ''));
   if (!selected.length) return false;
   const remove = selected.every(piece => {
+    if (!(piece.node.textContent || '').trim()) return true;
     const mark = piece.node.parentElement?.closest('mark');
     return mark && canonicalColor(mark.className) === color;
   });
@@ -113,6 +113,7 @@ export const toggleHighlightAt = (
     if (!remove) {
       const mark = root.ownerDocument.createElement('mark');
       mark.className = color;
+      if (mode === 'sentence') mark.setAttribute('data-highlight-mode', 'sentence');
       target.replaceWith(mark);
       mark.appendChild(target);
     }
@@ -120,7 +121,7 @@ export const toggleHighlightAt = (
   for (const mark of Array.from(root.querySelectorAll('mark'))) {
     if (root.contains(mark)) mark.className = canonicalColor(mark.className);
   }
-  // Whitespace never sits inside a highlight: strip it, then fold marks that touch.
+  // Sentence marks preserve interior spaces; word marks remain separate.
   repairHighlights(root);
   root.normalize();
   return true;
