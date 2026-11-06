@@ -54,7 +54,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
 
   return (
     <section className="bg-card border border-border/50 rounded-lg">
-      <div className="p-4 border-b border-border/50"><Button variant="ghost" onClick={() => { if (category) { setCategory(null); setSubgroup(null); setCategoryQuery(""); onTraditionChange(defaultTradition); } else onClose(); }}><ArrowLeft className="h-4 w-4" />Back</Button></div>
+      <div className="flex justify-start p-4 border-b border-border/50" dir="ltr"><Button variant="ghost" className="w-auto shrink-0 justify-start" onClick={() => { if (category) { setCategory(null); setSubgroup(null); setCategoryQuery(""); onTraditionChange(defaultTradition); } else onClose(); }}><ArrowLeft className="h-4 w-4" />Back</Button></div>
       <div className="p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4">
           <h2 className="text-2xl font-semibold min-w-0 break-words">{selectedCategory?.label ?? "Prayers"}</h2>
@@ -67,7 +67,7 @@ export function PrayersBrowser({ onSelect, onClose, tradition, onTraditionChange
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input type="search" placeholder="Search a prayer by name…" aria-label={category ? "Search prayers in category" : "Search prayers"} value={query} onChange={event => { (category ? setCategoryQuery : setLandingQuery)(event.target.value); setDismissedQuery(null); }} onKeyDown={event => { if (event.key === "Escape") setDismissedQuery(query); }} className="pl-9" />
           {!category && query.trim() && dismissedQuery !== query && <div aria-label="Prayer search suggestions" className="absolute inset-x-0 top-full z-30 mt-1 max-h-96 overflow-y-auto rounded-lg border border-border bg-popover p-2 shadow-lg">
-            {prayers.length ? <div className="space-y-2">{prayers.map(prayer => <PrayerListCard key={prayer.id} prayer={prayer} isPinned={pinnedIds.has(prayer.id)} onSelect={selectPrayer} paths={paths(prayer.id)} />)}</div> : <p className="py-4 text-center text-sm text-muted-foreground">No prayers found matching "{query}"</p>}
+            {prayers.length ? <div className="space-y-2">{prayers.map(prayer => <PrayerListCard key={prayer.id} prayer={prayer} isPinned={pinnedIds.has(prayer.id)} onSelect={selectPrayer} onPin={onPin} paths={paths(prayer.id)} />)}</div> : <p className="py-4 text-center text-sm text-muted-foreground">No prayers found matching "{query}"</p>}
           </div>}
         </div>
         {selectedCategory ? <>

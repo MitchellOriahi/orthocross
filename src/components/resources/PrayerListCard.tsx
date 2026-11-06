@@ -13,10 +13,10 @@ export function PrayerListCard({ prayer, isPinned, onSelect, onPin, paths }: { p
           {isPinned && <Pin className="inline w-4 h-4 mr-2 text-primary fill-primary" />}
           {prayer.name === "Coptic 'Our Father'" ? <span className="inline-flex flex-col leading-tight"><span>Coptic</span><span>"Our Father"</span></span> : prayer.name}
         </span>
-        <span className="block text-sm font-normal text-muted-foreground mt-1 break-words">{prayer.title}</span>
+        <span className="block text-sm font-normal text-muted-foreground mt-1 pe-10 break-words">{prayer.title}</span>
         {paths?.map(path => <span key={path} className="block text-xs font-normal text-muted-foreground mt-1 break-words">{path}</span>)}
       </Button>
-      {onPin && <Button variant="ghost" size="icon" title={isPinned ? "Unpin prayer" : "Pin prayer"} aria-label={`${isPinned ? "Unpin" : "Pin"} ${prayer.name}`} className="absolute right-2 bottom-2 h-8 w-8 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity z-10" onClick={() => onPin(prayer.id)}><Pin className={`w-4 h-4 ${isPinned ? "fill-primary text-primary" : ""}`} /></Button>}
+      {onPin && <Button variant="ghost" size="icon" title={isPinned ? "Unpin prayer" : "Pin prayer"} aria-label={`${isPinned ? "Unpin" : "Pin"} ${prayer.name}`} className="absolute right-2 bottom-2 h-8 w-8 z-10" onClick={() => onPin(prayer.id)}><Pin className={`w-4 h-4 ${isPinned ? "fill-primary text-primary" : ""}`} /></Button>}
     </div>
   );
 }
