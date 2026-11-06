@@ -58,6 +58,10 @@ export default function GroupDetail() {
       return;
     }
     setNudgedToday((prev) => new Set(prev).add(toUserId));
+    if (data?.ok && data.delivered === false) {
+      toast({ title: "Nudge saved", description: `${username} hasn't turned on notifications yet, so they won't get a phone alert.`, duration: 5000 });
+      return;
+    }
     toast({ title: data?.ok ? "Nudge sent!" : "Already nudged today", duration: 4000 });
   };
   const [currentUserRole, setCurrentUserRole] = useState<'owner' | 'admin' | 'member' | null>(null);

@@ -1,5 +1,14 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { sendPush } from "../_shared/oneSignal.ts";
+
+const NUDGE_MESSAGES = [
+  "Take a quiet moment with God's word today and keep your streak going.",
+  "Open the Scriptures and read a chapter today. Your streak is waiting.",
+  "Learn the story of a saint today and keep your streak alive.",
+  "Pause for prayer and a few verses today. Your friends are walking with you.",
+  "A few minutes in God's word can shape the whole day. Come keep your streak going.",
+];
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -50,22 +59,9 @@ Deno.serve(async (req) => {
     const { data: sender } = await admin.from("profiles").select("username, display_name").eq("id", senderId).single();
     const name = sender?.display_name || sender?.username || "A friend";
 
-    const appId = Deno.env.get("ONESIGNAL_APP_ID");
-    const apiKey = Deno.env.get("ONESIGNAL_REST_API_KEY");
-    if (appId && apiKey) {
-      await fetch("https://onesignal.com/api/v1/notifications", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Basic ${apiKey}` },
-        body: JSON.stringify({
-          app_id: appId,
-          include_external_user_ids: [toUserId],
-          headings: { en: "Don't forget your streak! 🔥" },
-          contents: { en: `${name} nudged you to keep your streak going today.` },
-          data: { path: "/" },
-        }),
-      }).catch((e) => console.error("OneSignal", e));
-    }
-    return json({ ok: true });
+    const message = NUDGE_MESSAGES[Math.floor(Math.random() * NUDGE_MESSAGES.length)];
+    const recipients = await sendPush([toUserId], `${name} is thinking of you 🙏`, message, { path: "/" });
+    return json({ ok: true, delivered: recipients > 0 });
   } catch (err) {
     console.error(err);
     return json({ ok: false, error: "Server error" }, 500);

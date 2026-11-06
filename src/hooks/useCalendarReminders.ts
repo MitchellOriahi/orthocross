@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Capacitor } from "@capacitor/core";
+import { LocalNotifications } from "@capacitor/local-notifications";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { notificationId } from "@/lib/calendarReminders";
@@ -10,10 +11,18 @@ export interface CalendarReminder {
   id: string; title: string; notes: string; event_date: string; remind_at: string;
 }
 async function nativeNotifications() {
-  if (!Capacitor.isNativePlatform()) return null;
-  const path = ["@capacitor", "local-notifications"].join("/");
-  const plugin = await import(/* @vite-ignore */ path);
-  return plugin.LocalNotifications;
+  return Capacitor.isNativePlatform() ? LocalNotifications : null;
+}
+const toNotification = (r: CalendarReminder) => ({
+  id: notificationId(r.id), title: r.title, body: r.notes || "Personal reminder", schedule: { at: new Date(r.remind_at) },
+});
+// Reminders saved on another device, or before this build, were never scheduled on this phone.
+async function scheduleMissing(reminders: CalendarReminder[]) {
+  if ((await LocalNotifications.checkPermissions()).display !== "granted") return;
+  const { notifications: pending } = await LocalNotifications.getPending();
+  const pendingIds = new Set(pending.map(n => n.id));
+  const missing = reminders.filter(r => new Date(r.remind_at).getTime() > Date.now() && !pendingIds.has(notificationId(r.id)));
+  if (missing.length) await LocalNotifications.schedule({ notifications: missing.map(toNotification) });
 }
 export function useCalendarReminders() {
   const { user } = useAuth();
@@ -44,6 +53,7 @@ export function useCalendarReminders() {
       if (future.length) timer = setTimeout(deliver, Math.min(2147483647, Math.max(1000, new Date(future[0].remind_at).getTime() - Date.now())));
     };
     if (!Capacitor.isNativePlatform()) deliver();
+    else scheduleMissing(data).catch(e => console.error("Calendar reminder sync", e));
     return () => { if (timer) clearTimeout(timer); };
   }, [data, user?.id]);
 
@@ -60,7 +70,7 @@ export function useCalendarReminders() {
         await plugin.cancel({ notifications: [{ id: notificationId(saved.id) }] });
         const permission = await plugin.requestPermissions();
         if (permission.display !== "granted") throw new Error("Notifications are disabled. Your reminder is saved; enable notifications in your phone settings.");
-        await plugin.schedule({ notifications: [{ id: notificationId(saved.id), title: saved.title, body: saved.notes || "Personal reminder", schedule: { at: new Date(saved.remind_at) } }] });
+        await plugin.schedule({ notifications: [toNotification(saved)] });
       }
     } catch (e) { toast.warning(e instanceof Error ? e.message : "Reminder saved, but the phone notification could not be scheduled."); }
     return saved;
