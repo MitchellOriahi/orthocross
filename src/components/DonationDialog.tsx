@@ -8,7 +8,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Capacitor } from "@capacitor/core";
 import { ChevronDown, Eye, EyeOff, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
-import { DonorTierName } from "./DonorTierName";
 import { DonationTierRewards } from "./DonationTierRewards";
 import { TierPortrait } from "./TierPortrait";
 import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftImpact, minimumGift, shownTier } from "@/config/donationGift";
@@ -313,7 +312,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
           <div className="rounded-xl border">
             <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => toggleTiers(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
-              <span>Donator tiers{activeTier && <> · <span className={`donor-tier-${activeTier.key} text-[hsl(var(--donor-tier-tone))]`}><DonorTierName tier={activeTier} /></span></>}</span>
+              <span>Donator tiers</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
             </Button>
             {tiersOpen && (
