@@ -186,7 +186,7 @@ export default function ProfilePictureUpload() {
           <DonorTierName tier={tier} />
         </Button>}
         </div>
-        <div className="min-w-0 flex-1">
+        <div className="flex min-h-20 min-w-0 flex-1 flex-col justify-center">
           <input
             type="file"
             id="profile-picture-upload"
