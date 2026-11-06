@@ -20,6 +20,7 @@ describe("supplied lifetime reward milestones", () => {
     const drawings = Object.values(DONOR_REWARDS).flat().filter(r => r.kind === "drawing");
     expect(drawings).toHaveLength(8);
     for (const reward of drawings) expect(reward.artist).toBe("creator");
+    for (const reward of drawings) expect(reward.text).toMatch(/(sketch|drawing) commission drawn by me$/);
     expect(DONOR_REWARDS.angel.some(r => r.kind === "drawing")).toBe(false);
   });
   test("$1 offers digital thanks and recognition", () => {
