@@ -55,7 +55,7 @@ describe('word and sentence highlighting', () => {
     tap(wordRoot, 'flexed', 'word');
     tap(sentenceRoot, 'flexed', 'sentence');
     expect(Array.from(wordRoot.querySelectorAll('mark'), mark => mark.textContent)).toEqual(['flexed']);
-    expect(Array.from(sentenceRoot.querySelectorAll('mark'), mark => mark.textContent)).toEqual(['Flexing', 'flexed', 'flexxxxc']);
+    expect(Array.from(sentenceRoot.querySelectorAll('mark'), mark => mark.textContent)).toEqual(['Flexing flexed flexxxxc']);
     tap(sentenceRoot, 'flexed', 'sentence');
     expect(sentenceRoot.querySelectorAll('mark').length).toBe(0);
     expect(sentenceRoot.textContent).toBe('Flexing flexed flexxxxc');
@@ -69,13 +69,13 @@ describe('word and sentence highlighting', () => {
     expect(root.querySelectorAll('mark').length).toBe(1);
     expect(root.querySelector('mark').textContent).toBe('Flexxagainng');
   });
-  it('highlights every word of the tapped sentence without painting spaces', () => {
+  it('highlights the tapped sentence including internal spaces across formatting', () => {
     const root = rootFor('Have <strong>faith</strong> today! Rise anew.');
     tap(root, 'faith');
-    expect(root.querySelectorAll('mark').length).toBe(3);
+    expect(root.querySelectorAll('mark').length).toBe(1);
     expect(root.textContent).toBe('Have faith today! Rise anew.');
     expect(root.querySelector('strong').textContent).toBe('faith');
-    expectNoPaintedWhitespace(root);
+    expect(Array.from(root.querySelectorAll('mark'), mark => mark.textContent).join('')).toBe('Have faith today!');
   });
   it('removes a single word from a highlighted sentence', () => {
     const root = rootFor('Have faith today.');
@@ -124,8 +124,8 @@ describe('word and sentence highlighting', () => {
   it('stops at line breaks and paragraph boundaries', () => {
     const root = rootFor('<p>Have faith<br>Rise anew</p><p>Keep going.</p>');
     tap(root, 'faith');
-    expect(root.querySelector('mark').textContent).toBe('Have');
-    expect(root.querySelectorAll('mark').length).toBe(2);
+    expect(root.querySelector('mark').textContent).toBe('Have faith');
+    expect(root.querySelectorAll('mark').length).toBe(1);
     expect(root.textContent).toBe('Have faithRise anewKeep going.');
   });
   it('allows removing a word from an older saved highlight', () => {

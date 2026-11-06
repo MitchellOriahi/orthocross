@@ -94,33 +94,49 @@ export const toggleHighlightAt = (
     ? wordBounds(text, absoluteOffset)
     : sentenceBounds(text.slice(lineStart, lineEnd), absoluteOffset - lineStart)?.map(n => n + lineStart);
   if (!bounds) return false;
-  // Whitespace is never painted, so blank pieces neither veto removal nor
-  // get wrapped in a mark on apply.
+  // Sentence application includes whitespace-only nodes between inline words.
   const selected = pieces.filter(piece =>
     piece.start < bounds[1] && piece.end > bounds[0] &&
-    (piece.node.textContent || '').trim() !== '');
+    (mode === 'sentence' || (piece.node.textContent || '').trim() !== ''));
   if (!selected.length) return false;
   const remove = selected.every(piece => {
+    if (!(piece.node.textContent || '').trim()) return true;
     const mark = piece.node.parentElement?.closest('mark');
     return mark && canonicalColor(mark.className) === color;
   });
-  for (const piece of selected.reverse()) {
+  const targets: Text[] = [];
+  for (const piece of [...selected].reverse()) {
     const start = Math.max(0, bounds[0] - piece.start);
     const end = Math.min(piece.end, bounds[1]) - piece.start;
     if (end < piece.node.length) piece.node.splitText(end);
     const target = start > 0 ? piece.node.splitText(start) : piece.node;
     unwrapSelectedText(target, root);
-    if (!remove) {
+    targets.unshift(target);
+    if (!remove && mode === 'word') {
       const mark = root.ownerDocument.createElement('mark');
       mark.className = color;
       target.replaceWith(mark);
       mark.appendChild(target);
     }
   }
+  if (!remove && mode === 'sentence') {
+    const first = targets[0];
+    const last = targets[targets.length - 1];
+    if (first && last) {
+      const range = root.ownerDocument.createRange();
+      range.setStart(first, 0);
+      range.setEnd(last, last.length);
+      const mark = root.ownerDocument.createElement('mark');
+      mark.className = color;
+      mark.setAttribute('data-highlight-mode', 'sentence');
+      mark.appendChild(range.extractContents());
+      range.insertNode(mark);
+    }
+  }
   for (const mark of Array.from(root.querySelectorAll('mark'))) {
     if (root.contains(mark)) mark.className = canonicalColor(mark.className);
   }
-  // Whitespace never sits inside a highlight: strip it, then fold marks that touch.
+  // Sentence marks preserve interior spaces; word marks remain separate.
   repairHighlights(root);
   root.normalize();
   return true;

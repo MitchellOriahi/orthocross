@@ -18,7 +18,7 @@ import DOMPurify from "dompurify";
 // DOMPurify configuration for safe HTML in journal
 const SANITIZE_CONFIG = {
   ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'mark', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'img', 'audio', 'video', 'div', 'span', 'button', 'svg', 'path'],
-  ALLOWED_ATTR: ['class', 'src', 'alt', 'style', 'controls', 'data-pinned', 'title', 'href', 'xmlns', 'width', 'height', 'viewBox', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd'],
+  ALLOWED_ATTR: ['class', 'src', 'alt', 'style', 'controls', 'data-pinned', 'data-highlight-mode', 'title', 'href', 'xmlns', 'width', 'height', 'viewBox', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd'],
   ADD_TAGS: ['audio', 'video'],
   ADD_ATTR: ['controls'],
 };
@@ -102,7 +102,7 @@ export const JournalEditor = ({
       // Sanitize content when loading to prevent XSS
       contentDivRef.current.innerHTML = DOMPurify.sanitize(content, SANITIZE_CONFIG);
       // Repair adjacent fragments in previously saved notes as well.
-      // Whitespace never sits inside a highlight; repair adjacent fragments too.
+      // Preserve sentence interiors and repair adjacent fragments.
       repairHighlights(contentDivRef.current);
     }
     setHighlightArmed(false);
@@ -183,6 +183,7 @@ export const JournalEditor = ({
         // A selected passage is highlighted directly with the chosen color.
         const mark = document.createElement('mark');
         mark.className = selectedColor.class;
+        if (highlightMode === 'sentence') mark.setAttribute('data-highlight-mode', 'sentence');
         try {
           range.surroundContents(mark);
           // Lift any whitespace the selection caught out of the highlight,
