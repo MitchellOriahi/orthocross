@@ -38,11 +38,6 @@ export function DonationTierRewards({ activeTierKey, pulse, canSelectAmount, onS
             </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="donor-reward-panel px-3 pb-4 pt-3">
-                <div className="mb-4 space-y-2 text-sm leading-relaxed">
-                  <p className="donor-accumulation-equation text-xl font-semibold" dir="ltr" data-no-translate>{count} × {money(example.amount)} = {money(total)}</p>
-                  {example.count > 1 && <p className="text-muted-foreground" data-no-translate>{explanation}</p>}
-                  <p className="font-semibold text-foreground">{tr(DONATION_ACCUMULATION_MILESTONE)}</p>
-                </div>
                 <ul className="list-disc space-y-2 ps-4 text-sm leading-relaxed text-foreground">
                   {(DONOR_REWARDS[t.key] ?? []).map(reward => (
                     <li key={reward.kind} className="break-words">{tr(reward.text)}</li>
