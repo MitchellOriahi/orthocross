@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getPrayerSections } from "@/data/prayerSections";
+import { getPrayerSections, translatePrayerParagraph } from "@/data/prayerSections";
 
 interface PrayerDetailViewProps {
   name: string;
@@ -45,7 +45,7 @@ export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawC
     localStorage.setItem('prayerExplanationViewMode', viewMode);
   }, [viewMode]);
 
-  const prayerParagraphs = sections.prayer.map(paragraph => tr(paragraph));
+  const prayerParagraphs = sections.prayer.map(paragraph => translatePrayerParagraph(paragraph, tr));
   const explanationContent = sections.explanation.map(paragraph => tr(paragraph));
   const sentenceOffset = rawContent.slice(1, 1 + sections.originalExplanationOffset)
     .map(paragraph => tr(paragraph)).reduce((count, paragraph) => count + paragraph.split(/(?<=[.!?])\s+/).filter(s => s.trim()).length, 0);

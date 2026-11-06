@@ -18,3 +18,13 @@ export function getPrayerSections(prayerId: string, content: readonly string[]) 
     originalExplanationOffset: boundary === undefined || addedIds.has(prayerId) ? 0 : Math.max(0, prayerEnd - 1),
   };
 }
+
+export function translatePrayerParagraph(paragraph: string, translate: (text: string) => string) {
+  // Some approved dictionary entries retain literal escaped line breaks from their import.
+  if (paragraph.includes("\n")) {
+    const escaped = paragraph.replace(/\n/g, "\\n");
+    const translated = translate(escaped);
+    if (translated !== escaped) return translated.replace(/\\n/g, "\n");
+  }
+  return translate(paragraph);
+}
