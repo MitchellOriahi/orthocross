@@ -1,4 +1,6 @@
 # Prayers category browser
+## Profile donor details
+- [ ] Put the donation tier and elapsed donor duration below the profile photo; keep Age to the right of Orthodox branch.
 ## Donation milestone rewards
 - [x] Remove drawing-credit dashes and replace accumulation copy with localized tier-colored examples, preserving explicit rewards. Twenty-two milestone tests pass; signed-in phone dropdowns show blue Archangel 10 × $1 = $10 and pink Throne 10 × $50 = $500, dash-free credits, no overflow or runtime errors; preview clean. No payments submitted.
 - [x] Specify “drawn by me” for every drawing/sketch reward in all languages and speed only the calendar introduction to two pulses per second. Twenty-seven reward tests pass; signed-in reward readback and computed 0.5-second calendar cycle verified, reduced motion remains static; preview clean.
