@@ -96,11 +96,12 @@ export default function ProfileIdentityTags() {
   if (isError) return <Button variant="ghost" size="sm" onClick={() => void refetch()}>Retry profile tags</Button>;
   return (
     <div className="flex flex-col gap-2 pt-3" aria-label="Profile tags" aria-busy={saving}>
-      <div className="flex flex-wrap items-start gap-2">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.6fr)] items-start gap-2" dir="ltr">
         <IdentityPicker label="Orthodox branch" value={data?.branch ?? null} options={ORTHODOX_BRANCHES} icon={Cross}
-          className={data?.branch ? branchClasses[getBranchTradition(data.branch)] : undefined}
+          className={cn("w-full min-w-0", data?.branch ? branchClasses[getBranchTradition(data.branch)] : undefined)}
           disabled={saving || isPending} onSelect={value => save("branch", value)} />
         <IdentityPicker label="Age" value={data?.age != null ? String(data.age) : null} options={AGE_OPTIONS} icon={Cake}
+          className="w-full min-w-0"
           disabled={saving || isPending} onSelect={value => save("age", value === null ? null : Number(value))} />
       </div>
       <div className="flex flex-wrap items-start gap-2">
