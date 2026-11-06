@@ -711,7 +711,6 @@ All colors MUST be HSL.
 .donor-reward-panel {
   color: hsl(var(--foreground));
   background: hsl(var(--donor-tier-tone) / 0.1);
-  border-inline-start: 2px solid hsl(var(--donor-tier-tone) / 0.65);
   border-radius: 0 0 8px 8px;
 }
 .donor-reward-panel li::marker { color: hsl(var(--donor-tier-tone)); }
