@@ -1,20 +1,21 @@
 import { expect, test } from "bun:test";
 import { donorDuration } from "./donorDuration";
 
-test("reports completed donation months before a year", () => {
-  expect(donorDuration("2026-08-06T12:00:00Z", new Date("2026-11-06T12:00:00Z"))).toEqual({ unit: "month", count: 3 });
+test("one confirmed donation counts as one month", () => {
+  expect(donorDuration(1)).toEqual({ unit: "month", count: 1 });
 });
-test("switches to years at twelve completed months", () => {
-  expect(donorDuration("2025-11-06T12:00:00Z", new Date("2026-11-06T12:00:00Z"))).toEqual({ unit: "year", count: 1 });
+test("twelve confirmed donations count as one year", () => {
+  expect(donorDuration(12)).toEqual({ unit: "year", count: 1 });
 });
-test("does not round incomplete years up", () => {
-  expect(donorDuration("2024-12-06T12:00:00Z", new Date("2026-11-06T12:00:00Z"))).toEqual({ unit: "year", count: 1 });
+test("twenty-four confirmed donations count as two years", () => {
+  expect(donorDuration(24)).toEqual({ unit: "year", count: 2 });
 });
-test("new donors have not yet completed a month", () => {
-  expect(donorDuration("2026-11-05T12:00:00Z", new Date("2026-11-06T12:00:00Z"))).toEqual({ unit: "month", count: 0 });
+test("uses months below twelve and whole years thereafter", () => {
+  expect(donorDuration(11)).toEqual({ unit: "month", count: 11 });
+  expect(donorDuration(23)).toEqual({ unit: "year", count: 1 });
 });
-test("missing, invalid and future history never invents tenure", () => {
-  for (const start of [null, undefined, "invalid", "2027-11-06"]) {
-    expect(donorDuration(start, new Date("2026-11-06T12:00:00Z"))).toBeNull();
+test("missing or invalid donation counts never invent tenure", () => {
+  for (const count of [null, undefined, 0, -1, 1.5, NaN]) {
+    expect(donorDuration(count)).toBeNull();
   }
 });

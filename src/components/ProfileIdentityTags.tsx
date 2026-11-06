@@ -33,7 +33,7 @@ function IdentityPicker({ label, value, options, icon: Icon, className, disabled
         <Button variant="ghost" size="sm" disabled={disabled} aria-label={`Choose ${label.toLowerCase()}`} aria-haspopup="listbox"
           className={cn("h-auto min-h-9 max-w-full rounded-full border border-border px-3 py-2 text-sm font-medium", className)}>
           <Icon className="mr-1.5 h-3.5 w-3.5 shrink-0" />
-          <span className="min-w-0 whitespace-normal break-words text-left">{selected?.label ?? label}</span>
+          <span className="min-w-0 whitespace-nowrap text-left">{selected?.label ?? label}</span>
           <ChevronDown className="ml-1.5 h-3.5 w-3.5 shrink-0 opacity-60" />
         </Button>
       </PopoverTrigger>
@@ -96,15 +96,15 @@ export default function ProfileIdentityTags() {
   if (isError) return <Button variant="ghost" size="sm" onClick={() => void refetch()}>Retry profile tags</Button>;
   return (
     <div className="flex flex-col gap-2 pt-3" aria-label="Profile tags" aria-busy={saving}>
-      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.6fr)] items-start gap-2" dir="ltr">
+      <div className="flex flex-col items-start gap-2" dir="ltr">
         <IdentityPicker label="Orthodox branch" value={data?.branch ?? null} options={ORTHODOX_BRANCHES} icon={Cross}
-          className={cn("w-full min-w-0", data?.branch ? branchClasses[getBranchTradition(data.branch)] : undefined)}
+          className={cn("w-fit", data?.branch ? branchClasses[getBranchTradition(data.branch)] : undefined)}
           disabled={saving || isPending} onSelect={value => save("branch", value)} />
         <IdentityPicker label="Age" value={data?.age != null ? String(data.age) : null} options={AGE_OPTIONS} icon={Cake}
-          className="w-full min-w-0"
+          className="w-fit"
           disabled={saving || isPending} onSelect={value => save("age", value === null ? null : Number(value))} />
       </div>
-      <div className="flex flex-wrap items-start gap-2">
+      <div className="flex flex-col items-start gap-2" dir="ltr">
         <IdentityPicker label="Patron saint" value={data?.patron_saint_id ?? null} options={PATRON_SAINT_OPTIONS} icon={UserRound}
           disabled={saving || isPending} onSelect={value => save("patron_saint_id", value)} />
         <IdentityPicker label="Country" value={data?.country_code ?? null} options={PROFILE_COUNTRIES} icon={Globe}

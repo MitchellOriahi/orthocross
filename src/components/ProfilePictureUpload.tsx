@@ -10,20 +10,22 @@ import { ImageCropper } from "./ImageCropper";
 import { useQueryClient } from "@tanstack/react-query";
 import ProfileIdentityTags from "./ProfileIdentityTags";
 import { useProfileDonorTier } from "@/hooks/useProfileDonorTier";
-import { useDonorSince } from "@/hooks/useDonorSince";
+import { useDonorDonationCount } from "@/hooks/useDonorSince";
 import { DONOR_TIERS } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { donorDurationLabel } from "@/lib/donorDurationLabel";
+import { DonorTierGuide } from "./DonorTierGuide";
 
 export default function ProfilePictureUpload() {
   const { user } = useAuth();
   const { profile, refetch } = useProfileData();
   const tierKey = useProfileDonorTier(user?.id);
-  const donorSince = useDonorSince(user?.id);
+  const donationCount = useDonorDonationCount(user?.id);
   const { language } = useLanguage();
   const tier = DONOR_TIERS.find(item => item.key === tierKey);
-  const tenure = donorDurationLabel(donorSince, language);
+  const tenure = donorDurationLabel(donationCount, language);
+  const [tierGuideOpen, setTierGuideOpen] = useState(false);
   const queryClient = useQueryClient();
   const [uploading, setUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -173,12 +175,18 @@ export default function ProfilePictureUpload() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <Avatar className="w-20 h-20">
+      <div className="flex items-start gap-4">
+        <div className="flex w-20 shrink-0 flex-col items-center gap-3">
+        <Avatar className={`w-20 h-20${tier ? ` donor-avatar-ring donor-tier-${tier.key}` : ""}`}>
           <AvatarImage src={profile?.profile_picture_url || undefined} />
           <AvatarFallback className="text-lg">{getUserInitials()}</AvatarFallback>
         </Avatar>
-        <div className="flex-1">
+        {tier && <Button variant="ghost" onClick={() => setTierGuideOpen(true)} aria-label={`View all donator tiers: ${tier.name}`}
+          className={`donor-tier-button donor-tier-${tier.key} h-auto rounded-full border px-3 py-1 text-[11px] font-semibold leading-none`}>
+          <DonorTierName tier={tier} />
+        </Button>}
+        </div>
+        <div className="min-w-0 flex-1">
           <input
             type="file"
             id="profile-picture-upload"
@@ -213,12 +221,8 @@ export default function ProfilePictureUpload() {
           </p>
         </div>
       </div>
-      {tier && (
-        <div className={`donor-tier-${tier.key} space-y-1`} aria-label="Your donation tier">
-          <p className="donor-profile-tier text-sm font-semibold"><DonorTierName tier={tier} /></p>
-          {tenure && <p className="text-xs text-muted-foreground" data-no-translate>{tenure}</p>}
-        </div>
-      )}
+      {tier && tenure && <p className="text-xs text-muted-foreground" data-no-translate>{tenure}</p>}
+      <DonorTierGuide tierKey={tierGuideOpen ? tierKey : null} onClose={() => setTierGuideOpen(false)} />
       {profile?.username && (
         <div className="pt-2 border-t border-border/50">
           <p className="text-sm text-muted-foreground">

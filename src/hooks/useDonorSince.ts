@@ -2,18 +2,17 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export function useDonorSince(userId: string | undefined) {
+export function useDonorDonationCount(userId: string | undefined) {
   const { data, refetch } = useQuery({
-    queryKey: ["profile-donor-since", userId],
+    queryKey: ["profile-donor-count", userId],
     enabled: !!userId,
     staleTime: 60_000,
     queryFn: async () => {
       if (!userId) return null;
-      const { data: first, error } = await supabase.from("donations")
-        .select("donated_at").eq("user_id", userId).eq("status", "confirmed")
-        .order("donated_at", { ascending: true }).limit(1).maybeSingle();
+      const { count, error } = await supabase.from("donations")
+        .select("id", { count: "exact", head: true }).eq("user_id", userId).eq("status", "confirmed");
       if (error) throw error;
-      return first?.donated_at ?? null;
+      return count;
     },
   });
   useEffect(() => {
