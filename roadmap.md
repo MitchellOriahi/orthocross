@@ -1,4 +1,7 @@
 # Prayers category browser
+## Complete prayer display
+- [ ] Audit all prayer boundaries and translation coverage; show complete prayers separately from their explanations without changing sacred wording.
+- [ ] Keep prayer Back on the left and pins visible in every prayer list; verify mobile flows.
 ## Profile donor details
 - [x] Count each confirmed donation as a month, center the matching tier tag under the glowing photo, and keep profile options single-line and vertically left-aligned. Eight tests pass; signed-in phone readback shows three payments as three months, centered clickable Angel tag, tier glow and one-line branch; tier guide opens correctly. Preview build clean.
 - [x] Put the donation tier and elapsed donor duration below the profile photo; keep Age to the right of Orthodox branch. Eight focused tests pass; signed-in phone check shows Angel and actual confirmed-donation tenure, with Age on the same row to the right. Preview build clean; no payment or account settings changed.
