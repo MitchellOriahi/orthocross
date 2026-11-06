@@ -3,3 +3,4 @@
 - Merge additional typed saint lives alphabetically with originals, keeping icon pointers and provenance to preserve identities and presentation.
 - Prefer separate ID-keyed Synaxaria roster stories over preserved biographies, so expanded lives never overwrite the saved catalog.
 - Share prayers in one catalog with category-qualified placements; retain IDs, text, pins and highlights.
+- Split prayer and explanation by audited roster-ID boundaries before translation; added sourced records are all prayer text. Preserve original paragraphs and explanation highlight offsets so no sacred wording or saved annotations are rewritten.

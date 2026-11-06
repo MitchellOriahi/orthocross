@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getPrayerSections } from "@/data/prayerSections";
 
 interface PrayerDetailViewProps {
   name: string;
@@ -31,7 +32,7 @@ export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawC
   const { tr } = useLanguage();
   const name = tr(rawName);
   const title = tr(rawTitle);
-  const content = rawContent.map(c => tr(c));
+  const sections = getPrayerSections(prayerId, rawContent);
   const [isExplanationOpen, setIsExplanationOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'paginated' | 'scroll'>(() => {
     // Load saved preference from localStorage
@@ -44,16 +45,17 @@ export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawC
     localStorage.setItem('prayerExplanationViewMode', viewMode);
   }, [viewMode]);
 
-  // Prayer text is the first item, explanations are the rest
-  const prayerText = content[0];
-  const explanationContent = content.slice(1);
+  const prayerParagraphs = sections.prayer.map(paragraph => tr(paragraph));
+  const explanationContent = sections.explanation.map(paragraph => tr(paragraph));
+  const sentenceOffset = rawContent.slice(1, 1 + sections.originalExplanationOffset)
+    .map(paragraph => tr(paragraph)).reduce((count, paragraph) => count + paragraph.split(/(?<=[.!?])\s+/).filter(s => s.trim()).length, 0);
 
   return (
     <div className="fixed inset-0 z-50 bg-background overflow-y-auto overscroll-contain">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-top">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" onClick={onClose}>
+          <div className="flex justify-start" dir="ltr">
+            <Button variant="ghost" className="mr-auto w-auto min-w-0 shrink-0 justify-start px-2" onClick={onClose}>
               <ArrowLeft className="w-5 h-5 mr-2" />
               Back
             </Button>
@@ -74,9 +76,9 @@ export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawC
         {/* Prayer Text */}
         <Card className="p-4 sm:p-8 mb-6">
           <div className="prose dark:prose-invert max-w-none">
-            <p className="text-base sm:text-lg leading-relaxed whitespace-pre-line text-center">
-              {prayerText}
-            </p>
+            <div aria-label="Complete prayer" data-no-translate className="space-y-4">
+              {prayerParagraphs.map((paragraph, index) => <p key={index} className="text-base sm:text-lg leading-relaxed whitespace-pre-line text-center">{paragraph}</p>)}
+            </div>
           </div>
         </Card>
 
@@ -117,6 +119,7 @@ export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawC
                     content={explanationContent} 
                     viewMode={viewMode}
                     prayerId={prayerId}
+                    sentenceOffset={sentenceOffset}
                   />
                 </div>
               </div>
@@ -133,9 +136,10 @@ interface ExplanationViewProps {
   content: string[];
   viewMode: 'paginated' | 'scroll';
   prayerId: string;
+  sentenceOffset: number;
 }
 
-const ExplanationView = ({ content, viewMode, prayerId }: ExplanationViewProps) => {
+const ExplanationView = ({ content, viewMode, prayerId, sentenceOffset }: ExplanationViewProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
@@ -218,7 +222,7 @@ const ExplanationView = ({ content, viewMode, prayerId }: ExplanationViewProps) 
   };
 
   const getSentencesInParagraph = (paragraphIndex: number) => {
-    let sentenceCount = 0;
+    let sentenceCount = sentenceOffset;
     for (let i = 0; i < paragraphIndex; i++) {
       sentenceCount += content[i].split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0).length;
     }
