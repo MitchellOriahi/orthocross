@@ -3,6 +3,12 @@ import { DONOR_REWARDS } from "./donorRewards";
 import { DONOR_TIERS, getTier, getNextTier } from "../../supabase/functions/_shared/donorTiers";
 
 describe("supplied lifetime reward milestones", () => {
+  test("all eight sketch and drawing rewards are drawn by the creator", () => {
+    const drawings = Object.values(DONOR_REWARDS).flat().filter(r => r.kind === "drawing");
+    expect(drawings).toHaveLength(8);
+    for (const reward of drawings) expect(reward.artist).toBe("creator");
+    expect(DONOR_REWARDS.angel.some(r => r.kind === "drawing")).toBe(false);
+  });
   test("$1 offers digital thanks and recognition", () => {
     expect(DONOR_TIERS[0].minCents).toBe(100);
     expect(DONOR_REWARDS.angel.map(r => r.kind)).toEqual(["thanks", "recognition"]);
