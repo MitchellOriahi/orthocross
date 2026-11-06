@@ -1,5 +1,6 @@
 # Prayers category browser
 ## Donation milestone rewards
+- [ ] Remove drawing-credit dashes and replace accumulation copy with localized tier-colored examples, preserving explicit rewards.
 - [x] Specify “drawn by me” for every drawing/sketch reward in all languages and speed only the calendar introduction to two pulses per second. Twenty-seven reward tests pass; signed-in reward readback and computed 0.5-second calendar cycle verified, reduced motion remains static; preview clean.
 - [x] Match expanded rewards to tier colors, use white glowing Donate buttons, and retain first-use Archangel attention until clicked. Eleven tests pass; signed-in phone checks verify tier tint, white button/glow, $10 selection, pulse stopping and remaining stopped on reopen; no screenshots inspected or payment submitted.
 - [x] Add per-tier reward dropdowns and lifetime accumulation explanation in all 17 languages, preserving tier selection and payment behavior. All nine menus and $50 selection verified on signed-in phone/desktop; milestone and billing tests pass, no payment submitted. Manual reward fulfillment is unchanged.

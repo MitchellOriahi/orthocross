@@ -19,7 +19,7 @@ const colorBracelet: DonorReward = { ...bracelet, colorChoice: true, text: "Hand
 const icon: DonorReward = { kind: "icon", delivery: "physical", text: '6″ × 8″ custom engraved thermal-film hand-laminated icon shipped to you' };
 const call: DonorReward = { kind: "call", frequency: "once", text: "1-on-1 walkthrough call explaining the content-making and app-making process" };
 const weeklyCall: DonorReward = { ...call, frequency: "weekly", text: "Weekly 1-on-1 calls explaining the content-making and app-making process" };
-const drawing = (framing: "head" | "bust" | "full-body", delivery: "digital" | "physical", colored: boolean, text: string): DonorReward => ({ kind: "drawing", framing, delivery, colored, artist: "creator", text: `${text} — drawn by me` });
+const drawing = (framing: "head" | "bust" | "full-body", delivery: "digital" | "physical", colored: boolean, text: string): DonorReward => ({ kind: "drawing", framing, delivery, colored, artist: "creator", text: `${text} drawn by me` });
 const rope = (knots: number): DonorReward => ({ kind: "rope", knots, delivery: "physical", text: `${knots}-knot handmade custom prayer rope made to your description and sent to you` });
 
 // Explicit offers, not inherited benefits: call frequency and delivery differ by milestone.
@@ -35,4 +35,19 @@ export const DONOR_REWARDS: Readonly<Record<string, readonly DonorReward[]>> = {
   seraph: [mailedThanks, drawing("full-body", "physical", true, "Signed physical colored full-body drawing"), recognition, call, gifts, bracelet, icon, rope(100)],
 };
 
-export const DONATION_ACCUMULATION_COPY = "Every donation adds to your lifetime total, including each monthly renewal. Your progress never resets at the end of a month. Reach the totals below to unlock each tier’s rewards.";
+export const DONATION_ACCUMULATION_TITLE = "Every donation brings you closer.";
+export const DONATION_ACCUMULATION_COPY = "Your donations accumulate toward your lifetime total. You don’t have to donate everything at once.";
+export const DONATION_ACCUMULATION_EXAMPLE = "{count} separate {amount} donations count just like one {total} donation.";
+export const DONATION_ACCUMULATION_MILESTONE = "Reach a new milestone and permanently unlock its rewards.";
+
+export const DONATION_TIER_EXAMPLES: Readonly<Record<string, { count: number; amount: number }>> = {
+  angel: { count: 2, amount: 0.5 },
+  archangel: { count: 10, amount: 1 },
+  principality: { count: 5, amount: 5 },
+  power: { count: 10, amount: 5 },
+  virtue: { count: 10, amount: 10 },
+  dominion: { count: 10, amount: 25 },
+  throne: { count: 10, amount: 50 },
+  cherub: { count: 15, amount: 50 },
+  seraph: { count: 10, amount: 100 },
+};
