@@ -22,8 +22,8 @@ const labels: Record<LanguageCode, { recent: string; month: string[]; year: stri
   ti: { recent: "ንትሕቲ ሓደ ወርሒ እሙን ለጋሲ", month: ["ን{n} ወርሒ እሙን ለጋሲ"], year: ["ን{n} ዓመት እሙን ለጋሲ"] },
 };
 
-export function donorDurationLabel(firstDonation: string | null | undefined, language: LanguageCode, now = new Date()) {
-  const duration = donorDuration(firstDonation, now);
+export function donorDurationLabel(donationCount: number | null | undefined, language: LanguageCode) {
+  const duration = donorDuration(donationCount);
   if (!duration) return null;
   const translated = labels[language];
   if (duration.count === 0) return translated.recent;

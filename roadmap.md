@@ -1,5 +1,6 @@
 # Prayers category browser
 ## Profile donor details
+- [ ] Count each confirmed donation as a month, center the matching tier tag under the glowing photo, and keep profile options single-line or vertically left-aligned.
 - [x] Put the donation tier and elapsed donor duration below the profile photo; keep Age to the right of Orthodox branch. Eight focused tests pass; signed-in phone check shows Angel and actual confirmed-donation tenure, with Age on the same row to the right. Preview build clean; no payment or account settings changed.
 ## Donation milestone rewards
 - [x] Remove drawing-credit dashes and replace accumulation copy with localized tier-colored examples, preserving explicit rewards. Twenty-two milestone tests pass; signed-in phone dropdowns show blue Archangel 10 × $1 = $10 and pink Throne 10 × $50 = $500, dash-free credits, no overflow or runtime errors; preview clean. No payments submitted.
