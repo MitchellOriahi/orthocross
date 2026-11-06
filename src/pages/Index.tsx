@@ -405,6 +405,7 @@ const Index = () => {
                 <ChapterMarkingDialog
                   open={showChapterMarking}
                   onOpenChange={setShowChapterMarking}
+                  locked={showTutorial}
                   onChaptersUpdated={() => {
                     loadBibleCompletion();
                     loadBookProgress();
