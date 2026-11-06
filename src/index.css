@@ -937,13 +937,12 @@ All colors MUST be HSL.
 .calendar-intro-glow {
   border-color: hsl(var(--journey-glow) / 0.6);
   box-shadow: var(--journey-glow-rest);
-  animation: journey-next-glow 4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation: journey-next-glow 0.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   z-index: 1;
 }
 @media (prefers-reduced-motion: reduce) {
   .calendar-intro-glow {
-    /* Keep the breathing cue without expanding or moving the tile. */
-    animation: journey-next-glow-soft 5s ease-in-out infinite;
+    animation: none;
   }
 }
 
