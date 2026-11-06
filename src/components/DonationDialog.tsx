@@ -9,7 +9,7 @@ import { Capacitor } from "@capacitor/core";
 import { ChevronDown, Eye, EyeOff, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonorTierName } from "./DonorTierName";
-import { DONOR_TIERS } from "@/config/donorTiers";
+import { DonationTierRewards } from "./DonationTierRewards";
 import { TierPortrait } from "./TierPortrait";
 import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftImpact, minimumGift, shownTier } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
@@ -315,26 +315,13 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
             </Button>
             {tiersOpen && (
-              <ul className="space-y-1 px-3 pb-3">
-                {DONOR_TIERS.map((t) => {
-                  const current = activeTierKey === t.key;
-                  return (
-                    <li key={t.key}>
-                      <Button type="button" variant="ghost" className={`donor-tier-${t.key} donor-gift-tier-option ${t.key === "archangel" && tiersPulse ? "donor-gift-tier-pulse" : ""} h-auto w-full justify-between gap-2 whitespace-normal px-3 py-2 text-sm ${current ? "font-semibold" : ""}`} onClick={() => {
-                        setCustomAmount(String(t.minCents / 100));
-                        setSelectedAmount(t.minCents / 100);
-                        setUseCustom(true);
-                        setPickedTierKey(t.key);
-                        toggleTiers(false);
-                      }}>
-                        <span><DonorTierName tier={t} />{current && tr(" · this gift")}</span>
-                        <span data-no-translate>{money(t.minCents / 100)}+</span>
-                      </Button>
-                    </li>
-                  );
-                })}
-                <li className="px-3 pt-1 text-xs text-muted-foreground">Tiers reflect your lifetime donations.</li>
-              </ul>
+              <DonationTierRewards activeTierKey={activeTierKey} pulse={tiersPulse} canSelectAmount={!isNative} onSelect={(key, amount) => {
+                setCustomAmount(String(amount));
+                setSelectedAmount(amount);
+                setUseCustom(true);
+                setPickedTierKey(key);
+                toggleTiers(false);
+              }} />
             )}
           </div>
 
