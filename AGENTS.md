@@ -52,3 +52,4 @@
 - Reminder runs auth via a grant-less scheduler_secrets row and send leaderboard pushes server-side, so closed apps still get them.
 - Open the Scripture reader at the top of its chapter on mount: an in-app route change keeps the window's old scroll position, so the reader resets scroll before paint.
 - Bundle streak sticker mascots as transparent local assets with semantic theme styling; artwork must never delay or change streak evaluation.
+- The first-ever Bible completion "i" opens Mark Chapters as Read with the explanation sticker layered above it, so dismissing the sticker leaves the reader in that section; the dialog stays locked against outside/escape dismissal only while the sticker is up, and the sticker sits above the dialog portal with its own pointer events.

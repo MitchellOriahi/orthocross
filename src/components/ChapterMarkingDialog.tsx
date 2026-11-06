@@ -11,9 +11,10 @@ interface ChapterMarkingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onChaptersUpdated: () => void;
+  locked?: boolean;
 }
 
-export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: ChapterMarkingDialogProps) {
+export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated, locked = false }: ChapterMarkingDialogProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [selectedBook, setSelectedBook] = useState<BookInfo | null>(null);
@@ -288,7 +289,12 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated }: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
+      <DialogContent
+        className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col"
+        onEscapeKeyDown={locked ? (event) => event.preventDefault() : undefined}
+        onPointerDownOutside={locked ? (event) => event.preventDefault() : undefined}
+        onInteractOutside={locked ? (event) => event.preventDefault() : undefined}
+      >
         <DialogHeader>
           <DialogTitle>Mark Chapters as Read</DialogTitle>
         </DialogHeader>
