@@ -1,4 +1,7 @@
 # Prayers category browser
+## Complete prayer display
+- [x] Audit all 133 prayer boundaries and all 16 dictionaries; restore 159 misplaced paragraphs across 43 prayers and repair escaped-newline translation lookup without rewriting sacred text. Preserve existing historical/doctrinal explanations and saved highlight coordinates. Translation coverage checks pass; independent liturgical-source and native-speaker certification is not claimed.
+- [x] Keep prayer Back on the physical left and pins visible in category and search lists. Signed-in mobile flow confirms one-tap Creed opening, nine complete paragraphs, origins first in Explanation, visible pin and Back at x=16; preview clean.
 ## Profile donor details
 - [x] Count each confirmed donation as a month, center the matching tier tag under the glowing photo, and keep profile options single-line and vertically left-aligned. Eight tests pass; signed-in phone readback shows three payments as three months, centered clickable Angel tag, tier glow and one-line branch; tier guide opens correctly. Preview build clean.
 - [x] Put the donation tier and elapsed donor duration below the profile photo; keep Age to the right of Orthodox branch. Eight focused tests pass; signed-in phone check shows Angel and actual confirmed-donation tenure, with Age on the same row to the right. Preview build clean; no payment or account settings changed.
