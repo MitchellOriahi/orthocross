@@ -17,6 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { ChapterMarkingDialog } from "@/components/ChapterMarkingDialog";
 import { BibleProgressTutorial } from "@/components/BibleProgressTutorial";
+import { introInfoClick, dismissIntroTutorial } from "@/lib/bibleIntroFlow";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DonateButton } from "@/components/DonateButton";
 import { LanguageButton } from "@/components/LanguageButton";
@@ -83,7 +84,9 @@ const Index = () => {
 
   const handleTutorialComplete = () => {
     localStorage.setItem("hasSeenBibleProgressTutorial", "true");
-    setShowTutorial(false);
+    const next = dismissIntroTutorial();
+    setShowTutorial(next.tutorial);
+    setShowChapterMarking(next.chapterMarking);
   };
 
   const checkScriptureData = async () => {
@@ -374,8 +377,14 @@ const Index = () => {
                               size="sm"
                               className={`h-6 w-6 p-0 rounded-full ${infoPulse ? "ring-2 ring-primary animate-pulse" : ""}`}
                               onClick={() => {
-                                if (infoPulse) { setInfoPulse(false); setShowTutorial(true); }
-                                else setShowChapterMarking(true);
+                                if (infoPulse) {
+                                  const next = introInfoClick();
+                                  setInfoPulse(next.infoPulse);
+                                  setShowChapterMarking(next.chapterMarking);
+                                  setShowTutorial(next.tutorial);
+                                } else {
+                                  setShowChapterMarking(true);
+                                }
                               }}
                             >
                               <Info className="h-4 w-4" />
