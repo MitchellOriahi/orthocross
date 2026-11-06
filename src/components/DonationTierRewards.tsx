@@ -51,7 +51,7 @@ export function DonationTierRewards({ activeTierKey, pulse, canSelectAmount, onS
               </div>
             </CollapsibleContent>
           </Collapsible>
-        ); })}
+        ))}
       </div>
     </div>
   );
