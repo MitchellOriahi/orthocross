@@ -1,0 +1,13 @@
+// Lovable-hosted images (public/__l5e) exceed Play's 200 MB base-module limit,
+// so they ship in an install-time asset pack. Its assets merge into the app's
+// AssetManager at install, where Capacitor serves them from the same paths.
+plugins {
+    id 'com.android.asset-pack'
+}
+
+assetPack {
+    packName = "l5e_assets"
+    dynamicDelivery {
+        deliveryType = "install-time"
+    }
+}

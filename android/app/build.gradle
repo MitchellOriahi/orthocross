@@ -3,12 +3,13 @@ apply plugin: 'com.android.application'
 android {
     namespace "com.orthocross.myapp"
     compileSdk rootProject.ext.compileSdkVersion
+    assetPacks = [":l5e_assets"]
     defaultConfig {
         applicationId "com.orthocross.myapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "2.1"
+        versionCode 9
+        versionName "2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
