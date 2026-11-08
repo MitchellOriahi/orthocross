@@ -210,7 +210,7 @@ export const getAllFastingEvents = (
   } else if (year === 2026) {
     all = [...base, ...moveableFeastsEastern2026, ...moveableFeastsOriental2026];
   } else {
-    all = base;
+    all = [...base, ...moveableFeastsForYear(year)];
   }
 
   if (calendarSystem === "Julian") {
@@ -230,3 +230,186 @@ export const formatEventDate = (month: number, day: number): string => {
 export const createDateFromEvent = (year: number, month: number, day: number): Date => {
   return new Date(year, month, day);
 };
+
+// ============================================
+// MOVEABLE FEASTS FOR ANY YEAR
+// ============================================
+// The hand-entered 2025/2026 lists above stay as they are. Every other year is
+// computed from Orthodox Pascha (Julian Paschalion, shown on the civil
+// calendar) using the same offsets as those lists.
+
+const DAY_MS = 86_400_000;
+
+/** Orthodox Pascha for `year`, as a UTC midnight timestamp on the civil (Gregorian) calendar. */
+export function orthodoxPaschaUtc(year: number): number {
+  const a = year % 4;
+  const b = year % 7;
+  const c = year % 19;
+  const d = (19 * c + 15) % 30;
+  const e = (2 * a + 4 * b - d + 34) % 7;
+  const julianMonth = Math.floor((d + e + 114) / 31);
+  const julianDay = ((d + e + 114) % 31) + 1;
+  const julianToCivilGap = Math.floor(year / 100) - Math.floor(year / 400) - 2;
+  return Date.UTC(year, julianMonth - 1, julianDay + julianToCivilGap);
+}
+
+const offsetDay = (paschaUtc: number, offset: number) => {
+  const date = new Date(paschaUtc + offset * DAY_MS);
+  return { month: date.getUTCMonth(), day: date.getUTCDate() };
+};
+
+type MoveableSpec = {
+  name: string;
+  type: FastingEventData["type"];
+  isMajor: boolean;
+  start: number;
+  end?: number | { month: number; day: number };
+};
+
+const buildMoveable = (paschaUtc: number, tradition: "Eastern" | "Oriental", specs: MoveableSpec[]): FastingEventData[] => {
+  const year = new Date(paschaUtc).getUTCFullYear();
+  const out: FastingEventData[] = [];
+  for (const spec of specs) {
+    const start = offsetDay(paschaUtc, spec.start);
+    const event: FastingEventData = { name: spec.name, month: start.month, day: start.day, tradition, type: spec.type, isMajor: spec.isMajor, isMoveable: true };
+    if (spec.end !== undefined) {
+      const end = typeof spec.end === "number" ? offsetDay(paschaUtc, spec.end) : spec.end;
+      // A fast that would end before it begins (very late Pascha) is skipped that year.
+      if (Date.UTC(year, end.month, end.day) < Date.UTC(year, start.month, start.day)) continue;
+      event.endMonth = end.month;
+      event.endDay = end.day;
+    }
+    out.push(event);
+  }
+  return out;
+};
+
+const EASTERN_MOVEABLE: MoveableSpec[] = [
+  { name: "Great Lent", type: "fast", isMajor: true, start: -48, end: -1 },
+  { name: "Palm Sunday", type: "feast", isMajor: true, start: -7 },
+  { name: "Holy Week", type: "fast", isMajor: true, start: -6, end: -1 },
+  { name: "Pascha (Easter)", type: "feast", isMajor: true, start: 0 },
+  { name: "Bright Week", type: "feast", isMajor: false, start: 1, end: 6 },
+  { name: "Ascension", type: "feast", isMajor: true, start: 39 },
+  { name: "Pentecost", type: "feast", isMajor: true, start: 49 },
+  { name: "All Saints Sunday", type: "holiday", isMajor: true, start: 56 },
+  { name: "Apostles' Fast", type: "fast", isMajor: true, start: 57, end: { month: 5, day: 28 } },
+];
+
+const ORIENTAL_MOVEABLE: MoveableSpec[] = [
+  { name: "Nineveh Fast", type: "fast", isMajor: true, start: -62, end: -60 },
+  { name: "Great Lent", type: "fast", isMajor: true, start: -48, end: -1 },
+  { name: "Holy Week", type: "fast", isMajor: true, start: -6, end: -1 },
+  { name: "Palm Sunday", type: "feast", isMajor: true, start: -7 },
+  { name: "Pascha (Easter)", type: "feast", isMajor: true, start: 0 },
+  { name: "Ascension", type: "feast", isMajor: true, start: 39 },
+  { name: "Pentecost", type: "feast", isMajor: true, start: 49 },
+  { name: "Apostles' Fast", type: "fast", isMajor: true, start: 50, end: { month: 6, day: 11 } },
+];
+
+export const easternMoveableFeasts = (paschaUtc: number) => buildMoveable(paschaUtc, "Eastern", EASTERN_MOVEABLE);
+export const orientalMoveableFeasts = (paschaUtc: number) => buildMoveable(paschaUtc, "Oriental", ORIENTAL_MOVEABLE);
+
+/** Coptic, Ethiopian, Eritrean and Syriac Pascha follows the same Julian Paschalion as Eastern Orthodoxy. */
+export const moveableFeastsForYear = (year: number): FastingEventData[] => {
+  const pascha = orthodoxPaschaUtc(year);
+  return [...easternMoveableFeasts(pascha), ...orientalMoveableFeasts(pascha)];
+};
+
+// ============================================
+// TRADITION AND "WHAT IS TODAY"
+// ============================================
+
+export type CalendarTradition = "Eastern Orthodox" | "Oriental Orthodox";
+export type ObservanceCategory = "feast" | "holiday" | "fast";
+
+// Mirrors ORTHODOX_BRANCHES in src/data/profileIdentity.ts (a test keeps them in sync).
+export const ORIENTAL_BRANCHES = ["Coptic", "Ethiopian Tewahedo", "Eritrean Tewahedo", "Armenian Apostolic", "Syriac Orthodox", "Malankara Orthodox", "Jacobite Syrian Orthodox", "Oriental Orthodox"];
+export const EASTERN_BRANCHES = ["Greek Orthodox", "Russian Orthodox", "Antiochian Orthodox", "Serbian Orthodox", "Romanian Orthodox", "Bulgarian Orthodox", "Georgian Orthodox", "Cypriot Orthodox", "Polish Orthodox", "Albanian Orthodox", "Orthodox Church in America", "Ukrainian Orthodox", "Macedonian Orthodox", "Czech and Slovak Orthodox", "Finnish Orthodox", "Japanese Orthodox", "Eastern Orthodox"];
+
+/** Same rule as the calendar screen: a chosen church decides; otherwise the reader's own calendar pick, else Eastern. */
+export function resolveCalendarTradition(branch: string | null | undefined, savedTradition: string | null | undefined): CalendarTradition {
+  if (branch && ORIENTAL_BRANCHES.includes(branch)) return "Oriental Orthodox";
+  if (branch && EASTERN_BRANCHES.includes(branch)) return "Eastern Orthodox";
+  return savedTradition === "Oriental Orthodox" ? "Oriental Orthodox" : "Eastern Orthodox";
+}
+
+export interface DatedObservance {
+  name: string;
+  category: ObservanceCategory;
+  kind: "event" | "weekly";
+  isMajor: boolean;
+  startDate: string;
+  endDate: string;
+  /** 1-based day within a multi-day period (1 for single days). */
+  dayOfPeriod: number;
+  totalDays: number;
+}
+
+const dateKey = (utc: number) => new Date(utc).toISOString().slice(0, 10);
+const parseDateKey = (key: string) => {
+  const [y, m, d] = key.split("-").map(Number);
+  return Date.UTC(y, m - 1, d);
+};
+
+/** Every listed fast, feast or holiday that covers `localDate` (YYYY-MM-DD) for the tradition and calendar. */
+export function observancesOnDate(localDate: string, tradition: CalendarTradition, calendarSystem: CalendarSystem = "Gregorian"): DatedObservance[] {
+  const target = parseDateKey(localDate);
+  const year = new Date(target).getUTCFullYear();
+  const filter = tradition === "Eastern Orthodox" ? "Eastern" : "Oriental";
+  const found: DatedObservance[] = [];
+  const seen = new Set<string>();
+
+  // The previous year's list contributes periods that run across New Year (e.g. Nativity Fast).
+  for (const listYear of [year - 1, year]) {
+    for (const event of getAllFastingEvents(listYear, calendarSystem)) {
+      if (event.tradition !== filter && event.tradition !== "Both") continue;
+      const start = Date.UTC(listYear, event.month, event.day);
+      const end = event.endMonth !== undefined && event.endDay !== undefined
+        ? Date.UTC(event.endMonth < event.month ? listYear + 1 : listYear, event.endMonth, event.endDay)
+        : start;
+      if (target < start || target > end) continue;
+      const key = `${event.name}|${start}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      found.push({
+        name: event.name,
+        category: event.type,
+        kind: "event",
+        isMajor: event.isMajor,
+        startDate: dateKey(start),
+        endDate: dateKey(end),
+        dayOfPeriod: Math.round((target - start) / DAY_MS) + 1,
+        totalDays: Math.round((end - start) / DAY_MS) + 1,
+      });
+    }
+  }
+
+  const rank: Record<ObservanceCategory, number> = { feast: 0, holiday: 1, fast: 2 };
+  return found.sort((a, b) =>
+    rank[a.category] - rank[b.category]
+    || Number(b.isMajor) - Number(a.isMajor)
+    || a.totalDays - b.totalDays
+    || a.name.localeCompare(b.name));
+}
+
+/** Wednesday and Friday, as marked on the calendar grid. */
+export function weeklyFastOnDate(localDate: string): DatedObservance | null {
+  const weekday = new Date(parseDateKey(localDate)).getUTCDay();
+  if (weekday !== 3 && weekday !== 5) return null;
+  return {
+    name: weekday === 3 ? "Wednesday Fast" : "Friday Fast",
+    category: "fast",
+    kind: "weekly",
+    isMajor: false,
+    startDate: localDate,
+    endDate: localDate,
+    dayOfPeriod: 1,
+    totalDays: 1,
+  };
+}
+
+/** Today's single most important observance: Feast > Holiday > Fast > Wednesday/Friday fast. */
+export function primaryObservance(observances: DatedObservance[], weekly: DatedObservance | null): DatedObservance | null {
+  return observances[0] ?? weekly;
+}
