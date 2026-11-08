@@ -7,13 +7,14 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { LANGUAGES, type LanguageCode } from "@/lib/i18n/translations";
 
 /** Localized bold names paired with preserved native-language names. */
-export function LanguageList({ onPick, onScroll, scrollContainerRef }: { onPick: (l: LanguageCode) => void; onScroll?: (e: UIEvent<HTMLDivElement>) => void; scrollContainerRef?: Ref<HTMLDivElement> }) {
+export function LanguageList({ onPick, onScroll, scrollContainerRef, selected }: { onPick: (l: LanguageCode) => void; onScroll?: (e: UIEvent<HTMLDivElement>) => void; scrollContainerRef?: Ref<HTMLDivElement>; selected?: LanguageCode }) {
   const { language, tr } = useLanguage();
+  const chosen = selected ?? language;
   const displayNames = new Intl.DisplayNames([language], { type: "language" });
   return (
     <div ref={scrollContainerRef} className="scrollbar-hidden language-list-fade flex w-full max-h-[55vh] flex-col gap-3 overflow-y-auto px-3 pt-4 pb-8" onScroll={onScroll}>
       {LANGUAGES.map(l => (
-        <Button key={l.code} dir="ltr" data-no-translate variant={l.code === language ? "default" : "outline"} className={`h-14 w-full justify-between rounded-full px-5 text-base${l.code === language ? " shadow-[0_2px_10px_-2px_hsl(var(--primary)/0.35)]" : ""}`} onClick={() => onPick(l.code)}>
+        <Button key={l.code} dir="ltr" data-no-translate aria-pressed={l.code === chosen} variant={l.code === chosen ? "default" : "outline"} className={`h-14 w-full justify-between rounded-full px-5 text-base${l.code === chosen ? " shadow-[0_2px_10px_-2px_hsl(var(--primary)/0.35)]" : ""}`} onClick={() => onPick(l.code)}>
           <span dir={LANGUAGES.find(option => option.code === language)?.rtl ? "rtl" : "ltr"} className="min-w-0 whitespace-normal text-left text-base font-semibold">{displayNames.of(l.code) ?? tr(l.english)}</span>
           <span dir={l.rtl ? "rtl" : "ltr"} className="shrink-0 text-sm opacity-70">{l.native}</span>
         </Button>
@@ -30,7 +31,17 @@ export const LanguageButton = () => {
   const [bounce, setBounce] = useState(false);
   const [atBottom, setAtBottom] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
-  const { t, setLanguage } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
+  const [pending, setPending] = useState<LanguageCode>(language);
+
+  useEffect(() => {
+    if (open) setPending(language);
+  }, [open, language]);
+
+  const confirm = () => {
+    if (pending !== language) setLanguage(pending);
+    setOpen(false);
+  };
 
   useEffect(() => {
     if (!open) {
@@ -64,7 +75,7 @@ export const LanguageButton = () => {
           <DialogTitle className="text-2xl">{t("chooseLanguage")}</DialogTitle>
           <DialogDescription>{t("swipeForMoreLanguages")}</DialogDescription>
           <div className="flex w-full flex-col items-center gap-5">
-            <LanguageList onPick={l => { setLanguage(l); setOpen(false); }} onScroll={handleScroll} scrollContainerRef={listRef} />
+            <LanguageList selected={pending} onPick={setPending} onScroll={handleScroll} scrollContainerRef={listRef} />
             {!atBottom && (
               <button
                 type="button"
@@ -79,6 +90,7 @@ export const LanguageButton = () => {
                 </span>
               </button>
             )}
+            <Button className="h-12 w-full rounded-full text-base" onClick={confirm}>{t("confirm")}</Button>
           </div>
         </DialogContent>
       </Dialog>

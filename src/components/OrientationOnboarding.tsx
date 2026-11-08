@@ -128,14 +128,19 @@ function OrientationStepsBody({ step, setStep, saving, unaffiliatedLabel, onChoo
   onChooseBranch: (branch: string) => void;
   onNeither: () => void;
 }) {
-  const { t, setLanguage } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
+  const [pendingLanguage, setPendingLanguage] = useState<LanguageCode>(language);
   const [familyChoice, setFamilyChoice] = useState<FamilyChoice | null>(null);
   const [churchChoice, setChurchChoice] = useState<string | null>(null);
 
   useEffect(() => { setChurchChoice(null); }, [step]);
 
   const confirm = () => {
-    if (step === "language") { setStep("family"); return; }
+    if (step === "language") {
+      if (pendingLanguage !== language) setLanguage(pendingLanguage);
+      setStep("family");
+      return;
+    }
     const action = orientationConfirmAction(step, familyChoice, churchChoice);
     if (!action) return;
     if (action.type === "step") setStep(action.step);
@@ -159,7 +164,7 @@ function OrientationStepsBody({ step, setStep, saving, unaffiliatedLabel, onChoo
   return step === "language" ? <>
     <DialogTitle className="text-2xl">{t("chooseLanguage")}</DialogTitle>
     <DialogDescription>{t("languageNote")}</DialogDescription>
-    <LanguageList onPick={l => setLanguage(l)} />
+    <LanguageList selected={pendingLanguage} onPick={setPendingLanguage} />
     {confirmButton}
   </> : step === "family" ? <>
     <DialogTitle className="text-2xl">{t("welcome")}</DialogTitle>
