@@ -6,6 +6,12 @@ test('large phone photos initially fit instead of rendering at natural pixel siz
   assert.equal(fittedImageScale(4032, 3024), 280 / 4032);
   assert.deepEqual(imageCropRect(4032, 3024, { zoom: 1, x: 0, y: 0 }), { x: 20, y: 55, width: 280, height: 210 });
 });
+test('nearly square pictures fill the circle so no flat edges show', () => {
+  assert.equal(fittedImageScale(512, 488), 280 / 488);
+  const rect = imageCropRect(512, 488, { zoom: 1, x: 0, y: 0 });
+  assert.equal(rect.height, 280);
+  assert.ok(rect.width > 280);
+});
 test('portrait photos fit and can zoom out below the initial framing', () => {
   assert.deepEqual(imageCropRect(3000, 4000, { zoom: 0.25, x: 0, y: 0 }), { x: 133.75, y: 125, width: 52.50000000000001, height: 70 });
 });
