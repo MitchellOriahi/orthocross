@@ -60,6 +60,29 @@ function IdentityPicker({ label, value, options, icon: Icon, className, disabled
   );
 }
 
+type TagValues = { branch: string | null; patron_saint_id: string | null; country_code: string | null; age: number | null };
+
+/** Read-only pills for another person's profile; unset tags are omitted. */
+export function ReadOnlyIdentityTags({ values }: { values: TagValues | null }) {
+  if (!values) return null;
+  const pill = "inline-flex w-fit items-center rounded-full border border-border px-3 py-2 text-sm font-medium whitespace-nowrap";
+  const items = [
+    { icon: Cross, label: ORTHODOX_BRANCHES.find(o => o.value === values.branch)?.label,
+      className: values.branch ? branchClasses[getBranchTradition(values.branch)] : undefined },
+    { icon: Cake, label: values.age != null ? String(values.age) : undefined },
+    { icon: UserRound, label: PATRON_SAINT_OPTIONS.find(o => o.value === values.patron_saint_id)?.label },
+    { icon: Globe, label: PROFILE_COUNTRIES.find(o => o.value === values.country_code)?.label },
+  ].filter(item => item.label);
+  if (!items.length) return null;
+  return (
+    <div className="flex flex-col items-start gap-2 pt-3" dir="ltr" aria-label="Profile tags">
+      {items.map(({ icon: Icon, label, className }, i) => (
+        <span key={i} className={cn(pill, className)}><Icon className="mr-1.5 h-3.5 w-3.5 shrink-0" />{label}</span>
+      ))}
+    </div>
+  );
+}
+
 export default function ProfileIdentityTags() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
