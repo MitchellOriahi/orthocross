@@ -1,5 +1,6 @@
-import { useLayoutEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { loadCalendarPreferences, parseCalendarSystem, saveCalendarPreferences, type SavedCalendarPreferences } from "@/lib/calendarPreferences";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { orientationForBranch, useOrthodoxOrientation } from "@/lib/orthodoxOrientation";
@@ -44,6 +45,26 @@ export const FastingCalendar = () => {
   const [selectedTradition, setSelectedTradition] = useState<CalendarTradition>(() =>
     calendarTraditionForOrientation(defaultOrientation, readCalendarTradition(user?.id)));
   const [calendarSystem, setCalendarSystem] = useState<CalendarSystem>("Gregorian");
+  const queryClient = useQueryClient();
+  const rememberPreferences = (changes: Partial<SavedCalendarPreferences>) => {
+    if (!user) return;
+    queryClient.setQueryData<SavedCalendarPreferences>(["calendarPreferences", user.id], (old) => old && { ...old, ...changes });
+    void saveCalendarPreferences(user.id, changes);
+  };
+  const { data: savedPreferences } = useQuery({
+    queryKey: ["calendarPreferences", user?.id],
+    queryFn: () => loadCalendarPreferences(user!.id),
+    enabled: !!user,
+    staleTime: 30000,
+  });
+
+  // The saved account choice is applied once per account; later picks stay local until saved.
+  const appliedPreferencesFor = useRef<string | null>(null);
+  useLayoutEffect(() => {
+    if (!user || !savedPreferences || appliedPreferencesFor.current === user.id) return;
+    appliedPreferencesFor.current = user.id;
+    setCalendarSystem(savedPreferences.calendarSystem);
+  }, [user, savedPreferences]);
 
   // Only a change in family/account applies a default; month/language changes never overwrite a manual pick.
   useLayoutEffect(() => {
@@ -53,10 +74,22 @@ export const FastingCalendar = () => {
     saveCalendarTradition(user?.id, next);
   }, [user?.id, identityLoaded, defaultOrientation]);
 
+  // Mirror the calendar shown here to the account, so widgets use the same tradition.
+  useEffect(() => {
+    if (!user || !identityLoaded || !savedPreferences || savedPreferences.calendarTradition === selectedTradition) return;
+    rememberPreferences({ calendarTradition: selectedTradition });
+  }, [user, identityLoaded, savedPreferences, selectedTradition]);
+
   const chooseCalendarTradition = (value: string) => {
     if (value !== "Eastern Orthodox" && value !== "Oriental Orthodox") return;
     setSelectedTradition(value);
     saveCalendarTradition(user?.id, value);
+  };
+
+  const chooseCalendarSystem = (value: string) => {
+    const next = parseCalendarSystem(value);
+    setCalendarSystem(next);
+    rememberPreferences({ calendarSystem: next });
   };
 
   const monthNames = [
@@ -172,7 +205,7 @@ export const FastingCalendar = () => {
             </Label>
             <RadioGroup
               value={calendarSystem}
-              onValueChange={(value) => setCalendarSystem(value as CalendarSystem)}
+              onValueChange={chooseCalendarSystem}
               className="flex flex-col gap-2 items-start"
             >
               <div className="flex items-center space-x-2">

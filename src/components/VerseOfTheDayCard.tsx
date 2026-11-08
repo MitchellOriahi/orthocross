@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Share2 } from "lucide-react";
-import { getVerseOfTheDay } from "@/lib/verseOfTheDay";
+import { getVerseOfTheDay, localDateKey } from "@/lib/verseOfTheDay";
+import { supabase } from "@/integrations/supabase/client";
 import { VerseShareDialog } from "@/components/VerseShareDialog";
 
 export const VerseOfTheDayCard = () => {
@@ -12,10 +13,20 @@ export const VerseOfTheDayCard = () => {
   const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     const loadVerseOfTheDay = () => {
-      const todaysVerse = getVerseOfTheDay();
-      setVerse(todaysVerse);
+      const now = new Date();
+      setVerse(getVerseOfTheDay(now));
       setLoading(false);
+      // The backend list is the source of truth shared with notifications and widgets.
+      supabase.rpc("get_verse_of_the_day", { p_date: localDateKey(now) }).then(({ data }) => {
+        const row = Array.isArray(data) ? data[0] : data;
+        if (cancelled || !row?.reference || !row?.verse_text) return;
+        setVerse((current) =>
+          current?.reference === row.reference && current?.text === row.verse_text
+            ? current
+            : { reference: row.reference, text: row.verse_text });
+      }, () => { /* keep the bundled verse when offline */ });
     };
 
     loadVerseOfTheDay();
@@ -33,7 +44,10 @@ export const VerseOfTheDayCard = () => {
     };
 
     const midnightTimer = checkMidnight();
-    return () => clearTimeout(midnightTimer);
+    return () => {
+      cancelled = true;
+      clearTimeout(midnightTimer);
+    };
   }, []);
 
   if (loading) {

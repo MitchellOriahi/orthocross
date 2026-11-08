@@ -18,6 +18,7 @@ import { TutorialIntro } from "@/components/TutorialIntro";
 import { OrientationOnboarding } from "@/components/OrientationOnboarding";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { NotificationManager } from "@/components/NotificationManager";
+import { WidgetSync } from "@/hooks/useWidgetSync";
 import { DonationThankYouDialog } from "@/components/DonationThankYouDialog";
 import Auth from "./pages/Auth";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -84,6 +85,7 @@ const AppContent = () => {
       <LanguageProvider>
       <AuthProvider>
         <NotificationManager />
+        <WidgetSync />
         <TutorialIntro />
         <OrientationOnboarding />
         {/* Thank-you sticker after a donation, on whichever page the donor returns to */}

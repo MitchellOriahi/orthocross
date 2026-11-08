@@ -1,3 +1,8 @@
+# iOS home screen widgets
+- [x] Prepare data and secure access for four widgets (streak; verse; verse + streak; streak + verse + today's observance) with light/dark colors. Widget/calendar/verse tests pass; signed-in checks: widget key issue -> data -> revoke -> 401, Tokyo time zone override, Old Calendar choice survives reload, Board shows the shared verse.
+- [ ] Native WidgetKit extension + OrthoCrossWidget plugin: built in Xcode (see IOS-WIDGETS.md).
+- [ ] Production backend: port the widget database change and deploy widget-data/widget-token (Mitchel).
+- [ ] Oriental moveable-date offsets (Coptic/Ethiopian 55-day Lent, Nineveh timing) and Armenian Pascha: awaiting owner confirmation.
 # Prayers category browser
 ## Complete prayer display
 - [x] Audit all 133 prayer boundaries and all 16 dictionaries; restore 159 misplaced paragraphs across 43 prayers and repair escaped-newline translation lookup without rewriting sacred text. Preserve existing historical/doctrinal explanations and saved highlight coordinates. Translation coverage checks pass; independent liturgical-source and native-speaker certification is not claimed.

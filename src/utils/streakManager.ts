@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { requestWidgetRefresh } from "@/lib/widgetBridge";
 
 export interface GuardianAngelResult {
   saved: boolean;
@@ -21,6 +22,7 @@ export const checkStreakOnAppOpen = async (
 
     const row = Array.isArray(data) ? data[0] : data;
     if (!row) return null;
+    requestWidgetRefresh();
 
     // No streak-loss event happened (still within window, or streak was already 0
     // so there was nothing to lose)
@@ -46,6 +48,7 @@ export const updateUserStreak = async (_userId: string): Promise<number> => {
   try {
     const { data, error } = await supabase.rpc('record_daily_activity');
     if (error) throw error;
+    requestWidgetRefresh();
     const row = Array.isArray(data) ? data[0] : data;
     return row?.current_streak ?? 0;
   } catch (error) {
