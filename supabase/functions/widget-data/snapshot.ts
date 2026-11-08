@@ -96,24 +96,25 @@ export function hslToHex([h, s, l]: Hsl): string {
 }
 
 // HSL values copied from the app's theme tokens in src/index.css (:root and .dark)
-// and the calendar's Tailwind text shades, so widgets match the app in both modes.
+// and the calendar's Tailwind text shades (exact hex), so widgets match the app in both modes.
 const THEME = {
   light: {
     background: [0, 0, 100], card: [0, 0, 98], text: [0, 0, 0], secondaryText: [0, 0, 30], border: [0, 0, 85],
     streak: [29, 95, 49], streakInactive: [224, 18, 56],
     feast: [213, 97, 87], holiday: [48, 96, 76], fast: [0, 96, 89], weeklyFast: [269, 100, 95],
-    feastText: [224, 64, 33], holidayText: [22, 78, 26], fastText: [0, 63, 31], weeklyFastText: [0, 0, 0],
+    feastText: "#1E3A8A", holidayText: "#78350F", fastText: "#7F1D1D", weeklyFastText: [0, 0, 0],
   },
   dark: {
     background: [0, 0, 0], card: [0, 0, 5], text: [0, 0, 100], secondaryText: [0, 0, 70], border: [0, 0, 20],
     streak: [29, 95, 49], streakInactive: [224, 18, 56],
     feast: [217, 71, 18], holiday: [24, 78, 13], fast: [0, 63, 16], weeklyFast: [274, 69, 7],
-    feastText: [214, 95, 93], holidayText: [48, 96, 89], fastText: [0, 93, 94], weeklyFastText: [0, 0, 100],
+    feastText: "#DBEAFE", holidayText: "#FEF3C7", fastText: "#FEE2E2", weeklyFastText: [0, 0, 100],
   },
   tradition: { eastern: [217, 91, 60], oriental: [25, 95, 53] },
-} satisfies Record<string, Record<string, Hsl>>;
+} satisfies Record<string, Record<string, Hsl | string>>;
 
-const hexSet = (set: Record<string, Hsl>) => Object.fromEntries(Object.entries(set).map(([k, v]) => [k, hslToHex(v)]));
+const hexSet = (set: Record<string, Hsl | string>) =>
+  Object.fromEntries(Object.entries(set).map(([k, v]) => [k, typeof v === "string" ? v : hslToHex(v)])) as Record<string, string>;
 
 export function widgetAppearance(tradition: "Eastern Orthodox" | "Oriental Orthodox") {
   const accent = hslToHex(tradition === "Oriental Orthodox" ? THEME.tradition.oriental : THEME.tradition.eastern);
