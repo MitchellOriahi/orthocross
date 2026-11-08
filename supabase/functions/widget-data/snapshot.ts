@@ -102,7 +102,7 @@ const THEME = {
     background: [0, 0, 100], card: [0, 0, 98], text: [0, 0, 0], secondaryText: [0, 0, 30], border: [0, 0, 85],
     streak: [29, 95, 49], streakInactive: [224, 18, 56],
     feast: [213, 97, 87], holiday: [48, 96, 76], fast: [0, 96, 89], weeklyFast: [269, 100, 95],
-    feastText: [226, 71, 40], holidayText: [22, 78, 26], fastText: [0, 63, 31], weeklyFastText: [0, 0, 0],
+    feastText: [224, 64, 33], holidayText: [22, 78, 26], fastText: [0, 63, 31], weeklyFastText: [0, 0, 0],
   },
   dark: {
     background: [0, 0, 0], card: [0, 0, 5], text: [0, 0, 100], secondaryText: [0, 0, 70], border: [0, 0, 20],
