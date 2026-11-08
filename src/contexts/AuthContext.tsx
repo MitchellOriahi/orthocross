@@ -95,6 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    await disconnectWidgets();
     await supabase.auth.signOut();
     navigate('/');
   };

@@ -76,9 +76,9 @@ export const FastingCalendar = () => {
 
   // Mirror the calendar shown here to the account, so widgets use the same tradition.
   useEffect(() => {
-    if (!user || !savedPreferences || savedPreferences.calendarTradition === selectedTradition) return;
+    if (!user || !identityLoaded || !savedPreferences || savedPreferences.calendarTradition === selectedTradition) return;
     rememberPreferences({ calendarTradition: selectedTradition });
-  }, [user, savedPreferences, selectedTradition]);
+  }, [user, identityLoaded, savedPreferences, selectedTradition]);
 
   const chooseCalendarTradition = (value: string) => {
     if (value !== "Eastern Orthodox" && value !== "Oriental Orthodox") return;
