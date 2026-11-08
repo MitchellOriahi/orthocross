@@ -1,0 +1,2 @@
+ALTER TABLE public.profile_identity_tags DROP CONSTRAINT IF EXISTS profile_identity_tags_age_check;
+ALTER TABLE public.profile_identity_tags ADD CONSTRAINT profile_identity_tags_age_check CHECK (age IS NULL OR (age BETWEEN 4 AND 120));

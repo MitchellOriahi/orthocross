@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { applyBranchPreferences } from "@/lib/orthodoxOrientation";
 
 type Field = "branch" | "patron_saint_id" | "country_code" | "age";
-const AGE_OPTIONS: IdentityOption[] = Array.from({ length: 108 }, (_, i) => ({ value: String(i + 13), label: String(i + 13) }));
+const AGE_OPTIONS: IdentityOption[] = Array.from({ length: 117 }, (_, i) => ({ value: String(i + 4), label: String(i + 4) }));
 const branchClasses = {
   eastern: "profile-branch-eastern",
   oriental: "profile-branch-oriental",
