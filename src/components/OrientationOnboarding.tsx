@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageList } from "@/components/LanguageButton";
+import type { LanguageCode } from "@/lib/i18n/translations";
 import { PROFILE_UPDATED_TOAST } from "@/lib/profileToast";
 import { submitOrientationChoice } from "@/lib/orientationSubmission";
 import { orientationConfirmAction, type FamilyChoice } from "@/lib/orientationConfirm";
