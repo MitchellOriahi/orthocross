@@ -5,8 +5,7 @@ import {
   orientalMoveableFeasts,
   moveableFeastsEastern2025,
   moveableFeastsEastern2026,
-  moveableFeastsOriental2025,
-  moveableFeastsOriental2026,
+  resolveOrientalFamily,
   getAllFastingEvents,
   observancesOnDate,
   weeklyFastOnDate,
@@ -39,14 +38,37 @@ describe("Orthodox Pascha", () => {
     expect(generated).toEqual(byName(moveableFeastsEastern2026).filter((e) => e.name !== "Great Lent"));
   });
 
-  test("Oriental offsets reproduce the app's 2025 and 2026 lists from their own Pascha dates", () => {
-    expect(byName(orientalMoveableFeasts(Date.UTC(2025, 3, 13)))).toEqual(byName(moveableFeastsOriental2025));
-    expect(byName(orientalMoveableFeasts(Date.UTC(2026, 3, 5)))).toEqual(byName(moveableFeastsOriental2026));
+  test("Coptic, Ethiopian and Syriac Pascha share the Orthodox date; Armenian follows the Gregorian computus", () => {
+    const pascha = (year, family) => getAllFastingEvents(year, "Gregorian", family)
+      .filter((e) => e.tradition === "Oriental" && e.name === "Pascha (Easter)").map((e) => [e.month + 1, e.day]);
+    expect(pascha(2025, "alexandrian")).toEqual([[4, 20]]);
+    expect(pascha(2026, "alexandrian")).toEqual([[4, 12]]);
+    expect(pascha(2026, "syriac")).toEqual([[4, 12]]);
+    expect(pascha(2026, "armenian")).toEqual([[4, 5]]);
   });
 
-  test("2025 and 2026 calendar lists are unchanged; 2027 gains moveable feasts", () => {
-    const names2026 = getAllFastingEvents(2026).filter((e) => e.isMoveable);
-    expect(names2026).toEqual([...moveableFeastsEastern2026, ...moveableFeastsOriental2026]);
+  test("Coptic Great Lent is 55 days with Nineveh two weeks before; Syriac Lent starts on Clean Monday", () => {
+    const find = (family, name) => getAllFastingEvents(2026, "Gregorian", family).find((e) => e.tradition === "Oriental" && e.name === name);
+    expect(find("alexandrian", "Great Lent")).toMatchObject({ month: 1, day: 16, endMonth: 3, endDay: 11 });
+    expect(find("alexandrian", "Nineveh Fast")).toMatchObject({ month: 1, day: 2, endMonth: 1, endDay: 4 });
+    expect(find("syriac", "Great Lent")).toMatchObject({ month: 1, day: 23 });
+  });
+
+  test("fixed Nativity follows each Oriental family", () => {
+    expect(observancesOnDate("2027-01-07", "Oriental Orthodox", "Gregorian", "alexandrian")[0].name).toBe("Nativity of Christ");
+    expect(observancesOnDate("2026-12-25", "Oriental Orthodox", "Gregorian", "syriac")[0].name).toBe("Nativity of Christ");
+    expect(observancesOnDate("2027-01-06", "Oriental Orthodox", "Gregorian", "armenian")[0].name).toBe("Nativity & Theophany of Christ");
+    expect(observancesOnDate("2026-12-25", "Oriental Orthodox", "Gregorian", "alexandrian").some((o) => o.name === "Nativity of Christ")).toBe(false);
+  });
+
+  test("a specific church decides the Oriental family, else the saved pick", () => {
+    expect(resolveOrientalFamily("Malankara Orthodox", "armenian")).toBe("syriac");
+    expect(resolveOrientalFamily("Ethiopian Tewahedo", null)).toBe("alexandrian");
+    expect(resolveOrientalFamily("Oriental Orthodox", "armenian")).toBe("armenian");
+    expect(resolveOrientalFamily(null, null)).toBe("alexandrian");
+  });
+
+  test("2027 gains moveable feasts", () => {
     const pascha2027 = getAllFastingEvents(2027).filter((e) => e.name === "Pascha (Easter)");
     expect(pascha2027.map((e) => [e.tradition, e.month, e.day])).toEqual([["Eastern", 4, 2], ["Oriental", 4, 2]]);
   });

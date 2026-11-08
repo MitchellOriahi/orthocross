@@ -4,6 +4,7 @@ import {
   observancesOnDate,
   primaryObservance,
   resolveCalendarTradition,
+  resolveOrientalFamily,
   weeklyFastOnDate,
   type CalendarSystem,
   type DatedObservance,
@@ -133,6 +134,7 @@ export interface SnapshotInput {
   verse: { reference: string; text: string } | null;
   branch: string | null | undefined;
   calendarTradition: string | null | undefined;
+  orientalFamily?: string | null;
   calendarSystem: string | null | undefined;
 }
 
@@ -147,7 +149,8 @@ export function buildWidgetSnapshot(input: SnapshotInput) {
   const tradition = resolveCalendarTradition(input.branch, input.calendarTradition);
   const calendarSystem: CalendarSystem = input.calendarSystem === "Julian" ? "Julian" : "Gregorian";
 
-  const events = observancesOnDate(localDate, tradition, calendarSystem);
+  const family = resolveOrientalFamily(input.branch, input.orientalFamily);
+  const events = observancesOnDate(localDate, tradition, calendarSystem, family);
   const weekly = weeklyFastOnDate(localDate);
   const primary = primaryObservance(events, weekly);
 

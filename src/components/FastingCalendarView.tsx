@@ -5,7 +5,7 @@ import { CalendarDayDialog } from "./CalendarDayDialog";
 import { calendarDateKey } from "@/lib/calendarReminders";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getAllFastingEvents, createDateFromEvent, type CalendarSystem } from "@/data/fastingEvents";
+import { getAllFastingEvents, createDateFromEvent, type CalendarSystem, type OrientalFamily } from "@/data/fastingEvents";
 
 interface FastingEvent {
   name: string;
@@ -18,8 +18,8 @@ interface FastingEvent {
 const INTRO_GLOW_KEY = "calendar-intro-glow-dismissed";
 
 // Convert shared data to calendar format
-const getFixedFastingEvents = (year: number, calendarSystem: CalendarSystem): FastingEvent[] => {
-  const events = getAllFastingEvents(year, calendarSystem);
+const getFixedFastingEvents = (year: number, calendarSystem: CalendarSystem, orientalFamily: OrientalFamily): FastingEvent[] => {
+  const events = getAllFastingEvents(year, calendarSystem, orientalFamily);
   
   return events.map(event => {
     const startDate = createDateFromEvent(year, event.month, event.day);
@@ -66,9 +66,10 @@ interface FastingCalendarViewProps {
   onPreviousMonth: () => void;
   onNextMonth: () => void;
   calendarSystem?: CalendarSystem;
+  orientalFamily?: OrientalFamily;
 }
 
-export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, onPreviousMonth, onNextMonth, calendarSystem = "Gregorian" }: FastingCalendarViewProps) => {
+export const FastingCalendarView = ({ selectedTradition, selectedMonth, selectedYear, onPreviousMonth, onNextMonth, calendarSystem = "Gregorian", orientalFamily = "alexandrian" }: FastingCalendarViewProps) => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [introGlow, setIntroGlow] = useState(() => {
     try {
@@ -90,7 +91,7 @@ export const FastingCalendarView = ({ selectedTradition, selectedMonth, selected
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
   
   const weeklyFasts = getWeeklyFastDays(currentMonth, currentYear);
-  const fastingEvents = getFixedFastingEvents(currentYear, calendarSystem);
+  const fastingEvents = getFixedFastingEvents(currentYear, calendarSystem, orientalFamily);
   const today = new Date();
 
   const getEventsForDay = (day: number) => {

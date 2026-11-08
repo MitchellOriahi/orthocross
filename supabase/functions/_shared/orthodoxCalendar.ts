@@ -8,7 +8,20 @@ export interface FastingEventData {
   type: "fast" | "feast" | "holiday";
   isMajor: boolean;
   isMoveable?: boolean;
+  /** Oriental calendar family; Oriental entries without one belong to the Alexandrian family. */
+  family?: OrientalFamily;
 }
+
+/** Oriental Orthodox churches that share one set of calendar rules. */
+export type OrientalFamily = "alexandrian" | "syriac" | "armenian";
+export const ORIENTAL_FAMILIES: OrientalFamily[] = ["alexandrian", "syriac", "armenian"];
+export const ORIENTAL_FAMILY_LABELS: Record<OrientalFamily, string> = {
+  alexandrian: "Coptic, Ethiopian & Eritrean",
+  syriac: "Syriac & Malankara (Indian)",
+  armenian: "Armenian Apostolic",
+};
+export const parseOrientalFamily = (value: unknown): OrientalFamily | null =>
+  value === "alexandrian" || value === "syriac" || value === "armenian" ? value : null;
 
 // Fixed date events that apply to any year
 export const fixedFastingEvents: FastingEventData[] = [
@@ -98,10 +111,33 @@ export const fixedFastingEvents: FastingEventData[] = [
   { name: "Archangel Gabriel", month: 11, day: 19, tradition: "Oriental", type: "holiday", isMajor: false },
   { name: "Wedding at Cana", month: 0, day: 13, tradition: "Oriental", type: "holiday", isMajor: false },
   { name: "Massacre of Innocents", month: 0, day: 10, tradition: "Oriental", type: "holiday", isMajor: false },
-  { name: "Armenian Christmas", month: 0, day: 6, tradition: "Oriental", type: "holiday", isMajor: true },
   { name: "St. Frumentius (Ethiopia)", month: 10, day: 30, tradition: "Oriental", type: "holiday", isMajor: false },
   { name: "St. Yared (Ethiopia)", month: 4, day: 11, tradition: "Oriental", type: "holiday", isMajor: false },
   { name: "Cathedral of St. Mark (Feast)", month: 10, day: 24, tradition: "Oriental", type: "holiday", isMajor: false },
+
+  // ============================================
+  // ORIENTAL ORTHODOX - SYRIAC & MALANKARA (Gregorian fixed feasts)
+  // ============================================
+  { name: "Nativity Fast", month: 11, day: 1, endMonth: 11, endDay: 24, tradition: "Oriental", family: "syriac", type: "fast", isMajor: true },
+  { name: "Dormition Fast", month: 7, day: 1, endMonth: 7, endDay: 14, tradition: "Oriental", family: "syriac", type: "fast", isMajor: true },
+  { name: "Nativity of Christ", month: 11, day: 25, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
+  { name: "Theophany (Epiphany)", month: 0, day: 6, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
+  { name: "Presentation of Christ", month: 1, day: 2, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
+  { name: "Annunciation", month: 2, day: 25, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
+  { name: "Apostles' Fast", month: 5, day: 16, endMonth: 5, endDay: 28, tradition: "Oriental", family: "syriac", type: "fast", isMajor: true },
+  { name: "Ss. Peter & Paul", month: 5, day: 29, tradition: "Oriental", family: "syriac", type: "holiday", isMajor: true },
+  { name: "Transfiguration", month: 7, day: 6, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
+  { name: "Dormition of Theotokos", month: 7, day: 15, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
+  { name: "Nativity of Theotokos", month: 8, day: 8, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
+  { name: "Exaltation of the Holy Cross", month: 8, day: 14, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
+
+  // ============================================
+  // ORIENTAL ORTHODOX - ARMENIAN APOSTOLIC
+  // ============================================
+  { name: "Theophany Fast", month: 11, day: 30, endMonth: 0, endDay: 5, tradition: "Oriental", family: "armenian", type: "fast", isMajor: true },
+  { name: "Nativity & Theophany of Christ", month: 0, day: 6, tradition: "Oriental", family: "armenian", type: "feast", isMajor: true },
+  { name: "Presentation of Christ", month: 1, day: 14, tradition: "Oriental", family: "armenian", type: "feast", isMajor: true },
+  { name: "Annunciation", month: 3, day: 7, tradition: "Oriental", family: "armenian", type: "feast", isMajor: true },
 ];
 
 // Moveable feasts for 2025 (Eastern Orthodox)
@@ -117,18 +153,6 @@ export const moveableFeastsEastern2025: FastingEventData[] = [
   { name: "Apostles' Fast", month: 5, day: 16, endMonth: 5, endDay: 28, tradition: "Eastern", type: "fast", isMajor: true, isMoveable: true },
 ];
 
-// Moveable feasts for 2025 (Oriental Orthodox)
-export const moveableFeastsOriental2025: FastingEventData[] = [
-  { name: "Nineveh Fast", month: 1, day: 10, endMonth: 1, endDay: 12, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
-  { name: "Great Lent", month: 1, day: 24, endMonth: 3, endDay: 12, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
-  { name: "Holy Week", month: 3, day: 7, endMonth: 3, endDay: 12, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
-  { name: "Palm Sunday", month: 3, day: 6, tradition: "Oriental", type: "feast", isMajor: true, isMoveable: true },
-  { name: "Pascha (Easter)", month: 3, day: 13, tradition: "Oriental", type: "feast", isMajor: true, isMoveable: true },
-  { name: "Ascension", month: 4, day: 22, tradition: "Oriental", type: "feast", isMajor: true, isMoveable: true },
-  { name: "Pentecost", month: 5, day: 1, tradition: "Oriental", type: "feast", isMajor: true, isMoveable: true },
-  { name: "Apostles' Fast", month: 5, day: 2, endMonth: 6, endDay: 11, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
-];
-
 // Moveable feasts for 2026 (Eastern Orthodox)
 export const moveableFeastsEastern2026: FastingEventData[] = [
   { name: "Great Lent", month: 1, day: 16, endMonth: 3, endDay: 4, tradition: "Eastern", type: "fast", isMajor: true, isMoveable: true },
@@ -140,18 +164,6 @@ export const moveableFeastsEastern2026: FastingEventData[] = [
   { name: "Pentecost", month: 4, day: 31, tradition: "Eastern", type: "feast", isMajor: true, isMoveable: true },
   { name: "All Saints Sunday", month: 5, day: 7, tradition: "Eastern", type: "holiday", isMajor: true, isMoveable: true },
   { name: "Apostles' Fast", month: 5, day: 8, endMonth: 5, endDay: 28, tradition: "Eastern", type: "fast", isMajor: true, isMoveable: true },
-];
-
-// Moveable feasts for 2026 (Oriental Orthodox)
-export const moveableFeastsOriental2026: FastingEventData[] = [
-  { name: "Nineveh Fast", month: 1, day: 2, endMonth: 1, endDay: 4, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
-  { name: "Great Lent", month: 1, day: 16, endMonth: 3, endDay: 4, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
-  { name: "Palm Sunday", month: 2, day: 29, tradition: "Oriental", type: "feast", isMajor: true, isMoveable: true },
-  { name: "Holy Week", month: 2, day: 30, endMonth: 3, endDay: 4, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
-  { name: "Pascha (Easter)", month: 3, day: 5, tradition: "Oriental", type: "feast", isMajor: true, isMoveable: true },
-  { name: "Ascension", month: 4, day: 14, tradition: "Oriental", type: "feast", isMajor: true, isMoveable: true },
-  { name: "Pentecost", month: 4, day: 24, tradition: "Oriental", type: "feast", isMajor: true, isMoveable: true },
-  { name: "Apostles' Fast", month: 4, day: 25, endMonth: 6, endDay: 11, tradition: "Oriental", type: "fast", isMajor: true, isMoveable: true },
 ];
 
 export type CalendarSystem = "Gregorian" | "Julian";
@@ -198,20 +210,20 @@ const applyJulianShift = (
   return { ...event, month: start.month, day: start.day, endMonth, endDay };
 };
 
+const inFamily = (event: FastingEventData, family: OrientalFamily) =>
+  event.tradition !== "Oriental" || (event.family ?? "alexandrian") === family;
+
+/** Oriental entries are limited to `orientalFamily`, so every caller sees one church family's calendar. */
 export const getAllFastingEvents = (
   year: number,
-  calendarSystem: CalendarSystem = "Gregorian"
+  calendarSystem: CalendarSystem = "Gregorian",
+  orientalFamily: OrientalFamily = "alexandrian"
 ): FastingEventData[] => {
-  const base = [...fixedFastingEvents];
-
-  let all: FastingEventData[];
-  if (year === 2025) {
-    all = [...base, ...moveableFeastsEastern2025, ...moveableFeastsOriental2025];
-  } else if (year === 2026) {
-    all = [...base, ...moveableFeastsEastern2026, ...moveableFeastsOriental2026];
-  } else {
-    all = [...base, ...moveableFeastsForYear(year)];
-  }
+  const base = fixedFastingEvents.filter((e) => inFamily(e, orientalFamily));
+  const eastern = year === 2025 ? moveableFeastsEastern2025
+    : year === 2026 ? moveableFeastsEastern2026
+    : easternMoveableFeasts(orthodoxPaschaUtc(year));
+  const all = [...base, ...eastern, ...orientalMoveableFeasts(year, orientalFamily)];
 
   if (calendarSystem === "Julian") {
     return all.map((e) => applyJulianShift(e, year));
@@ -234,7 +246,7 @@ export const createDateFromEvent = (year: number, month: number, day: number): D
 // ============================================
 // MOVEABLE FEASTS FOR ANY YEAR
 // ============================================
-// The hand-entered 2025/2026 lists above stay as they are. Every other year is
+// The hand-entered Eastern 2025/2026 lists above stay as they are. Every other list is
 // computed from Orthodox Pascha (Julian Paschalion, shown on the civil
 // calendar) using the same offsets as those lists.
 
@@ -266,12 +278,13 @@ type MoveableSpec = {
   end?: number | { month: number; day: number };
 };
 
-const buildMoveable = (paschaUtc: number, tradition: "Eastern" | "Oriental", specs: MoveableSpec[]): FastingEventData[] => {
+const buildMoveable = (paschaUtc: number, tradition: "Eastern" | "Oriental", specs: MoveableSpec[], family?: OrientalFamily): FastingEventData[] => {
   const year = new Date(paschaUtc).getUTCFullYear();
   const out: FastingEventData[] = [];
   for (const spec of specs) {
     const start = offsetDay(paschaUtc, spec.start);
     const event: FastingEventData = { name: spec.name, month: start.month, day: start.day, tradition, type: spec.type, isMajor: spec.isMajor, isMoveable: true };
+    if (family) event.family = family;
     if (spec.end !== undefined) {
       const end = typeof spec.end === "number" ? offsetDay(paschaUtc, spec.end) : spec.end;
       // A fast that would end before it begins (very late Pascha) is skipped that year.
@@ -296,9 +309,21 @@ const EASTERN_MOVEABLE: MoveableSpec[] = [
   { name: "Apostles' Fast", type: "fast", isMajor: true, start: 57, end: { month: 5, day: 28 } },
 ];
 
-const ORIENTAL_MOVEABLE: MoveableSpec[] = [
-  { name: "Nineveh Fast", type: "fast", isMajor: true, start: -62, end: -60 },
-  { name: "Great Lent", type: "fast", isMajor: true, start: -48, end: -1 },
+/** Western (Gregorian computus) Easter, followed by the Armenian Apostolic Church outside Jerusalem. */
+export function gregorianEasterUtc(year: number): number {
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31), day = ((h + l - 7 * m + 114) % 31) + 1;
+  return Date.UTC(year, month - 1, day);
+}
+
+// Coptic/Ethiopian Great Lent is 55 days (preparatory week + 40 days + Holy Week);
+// the Fast of Nineveh begins two weeks before it.
+const ALEXANDRIAN_MOVEABLE: MoveableSpec[] = [
+  { name: "Nineveh Fast", type: "fast", isMajor: true, start: -69, end: -67 },
+  { name: "Great Lent", type: "fast", isMajor: true, start: -55, end: -1 },
   { name: "Holy Week", type: "fast", isMajor: true, start: -6, end: -1 },
   { name: "Palm Sunday", type: "feast", isMajor: true, start: -7 },
   { name: "Pascha (Easter)", type: "feast", isMajor: true, start: 0 },
@@ -307,14 +332,41 @@ const ORIENTAL_MOVEABLE: MoveableSpec[] = [
   { name: "Apostles' Fast", type: "fast", isMajor: true, start: 50, end: { month: 6, day: 11 } },
 ];
 
-export const easternMoveableFeasts = (paschaUtc: number) => buildMoveable(paschaUtc, "Eastern", EASTERN_MOVEABLE);
-export const orientalMoveableFeasts = (paschaUtc: number) => buildMoveable(paschaUtc, "Oriental", ORIENTAL_MOVEABLE);
+// Syriac/Malankara Great Lent (50-day Lent) begins on Clean Monday; Ba'utha (Nineveh) three weeks earlier.
+const SYRIAC_MOVEABLE: MoveableSpec[] = [
+  { name: "Nineveh Fast", type: "fast", isMajor: true, start: -69, end: -67 },
+  { name: "Great Lent", type: "fast", isMajor: true, start: -48, end: -1 },
+  { name: "Holy Week", type: "fast", isMajor: true, start: -6, end: -1 },
+  { name: "Palm Sunday", type: "feast", isMajor: true, start: -7 },
+  { name: "Pascha (Easter)", type: "feast", isMajor: true, start: 0 },
+  { name: "Ascension", type: "feast", isMajor: true, start: 39 },
+  { name: "Pentecost", type: "feast", isMajor: true, start: 49 },
+];
 
-/** Coptic, Ethiopian, Eritrean and Syriac Pascha follows the same Julian Paschalion as Eastern Orthodoxy. */
-export const moveableFeastsForYear = (year: number): FastingEventData[] => {
-  const pascha = orthodoxPaschaUtc(year);
-  return [...easternMoveableFeasts(pascha), ...orientalMoveableFeasts(pascha)];
+const ARMENIAN_MOVEABLE: MoveableSpec[] = [
+  { name: "Great Lent", type: "fast", isMajor: true, start: -48, end: -1 },
+  { name: "Holy Week", type: "fast", isMajor: true, start: -6, end: -1 },
+  { name: "Palm Sunday", type: "feast", isMajor: true, start: -7 },
+  { name: "Pascha (Easter)", type: "feast", isMajor: true, start: 0 },
+  { name: "Ascension", type: "feast", isMajor: true, start: 39 },
+  { name: "Pentecost", type: "feast", isMajor: true, start: 49 },
+];
+
+const ORIENTAL_SPECS: Record<OrientalFamily, MoveableSpec[]> = {
+  alexandrian: ALEXANDRIAN_MOVEABLE, syriac: SYRIAC_MOVEABLE, armenian: ARMENIAN_MOVEABLE,
 };
+
+export const easternMoveableFeasts = (paschaUtc: number) => buildMoveable(paschaUtc, "Eastern", EASTERN_MOVEABLE);
+
+/** Coptic, Ethiopian, Eritrean, Syriac and Malankara Pascha follows the Julian Paschalion (same day as Eastern Orthodoxy); Armenians use the Gregorian computus. */
+export const orientalPaschaUtc = (year: number, family: OrientalFamily) =>
+  family === "armenian" ? gregorianEasterUtc(year) : orthodoxPaschaUtc(year);
+
+export const orientalMoveableFeasts = (year: number, family: OrientalFamily = "alexandrian") =>
+  buildMoveable(orientalPaschaUtc(year, family), "Oriental", ORIENTAL_SPECS[family], family === "alexandrian" ? undefined : family);
+
+export const moveableFeastsForYear = (year: number, family: OrientalFamily = "alexandrian"): FastingEventData[] =>
+  [...easternMoveableFeasts(orthodoxPaschaUtc(year)), ...orientalMoveableFeasts(year, family)];
 
 // ============================================
 // TRADITION AND "WHAT IS TODAY"
@@ -332,6 +384,17 @@ export function resolveCalendarTradition(branch: string | null | undefined, save
   if (branch && ORIENTAL_BRANCHES.includes(branch)) return "Oriental Orthodox";
   if (branch && EASTERN_BRANCHES.includes(branch)) return "Eastern Orthodox";
   return savedTradition === "Oriental Orthodox" ? "Oriental Orthodox" : "Eastern Orthodox";
+}
+
+const BRANCH_FAMILY: Record<string, OrientalFamily> = {
+  "Coptic": "alexandrian", "Ethiopian Tewahedo": "alexandrian", "Eritrean Tewahedo": "alexandrian",
+  "Syriac Orthodox": "syriac", "Malankara Orthodox": "syriac", "Jacobite Syrian Orthodox": "syriac",
+  "Armenian Apostolic": "armenian",
+};
+
+/** A specific Oriental church decides its family; otherwise the reader's saved pick, else Alexandrian. */
+export function resolveOrientalFamily(branch: string | null | undefined, saved: unknown): OrientalFamily {
+  return (branch && BRANCH_FAMILY[branch]) || parseOrientalFamily(saved) || "alexandrian";
 }
 
 export interface DatedObservance {
@@ -353,7 +416,7 @@ const parseDateKey = (key: string) => {
 };
 
 /** Every listed fast, feast or holiday that covers `localDate` (YYYY-MM-DD) for the tradition and calendar. */
-export function observancesOnDate(localDate: string, tradition: CalendarTradition, calendarSystem: CalendarSystem = "Gregorian"): DatedObservance[] {
+export function observancesOnDate(localDate: string, tradition: CalendarTradition, calendarSystem: CalendarSystem = "Gregorian", orientalFamily: OrientalFamily = "alexandrian"): DatedObservance[] {
   const target = parseDateKey(localDate);
   const year = new Date(target).getUTCFullYear();
   const filter = tradition === "Eastern Orthodox" ? "Eastern" : "Oriental";
@@ -362,7 +425,7 @@ export function observancesOnDate(localDate: string, tradition: CalendarTraditio
 
   // The previous year's list contributes periods that run across New Year (e.g. Nativity Fast).
   for (const listYear of [year - 1, year]) {
-    for (const event of getAllFastingEvents(listYear, calendarSystem)) {
+    for (const event of getAllFastingEvents(listYear, calendarSystem, orientalFamily)) {
       if (event.tradition !== filter && event.tradition !== "Both") continue;
       const start = Date.UTC(listYear, event.month, event.day);
       const end = event.endMonth !== undefined && event.endDay !== undefined
