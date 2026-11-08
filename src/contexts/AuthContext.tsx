@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { initializeIAP } from '@/utils/inAppPurchases';
 import { ORIENTATION_SIGNUP_METADATA } from '@/lib/orthodoxOrientation';
 import { AuthContext } from '@/contexts/authContextStore';
+import { disconnectWidgets } from '@/lib/widgetBridge';
 
 let cachedAuthState: {
   user: User | null;
