@@ -8,6 +8,7 @@ const VOICES: Record<string, string> = {
   female: "Kore",
 };
 const MODEL = Deno.env.get("GEMINI_TTS_MODEL") || "gemini-2.5-flash-preview-tts";
+const GATEWAY_MODEL = "google/gemini-2.5-flash-tts";
 const MAX_CHARS = 1200;
 
 function base64ToBytes(b64: string): Uint8Array {
@@ -70,11 +71,40 @@ serve(async (req) => {
     }
     const voiceName = VOICES[String(voice)] ?? VOICES.female;
 
+    const spokenText = `Read this scripture passage in a calm, warm, soothing voice, at an unhurried pace: ${text}`;
     const apiKey = Deno.env.get("GEMINI_API_KEY");
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: "Speech service is not configured" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      const gatewayKey = Deno.env.get("LOVABLE_API_KEY");
+      if (!gatewayKey) {
+        return new Response(JSON.stringify({ error: "Speech service is not configured" }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const gateway = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${gatewayKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: GATEWAY_MODEL,
+          contents: [{ role: "user", parts: [{ text: spokenText }] }],
+          generationConfig: {
+            responseModalities: ["AUDIO"],
+            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName } } },
+          },
+          stream_format: "audio",
+        }),
+      });
+      if (!gateway.ok) {
+        const body = await gateway.text();
+        console.error(`Speech request failed [${gateway.status}]: ${body}`);
+        return new Response(
+          JSON.stringify({ error: "Speech request failed", status: gateway.status, details: body }),
+          { status: gateway.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      return new Response(gateway.body, {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": gateway.headers.get("Content-Type") || "audio/wav", "Cache-Control": "no-cache" },
       });
     }
 
@@ -85,7 +115,7 @@ serve(async (req) => {
         contents: [
           {
             role: "user",
-            parts: [{ text: `Read this scripture passage in a calm, warm, soothing voice, at an unhurried pace: ${text}` }],
+            parts: [{ text: spokenText }],
           },
         ],
         generationConfig: {
