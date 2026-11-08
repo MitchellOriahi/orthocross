@@ -17,6 +17,15 @@ export const useProfileData = () => {
         .maybeSingle();
 
       if (error) throw error;
+      let pending: string | null = null;
+      try { pending = localStorage.getItem('pending-username'); } catch { /* storage unavailable */ }
+      if (data && !data.username && pending) {
+        const { error: saveError } = await supabase.from('profiles').update({ username: pending }).eq('id', user.id);
+        if (!saveError) data.username = pending;
+        try { localStorage.removeItem('pending-username'); } catch { /* storage unavailable */ }
+      } else if (data?.username && pending) {
+        try { localStorage.removeItem('pending-username'); } catch { /* storage unavailable */ }
+      }
       return data;
     },
     enabled: !!user,

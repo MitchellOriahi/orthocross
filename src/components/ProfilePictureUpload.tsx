@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -30,6 +31,27 @@ export default function ProfilePictureUpload() {
   const [uploading, setUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [newUsername, setNewUsername] = useState("");
+  const [savingUsername, setSavingUsername] = useState(false);
+
+  const saveUsername = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    const value = newUsername.trim().toLowerCase();
+    if (!/^[a-z0-9_]{3,20}$/.test(value)) {
+      toast.error('Use 3–20 letters, numbers or underscores');
+      return;
+    }
+    setSavingUsername(true);
+    const { error } = await supabase.from('profiles').update({ username: value }).eq('id', user.id);
+    setSavingUsername(false);
+    if (error) {
+      toast.error(error.code === '23505' ? 'This username is already taken' : 'Could not save username');
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ['profile'] });
+    toast.success('Username saved');
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -223,11 +245,18 @@ export default function ProfilePictureUpload() {
       </div>
       {tier && tenure && <p className="text-xs text-muted-foreground" data-no-translate>{tenure}</p>}
       <DonorTierGuide tierKey={tierGuideOpen ? tierKey : null} onClose={() => setTierGuideOpen(false)} />
-      {profile?.username && (
+      {profile && (
         <div className="pt-2 border-t border-border/50">
-          <p className="text-sm text-muted-foreground">
-            Username: <span className="font-medium text-foreground">@{profile.username}</span>
-          </p>
+          {profile.username ? (
+            <p className="text-sm text-muted-foreground">
+              Username: <span className="font-medium text-foreground">@{profile.username}</span>
+            </p>
+          ) : (
+            <form className="flex gap-2" onSubmit={saveUsername}>
+              <Input value={newUsername} onChange={e => setNewUsername(e.target.value)} placeholder="Choose a username" aria-label="Username" autoComplete="username" />
+              <Button type="submit" disabled={savingUsername || !newUsername.trim()}>Save</Button>
+            </form>
+          )}
           <ProfileIdentityTags />
         </div>
       )}

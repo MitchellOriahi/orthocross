@@ -124,6 +124,7 @@ const Auth = () => {
     }
 
     setLoading(true);
+    try { localStorage.setItem('pending-username', username.toLowerCase()); } catch { /* storage unavailable */ }
     const { error } = await signUp(email, password);
     
     if (error) {
