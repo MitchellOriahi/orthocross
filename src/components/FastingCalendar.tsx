@@ -12,7 +12,13 @@ import { Button } from "@/components/ui/button";
 import { FastingCalendarView } from "./FastingCalendarView";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { getAllFastingEvents, formatEventDate, type CalendarSystem } from "@/data/fastingEvents";
+import { getAllFastingEvents, formatEventDate, ORIENTAL_FAMILIES, ORIENTAL_FAMILY_LABELS, parseOrientalFamily, resolveOrientalFamily, type CalendarSystem, type OrientalFamily } from "@/data/fastingEvents";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const familyKey = (accountId: string | undefined) => `calendar-oriental-family:${accountId ?? "guest"}`;
+const readFamily = (accountId: string | undefined) => {
+  try { return parseOrientalFamily(localStorage.getItem(familyKey(accountId))); } catch { return null; }
+};
 
 interface FastingEvent {
   name: string;
@@ -45,6 +51,7 @@ export const FastingCalendar = () => {
   const [selectedTradition, setSelectedTradition] = useState<CalendarTradition>(() =>
     calendarTraditionForOrientation(defaultOrientation, readCalendarTradition(user?.id)));
   const [calendarSystem, setCalendarSystem] = useState<CalendarSystem>("Gregorian");
+  const [orientalFamily, setOrientalFamily] = useState<OrientalFamily>(() => resolveOrientalFamily(null, readFamily(user?.id)));
   const queryClient = useQueryClient();
   const rememberPreferences = (changes: Partial<SavedCalendarPreferences>) => {
     if (!user) return;
@@ -65,6 +72,20 @@ export const FastingCalendar = () => {
     appliedPreferencesFor.current = user.id;
     setCalendarSystem(savedPreferences.calendarSystem);
   }, [user, savedPreferences]);
+
+  // A specific Oriental church picks its calendar family; a manual pick applies otherwise.
+  useLayoutEffect(() => {
+    if (user && !identityLoaded) return;
+    setOrientalFamily(resolveOrientalFamily(identity?.branch, readFamily(user?.id) ?? savedPreferences?.orientalFamily));
+  }, [user?.id, identityLoaded, identity?.branch, savedPreferences?.orientalFamily]);
+
+  const chooseOrientalFamily = (value: string) => {
+    const next = parseOrientalFamily(value);
+    if (!next) return;
+    setOrientalFamily(next);
+    try { localStorage.setItem(familyKey(user?.id), next); } catch { /* Keep the current view. */ }
+    rememberPreferences({ orientalFamily: next });
+  };
 
   // Only a change in family/account applies a default; month/language changes never overwrite a manual pick.
   useLayoutEffect(() => {
@@ -98,7 +119,7 @@ export const FastingCalendar = () => {
   ];
 
   const getMonthEvents = (month: number): FastingEvent[] => {
-    const allEvents = getAllFastingEvents(selectedYear, calendarSystem);
+    const allEvents = getAllFastingEvents(selectedYear, calendarSystem, orientalFamily);
     const traditionFilter = selectedTradition === "Eastern Orthodox" ? "Eastern" : "Oriental";
     
     const events = allEvents
@@ -199,34 +220,47 @@ export const FastingCalendar = () => {
             </div>
           </RadioGroup>
 
-          <div className="flex min-w-0 flex-col gap-3">
-            <Label className="text-sm font-semibold text-muted-foreground">
-              Calendar
-            </Label>
-            <RadioGroup
-              value={calendarSystem}
-              onValueChange={chooseCalendarSystem}
-              className="flex flex-col gap-2 items-start"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Gregorian" id="cal-gregorian" className="shrink-0" />
-                <Label htmlFor="cal-gregorian" className="cursor-pointer text-sm leading-snug sm:text-base">
-                  Gregorian Calendar
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Julian" id="cal-julian" className="shrink-0" />
-                <Label htmlFor="cal-julian" className="cursor-pointer text-sm leading-snug sm:text-base">
-                  Julian Calendar
-                </Label>
-              </div>
-            </RadioGroup>
-            {calendarSystem === "Julian" && selectedTradition === "Oriental Orthodox" && (
-              <p className="text-xs text-muted-foreground max-w-xs">
-                Oriental Orthodox traditions use their own calendars (Coptic, Ethiopian, etc.); the Julian shift only applies to Eastern Orthodox fixed feasts.
-              </p>
-            )}
-          </div>
+          {selectedTradition === "Oriental Orthodox" ? (
+            <div className="flex min-w-0 flex-col gap-3">
+              <Label htmlFor="oriental-family" className="text-sm font-semibold text-muted-foreground">
+                Church tradition
+              </Label>
+              <Select value={orientalFamily} onValueChange={chooseOrientalFamily}>
+                <SelectTrigger id="oriental-family" className="w-full max-w-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ORIENTAL_FAMILIES.map((family) => (
+                    <SelectItem key={family} value={family}>{ORIENTAL_FAMILY_LABELS[family]}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          ) : (
+            <div className="flex min-w-0 flex-col gap-3">
+              <Label className="text-sm font-semibold text-muted-foreground">
+                Calendar
+              </Label>
+              <RadioGroup
+                value={calendarSystem}
+                onValueChange={chooseCalendarSystem}
+                className="flex flex-col gap-2 items-start"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Gregorian" id="cal-gregorian" className="shrink-0" />
+                  <Label htmlFor="cal-gregorian" className="cursor-pointer text-sm leading-snug sm:text-base">
+                    Gregorian Calendar
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Julian" id="cal-julian" className="shrink-0" />
+                  <Label htmlFor="cal-julian" className="cursor-pointer text-sm leading-snug sm:text-base">
+                    Julian Calendar
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+          )}
         </div>
         <CardContent className="space-y-3 pt-4">
           {monthEvents.length > 0 ? (
@@ -321,6 +355,7 @@ export const FastingCalendar = () => {
           onPreviousMonth={handlePreviousMonth}
           onNextMonth={handleNextMonth}
           calendarSystem={calendarSystem}
+          orientalFamily={orientalFamily}
         />
       )}
 
