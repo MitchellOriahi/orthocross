@@ -1279,6 +1279,8 @@ export type Database = {
       profiles: {
         Row: {
           activity_visible: boolean | null
+          calendar_system: string
+          calendar_tradition: string | null
           created_at: string
           display_name: string | null
           donor_anonymous: boolean
@@ -1302,6 +1304,8 @@ export type Database = {
         }
         Insert: {
           activity_visible?: boolean | null
+          calendar_system?: string
+          calendar_tradition?: string | null
           created_at?: string
           display_name?: string | null
           donor_anonymous?: boolean
@@ -1325,6 +1329,8 @@ export type Database = {
         }
         Update: {
           activity_visible?: boolean | null
+          calendar_system?: string
+          calendar_tradition?: string | null
           created_at?: string
           display_name?: string | null
           donor_anonymous?: boolean
@@ -1713,6 +1719,44 @@ export type Database = {
           verse_text?: string
         }
         Relationships: []
+      }
+      widget_tokens: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          last_used_at: string | null
+          revoked_at: string | null
+          token_hash: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          last_used_at?: string | null
+          revoked_at?: string | null
+          token_hash: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          last_used_at?: string | null
+          revoked_at?: string | null
+          token_hash?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "widget_tokens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
