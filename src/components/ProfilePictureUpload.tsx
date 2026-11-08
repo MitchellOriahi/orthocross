@@ -38,8 +38,8 @@ export default function ProfilePictureUpload() {
     e.preventDefault();
     if (!user) return;
     const value = newUsername.trim().toLowerCase();
-    if (!/^[a-z0-9_]{3,20}$/.test(value)) {
-      toast.error('Use 3–20 letters, numbers or underscores');
+    if (!/^[a-z0-9_-]{3,20}$/.test(value)) {
+      toast.error('Use 3–20 letters, numbers, underscores or hyphens');
       return;
     }
     setSavingUsername(true);
