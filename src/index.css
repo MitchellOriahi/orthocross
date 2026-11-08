@@ -236,6 +236,10 @@ All colors MUST be HSL.
     color: hsl(var(--profile-branch-color));
     background-color: hsl(var(--profile-branch-color) / 0.2);
   }
+  .profile-branch-eastern.profile-branch-eastern[aria-pressed="true"], .profile-branch-oriental.profile-branch-oriental[aria-pressed="true"], .profile-branch-unaffiliated.profile-branch-unaffiliated[aria-pressed="true"] {
+    background-color: hsl(var(--profile-branch-color) / 0.3);
+    box-shadow: 0 0 0 2px hsl(var(--profile-branch-color)), 0 0 14px -2px hsl(var(--profile-branch-color) / 0.6);
+  }
   .gradient-sacred {
     background: var(--gradient-sacred);
   }
