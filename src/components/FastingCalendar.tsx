@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { loadCalendarPreferences, parseCalendarSystem, saveCalendarPreferences } from "@/lib/calendarPreferences";
-import { useQuery } from "@tanstack/react-query";
+import { loadCalendarPreferences, parseCalendarSystem, saveCalendarPreferences, type SavedCalendarPreferences } from "@/lib/calendarPreferences";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { orientationForBranch, useOrthodoxOrientation } from "@/lib/orthodoxOrientation";
@@ -45,6 +45,12 @@ export const FastingCalendar = () => {
   const [selectedTradition, setSelectedTradition] = useState<CalendarTradition>(() =>
     calendarTraditionForOrientation(defaultOrientation, readCalendarTradition(user?.id)));
   const [calendarSystem, setCalendarSystem] = useState<CalendarSystem>("Gregorian");
+  const queryClient = useQueryClient();
+  const rememberPreferences = (changes: Partial<SavedCalendarPreferences>) => {
+    if (!user) return;
+    queryClient.setQueryData<SavedCalendarPreferences>(["calendarPreferences", user.id], (old) => old && { ...old, ...changes });
+    void saveCalendarPreferences(user.id, changes);
+  };
   const { data: savedPreferences } = useQuery({
     queryKey: ["calendarPreferences", user?.id],
     queryFn: () => loadCalendarPreferences(user!.id),
@@ -71,8 +77,7 @@ export const FastingCalendar = () => {
   // Mirror the calendar shown here to the account, so widgets use the same tradition.
   useEffect(() => {
     if (!user || !savedPreferences || savedPreferences.calendarTradition === selectedTradition) return;
-    savedPreferences.calendarTradition = selectedTradition;
-    void saveCalendarPreferences(user.id, { calendarTradition: selectedTradition });
+    rememberPreferences({ calendarTradition: selectedTradition });
   }, [user, savedPreferences, selectedTradition]);
 
   const chooseCalendarTradition = (value: string) => {
@@ -84,10 +89,7 @@ export const FastingCalendar = () => {
   const chooseCalendarSystem = (value: string) => {
     const next = parseCalendarSystem(value);
     setCalendarSystem(next);
-    if (user) {
-      if (savedPreferences) savedPreferences.calendarSystem = next;
-      void saveCalendarPreferences(user.id, { calendarSystem: next });
-    }
+    rememberPreferences({ calendarSystem: next });
   };
 
   const monthNames = [
