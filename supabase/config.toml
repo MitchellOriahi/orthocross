@@ -67,3 +67,9 @@ verify_jwt = false
 
 [functions.record-donation]
 verify_jwt = false
+
+[functions.widget-data]
+verify_jwt = false
+
+[functions.widget-token]
+verify_jwt = false

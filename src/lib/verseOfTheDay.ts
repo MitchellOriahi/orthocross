@@ -1,3 +1,6 @@
+// Same 8 verses, in the same order, as the backend `daily_verses` list, and the
+// same rotation as `get_verse_of_the_day`, so the Board card, the 8 AM
+// notification and the home screen widget always show the same verse.
 export const SAMPLE_VERSES = [
   { reference: "John 3:16", text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life." },
   { reference: "Philippians 4:13", text: "I can do all things through Christ who strengthens me." },
@@ -9,14 +12,17 @@ export const SAMPLE_VERSES = [
   { reference: "Jeremiah 29:11", text: "For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope." },
 ];
 
-export const getVerseOfTheDay = (date: Date = new Date()) => {
-  // Get date as a string (YYYY-MM-DD)
-  const dateString = date.toISOString().split('T')[0];
-  
-  // Create a deterministic seed from the date
-  // This ensures the same verse is shown for everyone on the same day
-  const dateSeed = dateString.split('-').reduce((acc, num) => acc + parseInt(num), 0);
-  const verseIndex = dateSeed % SAMPLE_VERSES.length;
-  
-  return SAMPLE_VERSES[verseIndex];
+const ROTATION_START_UTC = Date.UTC(2026, 0, 1);
+
+/** The reader's local calendar date as YYYY-MM-DD. */
+export const localDateKey = (date: Date = new Date()) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+/** Index into the list for a local date, matching `(p_date - DATE '2026-01-01') % total`. */
+export const verseIndexForDate = (dateKey: string, total: number = SAMPLE_VERSES.length) => {
+  const [y, m, d] = dateKey.split("-").map(Number);
+  const days = Math.round((Date.UTC(y, m - 1, d) - ROTATION_START_UTC) / 86_400_000);
+  return ((days % total) + total) % total;
 };
+
+export const getVerseOfTheDay = (date: Date = new Date()) => SAMPLE_VERSES[verseIndexForDate(localDateKey(date))];
