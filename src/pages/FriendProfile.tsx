@@ -15,6 +15,13 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { StreakFlame } from "@/components/StreakFlame";
 import { formatDistanceToNow } from "date-fns";
 import { BIBLE_BOOKS } from "@/data/bibleContent";
+import { useQuery } from "@tanstack/react-query";
+import { getTier } from "@/config/donorTiers";
+import { DonorTierName } from "@/components/DonorTierName";
+import { DonorTierGuide } from "@/components/DonorTierGuide";
+import { ReadOnlyIdentityTags } from "@/components/ProfileIdentityTags";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { donorDurationLabel } from "@/lib/donorDurationLabel";
 
 interface FriendData {
   username: string;
@@ -62,6 +69,19 @@ export default function FriendProfile() {
   const [currentStreak, setCurrentStreak] = useState(0);
   const [bookProgressOpen, setBookProgressOpen] = useState(false);
   const [activityOpen, setActivityOpen] = useState(false);
+  const [tierGuideOpen, setTierGuideOpen] = useState(false);
+  const { language } = useLanguage();
+  const { data: card } = useQuery({
+    queryKey: ["friend-profile-card", friendId],
+    enabled: !!friendId,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_friend_profile_card", { p_user_id: friendId! });
+      if (error) throw error;
+      return data?.[0] ?? null;
+    },
+  });
+  const friendTier = card?.lifetime_cents ? getTier(card.lifetime_cents) : null;
+  const friendTenure = donorDurationLabel(card?.donation_count ?? null, language);
 
   const REACTION_EMOJIS = [
     { emoji: "👍", icon: ThumbsUp, label: "Like" },
@@ -413,14 +433,20 @@ export default function FriendProfile() {
         {/* Profile Card */}
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
-              <Avatar className="h-20 w-20">
-                <AvatarImage src={friend.profile_picture_url || undefined} />
-                <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
-              </Avatar>
-              <div>
+            <div className="flex items-start gap-4">
+              <div className="flex w-20 shrink-0 flex-col items-center gap-3">
+                <Avatar className={`h-20 w-20${friendTier ? ` donor-avatar-ring donor-tier-${friendTier.key}` : ""}`}>
+                  <AvatarImage src={friend.profile_picture_url || undefined} />
+                  <AvatarFallback>{friend.username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
+                </Avatar>
+                {friendTier && <Button variant="ghost" onClick={() => setTierGuideOpen(true)} aria-label={`View all donator tiers: ${friendTier.name}`}
+                  className={`donor-tier-button donor-tier-${friendTier.key} h-auto rounded-full border px-3 py-1 text-[11px] font-semibold leading-none`}>
+                  <DonorTierName tier={friendTier} />
+                </Button>}
+              </div>
+              <div className="flex min-h-20 min-w-0 flex-col justify-center">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-2xl font-bold">{friend.username}</h2>
+                  <h2 className="truncate text-2xl font-bold">{friend.username}</h2>
                   {friend.streak_visible && currentStreak > 0 && (
                     <StreakFlame days={currentStreak} size="xs" />
                   )}
@@ -428,6 +454,16 @@ export default function FriendProfile() {
                 <p className="text-muted-foreground">Friend</p>
               </div>
             </div>
+            {friendTier && friendTenure && <p className="mt-4 text-xs text-muted-foreground" data-no-translate>{friendTenure}</p>}
+            {card && (
+              <div className="mt-4 border-t border-border/50 pt-2">
+                <p className="text-sm text-muted-foreground">
+                  Username: <span className="font-medium text-foreground">@{friend.username}</span>
+                </p>
+                <ReadOnlyIdentityTags values={card} />
+              </div>
+            )}
+            <DonorTierGuide tierKey={tierGuideOpen ? friendTier?.key ?? null : null} onClose={() => setTierGuideOpen(false)} />
           </CardContent>
         </Card>
 
