@@ -5,8 +5,12 @@ export const MAX_CROP_ZOOM = 6;
 
 export interface CropTransform { zoom: number; x: number; y: number }
 
+export const NEAR_SQUARE_RATIO = 1.1;
+
 export function fittedImageScale(width: number, height: number) {
-  return CROP_DIAMETER / Math.max(width, height, 1);
+  const long = Math.max(width, height, 1);
+  const short = Math.max(Math.min(width, height), 1);
+  return CROP_DIAMETER / (long / short <= NEAR_SQUARE_RATIO ? short : long);
 }
 
 export function zoomCrop(transform: CropTransform, zoom: number, anchor = { x: 160, y: 160 }): CropTransform {
