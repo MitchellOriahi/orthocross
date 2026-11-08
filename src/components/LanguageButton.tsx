@@ -11,9 +11,9 @@ export function LanguageList({ onPick, onScroll, scrollContainerRef }: { onPick:
   const { language, tr } = useLanguage();
   const displayNames = new Intl.DisplayNames([language], { type: "language" });
   return (
-    <div ref={scrollContainerRef} className="scrollbar-hidden language-list-fade flex w-full max-h-[55vh] flex-col gap-3 overflow-y-auto px-2 pt-3 pb-8" onScroll={onScroll}>
+    <div ref={scrollContainerRef} className="scrollbar-hidden language-list-fade flex w-full max-h-[55vh] flex-col gap-3 overflow-y-auto px-3 pt-4 pb-8" onScroll={onScroll}>
       {LANGUAGES.map(l => (
-        <Button key={l.code} dir="ltr" data-no-translate variant={l.code === language ? "default" : "outline"} className="h-14 w-full justify-between rounded-full px-5 text-base" onClick={() => onPick(l.code)}>
+        <Button key={l.code} dir="ltr" data-no-translate variant={l.code === language ? "default" : "outline"} className={`h-14 w-full justify-between rounded-full px-5 text-base${l.code === language ? " shadow-[0_2px_10px_-2px_hsl(var(--primary)/0.35)]" : ""}`} onClick={() => onPick(l.code)}>
           <span dir={LANGUAGES.find(option => option.code === language)?.rtl ? "rtl" : "ltr"} className="min-w-0 whitespace-normal text-left text-base font-semibold">{displayNames.of(l.code) ?? tr(l.english)}</span>
           <span dir={l.rtl ? "rtl" : "ltr"} className="shrink-0 text-sm opacity-70">{l.native}</span>
         </Button>
