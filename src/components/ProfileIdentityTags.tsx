@@ -40,7 +40,7 @@ function IdentityPicker({ label, value, options, icon: Icon, className, disabled
       <PopoverContent align="start" className="z-[100] w-80 max-w-[calc(100vw-2rem)] overflow-hidden p-0">
         <Command>
           <CommandInput placeholder={`Search ${label.toLowerCase()}…`} aria-label={`Search ${label.toLowerCase()}`} />
-          <CommandList className="max-h-64 overscroll-contain">
+          <CommandList className="h-64 max-h-64 overscroll-contain">
             <CommandEmpty>No matches found.</CommandEmpty>
             <CommandGroup><CommandItem value="Not selected" disabled={disabled} onSelect={() => void select(null)}>
               Not selected {value === null && <Check className="ml-auto h-4 w-4" />}
