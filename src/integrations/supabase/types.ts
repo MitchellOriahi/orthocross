@@ -1737,6 +1737,17 @@ export type Database = {
           id: string
         }[]
       }
+      get_friend_profile_card: {
+        Args: { p_user_id: string }
+        Returns: {
+          age: number
+          branch: string
+          country_code: string
+          donation_count: number
+          lifetime_cents: number
+          patron_saint_id: string
+        }[]
+      }
       get_friend_request_profiles: {
         Args: { request_ids: string[] }
         Returns: {

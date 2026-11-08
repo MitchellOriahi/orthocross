@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, Pencil, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,6 +33,7 @@ export default function ProfilePictureUpload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [newUsername, setNewUsername] = useState("");
   const [savingUsername, setSavingUsername] = useState(false);
+  const [editingUsername, setEditingUsername] = useState(false);
 
   const saveUsername = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +50,8 @@ export default function ProfilePictureUpload() {
       toast.error(error.code === '23505' ? 'This username is already taken' : 'Could not save username');
       return;
     }
-    queryClient.invalidateQueries({ queryKey: ['profile'] });
+    await queryClient.invalidateQueries({ queryKey: ['profile'] });
+    setEditingUsername(false);
     toast.success('Username saved');
   };
 
@@ -247,14 +249,19 @@ export default function ProfilePictureUpload() {
       <DonorTierGuide tierKey={tierGuideOpen ? tierKey : null} onClose={() => setTierGuideOpen(false)} />
       {profile && (
         <div className="pt-2 border-t border-border/50">
-          {profile.username ? (
-            <p className="text-sm text-muted-foreground">
+          {profile.username && !editingUsername ? (
+            <p className="flex items-center gap-1 text-sm text-muted-foreground">
               Username: <span className="font-medium text-foreground">@{profile.username}</span>
+              <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Change username"
+                onClick={() => { setNewUsername(profile.username ?? ""); setEditingUsername(true); }}>
+                <Pencil className="h-3.5 w-3.5" />
+              </Button>
             </p>
           ) : (
             <form className="flex gap-2" onSubmit={saveUsername}>
-              <Input value={newUsername} onChange={e => setNewUsername(e.target.value)} placeholder="Choose a username" aria-label="Username" autoComplete="username" />
+              <Input value={newUsername} onChange={e => setNewUsername(e.target.value)} placeholder="Choose a username" aria-label="Username" autoComplete="username" autoFocus={editingUsername} />
               <Button type="submit" disabled={savingUsername || !newUsername.trim()}>Save</Button>
+              {editingUsername && <Button type="button" variant="ghost" size="icon" aria-label="Cancel" onClick={() => setEditingUsername(false)}><X className="h-4 w-4" /></Button>}
             </form>
           )}
           <ProfileIdentityTags />
