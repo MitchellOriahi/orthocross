@@ -124,6 +124,7 @@ export const fixedFastingEvents: FastingEventData[] = [
   { name: "Theophany (Epiphany)", month: 0, day: 6, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
   { name: "Presentation of Christ", month: 1, day: 2, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
   { name: "Annunciation", month: 2, day: 25, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
+  { name: "Apostles' Fast", month: 5, day: 16, endMonth: 5, endDay: 28, tradition: "Oriental", family: "syriac", type: "fast", isMajor: true },
   { name: "Ss. Peter & Paul", month: 5, day: 29, tradition: "Oriental", family: "syriac", type: "holiday", isMajor: true },
   { name: "Transfiguration", month: 7, day: 6, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
   { name: "Dormition of Theotokos", month: 7, day: 15, tradition: "Oriental", family: "syriac", type: "feast", isMajor: true },
@@ -340,7 +341,6 @@ const SYRIAC_MOVEABLE: MoveableSpec[] = [
   { name: "Pascha (Easter)", type: "feast", isMajor: true, start: 0 },
   { name: "Ascension", type: "feast", isMajor: true, start: 39 },
   { name: "Pentecost", type: "feast", isMajor: true, start: 49 },
-  { name: "Apostles' Fast", type: "fast", isMajor: true, start: 50, end: { month: 5, day: 28 } },
 ];
 
 const ARMENIAN_MOVEABLE: MoveableSpec[] = [

@@ -1279,6 +1279,7 @@ export type Database = {
       profiles: {
         Row: {
           activity_visible: boolean | null
+          calendar_oriental_family: string | null
           calendar_system: string
           calendar_tradition: string | null
           created_at: string
@@ -1304,6 +1305,7 @@ export type Database = {
         }
         Insert: {
           activity_visible?: boolean | null
+          calendar_oriental_family?: string | null
           calendar_system?: string
           calendar_tradition?: string | null
           created_at?: string
@@ -1329,6 +1331,7 @@ export type Database = {
         }
         Update: {
           activity_visible?: boolean | null
+          calendar_oriental_family?: string | null
           calendar_system?: string
           calendar_tradition?: string | null
           created_at?: string

@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
 
   try {
     const [profileRes, tagsRes, streakRes] = await Promise.all([
-      admin.from("profiles").select("timezone, calendar_system, calendar_tradition").eq("id", userId).maybeSingle(),
+      admin.from("profiles").select("timezone, calendar_system, calendar_tradition, calendar_oriental_family").eq("id", userId).maybeSingle(),
       admin.from("profile_identity_tags").select("branch").eq("user_id", userId).maybeSingle(),
       admin.from("user_streaks").select("current_streak, longest_streak, last_activity_date, guardian_last_save_month").eq("user_id", userId).maybeSingle(),
     ]);
@@ -80,6 +80,7 @@ Deno.serve(async (req) => {
       verse: verseRow ? { reference: verseRow.reference, text: verseRow.verse_text } : null,
       branch: tagsRes.data?.branch ?? null,
       calendarTradition: profileRes.data.calendar_tradition,
+      orientalFamily: profileRes.data.calendar_oriental_family,
       calendarSystem: profileRes.data.calendar_system,
     });
     return json(snapshot);
