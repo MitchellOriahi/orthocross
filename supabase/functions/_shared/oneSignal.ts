@@ -27,7 +27,8 @@ export async function sendPush(
       console.error("[OneSignal] Error:", result.errors || result);
       return 0;
     }
-    return result.recipients || 0;
+    // OneSignal no longer returns a recipient count; an id means it was accepted.
+    return result.recipients ?? (result.id ? externalUserIds.length : 0);
   } catch (error) {
     console.error("[OneSignal] Fetch error:", (error as Error).message);
     return 0;

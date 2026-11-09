@@ -44,7 +44,8 @@ async function sendOneSignalNotification(
       console.error(`[OneSignal] Error for ${externalUserId.substring(0, 8)}:`, result.errors || result);
       return false;
     }
-    return (result.recipients || 0) > 0;
+    // OneSignal no longer returns a recipient count; an id means it was accepted.
+    return !!result.id;
   } catch (error: any) {
     console.error(`[OneSignal] Fetch error:`, error.message);
     return false;
@@ -304,6 +305,17 @@ const handler = async (req: Request): Promise<Response> => {
       return verseByDate.get(dateStr) ?? null;
     };
 
+    // Claim the (user, type, local date) slot before sending so overlapping or
+    // slow runs every 15 minutes can never send the same reminder twice; a
+    // failed send releases the claim so the next run retries.
+    const claim = async (userId: string, type: string, localDate: string) => {
+      const { error } = await supabase.from("notification_log").insert({ user_id: userId, type, local_date: localDate });
+      if (error && error.code !== "23505") console.error(`[${type}] claim error:`, error.message);
+      return !error;
+    };
+    const release = (userId: string, type: string, localDate: string) =>
+      supabase.from("notification_log").delete().eq("user_id", userId).eq("type", type).eq("local_date", localDate);
+
     for (const profile of profiles) {
       const timezone = profile.timezone || "America/New_York";
       const localTime = getLocalTime(timezone);
@@ -344,6 +356,8 @@ const handler = async (req: Request): Promise<Response> => {
 
           if (hasCompletedToday) {
             counters.skippedCompleted++;
+          } else if (!(await claim(profile.id, "streak_6pm", localTime.dateStr))) {
+            counters.skippedDup++;
           } else {
             const { data: streakData } = await supabase
               .from("user_streaks").select("current_streak").eq("user_id", profile.id).maybeSingle();
@@ -356,14 +370,10 @@ const handler = async (req: Request): Promise<Response> => {
             const sent = await sendOneSignalNotification(profile.id, "OrthoCross Reminder", message, { path: "/" });
 
             if (sent) {
-              await supabase.from("notification_log").insert({
-                user_id: profile.id,
-                type: "streak_6pm",
-                local_date: localTime.dateStr,
-              });
               counters.sentStreak++;
               console.log(`[streak] Sent to ${profile.id.substring(0, 8)}...`);
             } else {
+              await release(profile.id, "streak_6pm", localTime.dateStr);
               counters.oneSignalFailed++;
             }
           }
@@ -396,6 +406,8 @@ const handler = async (req: Request): Promise<Response> => {
 
           if (!calendarEvent) {
             counters.skippedWrongTime++;
+          } else if (!(await claim(profile.id, "fasting_8pm", localTime.dateStr))) {
+            counters.skippedDup++;
           } else {
             const message = calendarEvent.is_fast
               ? `🕊️ ${calendarEvent.label} begins tomorrow. Prepare to observe the fast.`
@@ -409,14 +421,10 @@ const handler = async (req: Request): Promise<Response> => {
             );
 
             if (sent) {
-              await supabase.from("notification_log").insert({
-                user_id: profile.id,
-                type: "fasting_8pm",
-                local_date: localTime.dateStr,
-              });
               counters.sentFasting++;
               console.log(`[fasting] Sent to ${profile.id.substring(0, 8)}... for ${calendarEvent.label}`);
             } else {
+              await release(profile.id, "fasting_8pm", localTime.dateStr);
               counters.oneSignalFailed++;
             }
           }
@@ -441,7 +449,9 @@ const handler = async (req: Request): Promise<Response> => {
           counters.skippedDup++;
         } else {
           const verse = await getVerseFor(localTime.dateStr);
-          if (verse) {
+          if (verse && !(await claim(profile.id, "verse_8am", localTime.dateStr))) {
+            counters.skippedDup++;
+          } else if (verse) {
             const sent = await sendOneSignalNotification(
               profile.id,
               "Verse of the Day",
@@ -449,13 +459,9 @@ const handler = async (req: Request): Promise<Response> => {
               { path: "/" }
             );
             if (sent) {
-              await supabase.from("notification_log").insert({
-                user_id: profile.id,
-                type: "verse_8am",
-                local_date: localTime.dateStr,
-              });
               counters.sentVerse++;
             } else {
+              await release(profile.id, "verse_8am", localTime.dateStr);
               counters.oneSignalFailed++;
             }
           }

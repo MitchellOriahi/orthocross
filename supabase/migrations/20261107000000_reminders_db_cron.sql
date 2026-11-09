@@ -24,7 +24,8 @@ SELECT cron.schedule(
         'Content-Type', 'application/json',
         'x-cron-secret', (SELECT secret FROM public.scheduler_secrets WHERE name = 'reminders')
       ),
-      body    := '{}'::jsonb
+      body    := '{}'::jsonb,
+      timeout_milliseconds := 60000
     )
   $$
 );
