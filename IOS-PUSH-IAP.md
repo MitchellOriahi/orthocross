@@ -63,13 +63,13 @@ On iOS the Donate flow uses RevenueCat (web uses Stripe). The code reads
 ## C. Monthly / Yearly subscriptions (matches the web donation window)
 
 The iOS donation window offers Monthly ($1, $2, $5) and Yearly ($8, $12, $16) on the slider, defaulting to Monthly $2,
-plus a "Custom amount" button that opens preset amounts grouped by donor tier. Presets without an Apple product are hidden automatically.
+plus a "Custom amount" button that opens preset amounts, each bubble colored by the donor tier it reaches. Presets without an Apple product are hidden automatically.
 The single source of truth for amounts is `supabase/functions/_shared/iapDonations.ts`.
 1. [Apple] App Store Connect -> Subscriptions -> create one group "OrthoCross Support" containing these auto-renewable
    subscriptions, each priced at the USD amount in its id (ids are `support_month_<amount>` / `support_year_<amount>`):
-   - 1 month (23): 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 35, 50, 75, 100, 150, 200, 250, 500, 750, 1000
-   - 1 year (18): 8, 9, 10, 12, 15, 16, 20, 25, 35, 50, 75, 100, 150, 200, 250, 500, 750, 1000
-2. [Dash] RevenueCat -> Products -> add all 41; add a Package for each to the current Offering.
+   - 1 month (25): 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 50, 75, 100, 150, 200, 250, 500, 750, 1000
+   - 1 year (20): 8, 9, 10, 12, 15, 16, 20, 25, 30, 35, 40, 50, 75, 100, 150, 200, 250, 500, 750, 1000
+2. [Dash] RevenueCat -> Products -> add all 45; add a Package for each to the current Offering.
 3. Redeploy `record-donation` (it now verifies these subscriptions and labels them monthly/yearly).
 4. Renewals: deploy `revenuecat-webhook`, then set a long random secret on the backend:
    `npx supabase secrets set REVENUECAT_WEBHOOK_SECRET=<value> --project-ref uceqydqvjapkobqwrbxw`.

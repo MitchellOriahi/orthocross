@@ -810,6 +810,19 @@ All colors MUST be HSL.
     0 0 20px 6px hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.3);
 }
 .donor-tier-button[class*="donor-tier-"]:hover { background: hsl(var(--donor-tier-tone, var(--podium-gold)) / 0.22); }
+.donor-preset-chip {
+  color: hsl(var(--donor-tier-tone));
+  border: 1.5px solid hsl(var(--donor-tier-tone) / 0.7);
+  background: hsl(var(--donor-tier-tone) / 0.1);
+}
+.donor-preset-chip:hover { background: hsl(var(--donor-tier-tone) / 0.2); }
+.donor-preset-chip:focus-visible { outline: 2px solid hsl(var(--donor-tier-tone)); outline-offset: 2px; }
+.donor-preset-chip[aria-pressed="true"] {
+  color: hsl(var(--background));
+  background: hsl(var(--donor-tier-tone));
+  border-color: hsl(var(--donor-tier-tone));
+  box-shadow: 0 0 10px 2px hsl(var(--donor-tier-tone) / 0.45);
+}
 .donor-list-row { border-radius: 0.5rem; transition: background-color 150ms ease; }
 .donor-list-row:hover { background: hsl(var(--muted) / 0.35); }
 /* One distinct avatar border per donator tier, rising to glowing gold for Seraph. */
