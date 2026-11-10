@@ -42,8 +42,8 @@ import { storeCustomAmounts, storeSubscriptionAmounts, subscriptionProductId, IA
 import { groupAmountsByTier } from "./donationGift";
 
 describe("iPhone custom amount presets", () => {
-  test("monthly custom presets are the 11 chosen amounts", () => {
-    expect(storeCustomAmounts("month")).toEqual([3, 5, 10, 15, 25, 50, 100, 250, 500, 750, 1000]);
+  test("monthly custom presets are the 10 chosen amounts", () => {
+    expect(storeCustomAmounts("month")).toEqual([3, 10, 15, 25, 50, 100, 250, 500, 750, 1000]);
   });
   test("yearly offers 9 presets starting at $10", () => {
     expect(storeCustomAmounts("year")).toEqual([10, 15, 25, 50, 100, 250, 500, 750, 1000]);
