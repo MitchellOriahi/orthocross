@@ -62,7 +62,7 @@ describe("iPhone custom amount presets", () => {
     expect(subscriptionProductId("month", 11)).toBeNull();
     expect(subscriptionProductId("year", 5)).toBeNull();
   });
-  test("a $25 monthly renewal records $35 server-side", () => {
+  test("a $25 monthly renewal records $25 server-side", () => {
     expect(IAP_AMOUNTS.support_month_25).toBe(2500);
     expect(parseRevenueCatEvent(event({ product_id: "support_year_1000" }))).toMatchObject({ amount: 100000 });
   });
