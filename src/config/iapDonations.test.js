@@ -42,20 +42,15 @@ import { storeCustomAmounts, storeSubscriptionAmounts, subscriptionProductId, IA
 import { groupAmountsByTier } from "./donationGift";
 
 describe("iPhone custom amount presets", () => {
-  test("monthly custom presets are the 25 chosen amounts", () => {
-    expect(storeCustomAmounts("month")).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 50, 75, 100, 150, 200, 250, 500, 750, 1000]);
+  test("monthly custom presets are the 11 chosen amounts", () => {
+    expect(storeCustomAmounts("month")).toEqual([3, 5, 10, 15, 25, 50, 100, 250, 500, 750, 1000]);
   });
-  test("$30 and $40 count as Principality presets", () => {
-    expect(groupAmountsByTier(storeCustomAmounts("month")).find(g => g.tier.key === "principality")?.amounts).toEqual([25, 30, 35, 40]);
+  test("yearly offers 9 presets starting at $10", () => {
+    expect(storeCustomAmounts("year")).toEqual([10, 15, 25, 50, 100, 250, 500, 750, 1000]);
   });
-  test("yearly offers 18 presets", () => {
-    expect(storeCustomAmounts("year")).toHaveLength(18);
-  });
-  test("yearly custom presets keep the $8 yearly minimum", () => {
-    expect(storeCustomAmounts("year")[0]).toBe(8);
-  });
-  test("Angel offers every dollar from $1 to $9", () => {
-    expect(groupAmountsByTier(storeCustomAmounts("month"))[0]).toMatchObject({ tier: { key: "angel" }, amounts: [1, 2, 3, 4, 5, 6, 7, 8, 9] });
+  test("store sells 13 monthly and 12 yearly subscriptions", () => {
+    expect(storeSubscriptionAmounts("month")).toHaveLength(13);
+    expect(storeSubscriptionAmounts("year")).toHaveLength(12);
   });
   test("every tier's starting amount can be bought monthly", () => {
     for (const a of [1, 10, 25, 50, 100, 250, 500, 750, 1000]) expect(subscriptionProductId("month", a)).toBe(`support_month_${a}`);
@@ -67,8 +62,8 @@ describe("iPhone custom amount presets", () => {
     expect(subscriptionProductId("month", 11)).toBeNull();
     expect(subscriptionProductId("year", 5)).toBeNull();
   });
-  test("a $35 monthly renewal records $35 server-side", () => {
-    expect(IAP_AMOUNTS.support_month_35).toBe(3500);
+  test("a $25 monthly renewal records $25 server-side", () => {
+    expect(IAP_AMOUNTS.support_month_25).toBe(2500);
     expect(parseRevenueCatEvent(event({ product_id: "support_year_1000" }))).toMatchObject({ amount: 100000 });
   });
 });
