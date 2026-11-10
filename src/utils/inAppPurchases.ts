@@ -9,7 +9,16 @@ export const DONATION_PRODUCTS = {
   XLARGE: 'donation_50',   // $50
 } as const;
 
-export type DonationProductId = typeof DONATION_PRODUCTS[keyof typeof DONATION_PRODUCTS];
+// Auto-renewing subscriptions mirroring the web Monthly/Yearly amounts.
+export const SUPPORT_SUBSCRIPTIONS = {
+  month: { 1: 'support_month_1', 2: 'support_month_2', 5: 'support_month_5' },
+  year: { 8: 'support_year_8', 12: 'support_year_12', 16: 'support_year_16' },
+} as const;
+
+export type DonationProductId = string;
+
+export const getSubscriptionProductId = (interval: 'month' | 'year', amount: number): string | null =>
+  (SUPPORT_SUBSCRIPTIONS[interval] as Record<number, string>)[amount] ?? null;
 
 let configured: Promise<boolean> | null = null;
 
