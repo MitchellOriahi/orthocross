@@ -12,7 +12,7 @@ import { DonationTierRewards } from "./DonationTierRewards";
 import { TierPortrait } from "./TierPortrait";
 import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftImpact, minimumGift, shownTier } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
-import { purchaseDonation, getAvailableDonationProducts, getProductIdForAmount } from "@/utils/inAppPurchases";
+import { purchaseDonation, getAvailableDonationProducts, getSubscriptionProductId } from "@/utils/inAppPurchases";
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { formatDonationMoney } from "@/lib/donationCurrency";
@@ -28,10 +28,9 @@ interface DonationDialogProps {
   onCancel?: () => void;
 }
 
-const NATIVE_PRESETS = [5, 10, 25, 50];
 
 export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: DonationDialogProps) => {
-  const [selectedAmount, setSelectedAmount] = useState(Capacitor.isNativePlatform() ? 5 : DEFAULT_YEARLY_AMOUNT);
+  const [selectedAmount, setSelectedAmount] = useState(DEFAULT_GIFT_AMOUNT);
   const submittedRef = useRef(false);
   const [customAmount, setCustomAmount] = useState("");
   const [useCustom, setUseCustom] = useState(false);
@@ -79,14 +78,14 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     setInterval_(DEFAULT_DONATION_INTERVAL);
     setTiersOpen(false);
     if (initialAmount === undefined) {
-      setSelectedAmount(isNative ? 5 : DEFAULT_YEARLY_AMOUNT);
+      setSelectedAmount(DEFAULT_GIFT_AMOUNT);
       setUseCustom(false);
       setCustomAmount("");
       return;
     }
     if (Capacitor.isNativePlatform()) {
       // App stores only sell fixed presets: snap to the closest available one
-      const snapped = NATIVE_PRESETS.find(v => v >= initialAmount) ?? NATIVE_PRESETS[NATIVE_PRESETS.length - 1];
+      const snapped = [...GIFT_SLIDER_AMOUNTS].find(v => v >= initialAmount) ?? GIFT_SLIDER_AMOUNTS[GIFT_SLIDER_AMOUNTS.length - 1];
       setSelectedAmount(snapped);
       setUseCustom(false);
       return;
@@ -123,7 +122,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     setPickedTierKey(null);
   };
   const mode = interval;
-  const minAmount = isNative ? 1 : minimumGift(mode);
+  const minAmount = minimumGift(mode);
 
   // On native, check if IAP products are available when dialog opens
   useEffect(() => {
@@ -138,7 +137,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     return selectedAmount;
   };
 
-  const SLIDER_STEPS: readonly number[] = isNative ? NATIVE_PRESETS : interval === "year" ? YEARLY_SLIDER_AMOUNTS : GIFT_SLIDER_AMOUNTS;
+  const SLIDER_STEPS: readonly number[] = interval === "year" ? YEARLY_SLIDER_AMOUNTS : GIFT_SLIDER_AMOUNTS;
 
   // Tier this gift alone would qualify for (lifetime total can only be higher).
   const effectiveAmount = getEffectiveAmount();
@@ -156,11 +155,11 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
       return;
     }
 
-    const productId = getProductIdForAmount(Math.round(amount));
+    const productId = getSubscriptionProductId(interval, Math.round(amount));
     if (!productId) {
       toast({
         title: "Amount not available",
-        description: "Please choose $5, $10, $25, or $50 for in-app donations.",
+        description: "Please choose one of the amounts on the slider.",
         variant: "destructive",
       });
       return;
@@ -247,13 +246,9 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
 
-        <div className="rounded-xl border bg-muted/40 p-3 text-sm leading-relaxed">
-          <p className="font-medium">A note from the creator of OrthoCross</p>
-          <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read, and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone. God bless.</p>
-        </div>
 
         <div className="space-y-2">
-          {!isNative && (
+          {(
             <div role="radiogroup" aria-label="Billing" className="mx-auto grid w-full max-w-xs grid-cols-2 rounded-full border p-1">
               {(["month", "year"] as const).map(v => (
                 <Button key={v} type="button" role="radio" aria-checked={interval === v} variant={interval === v ? "sacred" : "ghost"} onClick={() => chooseInterval(v)} className="h-8 rounded-full text-xs">
@@ -262,17 +257,17 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               ))}
             </div>
           )}
-          <p className="text-center text-xs font-semibold text-muted-foreground">{tr(isNative ? "A gift, not a commitment" : "Renews automatically · cancel anytime")}</p>
+          <p className="text-center text-xs font-semibold text-muted-foreground">{tr("Renews automatically · cancel anytime")}</p>
 
           <div className="relative flex flex-col items-center gap-3">
             <div className={`donor-tier-${activeTierKey ?? "angel"} donor-gift-glow donor-gift-glow-${giftPreview.glowLevel} h-20 w-20 overflow-hidden rounded-full bg-muted transition-all motion-reduce:transition-none`}>
               <TierPortrait tierKey={activeTierKey} alt={activeTier ? activeTier.name : "Orthodox cross"} className="h-full w-full object-cover" />
             </div>
-            <p className="text-4xl font-bold text-primary text-center" data-no-translate>{money(Number(shownAmount))}{!isNative && tr(interval === "year" ? "/year" : "/month")}</p>
-            {!isNative && interval === "year" && effectiveAmount >= minAmount && (
+            <p className="text-4xl font-bold text-primary text-center" data-no-translate>{money(Number(shownAmount))}{tr(interval === "year" ? "/year" : "/month")}</p>
+            {interval === "year" && effectiveAmount >= minAmount && (
               <p className="text-xs text-muted-foreground" data-no-translate>{tr("About {amount} a month").replace("{amount}", money(effectiveAmount / 12))}</p>
             )}
-            <p className="w-full truncate whitespace-nowrap text-sm text-muted-foreground text-center">{tr(effectiveAmount >= minAmount ? giftImpact(effectiveAmount, isNative ? "once" : mode) : "Your gift keeps OrthoCross free for everyone.")}</p>
+            <p className="w-full truncate whitespace-nowrap text-sm text-muted-foreground text-center">{tr(effectiveAmount >= minAmount ? giftImpact(effectiveAmount, mode) : "Your gift keeps OrthoCross free for everyone.")}</p>
             {!isNative && <DonationCurrencyEstimate amount={effectiveAmount} />}
           </div>
 
@@ -351,7 +346,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
 
           <p className="text-xs text-muted-foreground">
             {isNative
-              ? "One-time donation processed securely through the app store."
+              ? (interval === "year" ? "Your gift renews yearly through the App Store. You can cancel anytime in your Apple ID subscriptions." : "Your gift renews monthly through the App Store. You can cancel anytime in your Apple ID subscriptions.")
               : interval === "year" ? "Your gift renews yearly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings." : "Your gift renews monthly at the same amount and is processed securely by Stripe. You can cancel anytime from Settings."}
           </p>
         </div>
