@@ -311,31 +311,13 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
             </>
           )}
 
-          {isNative && (
-            <StoreCustomAmounts
-              amounts={storeAmounts}
-              open={storeCustomOpen}
-              onOpenChange={setStoreCustomOpen}
-              selected={useCustom ? effectiveAmount : null}
-              onSelect={(amount) => { setSelectedAmount(amount); setCustomAmount(String(amount)); setUseCustom(true); setPickedTierKey(null); setStoreCustomOpen(false); }}
-            />
-          )}
-
-          {!isNative && (
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-              <Input
-                id="custom-amount"
-                aria-label="Custom amount"
-                type="number" step="0.01" min={minAmount}
-                value={customAmount}
-                onChange={(e) => { setCustomAmount(e.target.value); setUseCustom(true); setPickedTierKey(null); }}
-                onFocus={() => setUseCustom(true)}
-                className="pl-7"
-                placeholder={tr("Custom amount")}
-              />
-            </div>
-          )}
+          <StoreCustomAmounts
+            amounts={storeAmounts}
+            open={storeCustomOpen}
+            onOpenChange={setStoreCustomOpen}
+            selected={useCustom ? effectiveAmount : null}
+            onSelect={(amount) => { setSelectedAmount(amount); setCustomAmount(String(amount)); setUseCustom(true); setPickedTierKey(null); setStoreCustomOpen(false); }}
+          />
 
           <div className="rounded-xl border">
             <Button type="button" variant="ghost" aria-expanded={tiersOpen} onClick={() => toggleTiers(!tiersOpen)} className="h-auto w-full justify-between whitespace-normal px-4 py-3 text-sm font-medium">
