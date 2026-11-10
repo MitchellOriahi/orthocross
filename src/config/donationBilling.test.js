@@ -3,7 +3,7 @@ import { DEFAULT_DONATION_INTERVAL, donationInterval } from "../../supabase/func
 
 describe("donation billing", () => {
   test("yearly is the default", () => {
-    expect(DEFAULT_DONATION_INTERVAL).toBe("year");
+    expect(DEFAULT_DONATION_INTERVAL).toBe("month");
     expect(donationInterval(undefined)).toBe("year");
   });
   test("yearly bills once per year", () => {

@@ -9,7 +9,10 @@ const corsHeaders = {
 // Amounts are decided here, never by the client.
 const IAP_AMOUNTS: Record<string, number> = {
   donation_5: 500, donation_10: 1000, donation_25: 2500, donation_50: 5000,
+  support_month_1: 100, support_month_2: 200, support_month_5: 500,
+  support_year_8: 800, support_year_12: 1200, support_year_16: 1600,
 };
+const isSubscription = (productId: string) => productId.startsWith("support_");
 
 const TRANSACTION_ID = /^[A-Za-z0-9._:-]{1,200}$/;
 
@@ -33,6 +36,11 @@ async function verifyWithRevenueCat(appUserId: string, productId: string, transa
       return "unavailable";
     }
     const data = await res.json();
+    if (isSubscription(productId)) {
+      const sub = data?.subscriber?.subscriptions?.[productId];
+      if (!sub) return "not_found";
+      return sub.is_sandbox ? "sandbox" : "verified";
+    }
     const purchases = data?.subscriber?.non_subscriptions?.[productId];
     // deno-lint-ignore no-explicit-any
     const match = Array.isArray(purchases) && purchases.find((p: any) => p?.store_transaction_id === transactionId || p?.id === transactionId);
@@ -66,7 +74,7 @@ Deno.serve(async (req) => {
     }
 
     const amount = IAP_AMOUNTS[productId];
-    const donationType = "one-time";
+    const donationType = !isSubscription(productId) ? "one-time" : productId.startsWith("support_year_") ? "yearly" : "monthly";
 
     const { data: existing } = await admin.from("donations")
       .select("id, user_id, amount, status").eq("store_transaction_id", transactionId).maybeSingle();
