@@ -1,18 +1,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { notifyDonationFriends } from "../_shared/friendDonationNotifications.ts";
+import { IAP_AMOUNTS, iapDonationType, isSubscriptionProduct as isSubscription } from "../_shared/iapDonations.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-// Amounts are decided here, never by the client.
-const IAP_AMOUNTS: Record<string, number> = {
-  donation_5: 500, donation_10: 1000, donation_25: 2500, donation_50: 5000,
-  support_month_1: 100, support_month_2: 200, support_month_5: 500,
-  support_year_8: 800, support_year_12: 1200, support_year_16: 1600,
-};
-const isSubscription = (productId: string) => productId.startsWith("support_");
 
 const TRANSACTION_ID = /^[A-Za-z0-9._:-]{1,200}$/;
 
@@ -74,7 +67,7 @@ Deno.serve(async (req) => {
     }
 
     const amount = IAP_AMOUNTS[productId];
-    const donationType = !isSubscription(productId) ? "one-time" : productId.startsWith("support_year_") ? "yearly" : "monthly";
+    const donationType = iapDonationType(productId);
 
     const { data: existing } = await admin.from("donations")
       .select("id, user_id, amount, status").eq("store_transaction_id", transactionId).maybeSingle();

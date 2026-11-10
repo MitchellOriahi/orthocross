@@ -68,7 +68,12 @@ The iOS donation window now offers Monthly ($1, $2, $5) and Yearly ($8, $12, $16
    `support_year_8`, `support_year_12`, `support_year_16` (1 year), priced at those USD amounts.
 2. [Dash] RevenueCat -> Products -> add all six; add a Package for each to the current Offering.
 3. Redeploy `record-donation` (it now verifies these subscriptions and labels them monthly/yearly).
-Only the first purchase is recorded from the app; renewals need a RevenueCat webhook (not built yet).
+4. Renewals: deploy `revenuecat-webhook`, then set a long random secret on the backend:
+   `npx supabase secrets set REVENUECAT_WEBHOOK_SECRET=<value> --project-ref uceqydqvjapkobqwrbxw`.
+   [Dash] RevenueCat -> Project settings -> Integrations -> Webhooks -> add
+   `https://uceqydqvjapkobqwrbxw.supabase.co/functions/v1/revenuecat-webhook`, Authorization header = the same value.
+   Every first payment and renewal is then recorded (idempotent by store transaction), thanked, and counted toward
+   lifetime tiers; sandbox payments never count; Apple refunds mark the gift refunded.
 
 ## Who does what (fastest split)
 - **Founder** (owns the Apple account): APNs key (A1), IAP products (B1), ASC API key (B2),
