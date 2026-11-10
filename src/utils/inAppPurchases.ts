@@ -1,5 +1,6 @@
 import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 import { Capacitor } from '@capacitor/core';
+import { subscriptionProductId } from '../../supabase/functions/_shared/iapDonations';
 
 // Product IDs that match your App Store Connect configuration
 export const DONATION_PRODUCTS = {
@@ -10,7 +11,6 @@ export const DONATION_PRODUCTS = {
 } as const;
 
 // Auto-renewing subscriptions mirroring the web Monthly/Yearly amounts, plus the "Custom amount" presets.
-import { subscriptionProductId } from '../../supabase/functions/_shared/iapDonations';
 
 export type DonationProductId = string;
 
