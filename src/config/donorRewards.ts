@@ -19,20 +19,20 @@ const colorBracelet: DonorReward = { ...bracelet, colorChoice: true, text: "Hand
 const icon: DonorReward = { kind: "icon", delivery: "physical", text: '6″ × 8″ custom engraved thermal-film hand-laminated icon shipped to you' };
 const call: DonorReward = { kind: "call", frequency: "once", text: "1-on-1 walkthrough call explaining the content-making and app-making process" };
 const weeklyCall: DonorReward = { ...call, frequency: "weekly", text: "Weekly 1-on-1 calls explaining the content-making and app-making process" };
-const drawing = (framing: "head" | "bust" | "full-body", delivery: "digital" | "physical", colored: boolean, text: string): DonorReward => ({ kind: "drawing", framing, delivery, colored, artist: "creator", text: `${text} commission drawn by me` });
+const drawing = (framing: "head" | "bust" | "full-body", delivery: "digital" | "physical", colored: boolean, text: string): DonorReward => ({ kind: "drawing", framing, delivery, colored, artist: "creator", text: `${text} drawn by the creator of the app` });
 const rope = (knots: number): DonorReward => ({ kind: "rope", knots, delivery: "physical", text: `${knots}-knot handmade custom prayer rope made to your description and sent to you` });
 
 // Explicit offers, not inherited benefits: call frequency and delivery differ by milestone.
 export const DONOR_REWARDS: Readonly<Record<string, readonly DonorReward[]>> = {
   angel: [digitalThanks, recognition],
-  archangel: [digitalThanks, recognition, drawing("head", "digital", false, "Signed digital headshot sketch")],
-  principality: [digitalThanks, recognition, drawing("bust", "digital", false, "Signed digital bust sketch")],
-  power: [digitalThanks, recognition, drawing("full-body", "digital", false, "Signed digital full-body sketch")],
-  virtue: [mailedThanks, drawing("head", "digital", true, "Signed digital colored head drawing"), recognition, call, gifts, colorBracelet],
-  dominion: [mailedThanks, drawing("head", "physical", true, "Signed physical colored head drawing"), recognition, weeklyCall, gifts, colorBracelet, { kind: "flag", text: "Unique Orthodox faith flag and poster" }],
-  throne: [mailedThanks, drawing("bust", "physical", true, "Signed physical colored bust drawing"), recognition, weeklyCall, gifts, bracelet, icon, rope(33)],
-  cherub: [mailedThanks, drawing("full-body", "physical", true, "Signed physical colored full-body drawing"), recognition, call, gifts, bracelet, icon, rope(50)],
-  seraph: [mailedThanks, drawing("full-body", "physical", true, "Signed physical colored full-body drawing"), recognition, call, gifts, bracelet, icon, rope(100)],
+  archangel: [digitalThanks, recognition, drawing("head", "digital", false, "Signed custom digital headshot rough sketch")],
+  principality: [digitalThanks, recognition, drawing("bust", "digital", false, "Signed custom digital bust rough sketch")],
+  power: [digitalThanks, recognition, drawing("full-body", "digital", false, "Signed custom digital full-body rough sketch")],
+  virtue: [mailedThanks, drawing("head", "digital", true, "Signed custom digital colored head drawing"), recognition, call, gifts, colorBracelet],
+  dominion: [mailedThanks, drawing("head", "physical", true, "Signed custom physical colored head drawing"), recognition, weeklyCall, gifts, colorBracelet, { kind: "flag", text: "Unique Orthodox faith flag and poster" }],
+  throne: [mailedThanks, drawing("bust", "physical", true, "Signed custom physical colored bust drawing"), recognition, weeklyCall, gifts, bracelet, icon, rope(33)],
+  cherub: [mailedThanks, drawing("full-body", "physical", true, "Signed custom physical colored full-body drawing"), recognition, call, gifts, bracelet, icon, rope(50)],
+  seraph: [mailedThanks, drawing("full-body", "physical", true, "Signed custom physical colored full-body drawing"), recognition, call, gifts, bracelet, icon, rope(100)],
 };
 
 export const DONATION_ACCUMULATION_TITLE = "Every donation brings you closer.";
