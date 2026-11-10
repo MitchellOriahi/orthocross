@@ -19,7 +19,7 @@ const colorBracelet: DonorReward = { ...bracelet, colorChoice: true, text: "Hand
 const icon: DonorReward = { kind: "icon", delivery: "physical", text: '6″ × 8″ custom engraved thermal-film hand-laminated icon shipped to you' };
 const call: DonorReward = { kind: "call", frequency: "once", text: "1-on-1 walkthrough call explaining the content-making and app-making process" };
 const weeklyCall: DonorReward = { ...call, frequency: "weekly", text: "Weekly 1-on-1 calls explaining the content-making and app-making process" };
-const drawing = (framing: "head" | "bust" | "full-body", delivery: "digital" | "physical", colored: boolean, text: string): DonorReward => ({ kind: "drawing", framing, delivery, colored, artist: "creator", text: `${text} commission drawn by me` });
+const drawing = (framing: "head" | "bust" | "full-body", delivery: "digital" | "physical", colored: boolean, text: string): DonorReward => ({ kind: "drawing", framing, delivery, colored, artist: "creator", text: `${text} drawn by the creator of the app` });
 const rope = (knots: number): DonorReward => ({ kind: "rope", knots, delivery: "physical", text: `${knots}-knot handmade custom prayer rope made to your description and sent to you` });
 
 // Explicit offers, not inherited benefits: call frequency and delivery differ by milestone.
