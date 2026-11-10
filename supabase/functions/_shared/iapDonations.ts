@@ -1,8 +1,28 @@
 // App Store / Play Store donation products. Amounts (USD cents) are decided here, never by the client.
+
+/** Monthly and yearly amounts the store sells: slider stops plus the "Custom amount" presets. */
+export const STORE_SLIDER_AMOUNTS = { month: [1, 2, 5], year: [8, 12, 16] } as const;
+export const STORE_CUSTOM_AMOUNTS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 35, 50, 75, 100, 150, 200, 250, 500, 750, 1000] as const;
+const STORE_MIN = { month: 1, year: 8 } as const;
+export type StoreInterval = keyof typeof STORE_SLIDER_AMOUNTS;
+
+/** Every whole-dollar amount with its own Apple subscription for this interval, ascending. */
+export const storeSubscriptionAmounts = (interval: StoreInterval): number[] =>
+  [...new Set<number>([...STORE_SLIDER_AMOUNTS[interval], ...STORE_CUSTOM_AMOUNTS])]
+    .filter((a) => a >= STORE_MIN[interval])
+    .sort((a, b) => a - b);
+
+/** Presets shown under "Custom amount" for this interval (yearly keeps the website's minimum). */
+export const storeCustomAmounts = (interval: StoreInterval): number[] =>
+  STORE_CUSTOM_AMOUNTS.filter((a) => a >= STORE_MIN[interval]);
+
+export const subscriptionProductId = (interval: StoreInterval, amount: number): string | null =>
+  storeSubscriptionAmounts(interval).includes(amount) ? `support_${interval}_${amount}` : null;
+
 export const IAP_AMOUNTS: Record<string, number> = {
   donation_5: 500, donation_10: 1000, donation_25: 2500, donation_50: 5000,
-  support_month_1: 100, support_month_2: 200, support_month_5: 500,
-  support_year_8: 800, support_year_12: 1200, support_year_16: 1600,
+  ...Object.fromEntries((Object.keys(STORE_SLIDER_AMOUNTS) as StoreInterval[]).flatMap((interval) =>
+    storeSubscriptionAmounts(interval).map((a) => [`support_${interval}_${a}`, a * 100]))),
 };
 
 export const isSubscriptionProduct = (productId: string) => productId.startsWith("support_");
