@@ -30,6 +30,7 @@
 - Reset island detail scroll before paint on each selection; same-page selection skips route scroll restoration.
 - Resolve saint card icons through a bundled roster-keyed registry with focus/zoom crop values, overridden by admin-saved rows from the hidden icon tuner; derive detail images and credits from the same registry so new portraits keep attribution without touching the saved catalog or card layout.
 - Fetch Athonite catalogs via an authenticated fixed-collection function with storage caching and a blocked-feed stop flag; it cannot approve portraits or alter saints.
+- Store (Apple/Google) donation amounts and product IDs derive from one shared list in iapDonations.ts used by app and functions; the iPhone Custom amount presets hide amounts the store does not offer, since stores cannot sell typed amounts.
 - Verify Stripe payments and totals server-side; friend donation alerts come from a service-only queue enforcing anonymity, friendship, blocks and preferences, idempotent per push.
 
 - Share donation interval validation. Currency estimates use dated public USD rates; checkout amounts and tiers stay unchanged; the picker sits in the dialog's corner help button, not a standalone row.

@@ -58,3 +58,16 @@ export function giftImpact(amount: number, mode: GiftMode): string {
   if (monthly >= 2) return "Keeps the app running smoothly.";
   return "Keeps Scripture and prayers ad-free.";
 }
+
+/** Store "Custom amount" presets grouped under the tier each amount alone reaches. */
+export function groupAmountsByTier(amounts: readonly number[]): { tier: DonorTier; amounts: number[] }[] {
+  const groups: { tier: DonorTier; amounts: number[] }[] = [];
+  for (const amount of [...amounts].sort((a, b) => a - b)) {
+    const tier = getTier(Math.round(amount * 100));
+    if (!tier) continue;
+    const last = groups[groups.length - 1];
+    if (last?.tier.key === tier.key) last.amounts.push(amount);
+    else groups.push({ tier, amounts: [amount] });
+  }
+  return groups;
+}

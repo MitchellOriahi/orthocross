@@ -10,6 +10,8 @@ import { ChevronDown, Eye, EyeOff, Loader2 } from "lucide-react";
 import { DONOR_TEXT } from "@/config/donorTiers";
 import { DonationTierRewards } from "./DonationTierRewards";
 import { TierPortrait } from "./TierPortrait";
+import { StoreCustomAmounts } from "./StoreCustomAmounts";
+import { storeCustomAmounts } from "../../supabase/functions/_shared/iapDonations";
 import { DEFAULT_GIFT_AMOUNT, DEFAULT_YEARLY_AMOUNT, GIFT_SLIDER_AMOUNTS, YEARLY_SLIDER_AMOUNTS, getGiftPreview, giftImpact, minimumGift, shownTier } from "@/config/donationGift";
 import { DEFAULT_DONATION_INTERVAL, type DonationInterval } from "../../supabase/functions/_shared/donationBilling";
 import { purchaseDonation, getAvailableDonationProducts, getSubscriptionProductId } from "@/utils/inAppPurchases";
@@ -45,6 +47,9 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   // Angel shown the instant a tier row is tapped, before the amount settles.
   const [pickedTierKey, setPickedTierKey] = useState<string | null>(null);
   const [productsAvailable, setProductsAvailable] = useState<boolean | null>(null);
+  // Store product ids actually offered, so presets without an Apple price stay hidden.
+  const [storeIds, setStoreIds] = useState<Set<string> | null>(null);
+  const [storeCustomOpen, setStoreCustomOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const { language, tr } = useLanguage();
@@ -77,10 +82,17 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     if (!open) return;
     setInterval_(DEFAULT_DONATION_INTERVAL);
     setTiersOpen(false);
+    setStoreCustomOpen(false);
     if (initialAmount === undefined) {
       setSelectedAmount(DEFAULT_GIFT_AMOUNT);
       setUseCustom(false);
       setCustomAmount("");
+      return;
+    }
+    if (Capacitor.isNativePlatform() && getSubscriptionProductId(DEFAULT_DONATION_INTERVAL, initialAmount)) {
+      setSelectedAmount(initialAmount);
+      setUseCustom(true);
+      setCustomAmount(String(initialAmount));
       return;
     }
     if (Capacitor.isNativePlatform()) {
@@ -120,6 +132,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     setUseCustom(false); setCustomAmount("");
     setSelectedAmount(next === "year" ? DEFAULT_YEARLY_AMOUNT : DEFAULT_GIFT_AMOUNT);
     setPickedTierKey(null);
+    setStoreCustomOpen(false);
   };
   const mode = interval;
   const minAmount = minimumGift(mode);
@@ -129,6 +142,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     if (!open || !isNative) return;
     getAvailableDonationProducts().then(pkgs => {
       setProductsAvailable(pkgs.length > 0);
+      setStoreIds(new Set(pkgs.map(p => p.product.identifier)));
     });
   }, [open, isNative]);
 
@@ -138,6 +152,10 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   };
 
   const SLIDER_STEPS: readonly number[] = interval === "year" ? YEARLY_SLIDER_AMOUNTS : GIFT_SLIDER_AMOUNTS;
+  const storeAmounts = storeCustomAmounts(interval).filter(a => {
+    const id = getSubscriptionProductId(interval, a);
+    return !!id && (!storeIds || storeIds.has(id));
+  });
 
   // Tier this gift alone would qualify for (lifetime total can only be higher).
   const effectiveAmount = getEffectiveAmount();
@@ -156,10 +174,10 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
     }
 
     const productId = getSubscriptionProductId(interval, Math.round(amount));
-    if (!productId) {
+    if (!productId || (storeIds && !storeIds.has(productId))) {
       toast({
         title: "Amount not available",
-        description: "Please choose one of the amounts on the slider.",
+        description: "Please choose one of the listed amounts.",
         variant: "destructive",
       });
       return;
@@ -288,9 +306,19 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
                 className="w-full accent-[hsl(var(--primary))]"
               />
               <div className="flex justify-between text-sm font-medium text-muted-foreground">
-                {SLIDER_STEPS.map((amount, i) => <span key={amount} data-no-translate>{money(amount)}{!isNative && i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
+                {SLIDER_STEPS.map((amount, i) => <span key={amount} data-no-translate>{money(amount)}{i === SLIDER_STEPS.length - 1 ? "+" : ""}</span>)}
               </div>
             </>
+          )}
+
+          {isNative && (
+            <StoreCustomAmounts
+              amounts={storeAmounts}
+              open={storeCustomOpen}
+              onOpenChange={setStoreCustomOpen}
+              selected={useCustom ? effectiveAmount : null}
+              onSelect={(amount) => { setSelectedAmount(amount); setCustomAmount(String(amount)); setUseCustom(true); setPickedTierKey(null); setStoreCustomOpen(false); }}
+            />
           )}
 
           {!isNative && (
@@ -315,7 +343,7 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
               <ChevronDown className={`h-4 w-4 transition-transform ${tiersOpen ? "rotate-180" : ""}`} />
             </Button>
             {tiersOpen && (
-              <DonationTierRewards activeTierKey={activeTierKey} pulse={tiersPulse} canSelectAmount={!isNative} onTierOpen={handleTierOpen} onSelect={(key, amount) => {
+              <DonationTierRewards activeTierKey={activeTierKey} pulse={tiersPulse} canSelectAmount onTierOpen={handleTierOpen} onSelect={(key, amount) => {
                 setCustomAmount(String(amount));
                 setSelectedAmount(amount);
                 setUseCustom(true);
