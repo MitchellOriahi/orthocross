@@ -246,6 +246,10 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
           <DialogDescription className="sr-only">Your gift keeps OrthoCross free for everyone.</DialogDescription>
         </DialogHeader>
 
+        <div className="rounded-xl border bg-muted/40 p-3 text-sm leading-relaxed">
+          <p className="font-medium">A note from the creator of OrthoCross</p>
+          <p className="mt-1 text-muted-foreground">I built OrthoCross on my own savings so every believer could pray, read, and learn without ads or paywalls. Running it costs real money each month. If it has blessed you, even a small gift keeps it alive for everyone. God bless.</p>
+        </div>
 
         <div className="space-y-2">
           {(
