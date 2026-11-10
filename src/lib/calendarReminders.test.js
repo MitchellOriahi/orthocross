@@ -14,3 +14,10 @@ test("editing and deleting address the same native notification", () => {
   expect(notificationId("a-reminder-id")).toBe(notificationId("a-reminder-id"));
   expect(notificationId("a-reminder-id")).not.toBe(notificationId("another-reminder-id"));
 });
+import { withTimeout, ReminderTimeoutError } from "./calendarReminders";
+test("a stalled save step gives up instead of hanging", async () => {
+  await expect(withTimeout(new Promise(() => {}), 20)).rejects.toBeInstanceOf(ReminderTimeoutError);
+});
+test("a finished save step returns its result", async () => {
+  expect(await withTimeout(Promise.resolve("saved"), 1000)).toBe("saved");
+});

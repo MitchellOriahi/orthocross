@@ -4,7 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { notificationId } from "@/lib/calendarReminders";
+import { notificationId, withTimeout, ReminderTimeoutError } from "@/lib/calendarReminders";
 import { toast } from "sonner";
 
 export interface CalendarReminder {
@@ -61,27 +61,36 @@ export function useCalendarReminders() {
     if (!user) throw new Error("Sign in to save a reminder.");
     const row = { ...input, user_id: user.id };
     const request = id ? supabase.from("calendar_reminders").update(row).eq("id", id).eq("user_id", user.id) : supabase.from("calendar_reminders").insert(row);
-    const { data: saved, error } = await request.select("id,title,notes,event_date,remind_at").single();
+    const { data: saved, error } = await withTimeout(request.select("id,title,notes,event_date,remind_at").single(), 20000);
     if (error) throw error;
-    await queryClient.invalidateQueries({ queryKey });
-    try {
-      const plugin = await nativeNotifications();
-      if (plugin) {
-        await plugin.cancel({ notifications: [{ id: notificationId(saved.id) }] });
-        const permission = await plugin.requestPermissions();
+    queryClient.setQueryData<CalendarReminder[]>(queryKey, (old = []) =>
+      [...old.filter(r => r.id !== saved.id), saved].sort((a, b) => a.remind_at.localeCompare(b.remind_at)));
+    void queryClient.invalidateQueries({ queryKey });
+    // Phone scheduling runs after the dialog closes; a stalled native call must not freeze the screen.
+    void (async () => {
+      try {
+        const plugin = await nativeNotifications();
+        if (!plugin) return;
+        await withTimeout(plugin.cancel({ notifications: [{ id: notificationId(saved.id) }] }), 8000).catch(() => {});
+        const permission = await withTimeout(plugin.requestPermissions(), 30000);
         if (permission.display !== "granted") throw new Error("Notifications are disabled. Your reminder is saved; enable notifications in your phone settings.");
-        await plugin.schedule({ notifications: [toNotification(saved)] });
+        await withTimeout(plugin.schedule({ notifications: [toNotification(saved)] }), 8000);
+      } catch (e) {
+        toast.warning(e instanceof Error && !(e instanceof ReminderTimeoutError) ? e.message : "Reminder saved, but the phone notification could not be scheduled.");
       }
-    } catch (e) { toast.warning(e instanceof Error ? e.message : "Reminder saved, but the phone notification could not be scheduled."); }
+    })();
     return saved;
   };
   const remove = async (id: string) => {
     if (!user) throw new Error("Sign in to delete a reminder.");
-    const { error } = await supabase.from("calendar_reminders").delete().eq("id", id).eq("user_id", user.id);
+    const { error } = await withTimeout(supabase.from("calendar_reminders").delete().eq("id", id).eq("user_id", user.id), 20000);
     if (error) throw error;
-    await queryClient.invalidateQueries({ queryKey });
-    try { const plugin = await nativeNotifications(); if (plugin) await plugin.cancel({ notifications: [{ id: notificationId(id) }] }); }
-    catch { toast.warning("Reminder deleted. The phone notification could not be cleared."); }
+    queryClient.setQueryData<CalendarReminder[]>(queryKey, (old = []) => old.filter(r => r.id !== id));
+    void queryClient.invalidateQueries({ queryKey });
+    void (async () => {
+      try { const plugin = await nativeNotifications(); if (plugin) await withTimeout(plugin.cancel({ notifications: [{ id: notificationId(id) }] }), 8000); }
+      catch { toast.warning("Reminder deleted. The phone notification could not be cleared."); }
+    })();
   };
   return { reminders: data, error, save, remove };
 }
