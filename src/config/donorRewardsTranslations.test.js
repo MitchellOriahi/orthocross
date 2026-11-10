@@ -14,3 +14,11 @@ for (const language of ["am", "ar", "bg", "el", "es", "fr", "he", "hy", "ka", "m
     }
   });
 }
+for (const language of ["am", "ar", "bg", "el", "es", "fr", "he", "hy", "ka", "ml", "pt", "ro", "ru", "sr", "ti", "uk"]) {
+  test(`${language} translates every creator-drawn reward`, () => {
+    const dict = JSON.parse(readFileSync(new URL(`../../public/i18n/${language}.json`, import.meta.url), "utf8"));
+    for (const reward of Object.values(DONOR_REWARDS).flat().filter(r => r.kind === "drawing")) {
+      expect(typeof dict[reward.text]).toBe("string");
+    }
+  });
+}
