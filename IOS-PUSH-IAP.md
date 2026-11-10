@@ -60,6 +60,16 @@ On iOS the Donate flow uses RevenueCat (web uses Stripe). The code reads
 
 ---
 
+## C. Monthly / Yearly subscriptions (matches the web donation window)
+
+The iOS donation window now offers Monthly ($1, $2, $5) and Yearly ($8, $12, $16), defaulting to Monthly $2.
+1. [Apple] App Store Connect -> Subscriptions -> create one group "OrthoCross Support" with six
+   auto-renewable subscriptions: `support_month_1`, `support_month_2`, `support_month_5` (1 month),
+   `support_year_8`, `support_year_12`, `support_year_16` (1 year), priced at those USD amounts.
+2. [Dash] RevenueCat -> Products -> add all six; add a Package for each to the current Offering.
+3. Redeploy `record-donation` (it now verifies these subscriptions and labels them monthly/yearly).
+Only the first purchase is recorded from the app; renewals need a RevenueCat webhook (not built yet).
+
 ## Who does what (fastest split)
 - **Founder** (owns the Apple account): APNs key (A1), IAP products (B1), ASC API key (B2),
   sandbox tester (B6). These need App Store Connect / Developer portal access.
