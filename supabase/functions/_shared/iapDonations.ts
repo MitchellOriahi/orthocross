@@ -2,7 +2,7 @@
 
 /** Monthly and yearly amounts the store sells: slider stops plus the "Custom amount" presets. */
 export const STORE_SLIDER_AMOUNTS = { month: [1, 2, 5], year: [8, 12, 16] } as const;
-export const STORE_CUSTOM_AMOUNTS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 35, 50, 75, 100, 150, 200, 250, 500, 750, 1000] as const;
+export const STORE_CUSTOM_AMOUNTS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 50, 75, 100, 150, 200, 250, 500, 750, 1000] as const;
 const STORE_MIN = { month: 1, year: 8 } as const;
 export type StoreInterval = keyof typeof STORE_SLIDER_AMOUNTS;
 

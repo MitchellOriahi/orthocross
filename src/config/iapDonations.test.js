@@ -42,8 +42,14 @@ import { storeCustomAmounts, storeSubscriptionAmounts, subscriptionProductId, IA
 import { groupAmountsByTier } from "./donationGift";
 
 describe("iPhone custom amount presets", () => {
-  test("monthly custom presets are the 23 chosen amounts", () => {
-    expect(storeCustomAmounts("month")).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 35, 50, 75, 100, 150, 200, 250, 500, 750, 1000]);
+  test("monthly custom presets are the 25 chosen amounts", () => {
+    expect(storeCustomAmounts("month")).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 50, 75, 100, 150, 200, 250, 500, 750, 1000]);
+  });
+  test("$30 and $40 count as Principality presets", () => {
+    expect(groupAmountsByTier(storeCustomAmounts("month")).find(g => g.tier.key === "principality")?.amounts).toEqual([25, 30, 35, 40]);
+  });
+  test("yearly offers 18 presets", () => {
+    expect(storeCustomAmounts("year")).toHaveLength(18);
   });
   test("yearly custom presets keep the $8 yearly minimum", () => {
     expect(storeCustomAmounts("year")[0]).toBe(8);
