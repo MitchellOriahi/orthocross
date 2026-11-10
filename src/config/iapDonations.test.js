@@ -37,3 +37,32 @@ describe("App Store renewals count toward donor tiers", () => {
     expect(parseRevenueCatEvent(event({ app_user_id: "$RCAnonymousID:abc", original_app_user_id: null }))).toBeNull();
   });
 });
+
+import { storeCustomAmounts, storeSubscriptionAmounts, subscriptionProductId, IAP_AMOUNTS } from "../../supabase/functions/_shared/iapDonations";
+import { groupAmountsByTier } from "./donationGift";
+
+describe("iPhone custom amount presets", () => {
+  test("monthly custom presets are the 23 chosen amounts", () => {
+    expect(storeCustomAmounts("month")).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 35, 50, 75, 100, 150, 200, 250, 500, 750, 1000]);
+  });
+  test("yearly custom presets keep the $8 yearly minimum", () => {
+    expect(storeCustomAmounts("year")[0]).toBe(8);
+  });
+  test("Angel offers every dollar from $1 to $9", () => {
+    expect(groupAmountsByTier(storeCustomAmounts("month"))[0]).toMatchObject({ tier: { key: "angel" }, amounts: [1, 2, 3, 4, 5, 6, 7, 8, 9] });
+  });
+  test("every tier's starting amount can be bought monthly", () => {
+    for (const a of [1, 10, 25, 50, 100, 250, 500, 750, 1000]) expect(subscriptionProductId("month", a)).toBe(`support_month_${a}`);
+  });
+  test("slider amounts stay purchasable", () => {
+    expect(storeSubscriptionAmounts("year")).toEqual(expect.arrayContaining([8, 12, 16]));
+  });
+  test("amounts outside the list have no product", () => {
+    expect(subscriptionProductId("month", 11)).toBeNull();
+    expect(subscriptionProductId("year", 5)).toBeNull();
+  });
+  test("a $35 monthly renewal records $35 server-side", () => {
+    expect(IAP_AMOUNTS.support_month_35).toBe(3500);
+    expect(parseRevenueCatEvent(event({ product_id: "support_year_1000" }))).toMatchObject({ amount: 100000 });
+  });
+});
