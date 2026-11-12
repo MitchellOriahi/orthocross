@@ -68,8 +68,8 @@ The single source of truth for amounts is `supabase/functions/_shared/iapDonatio
 1. [Apple] App Store Connect -> Subscriptions -> create one group "OrthoCross Support" containing these auto-renewable
    subscriptions, each priced at the USD amount in its id (ids are `support_month_<amount>` / `support_year_<amount>`):
    - 1 month (13): 1, 2, 3, 5, 10, 15, 25, 50, 100, 250, 500, 750, 1000
-   - 1 year (12): 8, 10, 12, 15, 16, 25, 50, 100, 250, 500, 750, 1000
-2. [Dash] RevenueCat -> Products -> add all 25; add a Package for each to the current Offering.
+   - 1 year (13): 8, 10, 12, 15, 16, 20, 25, 50, 100, 250, 500, 750, 1000
+2. [Dash] RevenueCat -> Products -> add all 26; add a Package for each to the current Offering.
 3. Redeploy `record-donation` (it now verifies these subscriptions and labels them monthly/yearly).
 4. Renewals: deploy `revenuecat-webhook`, then set a long random secret on the backend:
    `npx supabase secrets set REVENUECAT_WEBHOOK_SECRET=<value> --project-ref uceqydqvjapkobqwrbxw`.

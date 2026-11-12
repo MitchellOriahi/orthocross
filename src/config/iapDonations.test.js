@@ -45,12 +45,16 @@ describe("iPhone custom amount presets", () => {
   test("monthly custom presets are the 10 chosen amounts", () => {
     expect(storeCustomAmounts("month")).toEqual([3, 10, 15, 25, 50, 100, 250, 500, 750, 1000]);
   });
-  test("yearly offers 9 presets starting at $10", () => {
-    expect(storeCustomAmounts("year")).toEqual([10, 15, 25, 50, 100, 250, 500, 750, 1000]);
+  test("yearly offers 10 presets starting at $10, including $20", () => {
+    expect(storeCustomAmounts("year")).toEqual([10, 15, 20, 25, 50, 100, 250, 500, 750, 1000]);
   });
-  test("store sells 13 monthly and 12 yearly subscriptions", () => {
+  test("store sells 13 monthly and 13 yearly subscriptions", () => {
     expect(storeSubscriptionAmounts("month")).toHaveLength(13);
-    expect(storeSubscriptionAmounts("year")).toHaveLength(12);
+    expect(storeSubscriptionAmounts("year")).toHaveLength(13);
+  });
+  test("$20 is a yearly gift only", () => {
+    expect(subscriptionProductId("year", 20)).toBe("support_year_20");
+    expect(subscriptionProductId("month", 20)).toBeNull();
   });
   test("every tier's starting amount can be bought monthly", () => {
     for (const a of [1, 10, 25, 50, 100, 250, 500, 750, 1000]) expect(subscriptionProductId("month", a)).toBe(`support_month_${a}`);

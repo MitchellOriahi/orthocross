@@ -2,19 +2,23 @@
 
 /** Monthly and yearly amounts the store sells: slider stops plus the "Custom amount" presets. */
 export const STORE_SLIDER_AMOUNTS = { month: [1, 2, 5], year: [8, 12, 16] } as const;
-export const STORE_CUSTOM_AMOUNTS = [3, 10, 15, 25, 50, 100, 250, 500, 750, 1000] as const;
+/** Presets shown under "Custom amount", per interval: yearly adds $20 and keeps the website's minimum. */
+export const STORE_CUSTOM_AMOUNTS = {
+  month: [3, 10, 15, 25, 50, 100, 250, 500, 750, 1000],
+  year: [10, 15, 20, 25, 50, 100, 250, 500, 750, 1000],
+} as const;
 const STORE_MIN = { month: 1, year: 8 } as const;
 export type StoreInterval = keyof typeof STORE_SLIDER_AMOUNTS;
 
 /** Every whole-dollar amount with its own Apple subscription for this interval, ascending. */
 export const storeSubscriptionAmounts = (interval: StoreInterval): number[] =>
-  [...new Set<number>([...STORE_SLIDER_AMOUNTS[interval], ...STORE_CUSTOM_AMOUNTS])]
+  [...new Set<number>([...STORE_SLIDER_AMOUNTS[interval], ...STORE_CUSTOM_AMOUNTS[interval]])]
     .filter((a) => a >= STORE_MIN[interval])
     .sort((a, b) => a - b);
 
 /** Presets shown under "Custom amount" for this interval (yearly keeps the website's minimum). */
 export const storeCustomAmounts = (interval: StoreInterval): number[] =>
-  STORE_CUSTOM_AMOUNTS.filter((a) => a >= STORE_MIN[interval]);
+  [...STORE_CUSTOM_AMOUNTS[interval]].filter((a) => a >= STORE_MIN[interval]);
 
 export const subscriptionProductId = (interval: StoreInterval, amount: number): string | null =>
   storeSubscriptionAmounts(interval).includes(amount) ? `support_${interval}_${amount}` : null;
