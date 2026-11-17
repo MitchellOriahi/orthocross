@@ -119,10 +119,7 @@ const loadGroupMembers = async (groupId: string, monthDate: string): Promise<Gro
   // Group standings come straight from this month's leaderboard points.
   // (group_monthly_rankings was a dead table nothing ever wrote to.)
   const { data: globalPoints } = await supabase
-    .from('monthly_leaderboard')
-    .select('user_id, total_points')
-    .eq('month_date', monthDate)
-    .in('user_id', userIds);
+    .rpc('get_group_member_points', { p_group_id: groupId, p_month: monthDate });
 
   // Rank within the group by this month's points (ties share order of points sort).
   const pointsFor = (userId: string) =>

@@ -1776,6 +1776,10 @@ export type Database = {
         Args: { p_activity: string }
         Returns: undefined
       }
+      can_view_leaderboard_entry: {
+        Args: { _owner: string; _viewer: string }
+        Returns: boolean
+      }
       create_notification_channels: { Args: never; Returns: undefined }
       delete_user_account: { Args: never; Returns: undefined }
       find_dm_conversation: {
@@ -1802,6 +1806,27 @@ export type Database = {
           receiver_id: string
           request_id: string
           username: string
+        }[]
+      }
+      get_group_member_points: {
+        Args: { p_group_id: string; p_month: string }
+        Returns: {
+          total_points: number
+          user_id: string
+        }[]
+      }
+      get_monthly_leaderboard: {
+        Args: { p_limit?: number; p_month: string }
+        Returns: {
+          total_points: number
+          user_id: string
+        }[]
+      }
+      get_my_leaderboard_rank: {
+        Args: { p_month: string }
+        Returns: {
+          ahead: number
+          total_points: number
         }[]
       }
       get_public_profiles_for_leaderboard: {

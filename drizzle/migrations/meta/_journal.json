@@ -141,6 +141,13 @@
       "when": 1794179313931,
       "tag": "0019_calendar_oriental_family",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794938408547,
+      "tag": "0020_tighten_leaderboard_icon_and_storage_reads",
+      "breakpoints": true
     }
   ]
 }

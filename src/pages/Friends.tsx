@@ -307,12 +307,7 @@ export default function Friends() {
 
       // Load global leaderboard (top 15)
       const { data: leaderboardData, error: leaderboardError } = await supabase
-        .from('monthly_leaderboard')
-        .select('user_id, total_points')
-        .eq('month_date', currentMonth)
-        .order('total_points', { ascending: false })
-        .order('user_id', { ascending: true })
-        .limit(15);
+        .rpc('get_monthly_leaderboard', { p_month: currentMonth, p_limit: 15 });
 
       // If the request fails, do NOT clear UI (prevents flicker)
       if (leaderboardError) {
@@ -345,19 +340,13 @@ export default function Friends() {
       // Compute current user's rank if not in top 15
       const inTop15 = leaderboardData?.some((l) => l.user_id === userId);
       if (!inTop15) {
-        const { data: myEntry } = await supabase
-          .from('monthly_leaderboard')
-          .select('user_id, total_points')
-          .eq('month_date', currentMonth)
-          .eq('user_id', userId)
-          .maybeSingle();
+        const { data: myRankRows } = await supabase
+          .rpc('get_my_leaderboard_rank', { p_month: currentMonth });
+        const myRank = myRankRows?.[0];
+        const myEntry = myRank ? { user_id: userId, total_points: myRank.total_points } : null;
 
         if (myEntry) {
-          const { count } = await supabase
-            .from('monthly_leaderboard')
-            .select('*', { count: 'exact', head: true })
-            .eq('month_date', currentMonth)
-            .gt('total_points', myEntry.total_points);
+          const count = myRank.ahead;
 
           const { data: myProfile } = await supabase
             .from('profiles')
@@ -701,12 +690,7 @@ export default function Friends() {
     if (!viewedData) {
       // Load last month's top 3 (global now, not friends-only)
       const { data: leaderboardData, error: leaderboardError } = await supabase
-        .from('monthly_leaderboard')
-        .select('user_id, total_points')
-        .eq('month_date', lastMonthDate)
-        .order('total_points', { ascending: false })
-        .order('user_id', { ascending: true })
-        .limit(3);
+        .rpc('get_monthly_leaderboard', { p_month: lastMonthDate, p_limit: 3 });
 
       if (leaderboardError) {
         console.error('Error loading monthly podium:', leaderboardError);
