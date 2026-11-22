@@ -148,6 +148,13 @@
       "when": 1794938408547,
       "tag": "0020_tighten_leaderboard_icon_and_storage_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1795317802122,
+      "tag": "0021_restrict_saint_icon_override_reads",
+      "breakpoints": true
     }
   ]
 }

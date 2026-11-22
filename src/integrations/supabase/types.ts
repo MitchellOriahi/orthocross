@@ -1848,6 +1848,19 @@ export type Database = {
           username: string
         }[]
       }
+      get_saint_icon_overrides: {
+        Args: never
+        Returns: {
+          focus_x: number
+          focus_y: number
+          image_attribution: string
+          image_license: string
+          image_source: string
+          image_url: string
+          saint_id: string
+          zoom: number
+        }[]
+      }
       get_top_donators: {
         Args: { limit_count?: number }
         Returns: {

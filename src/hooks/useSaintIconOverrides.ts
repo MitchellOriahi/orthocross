@@ -9,7 +9,7 @@ export function useSaintIconOverrides() {
     queryKey: ["saint-icon-overrides"],
     staleTime: 10 * 60 * 1000,
     queryFn: async () => {
-      const { data, error } = await supabase.from("saint_icon_overrides").select("*");
+      const { data, error } = await supabase.rpc("get_saint_icon_overrides");
       if (error) throw error;
       return new Map((data ?? []).map(row => [row.saint_id, row as unknown as SaintIconOverride]));
     },
