@@ -203,3 +203,7 @@
 
 ## Donation tier panel wording
 - [x] Removed the per-tier accumulation blocks (equation, "separate donations count just like" line, milestone line) from every tier dropdown; the donation panel now carries one shared sentence under "Every donation brings you closer." translated in all 16 languages; 9 donor tests pass, build clean.
+## Daily verse variety
+- [x] Expand Verse of the Day from 8 to 537 uplifting verses (King James) so every day of the year differs; Board, 8 AM push and widgets share the list. Tests pass; backend and app agree on this week's verses.
+- [ ] Orthodox Study Bible wording: waiting on the owner to supply licensed OSB text (copyrighted, not in the app).
+- [ ] Production backend: apply supabase/migrations/20261122030000_daily_verses_full_year.sql (Mitchel).

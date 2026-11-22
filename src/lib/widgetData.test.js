@@ -167,8 +167,8 @@ describe("snapshot", () => {
 
 test("dashboard verse rotation matches the backend rotation", () => {
   expect(SAMPLE_VERSES[verseIndexForDate("2026-01-01")].reference).toBe("John 3:16");
-  expect(SAMPLE_VERSES[verseIndexForDate("2026-11-08")].reference).toBe("Jeremiah 29:11");
-  expect(SAMPLE_VERSES[verseIndexForDate("2026-11-09")].reference).toBe("John 3:16");
+  expect(SAMPLE_VERSES[verseIndexForDate("2026-01-08")].reference).toBe("Jeremiah 29:11");
+  expect(SAMPLE_VERSES[verseIndexForDate("2026-01-09")].reference).toBe("2 Thessalonians 2:16-17");
 });
 
 test("widget keys are random, well-formed and stored only as hashes", async () => {
