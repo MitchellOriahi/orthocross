@@ -1,6 +1,6 @@
 import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 import { Capacitor } from '@capacitor/core';
-import { subscriptionProductId } from '../../supabase/functions/_shared/iapDonations';
+import { IAP_AMOUNTS, subscriptionProductId } from '../../supabase/functions/_shared/iapDonations';
 
 // Product IDs that match your App Store Connect configuration
 export const DONATION_PRODUCTS = {
@@ -77,18 +77,18 @@ export const isIAPAvailable = (): boolean => {
   return Capacitor.isNativePlatform();
 };
 
-// Get available donation products
+// Products are fetched straight from the store by Product ID, so RevenueCat only needs the products imported (no offering packages).
+const fetchStoreProducts = async (productIdentifiers: string[]) => {
+  const { products } = await Purchases.getProducts({ productIdentifiers });
+  return products;
+};
+
+// Get every donation product the store currently sells
 export const getAvailableDonationProducts = async () => {
   try {
-    const offerings = await Purchases.getOfferings();
-    
-    if (offerings.current) {
-      return offerings.current.availablePackages;
-    }
-    
-    return [];
+    return await fetchStoreProducts(Object.keys(IAP_AMOUNTS));
   } catch (error) {
-    console.error('Error fetching offerings:', error);
+    console.error('Error fetching donation products:', error);
     return [];
   }
 };
@@ -102,22 +102,12 @@ export const purchaseDonation = async (productId: DonationProductId, userId: str
       throw new Error('Could not link the purchase to your account. Please try again.');
     }
 
-    const offerings = await Purchases.getOfferings();
-    
-    if (!offerings.current) {
-      throw new Error('No offerings available');
-    }
-
-    // Find the package that matches the product ID
-    const pkg = offerings.current.availablePackages.find(
-      p => p.product.identifier === productId
-    );
-
-    if (!pkg) {
+    const [product] = (await fetchStoreProducts([productId])).filter(p => p.identifier === productId);
+    if (!product) {
       throw new Error(`Product ${productId} not found`);
     }
 
-    const purchaseResult = await Purchases.purchasePackage({ aPackage: pkg });
+    const purchaseResult = await Purchases.purchaseStoreProduct({ product });
     
     return {
       success: true,

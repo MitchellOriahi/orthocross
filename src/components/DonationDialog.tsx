@@ -139,9 +139,9 @@ export const DonationDialog = ({ open, onOpenChange, initialAmount, onCancel }: 
   // On native, check if IAP products are available when dialog opens
   useEffect(() => {
     if (!open || !isNative) return;
-    getAvailableDonationProducts().then(pkgs => {
-      setProductsAvailable(pkgs.length > 0);
-      setStoreIds(new Set(pkgs.map(p => p.product.identifier)));
+    getAvailableDonationProducts().then(products => {
+      setProductsAvailable(products.length > 0);
+      setStoreIds(new Set(products.map(p => p.identifier)));
     });
   }, [open, isNative]);
 

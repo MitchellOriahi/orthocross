@@ -50,9 +50,10 @@ On iOS the Donate flow uses RevenueCat (web uses Stripe). The code reads
    this to validate purchases.)
 3. [Dash] app.revenuecat.com → Project → **Apps** → the iOS app (bundle id
    `com.lZASURkwsofX.OrthoCross`) → paste the App Store Connect API key from step 2.
-4. [Dash] RevenueCat → **Products** → add `donation_5/10/25/50`. Then **Offerings** →
-   the **current** offering → add a Package for each product. (No entitlement needed for
-   consumable donations.)
+4. [Dash] RevenueCat → **Product catalog → Products → Import** every `support_month_*` /
+   `support_year_*` subscription from App Store Connect (keep `donation_5/10/25/50`). New
+   builds load products by Product ID, so no offering packages or entitlements are needed;
+   builds before this change still read `donation_*` from the current offering, so leave it.
 5. [Xcode] App target → Signing & Capabilities → **+ Capability → In-App Purchase**.
 6. Verify: App Store Connect → Users and Access → **Sandbox → Testers** → add a sandbox
    Apple ID. On the TestFlight build, sign into that sandbox account and run a donation —
