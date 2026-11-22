@@ -18,28 +18,10 @@ export const GroupInvitationsList = ({ invitations, userId, onInvitationHandled 
   const handleAccept = async (invitation: GroupInvitation) => {
     setProcessingId(invitation.id);
     try {
-      // Update invitation status
-      await supabase
-        .from('group_invitations')
-        .update({ status: 'accepted' })
-        .eq('id', invitation.id);
-
-      // Add user to group
-      const { error: memberError } = await supabase
-        .from('group_members')
-        .insert({
-          group_id: invitation.group_id,
-          user_id: userId,
-          role: 'member'
-        });
-
-      if (memberError) throw memberError;
-
-      // Mark notification as read
-      await supabase
-        .from('group_invitation_notifications')
-        .update({ read: true })
-        .eq('invitation_id', invitation.id);
+      const { error } = await supabase.rpc('accept_group_invitation', {
+        p_invitation_id: invitation.id,
+      });
+      if (error) throw error;
 
       toast({
         title: "Joined group!",

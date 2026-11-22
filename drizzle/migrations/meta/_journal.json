@@ -155,6 +155,13 @@
       "when": 1795317802122,
       "tag": "0021_restrict_saint_icon_override_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1795391331821,
+      "tag": "0022_accept_group_invitation",
+      "breakpoints": true
     }
   ]
 }

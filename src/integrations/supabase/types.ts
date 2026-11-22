@@ -1770,6 +1770,10 @@ export type Database = {
         Args: { request_id: string }
         Returns: undefined
       }
+      accept_group_invitation: {
+        Args: { p_invitation_id: string }
+        Returns: string
+      }
       apply_streak_loss_penalty: { Args: never; Returns: undefined }
       award_avatar_xp: { Args: { p_xp: number }; Returns: undefined }
       award_leaderboard_point: {
