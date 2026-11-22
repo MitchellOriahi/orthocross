@@ -128,7 +128,7 @@ export const TranslationSelector = ({
           </ScrollArea>
           <div className="p-2 border-t bg-muted/30">
             <p className="text-[10px] text-muted-foreground text-center">
-              Some translations require proper licensing for digital distribution
+              All translations shown are in the public domain
             </p>
           </div>
         </PopoverContent>

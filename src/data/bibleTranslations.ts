@@ -18,29 +18,20 @@ export interface BibleTranslation {
 
 export const BIBLE_TRANSLATIONS: BibleTranslation[] = [
   {
+    // Internal id stays 'osb' so saved preferences, local chapters and the
+    // chapter function's fallback keep working. The text served is the KJV:
+    // the Orthodox Study Bible itself is copyrighted and not available from
+    // the public Bible sources, so the label must say what readers actually get.
     id: 'osb',
-    abbreviation: 'OSB',
-    fullName: 'Orthodox Study Bible',
-    description: 'Orthodox Christian study Bible with Old Testament based on the Septuagint. Uses local Orthodox text where available; falls back to KJV for unimported chapters.',
-    tradition: 'Eastern Orthodox',
-    translationPhilosophy: 'Septuagint-based, formal equivalence',
-    year: 2008,
-    license: 'licensed',
-    isDefault: true,
-    apiSupported: false,
-    language: 'en',
-  },
-  {
-    id: 'kjv',
     abbreviation: 'KJV',
     fullName: 'King James Version',
-    description: 'Classic English translation commissioned by King James I (1611).',
+    description: 'Classic English translation commissioned by King James I (1611). The app\'s default English Bible.',
     tradition: 'Protestant (Traditional)',
     translationPhilosophy: 'Formal equivalence',
     year: 1611,
     license: 'public_domain',
-    isDefault: false,
-    apiSupported: true,
+    isDefault: true,
+    apiSupported: false,
     language: 'en',
   },
   {
@@ -159,14 +150,15 @@ export const OTHER_LANGUAGE_BIBLES: BibleTranslation[] = [
 
 export const ALL_BIBLE_TRANSLATIONS: BibleTranslation[] = [...BIBLE_TRANSLATIONS, ...OTHER_LANGUAGE_BIBLES];
 
-/** Bibles offered in a given app language: the OSB always, plus that language's own Bibles.
+/** Bibles offered in a given app language: the default English Bible (KJV) always,
+ *  plus that language's own Bibles.
  *  English also shows the other English Bibles; other languages never show English-only Bibles. */
 export const getTranslationsForLanguage = (language: string): BibleTranslation[] => {
   const own = ALL_BIBLE_TRANSLATIONS.filter(t => t.language === language && t.id !== 'osb');
   return [ALL_BIBLE_TRANSLATIONS.find(t => t.id === 'osb')!, ...own];
 };
 
-/** Main Bible for a language: its own Bible when one exists, otherwise the OSB. */
+/** Main Bible for a language: its own Bible when one exists, otherwise the default English Bible. */
 export const getMainTranslationForLanguage = (language: string): BibleTranslation =>
   getTranslationsForLanguage(language)[1] ?? getDefaultTranslation();
 

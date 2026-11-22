@@ -10,13 +10,13 @@ const { getTranslationsForLanguage, getUserPreferredTranslation } = await import
 
 beforeEach(() => { for (const k of Object.keys(store)) delete store[k]; });
 
-test("French offers the OSB plus French Bibles only, never English-only ones like the ASV", () => {
+test("French offers the default English Bible plus French Bibles only, never English-only ones like the ASV", () => {
   const ids = getTranslationsForLanguage("fr").map(t => t.id);
   expect(ids).toEqual(["osb", "fr-lsg"]);
   expect(ids).not.toContain("asv");
 });
 
-test("English keeps the OSB and the English Bibles, without other-language Bibles", () => {
+test("English keeps the default KJV and the English Bibles, without other-language Bibles", () => {
   const ids = getTranslationsForLanguage("en").map(t => t.id);
   expect(ids[0]).toBe("osb");
   expect(ids).toContain("asv");
@@ -28,7 +28,7 @@ test("choosing Arabic makes the Arabic Bible the main Bible", () => {
   expect(getUserPreferredTranslation().id).toBe("ar-svd");
 });
 
-test("a language without its own Bible falls back to the OSB", () => {
+test("a language without its own Bible falls back to the default English Bible", () => {
   store["orthocross-language"] = "am";
   expect(getTranslationsForLanguage("am").map(t => t.id)).toEqual(["osb"]);
   expect(getUserPreferredTranslation().id).toBe("osb");
