@@ -375,7 +375,7 @@ const Index = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className={`h-6 w-6 p-0 rounded-full ${infoPulse ? "ring-2 ring-primary animate-pulse" : ""}`}
+                              className={`h-6 w-6 p-0 rounded-full ${infoPulse ? "bible-info-pulse text-primary" : ""}`}
                               onClick={() => {
                                 if (infoPulse) {
                                   const next = introInfoClick();
