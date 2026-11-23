@@ -984,7 +984,7 @@ All colors MUST be HSL.
 .calendar-intro-glow {
   border-color: hsl(var(--journey-glow) / 0.6);
   box-shadow: var(--journey-glow-rest);
-  animation: journey-next-glow 0.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation: journey-next-glow 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   z-index: 1;
 }
 @media (prefers-reduced-motion: reduce) {
