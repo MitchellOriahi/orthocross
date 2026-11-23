@@ -1960,6 +1960,15 @@ export type Database = {
         Args: { search_term: string }
         Returns: string
       }
+      search_user_profile_for_friend_request: {
+        Args: { search_term: string }
+        Returns: {
+          display_name: string
+          id: string
+          profile_picture_url: string
+          username: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user"

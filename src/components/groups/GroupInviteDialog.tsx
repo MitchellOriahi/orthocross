@@ -175,7 +175,7 @@ export const GroupInviteDialog = ({
               />
             </div>
           )}
-          <div className="flex-1 overflow-y-auto space-y-2">
+          <div className="flex-1 overflow-y-auto space-y-2 pr-3">
             {availableFriends.length === 0 ? (
               <div className="text-center text-muted-foreground py-8">
                 All your friends are already members of this group!

@@ -162,6 +162,13 @@
       "when": 1795391331821,
       "tag": "0022_accept_group_invitation",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1795391708789,
+      "tag": "0023_friend_request_search_profile",
+      "breakpoints": true
     }
   ]
 }

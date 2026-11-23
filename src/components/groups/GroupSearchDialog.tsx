@@ -124,7 +124,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
             </Button>
           </div>
           
-          <div className="flex-1 overflow-y-auto space-y-2">
+          <div className="flex-1 overflow-y-auto space-y-2 pr-3">
             {searchResults.length === 0 && searchQuery && !isSearching ? (
               <div className="text-center text-muted-foreground py-8">
                 No public groups found matching "{searchQuery}"

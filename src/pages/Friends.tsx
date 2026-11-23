@@ -98,6 +98,12 @@ export default function Friends() {
   const [friendToRemove, setFriendToRemove] = useState<Friend | null>(null);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
   const [requestToCancel, setRequestToCancel] = useState<string | null>(null);
+  const [requestTarget, setRequestTarget] = useState<{
+    id: string;
+    username: string | null;
+    display_name: string | null;
+    profile_picture_url: string | null;
+  } | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showPodium, setShowPodium] = useState(false);
   const [podiumData, setPodiumData] = useState<PodiumEntry[]>([]);
@@ -407,9 +413,9 @@ export default function Friends() {
 
     try {
       // Search for user using secure database function
-      const { data: foundUserId, error: searchError } = await supabase
-        .rpc('search_user_for_friend_request', { 
-          search_term: searchQuery.trim() 
+      const { data: foundProfiles, error: searchError } = await supabase
+        .rpc('search_user_profile_for_friend_request', {
+          search_term: searchQuery.trim()
         });
 
       if (searchError) {
@@ -417,7 +423,9 @@ export default function Friends() {
         throw searchError;
       }
 
-      if (!foundUserId) {
+      const profileData = foundProfiles?.[0];
+
+      if (!profileData) {
         toast({
           title: "User not found",
           description: "No user found with that username, display name, or phone number",
@@ -425,9 +433,6 @@ export default function Friends() {
         });
         return;
       }
-
-      const profileData = { id: foundUserId };
-
 
       if (profileData.id === user.id) {
         toast({
@@ -470,12 +475,32 @@ export default function Friends() {
         return;
       }
 
+      // Show who the request is going to before sending it
+      setRequestTarget(profileData);
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send friend request. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConfirmSendRequest = async () => {
+    if (!user || !requestTarget) return;
+
+    setIsLoading(true);
+
+    try {
       // Send friend request
       const { error } = await supabase
         .from("friend_requests")
         .insert({
           sender_id: user.id,
-          receiver_id: profileData.id,
+          receiver_id: requestTarget.id,
           status: "pending",
         });
 
@@ -486,7 +511,7 @@ export default function Friends() {
         await supabase.functions.invoke('send-friend-request-notification', {
           body: {
             type: 'request',
-            to_user_id: profileData.id,
+            to_user_id: requestTarget.id,
             from_user_name: profile?.username || profile?.display_name || 'Someone',
           },
         });
@@ -495,6 +520,7 @@ export default function Friends() {
       }
 
       setSearchQuery("");
+      setRequestTarget(null);
       refetch.sentRequests();
       toast({
         title: "Request sent",
@@ -867,7 +893,7 @@ export default function Friends() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-80 max-h-96 overflow-y-auto bg-background">
-                      <div className="p-2 space-y-2">
+                      <div className="p-2 pr-3 space-y-2">
                         {receivedRequests.map((request) => (
                           <div key={request.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                             <Avatar className="h-10 w-10">
@@ -937,7 +963,7 @@ export default function Friends() {
                     {pendingRequestsOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                   </Button>
                   {pendingRequestsOpen && (
-                    <div className="space-y-2">
+                    <div className="space-y-2 pr-2">
                       {sentRequests.map((request) => (
                         <div key={request.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                           <div className="flex items-center gap-3">
@@ -988,7 +1014,7 @@ export default function Friends() {
                         No friends yet. Add someone to get started!
                       </div>
                     ) : (
-                      <div className="space-y-2">
+                      <div className="space-y-2 pr-2">
                         {friends.map(friend => (
                           <div 
                             key={friend.id} 
@@ -1266,6 +1292,32 @@ export default function Friends() {
             <AlertDialogCancel onClick={() => setFriendToRemove(null)}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleRemoveFriend} destructive>
               Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={requestTarget !== null} onOpenChange={(open) => { if (!open) setRequestTarget(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Send Friend Request</AlertDialogTitle>
+            <AlertDialogDescription>
+              Is this the person you want to add?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex flex-col items-center gap-3 py-2">
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={requestTarget?.profile_picture_url || undefined} />
+              <AvatarFallback className="text-2xl">
+                {(requestTarget?.username || requestTarget?.display_name || 'U').substring(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <p className="font-medium text-lg">{requestTarget?.username || requestTarget?.display_name || 'User'}</p>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setRequestTarget(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmSendRequest} disabled={isLoading}>
+              {isLoading ? "Sending..." : "Send Request"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
