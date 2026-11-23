@@ -298,7 +298,25 @@ All colors MUST be HSL.
 
 .theotokos-sticker,
 .theotokos-sticker:hover {
-  animation: theotokos-shimmer 4s ease-in-out infinite;
+  overflow: hidden;
+  isolation: isolate;
+  animation: theotokos-shimmer 2.8s ease-in-out infinite;
+}
+
+/* A soft band of golden light sweeps across her sticker between pulses. */
+.theotokos-sticker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, hsl(var(--theotokos-gold) / 0.28) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: theotokos-sheen 4.2s ease-in-out infinite;
+}
+
+@keyframes theotokos-sheen {
+  0% { transform: translateX(-120%); }
+  55%, 100% { transform: translateX(120%); }
 }
 
 .theotokos-name-tag {
@@ -318,10 +336,12 @@ All colors MUST be HSL.
 
 @keyframes theotokos-shimmer {
   0%, 100% {
-    box-shadow: 0 0 14px 3px hsl(var(--theotokos-gold) / 0.4), 0 0 28px 8px hsl(var(--theotokos-gold) / 0.18);
+    border-color: hsl(var(--theotokos-gold) / 0.45);
+    box-shadow: 0 0 10px 2px hsl(var(--theotokos-gold) / 0.32), 0 0 22px 6px hsl(var(--theotokos-gold) / 0.14);
   }
   50% {
-    box-shadow: 0 0 20px 6px hsl(var(--theotokos-gold) / 0.62), 0 0 38px 14px hsl(var(--theotokos-gold) / 0.3);
+    border-color: hsl(var(--theotokos-gold) / 0.95);
+    box-shadow: 0 0 0 1px hsl(var(--theotokos-gold) / 0.7), 0 0 24px 8px hsl(var(--theotokos-gold) / 0.7), 0 0 48px 18px hsl(var(--theotokos-gold) / 0.32);
   }
 }
 

@@ -92,7 +92,7 @@ import i_peter_the_aleut from "@/assets/saints/card-icons/peter-the-aleut.jpg.as
 import i_tamar_of_georgia from "@/assets/saints/card-icons/tamar-of-georgia.jpg.asset.json";
 import i_nil_sorsky from "@/assets/saints/card-icons/nil-sorsky.jpg.asset.json";
 import i_george from "@/assets/saints/card-icons/george.jpg.asset.json";
-import i_theotokos from "@/assets/saints/card-icons/theotokos-portrait.jpg.asset.json";
+import i_theotokos from "@/assets/saints/card-icons/theotokos-hodegetria-portrait.jpg.asset.json";
 
 // Card icon for each roster saint (keyed by roster id). To replace an icon, change
 // only its entry here (or save it from /icon-tuner); the card layout is untouched.
@@ -168,7 +168,7 @@ export const SAINT_CARD_ICONS: Record<string, SaintCardIcon> = {
   "tamar-of-georgia": { image_url: i_tamar_of_georgia.url, image_source: "https://commons.wikimedia.org/wiki/File:Tamar_icon_(56).jpg", image_license: "CC BY 2.0", image_attribution: "tomasz przechlewski from Sopot, Poland", focus_x: 30, focus_y: 20, zoom: 3 },
   "nil-sorsky": { image_url: i_nil_sorsky.url, image_source: "https://commons.wikimedia.org/wiki/File:Nil_Sorsky_(20th_c.,_Atheism_museum).jpg", image_license: "Public domain", image_attribution: "Anonymous Russian icon painter (before 1917)Public domain image (according to PD-Russia-expired)", focus_x: 50, focus_y: 40, zoom: 3.5 },
   "george": { image_url: i_george.url, image_source: "https://commons.wikimedia.org/wiki/File:Novgorod_George.jpg", image_license: "Public domain", image_attribution: "AnonymousUnknown author", focus_x: 50, focus_y: 15, zoom: 3 },
-  "theotokos": { image_url: i_theotokos.url, image_source: "https://commons.wikimedia.org/wiki/File:The_Theotokos_Glykofilousa_(16th_century%3B_%D0%91%D0%BE%D0%B3%D0%BE%D1%80%D0%BE%D0%B4%D0%B8%D1%86%D0%B0_%D0%A3%D0%BC%D0%B8%D1%99%D0%B5%D1%9A%D0%B0).jpg", image_license: "Public domain", image_attribution: "Unknown iconographer, 16th-century Glykofilousa (Sweet Kissing) icon", focus_x: 44, focus_y: 42, zoom: 1.35 },
+  "theotokos": { image_url: i_theotokos.url, image_source: "https://commons.wikimedia.org/wiki/File:Odigitriya_Smolenskaya_Dionisiy.jpg", image_license: "Public domain", image_attribution: "Dionisius, Smolensk Hodegetria icon (1482), State Tretyakov Gallery", focus_x: 50, focus_y: 42, zoom: 1.15 },
   "lazar-of-serbia": { image_url: portrait_lazar_of_serbia.url, "image_source": "https://commons.wikimedia.org/wiki/File:Holy_Martyr_Tsar_Lazar,_icon_detail.jpg", "image_license": "CC BY-SA 3.0", "image_attribution": "Unknown iconographer", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "hermogenes-of-moscow": { image_url: portrait_hermogenes_of_moscow.url, "image_source": "https://commons.wikimedia.org/wiki/File:Patriarch_Germogen_icon_(1915).jpg", "image_license": "Public domain", "image_attribution": "Unknown author Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
   "euphemia": { image_url: portrait_euphemia.url, "image_source": "https://commons.wikimedia.org/wiki/File:St_Euphemia.jpg", "image_license": "Public domain", "image_attribution": "Anonymous Unknown author", "focus_x": 50, "focus_y": 50, "zoom": 1},
