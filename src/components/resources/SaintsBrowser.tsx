@@ -213,7 +213,7 @@ function SaintSearchCard({ saint, onSelect, onClearQuery }: { saint: SaintDetail
     return `${label} → ${item.subgroup}`;
   });
   return (
-    <Button variant="ghost" onClick={() => { onClearQuery(); onSelect(saint); }} className="relative h-auto w-full items-start justify-start gap-3 whitespace-normal rounded-lg border border-border p-3 text-left hover:border-primary hover:bg-accent">
+    <Button variant="ghost" onClick={() => { onClearQuery(); onSelect(saint); }} className={`relative h-auto w-full items-start justify-start gap-3 whitespace-normal rounded-lg border border-border p-3 text-left hover:border-primary hover:bg-accent${saint.id === "theotokos" ? " theotokos-sticker" : ""}`}>
       <SaintCardIcon saintId={saint.id} fallbackUrl={saint.iconUrl} className="!h-12 !w-12" />
       <span className="min-w-0 flex-1">
         <span className={`block pe-20 text-sm font-semibold leading-5 break-words${saint.id === "theotokos" ? " theotokos-name-tag" : ""}`}>
