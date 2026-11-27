@@ -5,8 +5,8 @@
 - [ ] Oriental moveable-date offsets (Coptic/Ethiopian 55-day Lent, Nineveh timing) and Armenian Pascha: awaiting owner confirmation.
 # Prayers category browser
 ## Complete prayer display
-- [ ] Ensure every listed prayer has a localized explanation, audit complete saved prayer text and verify reading in every supported language without replacing approved sacred wording.
-- [ ] Restore Monday's Praise of Mary from the most reliable complete online source approved by the owner, with matching translations.
+- [x] Give all 133 prayers explanations in all 17 languages, keeping the nine existing explanations and sacred paragraphs separate. Full-text and explanation readback passed for four representative prayers in every language; Pages mode passed on phone/desktop in English, Arabic and Malayalam; 54 tests pass. No other proven internal omissions found; native-speaker/liturgical certification is not claimed. Installed Apple app needs an updated release.
+- [x] Restore all nine Monday Praise of Mary sections and its fast-day addition from Budge's public-domain 1922 edition, pp. 281–283 (https://archive.org/details/LegendsOfOurLadyMary), approved by the owner, with all 16 translations; preserve every other prayer's sacred text.
 - [x] Audit all 133 prayer boundaries and all 16 dictionaries; restore 159 misplaced paragraphs across 43 prayers and repair escaped-newline translation lookup without rewriting sacred text. Preserve existing historical/doctrinal explanations and saved highlight coordinates. Translation coverage checks pass; independent liturgical-source and native-speaker certification is not claimed.
 - [x] Keep prayer Back on the physical left and pins visible in category and search lists. Signed-in mobile flow confirms one-tap Creed opening, nine complete paragraphs, origins first in Explanation, visible pin and Back at x=16; preview clean.
 ## Profile donor details
