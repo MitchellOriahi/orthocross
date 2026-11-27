@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { countUnreadPendingRequests } from '@/lib/requestNotifications';
 
 export interface Friend {
   id: string;
@@ -118,13 +119,14 @@ const loadReceivedRequestsData = async (userId: string | undefined) => {
       created_at: req.created_at
     }));
 
-    const { count } = await supabase
+    const { data: notifications, error } = await supabase
       .from('friend_request_notifications')
-      .select('*', { count: 'exact', head: true })
+      .select('read, request:friend_requests!inner(id, status)')
       .eq('receiver_id', userId)
       .eq('read', false);
 
-    return { requests, unreadCount: count || 0 };
+    if (error) throw error;
+    return { requests, unreadCount: countUnreadPendingRequests(notifications || []) };
   }
 
   return { requests: [], unreadCount: 0 };

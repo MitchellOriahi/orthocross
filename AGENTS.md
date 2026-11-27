@@ -1,4 +1,5 @@
 # Architecture Rules
+- Request badges count unique unread pending requests, not historical notification rows; viewing group invitations marks their account-scoped records read and updates the shared query cache.
 <!-- LOVABLE:BEGIN -->
 - Persist terminal read-aloud service failures across reloads and stop prefetch/lookahead on failure; this prevents credit/access failures from producing repeated requests or unhandled rejections.
 - Estimate read-aloud word starts from WAV speech regions and follow the playing media clock; Gemini supplies no exact timestamps.

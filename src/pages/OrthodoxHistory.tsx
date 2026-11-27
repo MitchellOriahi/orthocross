@@ -216,9 +216,9 @@ const OrthodoxHistory = () => {
         </Card>
 
         <Tabs value={selectedCampaign} onValueChange={setSelectedCampaign} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-2 h-auto">
+          <TabsList className="history-campaign-tabs grid w-full grid-cols-2 h-auto">
             {historyContent.campaigns.map(c => (
-              <TabsTrigger key={c.id} value={c.id} className="text-xs sm:text-sm whitespace-normal py-2">
+              <TabsTrigger key={c.id} value={c.id} className="min-w-0 text-xs sm:text-sm whitespace-nowrap px-1 sm:px-3 py-2">
                 {c.displayName}
               </TabsTrigger>
             ))}

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useQueryClient } from '@tanstack/react-query';
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, Settings as SettingsIcon, UserPlus, Trophy, Activity, Crown, ChevronDown, ChevronUp, MoreVertical, LogOut, UserMinus, Check, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,27 @@ export default function GroupDetail() {
   const { groupId } = useParams<{ groupId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const userId = user?.id;
+
+  useEffect(() => {
+    if (!userId || !groupId) return;
+    let cancelled = false;
+    const markGroupInvitationsRead = async () => {
+      const { data, error } = await supabase.from('group_invitations')
+        .select('id').eq('invitee_id', userId).eq('group_id', groupId);
+      if (cancelled) return;
+      if (error) { console.error('Failed to load group notification IDs:', error); return; }
+      if (!data?.length) return;
+      const { error: readError } = await supabase.from('group_invitation_notifications')
+        .update({ read: true }).eq('user_id', userId)
+        .in('invitation_id', data.map(invitation => invitation.id)).eq('read', false);
+      if (readError) { console.error('Failed to mark group notifications read:', readError); return; }
+      queryClient.invalidateQueries({ queryKey: ['groupInvitationCount', userId] });
+    };
+    void markGroupInvitationsRead();
+    return () => { cancelled = true; };
+  }, [userId, groupId, queryClient]);
   const { theme } = useTheme();
   const { friends } = useFriendsData(user?.id);
   

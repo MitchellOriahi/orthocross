@@ -208,3 +208,9 @@
 - [x] Wording: owner confirmed King James.
 - [ ] Production backend: apply supabase/migrations/20261122030000_daily_verses_full_year.sql (Mitchel).
 - [ ] Production backend: port drizzle/migrations/0022_accept_group_invitation.sql so group invitations can be accepted in the shipped apps (Mitchel).
+
+## Chapter, History and Friends polish
+- [x] Give chapter stickers 16px scrollbar clearance in both book and chapter lists; signed-in phone check passed.
+- [x] Keep both History campaign titles on one line; phone and desktop checks passed.
+- [x] Count only unique unread pending requests, including splash preloads; mark visible invitations and opened-group notifications read and refresh shared counts. Four regression tests pass; signed-in group opening/readback and notification queries passed. Real acceptance/decline of a new invitation remains untested because this account has no pending group invitations.
+- [x] Center the Create button's icon and label together with a 4px gap; signed-in phone check passed. All 14 focused tests pass and preview is error-free. Installed iPhone changes require a new app build.

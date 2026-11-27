@@ -1,6 +1,7 @@
 import { useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
+import { countUnreadPendingRequests } from '@/lib/requestNotifications';
 import orthodoxCross from '@/assets/orthodox-cross.jpg';
 import orthodoxCrossBlack from '@/assets/orthodox-cross-black-new.png';
 import orthodoxCrossWhite from '@/assets/orthodox-cross-white-new.png';
@@ -124,7 +125,7 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
               .eq('status', 'pending'),
             supabase
               .from('group_invitation_notifications')
-              .select('*', { count: 'exact', head: true })
+              .select('read, request:group_invitations!inner(id, status)')
               .eq('user_id', userId)
               .eq('read', false),
             supabase
@@ -142,7 +143,9 @@ export const AppLoader = ({ children, onAuthReady }: AppLoaderProps) => {
           ]);
 
           // Seed group invitation count cache
-          queryClient.setQueryData(['groupInvitationCount', userId], groupInvCountResult.count || 0);
+          if (!groupInvCountResult.error) {
+            queryClient.setQueryData(['groupInvitationCount', userId], countUnreadPendingRequests(groupInvCountResult.data || []));
+          }
           queryClient.setQueryData(['groupInvitations', userId], (groupInvitationsResult.data || []).map((inv: any) => ({
             id: inv.id,
             group_id: inv.group_id,

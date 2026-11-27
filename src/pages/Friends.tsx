@@ -32,7 +32,7 @@ import { useProfileData } from "@/hooks/useProfileData";
 import { useProfileDonorTier } from "@/hooks/useProfileDonorTier";
 import { useGroupsData } from "@/hooks/useGroupsData";
 import { useQueryClient } from "@tanstack/react-query";
-import type { Friend } from "@/hooks/useFriendsData";
+import type { Friend, ReceivedRequest } from "@/hooks/useFriendsData";
 import { GroupsList } from "@/components/groups/GroupsList";
 import { LeaderboardPodium } from "@/components/LeaderboardPodium";
 
@@ -279,12 +279,19 @@ export default function Friends() {
   const markNotificationsAsRead = async () => {
     if (!user) return;
 
-    await supabase
+    const { error } = await supabase
       .from('friend_request_notifications')
       .update({ read: true })
       .eq('receiver_id', user.id)
       .eq('read', false);
 
+    if (error) {
+      console.error('Failed to mark friend requests as read:', error);
+      return;
+    }
+    queryClient.setQueryData(['receivedRequests', user.id], (previous: { requests: ReceivedRequest[]; unreadCount: number } | undefined) =>
+      previous ? { ...previous, unreadCount: 0 } : previous
+    );
     setUnreadNotificationCount(0);
   };
 

@@ -194,7 +194,7 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated, lo
     ];
 
     return (
-      <div className="space-y-6 max-h-[60vh] overflow-y-auto">
+      <div className="space-y-6 max-h-[60vh] overflow-y-auto pe-4 [scrollbar-gutter:stable]">
         {sections.map((section) => (
           <div key={section.name}>
             <h3 className="text-lg font-semibold mb-3 text-${section.color}-700 dark:text-${section.color}-400">
@@ -260,7 +260,7 @@ export function ChapterMarkingDialog({ open, onOpenChange, onChaptersUpdated, lo
           <h3 className="text-lg font-semibold">{selectedBook.bookName}</h3>
         </div>
         
-        <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2 max-h-[50vh] overflow-y-auto p-2">
+        <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2 max-h-[50vh] overflow-y-auto p-2 pe-4 [scrollbar-gutter:stable]">
           {chapters.map((chapter) => {
             const isCompleted = completedChapters[selectedBook.title]?.has(chapter);
             

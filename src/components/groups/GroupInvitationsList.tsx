@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Check, X, Eye, Users } from "lucide-react";
@@ -14,6 +15,28 @@ interface GroupInvitationsListProps {
 
 export const GroupInvitationsList = ({ invitations, userId, onInvitationHandled }: GroupInvitationsListProps) => {
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+  const invitationIds = invitations.map(invitation => invitation.id).sort().join(',');
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list || !userId || !invitationIds) return;
+    const observer = new IntersectionObserver(async ([entry]) => {
+      if (!entry?.isIntersecting) return;
+      observer.disconnect();
+      const { error } = await supabase.from('group_invitation_notifications')
+        .update({ read: true }).eq('user_id', userId)
+        .in('invitation_id', invitationIds.split(',')).eq('read', false);
+      if (error) {
+        console.error('Failed to mark group invitations as read:', error);
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ['groupInvitationCount', userId] });
+    }, { threshold: 0.25 });
+    observer.observe(list);
+    return () => observer.disconnect();
+  }, [invitationIds, userId, queryClient]);
 
   const handleAccept = async (invitation: GroupInvitation) => {
     setProcessingId(invitation.id);
@@ -44,15 +67,18 @@ export const GroupInvitationsList = ({ invitations, userId, onInvitationHandled 
   const handleDecline = async (invitation: GroupInvitation) => {
     setProcessingId(invitation.id);
     try {
-      await supabase
+      const { error } = await supabase
         .from('group_invitations')
         .update({ status: 'declined' })
-        .eq('id', invitation.id);
+        .eq('id', invitation.id)
+        .eq('invitee_id', userId);
+      if (error) throw error;
 
       // Mark notification as read
       await supabase
         .from('group_invitation_notifications')
         .update({ read: true })
+        .eq('user_id', userId)
         .eq('invitation_id', invitation.id);
 
       toast({
@@ -76,7 +102,7 @@ export const GroupInvitationsList = ({ invitations, userId, onInvitationHandled 
   if (invitations.length === 0) return null;
 
   return (
-    <div className="space-y-2">
+    <div ref={listRef} className="space-y-2">
       <h4 className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
         <Users className="h-4 w-4" />
         Group Invitations ({invitations.length})

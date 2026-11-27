@@ -132,7 +132,7 @@ export const GroupsList = ({
               size="sm"
               onClick={() => setShowCreateDialog(true)}
             >
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="h-4 w-4" />
               Create
             </Button>
           </div>

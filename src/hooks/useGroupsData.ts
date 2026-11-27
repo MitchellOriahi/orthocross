@@ -1,4 +1,6 @@
 import { currentMonthKey } from '@/lib/month';
+import { useEffect } from 'react';
+import { countUnreadPendingRequests } from '@/lib/requestNotifications';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -240,36 +242,51 @@ const loadGroupJoinRequests = async (groupId: string): Promise<GroupJoinRequest[
 };
 
 const loadUnreadInvitationCount = async (userId: string): Promise<number> => {
-  const { count } = await supabase
+  const { data, error } = await supabase
     .from('group_invitation_notifications')
-    .select('*', { count: 'exact', head: true })
+    .select('read, request:group_invitations!inner(id, status)')
     .eq('user_id', userId)
     .eq('read', false);
 
-  return count || 0;
+  if (error) throw error;
+  return countUnreadPendingRequests(data || []);
 };
 
 export const useGroupsData = (userId: string | undefined) => {
   const queryClient = useQueryClient();
   const currentMonth = currentMonthKey();
 
+  useEffect(() => {
+    if (!userId) return;
+    const refresh = () => {
+      queryClient.invalidateQueries({ queryKey: ['groupInvitationCount', userId] });
+      queryClient.invalidateQueries({ queryKey: ['groupInvitations', userId] });
+      queryClient.invalidateQueries({ queryKey: ['userGroups', userId] });
+    };
+    const channel = supabase.channel(`group-badges-${userId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'group_invitations', filter: `invitee_id=eq.${userId}` }, refresh)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'group_invitation_notifications', filter: `user_id=eq.${userId}` }, refresh)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId, queryClient]);
+
   const { data: groups = [], isLoading: groupsLoading, refetch: refetchGroups } = useQuery({
     queryKey: ['userGroups', userId],
-    queryFn: () => loadUserGroups(userId!),
+    queryFn: () => userId ? loadUserGroups(userId) : Promise.resolve([]),
     enabled: !!userId,
     staleTime: 1000 * 60
   });
 
   const { data: invitations = [], isLoading: invitationsLoading, refetch: refetchInvitations } = useQuery({
     queryKey: ['groupInvitations', userId],
-    queryFn: () => loadGroupInvitations(userId!),
+    queryFn: () => userId ? loadGroupInvitations(userId) : Promise.resolve([]),
     enabled: !!userId,
     staleTime: 1000 * 60
   });
 
   const { data: unreadInvitationCount = 0, refetch: refetchUnreadCount } = useQuery({
     queryKey: ['groupInvitationCount', userId],
-    queryFn: () => loadUnreadInvitationCount(userId!),
+    queryFn: () => userId ? loadUnreadInvitationCount(userId) : Promise.resolve(0),
     enabled: !!userId,
     staleTime: 1000 * 30
   });

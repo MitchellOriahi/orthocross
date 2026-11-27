@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { isNavigationTap, trackNavigationMovement, type NavigationTap } from "@/lib/navigationTap";
+import { countUnreadPendingRequests } from '@/lib/requestNotifications';
 
 export const BottomNavigation = () => {
   const navigate = useNavigate();
@@ -219,13 +220,14 @@ export const BottomNavigation = () => {
           created_at: req.created_at
         }));
 
-        const { count } = await supabase
+        const { data: notifications, error } = await supabase
           .from('friend_request_notifications')
-          .select('*', { count: 'exact', head: true })
+          .select('read, request:friend_requests!inner(id, status)')
           .eq('receiver_id', user.id)
           .eq('read', false);
 
-        return { requests, unreadCount: count || 0 };
+        if (error) throw error;
+        return { requests, unreadCount: countUnreadPendingRequests(notifications || []) };
       }
       return { requests: [], unreadCount: 0 };
     };
