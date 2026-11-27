@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getPrayerSections, translatePrayerParagraph } from "@/data/prayerSections";
+import { getAddedPrayerExplanation } from "@/data/prayerExplanationContexts";
 
 interface PrayerDetailViewProps {
   name: string;
@@ -33,7 +34,9 @@ export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawC
   const name = tr(rawName);
   const title = tr(rawTitle);
   const sections = getPrayerSections(prayerId, rawContent);
-  const [isExplanationOpen, setIsExplanationOpen] = useState(false);
+  const [isExplanationOpen, setIsExplanationOpen] = useState(true);
+  const readerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { readerRef.current?.scrollTo({ top: 0 }); }, [prayerId]);
   const [viewMode, setViewMode] = useState<'paginated' | 'scroll'>(() => {
     // Load saved preference from localStorage
     const saved = localStorage.getItem('prayerExplanationViewMode');
@@ -46,12 +49,14 @@ export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawC
   }, [viewMode]);
 
   const prayerParagraphs = sections.prayer.map(paragraph => translatePrayerParagraph(paragraph, tr));
-  const explanationContent = sections.explanation.map(paragraph => tr(paragraph));
+  const explanationContent = sections.explanation.length
+    ? sections.explanation.map(paragraph => translatePrayerParagraph(paragraph, tr))
+    : getAddedPrayerExplanation(prayerId, tr);
   const sentenceOffset = rawContent.slice(1, 1 + sections.originalExplanationOffset)
     .map(paragraph => tr(paragraph)).reduce((count, paragraph) => count + paragraph.split(/(?<=[.!?])\s+/).filter(s => s.trim()).length, 0);
 
   return (
-    <div className="fixed inset-0 z-50 bg-background overflow-y-auto overscroll-contain">
+    <div ref={readerRef} className="fixed inset-0 z-50 bg-background overflow-y-auto overscroll-contain">
       <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-50 safe-top">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-start" dir="ltr">
@@ -63,7 +68,7 @@ export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawC
         </div>
       </header>
 
-      <main className="container mx-auto px-4 pt-8 pb-[calc(6rem+env(safe-area-inset-bottom))] max-w-4xl">
+      <main className="container mx-auto px-4 pt-8 pb-[calc(var(--bottom-nav-height,6rem)+2rem+env(safe-area-inset-bottom))] max-w-4xl">
         <div className="mb-8">
           <div className="flex flex-col items-center justify-center text-center">
             <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground break-words">
@@ -116,6 +121,7 @@ export const PrayerDetailView = ({ name: rawName, title: rawTitle, content: rawC
                 {/* Explanation Content */}
                 <div className="p-4">
                   <ExplanationView 
+                    key={prayerId}
                     content={explanationContent} 
                     viewMode={viewMode}
                     prayerId={prayerId}
@@ -290,7 +296,7 @@ const ExplanationView = ({ content, viewMode, prayerId, sentenceOffset }: Explan
           </div>
         </div>
 
-        <div className="prose dark:prose-invert max-w-none">
+        <div className="prose dark:prose-invert max-w-none" data-no-translate>
           {content.map((paragraph, paragraphIndex) => {
             const sentences = paragraph.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
             const startSentenceIndex = getSentencesInParagraph(paragraphIndex);
@@ -367,6 +373,7 @@ const ExplanationView = ({ content, viewMode, prayerId, sentenceOffset }: Explan
       </div>
 
       <div 
+        data-no-translate
         ref={contentRef}
         role="region"
         aria-label="Prayer explanation page"

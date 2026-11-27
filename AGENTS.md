@@ -1,4 +1,5 @@
 # Architecture Rules
+- Keep added prayer context separate from sacred text to preserve wording and highlight positions.
 - Request badges count unique unread pending requests, not historical notification rows; viewing group invitations marks their account-scoped records read and updates the shared query cache.
 <!-- LOVABLE:BEGIN -->
 - Persist terminal read-aloud service failures across reloads and stop prefetch/lookahead on failure; this prevents credit/access failures from producing repeated requests or unhandled rejections.

@@ -1,4 +1,5 @@
 import type { PrayerDetail } from "./prayersContent";
+import { completeMondayMaryPrayer } from "./prayerMondayMary";
 
 // Curated verified prayers. Each text is copied from the published church or Scripture source named in its title.
 export const prayerAdditions: PrayerDetail[] = [
@@ -1249,14 +1250,7 @@ export const prayerAdditions: PrayerDetail[] = [
     "name": "Praise of Mary for Monday",
     "title": "Wudase Maryam (Book of the Praises of Mary) · Ethiopian and Eritrean Orthodox Church, trans. E. A. Wallis Budge",
     "tradition": "Oriental",
-    "content": [
-      "God wished to set free Adam, who was sad at heart and sorrowful, and in the greatness of His compassion and mercy to bring him back to the state wherein he was formerly. He rose up in flesh of the Virgin without the seed of man. He came, He saved us.",
-      "Jesus Christ, the Word Who became incarnate, and He dwelt with us, and we saw His glory like the glory of the Only-begotten of His Father; He hath been pleased to show compassion upon us. He hath appeared.",
-      "Rejoice and be glad, O race of the children of men, for God hath loved the world, and given His only Son that all who believe in Him may have everlasting life. The Most High hath sent unto us His arm. He hath appeared.",
-      "Rejoice, O Bethlehem, the town of the Prophets, for in thee was born Christ, the second Adam, so that He might bring the first Adam from the earth into the Garden, and destroy the doom of death. Where sin abounded there the grace of God abounded likewise. He hath appeared.",
-      "Let all souls of men rejoice and be glad with the angels, and let them praise Christ, the King, and cry out and say, “Glory to God in the heavens, and peace on the earth, and His good will to men.” He hath abolished the things of old, and overthrown the plot of the Enemy, and set them free — He Who was born for us in the city of David, our Redeemer, Jesus Christ hath done this. He hath appeared.",
-      "Thou Light, Who in truth illuminest all men who dwell in the world, because of Thy love for man Thou hast come into the world. All created things rejoiced at Thy coming, because Thou didst deliver Adam from his error, and didst set free Eve from the suffering of death, and hast given unto us the soul of prophecy. We bless Thee with Thine angels."
-    ]
+    "content": completeMondayMaryPrayer
   },
   {
     "id": "god-grant-you-many-years",
