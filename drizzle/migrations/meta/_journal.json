@@ -169,6 +169,20 @@
       "when": 1795391708789,
       "tag": "0023_friend_request_search_profile",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1795822870558,
+      "tag": "0024_allow_invitee_group_member_insert",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1795822929639,
+      "tag": "0025_lock_group_invitation_triggers",
+      "breakpoints": true
     }
   ]
 }

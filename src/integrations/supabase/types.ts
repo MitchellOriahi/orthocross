@@ -1881,6 +1881,10 @@ export type Database = {
           verse_text: string
         }[]
       }
+      has_active_group_invitation: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

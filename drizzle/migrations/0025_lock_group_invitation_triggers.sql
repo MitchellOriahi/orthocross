@@ -1,0 +1,2 @@
+REVOKE ALL ON FUNCTION public.cleanup_group_invitation_on_member_remove() FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.guard_group_invitation_update() FROM PUBLIC, anon, authenticated;

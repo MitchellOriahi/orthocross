@@ -209,7 +209,7 @@
 - [x] Expand Verse of the Day from 8 to 537 uplifting verses (King James) so every day of the year differs; Board, 8 AM push and widgets share the list. Tests pass; backend and app agree on this week's verses.
 - [x] Wording: owner confirmed King James.
 - [ ] Production backend: apply supabase/migrations/20261122030000_daily_verses_full_year.sql (Mitchel).
-- [ ] Production backend: port drizzle/migrations/0022_accept_group_invitation.sql so group invitations can be accepted in the shipped apps (Mitchel).
+- [ ] Production backend: apply `0024_allow_invitee_group_member_insert.sql` and `0025_lock_group_invitation_triggers.sql` so already-shipped iPhone/web apps (which insert into `group_members` directly instead of calling `accept_group_invitation`) can accept group invitations immediately.
 
 ## Chapter, History and Friends polish
 - [x] Give chapter stickers 16px scrollbar clearance in both book and chapter lists; signed-in phone check passed.
