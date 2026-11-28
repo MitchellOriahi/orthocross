@@ -1,4 +1,5 @@
 # iOS home screen widgets
+- [x] Allow creators to delete their opened group before three members join, with confirmation and refreshed Friends list. Eight tests pass; signed-in one-member create/cancel/reload/delete flow passed, deleted record absent, no runtime errors and preview clean. Installed iPhone needs an updated release.
 - [x] Prepare data and secure access for four widgets (streak; verse; verse + streak; streak + verse + today's observance) with light/dark colors. Widget/calendar/verse tests pass; signed-in checks: widget key issue -> data -> revoke -> 401, Tokyo time zone override, Old Calendar choice survives reload, Board shows the shared verse.
 - [ ] Native WidgetKit extension + OrthoCrossWidget plugin: built in Xcode (see IOS-WIDGETS.md).
 - [ ] Production backend: port the widget database change and deploy widget-data/widget-token (Mitchel).

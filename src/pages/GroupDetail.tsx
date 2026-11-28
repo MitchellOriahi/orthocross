@@ -11,6 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGroupDetail, GroupMember, GroupActivity, GroupJoinRequest } from "@/hooks/useGroupsData";
+import { canDeleteCreatedGroup } from "@/lib/groupDeletion";
 import { useFriendsData } from "@/hooks/useFriendsData";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -54,12 +55,13 @@ export default function GroupDetail() {
   
   const { members, activities, joinRequests, isLoading, refetch } = useGroupDetail(groupId, user?.id);
   
-  const [group, setGroup] = useState<{ name: string; description: string | null; is_public: boolean; avatar_url?: string | null } | null>(null);
+  const [group, setGroup] = useState<{ name: string; description: string | null; is_public: boolean; created_by: string; avatar_url?: string | null } | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deletingGroup, setDeletingGroup] = useState(false);
   const [activityOpen, setActivityOpen] = useState(true);
   const [rankingOpen, setRankingOpen] = useState(true);
   const [nudgedToday, setNudgedToday] = useState<Set<string>>(new Set());
@@ -94,7 +96,7 @@ export default function GroupDetail() {
     const loadGroupInfo = async () => {
       const { data } = await supabase
         .from('groups')
-        .select('name, description, is_public, avatar_url')
+        .select('name, description, is_public, created_by, avatar_url')
         .eq('id', groupId)
         .single();
       
@@ -113,6 +115,7 @@ export default function GroupDetail() {
 
   const isActive = members.length >= 3;
   const canManage = currentUserRole === 'owner' || currentUserRole === 'admin';
+  const canDelete = canDeleteCreatedGroup(userId, group);
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -171,15 +174,24 @@ export default function GroupDetail() {
   };
 
   const handleDeleteGroup = async () => {
-    if (!user || !groupId) return;
+    if (!user || !groupId || !canDelete || !showDeleteDialog || deletingGroup) return;
 
+    setDeletingGroup(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('groups')
         .delete()
-        .eq('id', groupId);
+        .eq('id', groupId)
+        .eq('created_by', user.id)
+        .select('id');
 
       if (error) throw error;
+      if (data?.length !== 1) throw new Error('Group was not deleted');
+
+      await queryClient.invalidateQueries({ queryKey: ['userGroups', user.id] });
+      queryClient.removeQueries({ queryKey: ['groupMembers', groupId] });
+      queryClient.removeQueries({ queryKey: ['groupActivities', groupId] });
+      queryClient.removeQueries({ queryKey: ['groupJoinRequests', groupId] });
 
       toast({
         title: "Group deleted",
@@ -187,6 +199,7 @@ export default function GroupDetail() {
       });
 
       navigate('/friends');
+      setShowDeleteDialog(false);
     } catch (error) {
       console.error("Error deleting group:", error);
       toast({
@@ -194,8 +207,9 @@ export default function GroupDetail() {
         description: "Failed to delete group",
         variant: "destructive"
       });
+    } finally {
+      setDeletingGroup(false);
     }
-    setShowDeleteDialog(false);
   };
 
   const handleAcceptJoinRequest = async (request: GroupJoinRequest) => {
@@ -355,7 +369,7 @@ export default function GroupDetail() {
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" aria-label="Group settings">
                     <SettingsIcon className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -374,7 +388,7 @@ export default function GroupDetail() {
                       Leave Group
                     </DropdownMenuItem>
                   )}
-                  {currentUserRole === 'owner' && (
+                  {canDelete && (
                     <DropdownMenuItem 
                       className="text-destructive focus:text-destructive"
                       onClick={() => setShowDeleteDialog(true)}
@@ -450,6 +464,16 @@ export default function GroupDetail() {
               <UserPlus className="h-4 w-4" />
               Invite Friends to Group
             </Button>
+            {canDelete && (
+              <Button
+                variant="ghost"
+                className="mt-2 w-full gap-2 text-destructive hover:text-destructive"
+                onClick={() => setShowDeleteDialog(true)}
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete Group
+              </Button>
+            )}
           </CardContent>
         </Card>
 
@@ -589,7 +613,7 @@ export default function GroupDetail() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <AlertDialog open={showDeleteDialog} onOpenChange={(open) => { if (!deletingGroup) setShowDeleteDialog(open); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Group</AlertDialogTitle>
@@ -598,8 +622,8 @@ export default function GroupDetail() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteGroup} destructive>
+            <AlertDialogCancel disabled={deletingGroup}>Cancel</AlertDialogCancel>
+            <AlertDialogAction disabled={deletingGroup} onClick={(event) => { event.preventDefault(); void handleDeleteGroup(); }} destructive>
               Delete Group
             </AlertDialogAction>
           </AlertDialogFooter>
