@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Users, Globe, Lock, UserPlus } from "lucide-react";
@@ -20,6 +21,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
   const [searchResults, setSearchResults] = useState<Group[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [requestingGroupId, setRequestingGroupId] = useState<string | null>(null);
+  const [requestSent, setRequestSent] = useState(false);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -49,15 +51,18 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
   };
 
   const handleRequestToJoin = async (groupId: string) => {
+    if (requestingGroupId) return;
     setRequestingGroupId(groupId);
     try {
       // Check if request already exists
-      const { data: existingRequest } = await supabase
+      const { data: existingRequest, error: lookupError } = await supabase
         .from('group_join_requests')
         .select('id')
         .eq('group_id', groupId)
         .eq('user_id', userId)
         .maybeSingle();
+
+      if (lookupError) throw lookupError;
 
       if (existingRequest) {
         toast({
@@ -77,10 +82,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
 
       if (error) throw error;
 
-      toast({
-        title: "Request sent!",
-        description: "Your request to join has been sent to the group admins"
-      });
+      setRequestSent(true);
       
       // Remove from search results
       setSearchResults(prev => prev.filter(g => g.id !== groupId));
@@ -98,6 +100,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[90vw] sm:max-w-md max-h-[70vh] overflow-hidden flex flex-col rounded-2xl">
         <DialogHeader>
@@ -152,7 +155,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
                       size="sm"
                       variant="outline"
                       onClick={() => handleRequestToJoin(group.id)}
-                      disabled={requestingGroupId === group.id}
+                      disabled={requestingGroupId !== null}
                     >
                       <UserPlus className="h-4 w-4 mr-1" />
                       {requestingGroupId === group.id ? "..." : "Join"}
@@ -170,5 +173,19 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
         </div>
       </DialogContent>
     </Dialog>
+    <AlertDialog open={requestSent} onOpenChange={setRequestSent}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Request sent!</AlertDialogTitle>
+          <AlertDialogDescription>
+            Your request to join has been sent to the group admins
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogAction>OK</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 };
