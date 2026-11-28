@@ -1,5 +1,6 @@
 # iOS home screen widgets
-- [ ] Enforce original-creator-only group deletion and show a dismissible confirmation after sending a group join request by name.
+- [x] Enforce original-creator-only group deletion and show a dismissible confirmation after sending a group join request by name. Three deletion tests pass; signed-in name search/Join/confirmation/OK and pending-request readback verified; noncreator deletion blocked, creator immutable, temporary group deleted by its creator.
+- [ ] Production backend: apply `0027_restrict_group_deletion_to_creator.sql` on the separate live database; installed iPhone needs a new release for the request-sent pop-up.
 - [x] Allow creators to delete their opened group before three members join, with confirmation and refreshed Friends list. Eight tests pass; signed-in one-member create/cancel/reload/delete flow passed, deleted record absent, no runtime errors and preview clean. Installed iPhone needs an updated release.
 - [x] Prepare data and secure access for four widgets (streak; verse; verse + streak; streak + verse + today's observance) with light/dark colors. Widget/calendar/verse tests pass; signed-in checks: widget key issue -> data -> revoke -> 401, Tokyo time zone override, Old Calendar choice survives reload, Board shows the shared verse.
 - [ ] Native WidgetKit extension + OrthoCrossWidget plugin: built in Xcode (see IOS-WIDGETS.md).

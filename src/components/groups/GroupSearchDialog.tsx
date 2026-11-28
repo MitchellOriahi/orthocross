@@ -101,7 +101,7 @@ export const GroupSearchDialog = ({ open, onOpenChange, userId, userGroupIds, on
 
   return (
     <>
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open && !requestSent} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[90vw] sm:max-w-md max-h-[70vh] overflow-hidden flex flex-col rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
