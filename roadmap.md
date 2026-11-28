@@ -1,3 +1,6 @@
+# Brief notification pop-ups
+- [x] Apply three-second timing to one sentence or less and six seconds to longer notifications; allow direct mobile swiping without an X. Four rule tests and both live notification hosts passed timing and swipe checks, with no runtime errors.
+- [ ] Installed iPhone behavior: requires an updated app release; native-device gestures cannot be tested here.
 # iOS home screen widgets
 - [x] Enforce original-creator-only group deletion and show a dismissible confirmation after sending a group join request by name. Three deletion tests pass; signed-in name search/Join/confirmation/OK and pending-request readback verified; noncreator deletion blocked, creator immutable, temporary group deleted by its creator.
 - [ ] Production backend: apply `0027_restrict_group_deletion_to_creator.sql` on the separate live database; installed iPhone needs a new release for the request-sent pop-up.

@@ -1,20 +1,24 @@
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast } from "sonner";
+import { useNotificationPopups } from "@/hooks/useNotificationPopups";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme();
+  useNotificationPopups();
 
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       position="top-center"
-      duration={1000}
+      duration={Infinity}
+      expand
+      closeButton={false}
       offset={{ top: "calc(env(safe-area-inset-top) + 1rem)" }}
       mobileOffset={{ top: "calc(env(safe-area-inset-top) + 0.75rem)" }}
-      swipeDirections={["top", "left", "right"]}
+      swipeDirections={["top", "bottom", "left", "right"]}
       toastOptions={{
         classNames: {
           toast:
