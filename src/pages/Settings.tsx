@@ -303,7 +303,7 @@ const Settings = () => {
             <CardContent className="space-y-6">
               {/* Music Toggle */}
               <div className="flex items-center justify-between">
-                <div className="space-y-1">
+                <div className="space-y-1 pr-4">
                   <p className="font-medium">Enable Music</p>
                   <p className="text-sm text-muted-foreground">
                     Play relaxing background music while using the app
