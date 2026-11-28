@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, Settings as SettingsIcon, UserPlus, Trophy, Activity, Crown, ChevronDown, ChevronUp, MoreVertical, LogOut, UserMinus, Check, X, Trash2 } from "lucide-react";
+import { ArrowLeft, Users, MoreHorizontal, UserPlus, Trophy, Activity, Crown, ChevronDown, ChevronUp, MoreVertical, LogOut, UserMinus, Check, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -369,8 +369,8 @@ export default function GroupDetail() {
               <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" aria-label="Group settings">
-                    <SettingsIcon className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" aria-label="Group settings" title="Group settings">
+                    <MoreHorizontal className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-background">
@@ -464,16 +464,6 @@ export default function GroupDetail() {
               <UserPlus className="h-4 w-4" />
               Invite Friends to Group
             </Button>
-            {canDelete && (
-              <Button
-                variant="ghost"
-                className="mt-2 w-full gap-2 text-destructive hover:text-destructive"
-                onClick={() => setShowDeleteDialog(true)}
-              >
-                <Trash2 className="h-4 w-4" />
-                Delete Group
-              </Button>
-            )}
           </CardContent>
         </Card>
 
