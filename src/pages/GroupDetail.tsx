@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, MoreHorizontal, UserPlus, Trophy, Activity, Crown, ChevronDown, ChevronUp, MoreVertical, LogOut, UserMinus, Check, X } from "lucide-react";
+import { ArrowLeft, Users, MoreHorizontal, UserPlus, Trophy, Activity, Crown, ChevronDown, ChevronUp, MoreVertical, LogOut, UserMinus, Check, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -472,11 +472,28 @@ export default function GroupDetail() {
 
           <TabsContent value="ranking" className="space-y-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Monthly Rankings</CardTitle>
-                <CardDescription>
-                  {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                </CardDescription>
+              <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
+                <div className="min-w-0 space-y-1.5">
+                  <CardTitle>Monthly Rankings</CardTitle>
+                  <CardDescription>
+                    {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </CardDescription>
+                </div>
+                {canDelete && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="shrink-0 text-muted-foreground hover:text-destructive" aria-label="Group deletion options" title="Delete Group">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setShowDeleteDialog(true)}>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete Group
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </CardHeader>
               <CardContent>
                 {!isActive ? (
@@ -565,17 +582,6 @@ export default function GroupDetail() {
           </TabsContent>
         </Tabs>
 
-        {canDelete && (
-          <div className="pt-1 text-center">
-            <button
-              type="button"
-              onClick={() => setShowDeleteDialog(true)}
-              className="text-xs text-muted-foreground/70 underline-offset-4 transition-colors hover:text-destructive hover:underline"
-            >
-              Delete Group
-            </button>
-          </div>
-        )}
       </main>
 
       <GroupInviteDialog
