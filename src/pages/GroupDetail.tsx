@@ -512,7 +512,11 @@ export default function GroupDetail() {
                           totalPoints={member.total_points}
                           className={canManage ? 'pr-12' : undefined}
                           pointsTag={
-                            <button
+                            <span className="grid shrink-0 items-center">
+                              <span aria-hidden="true" className="invisible col-start-1 row-start-1 border px-2 py-0.5 text-xs font-medium whitespace-nowrap">Nudge</span>
+                              <span aria-hidden="true" className="invisible col-start-1 row-start-1 border px-2 py-0.5 text-xs font-medium whitespace-nowrap">Nudged</span>
+                            <Button
+                              variant="ghost"
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -523,7 +527,7 @@ export default function GroupDetail() {
                                 handleNudge(member.user_id, member.username);
                               }}
                               aria-label={`Nudge ${member.username} about their streak`}
-                              className={`text-xs px-2 py-0.5 rounded-full border shrink-0 transition-all ${
+                              className={`col-start-1 row-start-1 justify-self-start h-auto min-h-0 text-xs px-2 py-0.5 rounded-full border shrink-0 transition-[color,background-color,box-shadow,opacity] ${
                                 index === 0 ? 'bg-[hsl(var(--podium-gold)/0.15)] text-[hsl(var(--podium-gold))] border-[hsl(var(--podium-gold)/0.4)] hover:shadow-[0_0_10px_2px_hsl(var(--podium-gold)/0.5)]'
                                 : index === 1 ? 'bg-[hsl(var(--podium-silver)/0.15)] text-[hsl(var(--podium-silver))] border-[hsl(var(--podium-silver)/0.4)] hover:shadow-[0_0_10px_2px_hsl(var(--podium-silver)/0.5)]'
                                 : index === 2 ? 'bg-[hsl(var(--podium-bronze)/0.15)] text-[hsl(var(--podium-bronze))] border-[hsl(var(--podium-bronze)/0.4)] hover:shadow-[0_0_10px_2px_hsl(var(--podium-bronze)/0.5)]'
@@ -531,7 +535,8 @@ export default function GroupDetail() {
                               } ${nudgedToday.has(member.user_id) ? 'opacity-50' : ''}`}
                             >
                               {nudgedToday.has(member.user_id) ? 'Nudged' : 'Nudge'}
-                            </button>
+                            </Button>
+                            </span>
                           }
                           onClick={() => navigate(`/friends/${member.user_id}`)}
                         />

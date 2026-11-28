@@ -94,10 +94,12 @@ export const GroupMemberBadge = ({
         <AvatarImage src={profilePictureUrl || undefined} />
         <AvatarFallback className={avatarStyles.disc}>{username?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
       </Avatar>
-      <div className="flex items-center gap-2 flex-1 min-w-0">
-        <span className="font-medium truncate">{username}</span>
+      <div className={cn("flex items-center gap-2 flex-1 min-w-0", isTopThree && "min-w-6")}>
+        <span className="min-w-0 font-medium truncate">{username}</span>
         {isTopThree && (
-          <GroupCrown rank={rank as 1 | 2 | 3} consecutiveCount={consecutiveCount} size="sm" />
+          <span className="shrink-0 inline-flex">
+            <GroupCrown rank={rank as 1 | 2 | 3} consecutiveCount={consecutiveCount} size="sm" />
+          </span>
         )}
       </div>
       {pointsTag}
