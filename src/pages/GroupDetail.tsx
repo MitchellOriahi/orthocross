@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, MoreHorizontal, UserPlus, Trophy, Activity, Crown, ChevronDown, ChevronUp, MoreVertical, LogOut, UserMinus, Check, X, Trash2 } from "lucide-react";
+import { ArrowLeft, Users, MoreHorizontal, UserPlus, Trophy, Activity, Crown, ChevronDown, ChevronUp, MoreVertical, LogOut, UserMinus, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -388,15 +388,6 @@ export default function GroupDetail() {
                       Leave Group
                     </DropdownMenuItem>
                   )}
-                  {canDelete && (
-                    <DropdownMenuItem 
-                      className="text-destructive focus:text-destructive"
-                      onClick={() => setShowDeleteDialog(true)}
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Delete Group
-                    </DropdownMenuItem>
-                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </nav>
@@ -573,6 +564,18 @@ export default function GroupDetail() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {canDelete && (
+          <div className="pt-1 text-center">
+            <button
+              type="button"
+              onClick={() => setShowDeleteDialog(true)}
+              className="text-xs text-muted-foreground/70 underline-offset-4 transition-colors hover:text-destructive hover:underline"
+            >
+              Delete Group
+            </button>
+          </div>
+        )}
       </main>
 
       <GroupInviteDialog
