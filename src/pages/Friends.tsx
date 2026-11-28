@@ -68,6 +68,7 @@ export default function Friends() {
 
   // Coalesce/throttle leaderboard reloads to prevent rapid-fire fetch loops
   const leaderboardFetchRef = useRef({ inFlight: false, pending: false, lastRun: 0 });
+  const receivedRequestsListRef = useRef<HTMLDivElement>(null);
   
   // Use the friends data hook
   const { 
@@ -155,6 +156,20 @@ export default function Friends() {
   useEffect(() => {
     setUnreadNotificationCount(hookUnreadCount);
   }, [hookUnreadCount]);
+
+  const receivedRequestIds = receivedRequests.map((req) => req.id).sort().join(',');
+
+  useEffect(() => {
+    const list = receivedRequestsListRef.current;
+    if (!list || !userId || !receivedRequestIds || unreadNotificationCount <= 0) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      observer.disconnect();
+      void markNotificationsAsRead();
+    }, { threshold: 0.25 });
+    observer.observe(list);
+    return () => observer.disconnect();
+  }, [receivedRequestIds, unreadNotificationCount, userId]);
 
   useEffect(() => {
     if (userId) {
@@ -274,6 +289,19 @@ export default function Friends() {
       supabase.removeChannel(reactionsChannel);
       supabase.removeChannel(streaksChannel);
     };
+  }, [userId, queryClient]);
+
+  useEffect(() => {
+    if (!userId) return;
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== 'visible') return;
+      queryClient.invalidateQueries({ queryKey: ['receivedRequests', userId] });
+      queryClient.invalidateQueries({ queryKey: ['sentRequests', userId] });
+      queryClient.invalidateQueries({ queryKey: ['friends', userId] });
+      queryClient.invalidateQueries({ queryKey: ['groupInvitations', userId] });
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [userId, queryClient]);
 
   const markNotificationsAsRead = async () => {
@@ -868,9 +896,9 @@ export default function Friends() {
           <TabsTrigger value="friends">
             <Users className="h-4 w-4 mr-2" />
             Friends
-            {groupUnreadCount > 0 && (
+            {unreadNotificationCount + groupUnreadCount > 0 && (
               <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
-                {groupUnreadCount}
+                {unreadNotificationCount + groupUnreadCount}
               </Badge>
             )}
           </TabsTrigger>
@@ -888,9 +916,9 @@ export default function Friends() {
                   <CardTitle>Your Friends</CardTitle>
                 </div>
                 {receivedRequests.length > 0 && (
-                  <DropdownMenu>
+                  <DropdownMenu onOpenChange={(open) => { if (open) void markNotificationsAsRead(); }}>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="gap-2" onClick={() => markNotificationsAsRead()}>
+                      <Button variant="outline" className="gap-2">
                         Requests
                         {unreadNotificationCount > 0 && (
                           <Badge variant="destructive" className="ml-1">
@@ -943,6 +971,53 @@ export default function Friends() {
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
+              {receivedRequests.length > 0 && (
+                <div ref={receivedRequestsListRef} className="space-y-2">
+                  <h3 className="text-sm font-semibold text-muted-foreground">
+                    Friend Requests ({receivedRequests.length})
+                  </h3>
+                  <div className="space-y-2 pr-2">
+                    {receivedRequests.map((request) => (
+                      <div key={request.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                        <Avatar className="h-10 w-10">
+                          {request.profile_picture_url ? (
+                            <AvatarImage src={request.profile_picture_url} />
+                          ) : (
+                            <AvatarFallback className="bg-muted">
+                              <Users className="h-5 w-5 text-muted-foreground" />
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">{request.username}</p>
+                          <p className="text-xs text-muted-foreground">wants to be friends</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            aria-label={`Accept friend request from ${request.username}`}
+                            className="h-11 w-11 text-green-600 hover:text-green-700 hover:bg-green-100 dark:hover:bg-green-900/20"
+                            onClick={() => handleAcceptRequest(request.id)}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            aria-label={`Decline friend request from ${request.username}`}
+                            className="h-11 w-11 text-destructive hover:bg-destructive/10"
+                            onClick={() => handleDenyRequest(request.id)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center gap-2">
                 <Input
                   type="text"

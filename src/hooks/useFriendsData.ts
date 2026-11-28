@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { countUnreadPendingRequests } from '@/lib/requestNotifications';
+import {
+  resolveReceivedRequests,
+  resolveUnreadRequestCount,
+} from '@/lib/requestNotifications';
 
 export interface Friend {
   id: string;
@@ -104,32 +107,52 @@ const loadSentRequestsData = async (userId: string | undefined) => {
   return [];
 };
 
-const loadReceivedRequestsData = async (userId: string | undefined) => {
+export const loadReceivedRequestsData = async (userId: string | undefined) => {
   if (!userId) return { requests: [], unreadCount: 0 };
 
-  const { data: requestsData } = await supabase
+  const { data: requestsData, error: rpcError } = await supabase
     .rpc('get_received_request_profiles');
 
-  if (requestsData) {
-    const requests = requestsData.map(req => ({
-      id: req.request_id,
-      sender_id: req.sender_id,
-      username: req.username || 'User',
-      profile_picture_url: req.profile_picture_url || null,
-      created_at: req.created_at
-    }));
-
-    const { data: notifications, error } = await supabase
-      .from('friend_request_notifications')
-      .select('read, request:friend_requests!inner(id, status)')
+  let requests: ReceivedRequest[];
+  if (!rpcError && Array.isArray(requestsData)) {
+    requests = resolveReceivedRequests(requestsData, null);
+  } else {
+    if (rpcError) {
+      console.error('Failed to load received friend requests via RPC, falling back:', rpcError);
+    }
+    const { data: directRows, error: directError } = await supabase
+      .from('friend_requests')
+      .select('id, sender_id, created_at')
       .eq('receiver_id', userId)
-      .eq('read', false);
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return { requests, unreadCount: countUnreadPendingRequests(notifications || []) };
+    if (directError) throw directError;
+
+    const senderIds = [...new Set((directRows || []).map((row) => row.sender_id))];
+    let profiles: { id: string; username: string | null; display_name: string | null; profile_picture_url: string | null }[] | null = null;
+    if (senderIds.length > 0) {
+      const { data: profileRows } = await supabase
+        .rpc('get_public_profiles_for_leaderboard', { p_user_ids: senderIds });
+      profiles = profileRows || null;
+    }
+    requests = resolveReceivedRequests(null, directRows || [], profiles);
   }
 
-  return { requests: [], unreadCount: 0 };
+  const { data: notifications, error: notifError } = await supabase
+    .from('friend_request_notifications')
+    .select('read, request:friend_requests!inner(id, status)')
+    .eq('receiver_id', userId)
+    .eq('read', false);
+
+  if (notifError) {
+    console.error('Failed to load friend request notification count:', notifError);
+  }
+
+  return {
+    requests,
+    unreadCount: resolveUnreadRequestCount(notifications || null, Boolean(notifError), requests.length),
+  };
 };
 
 const loadActivitiesData = async (userId: string | undefined) => {
@@ -209,14 +232,16 @@ export const useFriendsData = (userId: string | undefined) => {
     queryKey: ['sentRequests', userId],
     queryFn: () => loadSentRequestsData(userId),
     enabled: !!userId,
-    staleTime: 30000,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const receivedRequests = useQuery({
     queryKey: ['receivedRequests', userId],
     queryFn: () => loadReceivedRequestsData(userId),
     enabled: !!userId,
-    staleTime: 30000,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const activities = useQuery({

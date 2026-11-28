@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { isNavigationTap, trackNavigationMovement, type NavigationTap } from "@/lib/navigationTap";
-import { countUnreadPendingRequests } from '@/lib/requestNotifications';
+import { loadReceivedRequestsData } from '@/hooks/useFriendsData';
 
 export const BottomNavigation = () => {
   const navigate = useNavigate();
@@ -207,31 +207,6 @@ export const BottomNavigation = () => {
       return [];
     };
 
-    const loadReceivedRequestsData = async () => {
-      const { data: requestsData } = await supabase
-        .rpc('get_received_request_profiles');
-
-      if (requestsData) {
-        const requests = requestsData.map(req => ({
-          id: req.request_id,
-          sender_id: req.sender_id,
-          username: req.username || 'User',
-          profile_picture_url: req.profile_picture_url || null,
-          created_at: req.created_at
-        }));
-
-        const { data: notifications, error } = await supabase
-          .from('friend_request_notifications')
-          .select('read, request:friend_requests!inner(id, status)')
-          .eq('receiver_id', user.id)
-          .eq('read', false);
-
-        if (error) throw error;
-        return { requests, unreadCount: countUnreadPendingRequests(notifications || []) };
-      }
-      return { requests: [], unreadCount: 0 };
-    };
-
     const loadActivitiesData = async () => {
       const { data: friendsData } = await supabase
         .from('friends')
@@ -303,8 +278,8 @@ export const BottomNavigation = () => {
     });
     queryClient.prefetchQuery({
       queryKey: ['receivedRequests', user.id],
-      queryFn: loadReceivedRequestsData,
-      staleTime: 30000,
+      queryFn: () => loadReceivedRequestsData(user.id),
+      staleTime: 0,
     });
     queryClient.prefetchQuery({
       queryKey: ['friendActivities', user.id],

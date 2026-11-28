@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { Capacitor } from '@capacitor/core';
 import { useAuth } from '@/contexts/AuthContext';
 import { syncDeviceTimezone } from '@/lib/deviceTimezone';
@@ -26,6 +27,9 @@ export const usePushNotifications = () => {
   const navigate = useNavigate();
   const navigateRef = useRef(navigate);
   navigateRef.current = navigate;
+  const queryClient = useQueryClient();
+  const queryClientRef = useRef(queryClient);
+  queryClientRef.current = queryClient;
 
   useEffect(() => {
     if (!user?.id) return;
@@ -53,6 +57,11 @@ export const usePushNotifications = () => {
         OneSignal.initialize(appId);
         OneSignal.Notifications.addEventListener('click', (event) => {
           const path = (event.notification?.additionalData as { path?: unknown } | undefined)?.path;
+          queryClientRef.current.invalidateQueries({ queryKey: ['receivedRequests'] });
+          queryClientRef.current.invalidateQueries({ queryKey: ['sentRequests'] });
+          queryClientRef.current.invalidateQueries({ queryKey: ['friends'] });
+          queryClientRef.current.invalidateQueries({ queryKey: ['groupInvitations'] });
+          queryClientRef.current.invalidateQueries({ queryKey: ['groupInvitationCount'] });
           if (typeof path === 'string' && path.startsWith('/') && !path.startsWith('//')) {
             navigateRef.current(path);
           }
